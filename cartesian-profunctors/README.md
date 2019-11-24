@@ -1,6 +1,6 @@
 # cartesian-profunctors
 
-This package provides three major type classes. Two of them are defined in [Data.Profunctor.Cartesian](src/Data/Profunctor/Cartesian.hs), and the remaining one is defined in [Data.PTraversable](src/Data/PTraversable).
+This package provides three major type classes. Two of them are defined in [Data.Profunctor.Cartesian](src/Data/Profunctor/Cartesian.hs), and the remaining one is defined in [Data.PTraversable](src/Data/PTraversable.hs).
 
 ## Data.Profunctor.Cartesian
 
@@ -20,15 +20,14 @@ These classes are subclasses of [Profunctor](http://hackage.haskell.org/package/
 
 They are also similar to [Arrow and ArrowChoice](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Arrow.html), but they have important differences.
 
-* Arrow and ArrowChoice are subclasses of [Category](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Category.html#t:Category), so they have identity (`id :: forall a. (Arrow p) => p a a`) and compose each other.
+* Arrow and ArrowChoice are subclasses of [Category](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Category.html#t:Category), so they have identity and compose each other.
 * Arrows have `arr`, which lifts every Haskell function `a -> b` into an Arrow `p a b`.
 
 To see the similarity and difference between Cartesian and Arrow, let's check every Arrow can be Profunctor and Cartesian.
 
 ```haskell
--- Assuming P have Arrow instance,
 instance Arrow P
--- We can write Cartesian instance.
+
 instance Profunctor P where
   dimap l r p = arr l >>> p >>> arr r
 instance Cartesian P where
@@ -39,9 +38,8 @@ instance Cartesian P where
 And every ArrowChoice can be Cocartesian.
 
 ```haskell
--- Assuming P have Arrow instance,
 instance ArrowChoice P
--- We can write Cocartesian instance.
+
 instance Cocartesian P where
   proEmpty = arr absurd
   (+++) = (Control.Arrow.+++)
@@ -53,7 +51,7 @@ But it's not the case other way around. Being Cartesian or Cocartesian do not gi
 * `(>>>) :: forall a b c. p a b -> p b c -> p a c`
 
 Which Profunctos are instances of Cartesian/Cocartesian?
-Luckily, most basic Profunctor '->' is Cartesian and Cocartesian!
+Luckily, most basic Profunctor '->' is Cartesian and Cocartesian.
 
 ```haskell
 instance Cartesian (->) where
@@ -71,7 +69,7 @@ instance Cocartesian (->) where
               Right a' -> Right (q a')
 ```
 
-To put another example, [Star f](http://hackage.haskell.org/package/profunctors-5.5/docs/Data-Profunctor.html#t:Star) is a Category (and can be Arrow, ArrowChoice) when `f` is a Monad.
+To put another example, [Star f](http://hackage.haskell.org/package/profunctors-5.5/docs/Data-Profunctor.html#t:Star) is a Category (and can be Arrow, ArrowChoice) only when `f` is a Monad.
 But, being Cartesian and Cocartesian requires `f` only to be Applicative.
 
 ```haskell
@@ -165,6 +163,20 @@ instance PTraversable Two where
             => p a b -> p (Two a) (Two b)
   ptraverse p = dimap (\Two a a' -> (a,a')) (\(a,a') -> Two a a') $ p *** p
 ```
+
+(TODO: More careful and gentle explanation)
+
+(TODO: Explain Generics)
+
+## Further works
+
+* What law should I put on?
+  * I'm sure Monoid-like law for Cartesian and Cocartesian is necessary
+  * Should (***) distribute over (+++)?
+  * How PTraversable law should look like?
+* Isn't there a work (libraries, papers) for these classes?
+* Documentation
+* Check performance
 
 --------
 
