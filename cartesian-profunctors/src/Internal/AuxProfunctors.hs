@@ -11,8 +11,12 @@ import Control.Applicative
 import Data.Functor.Contravariant
 import Data.Functor.Contravariant.Divisible
 import Data.Bifunctor(bimap)
+import Data.Bifunctor.Clown
 import Data.Profunctor
 import Data.Profunctor.Cartesian
+
+type EquivalenceP = Clown Equivalence
+type ComparisonP = Clown Comparison
 
 -- | Basically 'Data.Profunctor.Coyoneda' ('Star' f) but a bit efficient,
 --   and isomorphic to Star f if f is contravariant Functor.

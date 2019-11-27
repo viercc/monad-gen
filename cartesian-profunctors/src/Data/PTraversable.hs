@@ -44,11 +44,13 @@ import Data.Bifunctor.Joker
 import Data.Bifunctor.Clown
 
 import Data.Profunctor
-import Data.Profunctor.Yoneda (returnCoyoneda)
+import Data.Profunctor.Yoneda (Coyoneda, returnCoyoneda)
 import Data.Profunctor.Monad (proextract)
 import Data.Profunctor.Cartesian
 import Internal.AuxProfunctors
 import Data.Profunctor.Counting
+
+import Data.Transparent
 
 import Internal.Util
 
@@ -64,6 +66,10 @@ instance (Traversable t, Generic1 t, GPTraversable' (Rep1 t))
 deriving via (Generically1 Identity) instance PTraversable Identity
 deriving via (Generically1 Maybe) instance PTraversable Maybe
 deriving via (Generically1 []) instance PTraversable []
+deriving via (Generically1 ((,) a))
+  instance Transparent a => PTraversable ((,) a)
+deriving via (Generically1 (Either a))
+  instance Transparent a => PTraversable (Either a)
 
 instance (PTraversable f, PTraversable g) => PTraversable (f :.: g) where
   ptraverse = coerceDimap unComp1 Comp1 . ptraverse . ptraverse
@@ -90,6 +96,12 @@ instance (Eq a, PTraversable t) => Eq (WrappedPTraversable t a) where
 instance (Ord a, PTraversable t) => Ord (WrappedPTraversable t a) where
   compare = coerce $ ptraverse @t (Clown cmp)
     where cmp = Comparison (compare @a)
+
+instance (Transparent a, PTraversable t)
+         => Transparent (WrappedPTraversable t a) where
+  describe =
+    proextract @Coyoneda . coerceDimap unwrapPTraversable WrapPTraversable $
+      ptraverse @t (describe @a)
 
 instance (PTraversable t) => Functor (WrappedPTraversable t) where
   fmap f = coerce (fmapDefault @t f)
@@ -154,6 +166,9 @@ instance GPTraversable' U1 where
 instance GPTraversable' Par1 where
   ptraverse' = coerceDimap unPar1 Par1
   {-# INLINEABLE ptraverse' #-}
+
+instance (Transparent c) => GPTraversable' (K1 i c) where
+  ptraverse' _ = coerceDimap unK1 K1 $ describe
 
 instance (GPTraversable' f) => GPTraversable' (M1 i c f) where
   ptraverse' = coerceDimap unM1 M1 . ptraverse'

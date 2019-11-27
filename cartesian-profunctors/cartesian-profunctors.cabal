@@ -6,11 +6,13 @@ build-type:          Simple
 category:            Data, Functor, Profunctor
 cabal-version:       >=2.0
 extra-source-files:  README.md
+tested-with:         GHC == 8.8.1
 
 library
   hs-source-dirs:      src
   exposed-modules:     Data.Profunctor.Cartesian,
                        Data.Profunctor.Counting,
+                       Data.Transparent,
                        Data.PTraversable
   other-modules:       Internal.Util,
                        Internal.AuxProfunctors
@@ -18,9 +20,6 @@ library
                      , contravariant
                      , profunctors
                      , bifunctors
-                     , vector
-                     , containers
-                     , mtl
   ghc-options:         -Wall -Werror -Wcompat
   default-language:    Haskell2010
 
