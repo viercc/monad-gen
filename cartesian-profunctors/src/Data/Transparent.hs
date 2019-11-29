@@ -21,7 +21,6 @@ import Data.Bifunctor.Joker
 import Data.Profunctor
 import Data.Profunctor.Cartesian
 
-import Data.List (foldl')
 import Data.Word
 import Data.Int
 import Data.Bits
@@ -152,9 +151,9 @@ instance Transparent Word8 where
       b4 = b2 *** b2
       b8 = dimap l8 r8 $ b4 *** b4
       
-      l2 x = (x `shiftR` 1, x .&. 0x1)
-      l4 x = (l2 (x `shiftR` 2), l2 (x .&. 0x3))
-      l8 x = (l4 (x `shiftR` 4), l4 (x .&. 0xF))
+      l2 x = (x `shiftR` 1, x)
+      l4 x = (l2 (x `shiftR` 2), l2 x)
+      l8 x = (l4 (x `shiftR` 4), l4 x)
       
       r2 (a,b) = a `shiftL` 1 .|. b
       r4 (a,b) = r2 a `shiftL` 2 .|. r2 b
@@ -247,72 +246,3 @@ dBitsPow2 n =
       r (a,b) = a `shift` m .|. b
   in dimap l r $ halfBits *** halfBits
 
-----------------------------------------------
-
-instance Transparent Integer where
-  describe = dimap integerToRep repToInteger describeRep
-
-data IntegerRep = Zeroes | Ones | C0 IntegerRep | C1 IntegerRep
-  deriving (Show, Eq)
-
-integerToRep :: Integer -> IntegerRep
-integerToRep x
-  | x >= 0    = loop Zeroes C0 C1 x
-  | otherwise = loop Ones C1 C0 (complement x)
-  where
-    loop z c0 c1 = go
-      where
-        go n | n' == 0   = w32end loWord
-             | otherwise = w32cons loWord (go n')
-          where
-            loWord = fromInteger n :: Word32
-            n' = n `shiftR` 32
-
-        cons b = if b then c1 else c0
-        
-        w32end 0 = z
-        w32end n = cons (testBit n 0) (w32end (n `div` 2))
-        
-        w32cons n r = foldr (cons . testBit n) r [0..31]
-
-repToInteger :: IntegerRep -> Integer
-repToInteger = postproc . loop 0 0 []
-  where
-    mask :: Int -> Integer
-    mask pos = negate (bit pos)
-    
-    loop :: Int -> Word32 -> [Integer] -> IntegerRep -> [Integer]
-    loop 32 wordAcc allAcc r      = loop 0 0 (toInteger wordAcc : allAcc) r
-    loop _  wordAcc allAcc Zeroes = toInteger wordAcc : allAcc
-    loop i  wordAcc allAcc Ones   = (mask i .|. toInteger wordAcc) : allAcc
-    loop i  wordAcc allAcc (C0 r) = loop (i+1) wordAcc allAcc r
-    loop i  wordAcc allAcc (C1 r) = loop (i+1) (setBit wordAcc i) allAcc r
-
-    postproc []     = error "Should never reach here"
-    postproc (x:xs) = foldl' step x xs
-      where step a y = (a `shiftL` 32) .|. y
-
-describeRep :: (Cartesian p, Cocartesian p) => p IntegerRep IntegerRep
-describeRep = dimap l r $ (proUnit +++ proUnit) +++ (go0 +++ go1)
-  where
-    l Zeroes = Left (Left ())
-    l Ones   = Left (Right ())
-    l (C0 n) = Right (Left n)
-    l (C1 n) = Right (Right n)
-
-    r = either (either (const Zeroes) (const Ones))
-               (either C0 C1)
-    
-    go0 = dimap l0 r0 $ proUnit +++ (go0 +++ go1)
-    l0 Zeroes = error "Invalid IntegerRep"
-    l0 Ones = Left ()
-    l0 (C0 n) = Right (Left n)
-    l0 (C1 n) = Right (Right n)
-    r0 = either (const Ones) (either C0 C1)
-
-    go1 = dimap l1 r1 $ proUnit +++ (go0 +++ go1)
-    l1 Zeroes = Left ()
-    l1 Ones   = error "Invalid IntegerRep"
-    l1 (C0 n) = Right (Left n)
-    l1 (C1 n) = Right (Right n)
-    r1 = either (const Zeroes) (either C0 C1)
