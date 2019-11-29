@@ -16,7 +16,7 @@ class Profunctor p => Cocartesian p where
   (+++) :: p a b -> p a' b' -> p (Either a a') (Either b b')
 ```
 
-These classes are subclasses of [Profunctor](http://hackage.haskell.org/package/profunctors-5.5/docs/Data-Profunctor.html). For someone not familiar with Profunctors, there are few good articles online (TODO: actually link to one or few).
+These classes are subclasses of [Profunctor](http://hackage.haskell.org/package/profunctors-5.5/docs/Data-Profunctor.html). For someone not familiar with Profunctors, there is a good articles online: [I love profunctors. They're so easy. - School of Haskell](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/profunctors#example--containers-with-keys).
 
 They are also similar to [Arrow and ArrowChoice](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Arrow.html), but they have important differences.
 
@@ -170,14 +170,14 @@ instance PTraversable Two where
 
 ## Further works
 
+* Isn't there a work (libraries, papers) for these classes?
 * What law should I put on?
   * I'm sure Monoid-like law for Cartesian and Cocartesian is necessary
   * Should (***) distribute over (+++)?
   * How PTraversable law should look like?
-* Isn't there a work (libraries, papers) for these classes?
 * Documentation
 * Check performance
 
 --------
 
-* <a id="fn1">This is a bit different to what the actual code are, to use  GeneralizedNewtypeDeriving and DerivingVia. But morally there's no difference.</a><a href="#fn1a">(back)</a>
+<a id="fn1">This is a bit different to what the actual code are, to use  GeneralizedNewtypeDeriving and DerivingVia. But morally there's no difference.</a><a href="#fn1a">(back)</a>
