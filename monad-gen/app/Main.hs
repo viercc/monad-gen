@@ -18,24 +18,24 @@ import           GHC.Generics
 
 import           Control.Monad       (guard)
 
+import           Data.PTraversable
 import           Data.Functor.Numbering
-import           Enum1
-import           Enum1.Extra
 import           Targets
+import           Gen
 import           Util
 
 ------------------------
 -- Tests
 
-checkLeftUnit :: (Traversable m, Enum1 m, Eq (m b)) =>
+checkLeftUnit :: (PTraversable m, Eq (m b)) =>
   (forall a. a -> m a) -> (forall a. m (m a) -> m a) -> m b -> Bool
 checkLeftUnit pure' join' mb = join' (pure' mb) == mb
 
-checkRightUnit :: (Traversable m, Enum1 m, Eq (m b)) =>
+checkRightUnit :: (PTraversable m, Eq (m b)) =>
   (forall a. a -> m a) -> (forall a. m (m a) -> m a) -> m b -> Bool
 checkRightUnit pure' join' mb = join' (fmap pure' mb) == mb
 
-checkActionAssoc :: (Functor m, Enum1 m, Eq (m ())) =>
+checkActionAssoc :: (PTraversable m, Eq (m ())) =>
   (forall a. m (m a) -> m a) ->
   m () -> m () -> m () -> Bool
 checkActionAssoc join' m1 m2 m3 =
@@ -43,11 +43,11 @@ checkActionAssoc join' m1 m2 m3 =
   where
     op x y = join' (y <$ x)
 
-checkAssoc :: (Traversable m, Enum1 m, Eq (m b)) =>
+checkAssoc :: (PTraversable m, Eq (m b)) =>
   (forall a. m (m a) -> m a) -> m (m (m b)) -> Bool
 checkAssoc join' mmmb = join' (join' mmmb) == join' (fmap join' mmmb)
 
-counterExamplesAssoc :: (Traversable m, Enum1 m, Eq (m Int)) =>
+counterExamplesAssoc :: (PTraversable m, Eq (m Int)) =>
   (forall a. m (m a) -> m a) -> [m (m (m Int))]
 counterExamplesAssoc join' =
   [ mmma | mmma <- toList skolem3, join' (join' mmma) /= join' (fmap join' mmma)]
@@ -62,8 +62,7 @@ monadGen
   :: forall f.
        (forall a. Eq a => Eq (f a),
        forall a. Show a => Show (f a),
-       Traversable f,
-       Enum1 f)
+       PTraversable f)
        => Proxy f -> [String]
 monadGen _ = header ++ (okayPairs >>= docResult)
   where

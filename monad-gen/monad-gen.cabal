@@ -5,9 +5,8 @@ cabal-version:       >=2.0
 
 executable monad-gen
   hs-source-dirs:      app
-  main-is:             MonadGen.hs
-  other-modules:       Util, Targets, 
-                       Enum1, Enum1.Extra,
+  main-is:             Main.hs
+  other-modules:       Util, Gen, Targets, 
                        Data.Functor.Counting,
                        Data.Profunctor.FinFn,
                        Data.IntRange,

@@ -44,10 +44,10 @@ withFinFn (FinFn n l r) user =
     upcast :: Proxy n -> Int -> UpTo n
     upcast _ = coerce
     downcast :: Proxy n -> UpTo n -> Int
-    downcast _ = coerce    
+    downcast _ = coerce
 
 -- | How I would say... 'applyFinFn' is nice, functor-ish.
---   It commutes with 'Profunctor', 'Monoidal', 'ProAlternative',
+--   It commutes with 'Profunctor', 'Cartesian', 'Cocartesian',
 --   and composition '(>>>>)'.
 applyFinFn :: FinFn a b -> a -> b
 applyFinFn (FinFn _ l r) = l >>> r
