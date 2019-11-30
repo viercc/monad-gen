@@ -1,3 +1,11 @@
+Ahhhhhhhhhhhhh, I found a library that implements what I tried to **really well**!
+
+[one-liner](http://hackage.haskell.org/package/one-liner-0.6/docs/Generics-OneLiner.html#g:6)
+
+but I leave this as is, since this file is somewhat another explanatory document to the idea this and that package commonly have.
+
+-----------------------------------------
+
 # cartesian-profunctors
 
 This package provides three major type classes. Two of them are defined in [Data.Profunctor.Cartesian](src/Data/Profunctor/Cartesian.hs), and the remaining one is defined in [Data.PTraversable](src/Data/PTraversable.hs).
@@ -183,7 +191,6 @@ instance PTraversable Two where
 
 ## Further works
 
-* Isn't there a work (libraries, papers) for these classes?
 * What law should I put on?
   * I'm sure Applicative-ish(Associative, Left and Right unit) laws for Cartesian and Cocartesian is necessary.
   * Should `(***)` distribute over `(+++)`?
@@ -193,4 +200,4 @@ instance PTraversable Two where
 
 --------
 
-<a id="fn1">This is a bit different to what the actual code are, to use  GeneralizedNewtypeDeriving and DerivingVia. But morally there's no difference.</a><a href="#fn1a">(back)</a>
+<a id="fn1">This is a bit different to what the actual code are, to use GeneralizedNewtypeDeriving and DerivingVia. But morally there's no difference.</a><a href="#fn1a">(back)</a>
