@@ -16,14 +16,13 @@ class Profunctor p => Cocartesian p where
   (+++) :: p a b -> p a' b' -> p (Either a a') (Either b b')
 ```
 
-These classes are subclasses of [Profunctor](http://hackage.haskell.org/package/profunctors-5.5/docs/Data-Profunctor.html). For someone not familiar with Profunctors, there is a good articles online: [I love profunctors. They're so easy. - School of Haskell](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/profunctors#example--containers-with-keys).
+These classes are subclasses of [Profunctor](http://hackage.haskell.org/package/profunctors-5.5/docs/Data-Profunctor.html). For someone not familiar with Profunctors, there is a good article online: [I love profunctors. They're so easy. - School of Haskell](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/profunctors#example--containers-with-keys).
 
 They are also similar to [Arrow and ArrowChoice](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Arrow.html), but they have important differences.
 
 * Arrow and ArrowChoice are subclasses of [Category](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Category.html#t:Category), so they have identity and compose each other.
 * Arrows have `arr`, which lifts every Haskell function `a -> b` into an Arrow `p a b`.
 
-To see the similarity and difference between Cartesian and Arrow, let's check every Arrow can be Profunctor and Cartesian.
 
 ```haskell
 instance Arrow P
@@ -50,8 +49,8 @@ But it's not the case other way around. Being Cartesian or Cocartesian do not gi
 * `id :: forall a. p a a`
 * `(>>>) :: forall a b c. p a b -> p b c -> p a c`
 
-Which Profunctos are instances of Cartesian/Cocartesian?
-Luckily, most basic Profunctor '->' is Cartesian and Cocartesian.
+Which Profunctors are instances of Cartesian/Cocartesian?
+Luckily, the most basic Profunctor '->' is Cartesian and Cocartesian.
 
 ```haskell
 instance Cartesian (->) where
@@ -70,7 +69,7 @@ instance Cocartesian (->) where
 ```
 
 To put another example, [Star f](http://hackage.haskell.org/package/profunctors-5.5/docs/Data-Profunctor.html#t:Star) is a Category (and can be Arrow, ArrowChoice) only when `f` is a Monad.
-But, being Cartesian and Cocartesian requires `f` only to be Applicative.
+But, being Cartesian and Cocartesian requires `f` only to be Applicative and Functor respectively.
 
 ```haskell
 newtype Star f a b = Star (a -> f b)
@@ -100,19 +99,33 @@ class (Traversable t) => PTraversable t where
             => p a b -> p (t a) (t b)
 ```
 
-`PTraversable` is really powerful. Putting previously found Cartesian & Cocartesian Profunctors to `p`, you can get various powers!
+`PTraversable` is really powerful class. Putting various Cartesian & Cocartesian Profunctors to `p`, you can perform various operations on `PTraversable` functors.
 
 * Simply putting `p = (->)`, you get `(a -> b) -> t a -> t b`, which is `fmap`.
 * Putting `p = Star f` for Applicative `f`, you get `Star f a b -> Star f (t a) (t b)`. By unwrapping `Star`, you get:
 
   ```haskell
-  ptraverse :: (Applicative f) => (a -> f b) -> t a -> f (t b)
+  runStar . ptraverse . Star :: (Applicative f) => (a -> f b) -> t a -> f (t b)
   ```
 
-  `traverse`! This is the reason why I named this function `ptraverse`.
+  It's just a `traverse`! This is the reason why I named this function `ptraverse`.
 
-* Being able to `traverse` means it also enables Foldable methods.
-* Outside of `traverse` family, `PTraversable t` also means `Eq a => Eq (t a)`.
+* Being able to `traverse` means Foldable methods can also be implemented in terms of `PTraversable`. Or, this can be said by directly using [Data.Profunctor.Forget](https://hackage.haskell.org/package/profunctors-5.5.1/docs/Data-Profunctor.html#t:Forget).
+
+  ```haskell
+  -- Defined in Data.Profunctor
+  newtype Forget r a b = Forget { runForget :: a -> r }
+  instance (Monoid r) => Profunctor (Forget r)
+  
+  -- Defined in Data.Profunctor.Cartesian
+  instance (Monoid r) => Cartesian (Forget r)
+  instance Cocartesian (Forget r)
+  
+  ptraverse  :: (Monoid r) => Forget r a b -> Forget r (t a) (t b)
+  -- foldMap :: (Monoid r) => (a -> r)     -> (t a -> r)
+  ```
+
+* Outside of `Traversable` family, `PTraversable t` also implies `Eq a => Eq (t a)`.
 
   ```haskell
   -- Defined in Data.Functor.Contravariant (base)
@@ -172,11 +185,11 @@ instance PTraversable Two where
 
 * Isn't there a work (libraries, papers) for these classes?
 * What law should I put on?
-  * I'm sure Monoid-like law for Cartesian and Cocartesian is necessary
-  * Should (***) distribute over (+++)?
-  * How PTraversable law should look like?
+  * I'm sure Applicative-ish(Associative, Left and Right unit) laws for Cartesian and Cocartesian is necessary.
+  * Should `(***)` distribute over `(+++)`?
+  * How `PTraversable` law should look like?
 * Documentation
-* Check performance
+* Check performance: are `traverseDefault`, `eqDefault`, etc. slower than manually implemented one?
 
 --------
 
