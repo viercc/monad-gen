@@ -6,7 +6,7 @@
 module Gen(
   skolem, skolem2, skolem3,
   
-  allPures,
+  fIdx, allPures,
 
   Template(),
   enumTemplates,
@@ -39,6 +39,19 @@ skolem2 = fmap unComp1 (skolem @(m :.: m))
 skolem3 :: forall m. (PTraversable m) => FromN (m (m (m Int)))
 skolem3 = fmap (fmap unComp1 . unComp1) (skolem @(m :.: m :.: m))
 
+------------------------------------------
+
+-- fs :: FromN (f ())
+-- fs = enum1 (singleton ())
+-- 
+-- fIdx <$> fs = iota (size1 @f 1)
+-- (\f -> fs ! (fIdx f)) = id :: f () -> f ()
+fIdx :: forall f a. (PTraversable f) => f a -> Int
+fIdx = getIndex (coenum1 @f conquer)
+
+allPures :: forall f a. (PTraversable f) => FromN (a -> f a)
+allPures = fmap (\f1 -> (<$ f1)) (enum1 @f (singleton ()))
+
 -----------------------------------
 
 newtype Template (f :: Type -> Type) g = MkTemplate (FromN (Int, g ()))
@@ -65,10 +78,5 @@ runTemplate (MkTemplate t) = toNat <$> traverse inner t
       in traverse (const vars) g1
     toNat table fa =
       let args = foldMap singleton fa
-          gi = table ! getIndex (coenum1 @f conquer) fa
+          gi = table ! fIdx fa
       in (args !) <$> gi
-
-------------------------------------------
-
-allPures :: forall f a. (PTraversable f) => FromN (a -> f a)
-allPures = fmap (\f1 -> (<$ f1)) (enum1 @f (singleton ()))

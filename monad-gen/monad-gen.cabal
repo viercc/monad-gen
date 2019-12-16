@@ -8,12 +8,12 @@ executable monad-gen
   main-is:             Main.hs
   other-modules:       Util, Gen, Targets, 
                        Data.Functor.Counting,
-                       Data.Profunctor.FinFn,
                        Data.IntRange,
                        Data.IntRange.Unsafe,
                        Data.Functor.Numbering,
-                       Data.Functor.Contravariant.CoNumbering
-                       -- NatMap
+                       Data.Functor.Contravariant.CoNumbering,
+                       Data.Profunctor.FinFn,
+                       NatMap
   default-language:    Haskell2010
   build-depends:       base >= 4.12 && < 5
                      , cartesian-profunctors
@@ -24,5 +24,5 @@ executable monad-gen
                      , containers
                      , mtl
                      , ansi-terminal
-  ghc-options:         -Wall -Wcompat -O2 -ddump-simpl -ddump-to-file -dsuppress-all
+  ghc-options:         -Wall -Wcompat -Wno-simplifiable-class-constraints -O2
 

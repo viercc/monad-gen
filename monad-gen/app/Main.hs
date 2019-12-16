@@ -47,10 +47,20 @@ checkAssoc :: (PTraversable m, Eq (m b)) =>
   (forall a. m (m a) -> m a) -> m (m (m b)) -> Bool
 checkAssoc join' mmmb = join' (join' mmmb) == join' (fmap join' mmmb)
 
+counterExamplesUnit :: (PTraversable m, Eq (m Int)) =>
+  (forall a. a -> m a) -> (forall a. m (m a) -> m a) -> [m Int]
+counterExamplesUnit pure' join' =
+  [ ma | ma <- toList skolem, join' (pure' ma) /= ma ] ++
+  [ ma | ma <- toList skolem, join' (fmap pure' ma) /= ma]
+
 counterExamplesAssoc :: (PTraversable m, Eq (m Int)) =>
-  (forall a. m (m a) -> m a) -> [m (m (m Int))]
+  (forall a. m (m a) -> m a) -> [ (m (m (m Int)), m Int, m Int) ]
 counterExamplesAssoc join' =
-  [ mmma | mmma <- toList skolem3, join' (join' mmma) /= join' (fmap join' mmma)]
+  [ (mmma, ma1, ma2)
+    | mmma <- toList skolem3
+    , let ma1 = join' (join' mmma)
+    , let ma2 = join' (fmap join' mmma)
+    , ma1 /= ma2 ]
 
 forAll :: (Foldable t) => t a -> (a -> Bool) -> Bool
 forAll = flip all
@@ -140,5 +150,6 @@ main =
      writeFile' "monad-gen-G.txt" $ monadGen @G Proxy
      writeFile' "monad-gen-H.txt" $ monadGen @H Proxy
      writeFile' "monad-gen-W.txt" $ monadGen @W Proxy
-     -- writeFile' "monad-gen-T.txt" $ monadGen @T Proxy
-     -- writeFile' "monad-gen-J.txt" $ monadGen @J Proxy
+     writeFile' "monad-gen-J.txt" $ monadGen @J Proxy
+     writeFile' "monad-gen-T.txt" $ monadGen @T Proxy
+     writeFile' "monad-gen-Y.txt" $ monadGen @Y Proxy
