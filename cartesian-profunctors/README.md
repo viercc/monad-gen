@@ -31,6 +31,7 @@ They are also similar to [Arrow and ArrowChoice](http://hackage.haskell.org/pack
 * Arrow and ArrowChoice are subclasses of [Category](http://hackage.haskell.org/package/base-4.12.0.0/docs/Control-Category.html#t:Category), so they have identity and compose each other.
 * Arrows have `arr`, which lifts every Haskell function `a -> b` into an Arrow `p a b`.
 
+Every Arrow can be Cartesian.
 
 ```haskell
 instance Arrow P
@@ -107,7 +108,7 @@ class (Traversable t) => PTraversable t where
             => p a b -> p (t a) (t b)
 ```
 
-`PTraversable` is really powerful class. Putting various Cartesian & Cocartesian Profunctors to `p`, you can perform various operations on `PTraversable` functors.
+`PTraversable` is a really powerful class. Putting various Cartesian & Cocartesian Profunctors to `p`, you can perform various operations on `PTraversable` functors.
 
 * Simply putting `p = (->)`, you get `(a -> b) -> t a -> t b`, which is `fmap`.
 * Putting `p = Star f` for Applicative `f`, you get `Star f a b -> Star f (t a) (t b)`. By unwrapping `Star`, you get:
@@ -123,7 +124,7 @@ class (Traversable t) => PTraversable t where
   ```haskell
   -- Defined in Data.Profunctor
   newtype Forget r a b = Forget { runForget :: a -> r }
-  instance (Monoid r) => Profunctor (Forget r)
+  instance Profunctor (Forget r)
   
   -- Defined in Data.Profunctor.Cartesian
   instance (Monoid r) => Cartesian (Forget r)
