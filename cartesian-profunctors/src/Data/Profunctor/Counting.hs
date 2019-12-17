@@ -8,6 +8,7 @@ import Data.Functor.Classes
 import Control.Applicative
 import Data.Functor.Contravariant
 import Data.Functor.Contravariant.Divisible
+import Data.Bifunctor
 
 import Data.Profunctor
 import Data.Profunctor.Cartesian
@@ -19,10 +20,21 @@ newtype Counting a b = Counting { getCounting :: Int }
   deriving (Eq1, Ord1, Contravariant)
            via (Const Int)
 
+instance Eq2 Counting where
+  liftEq2 _ _ = coerce ((==) :: Int -> Int -> Bool)
+
+instance Ord2 Counting where
+  liftCompare2 _ _ = coerce (compare :: Int -> Int -> Ordering)
+
 instance Profunctor Counting where
   dimap _ _ = coerce
   lmap _ = coerce
   rmap _ = coerce
+
+instance Bifunctor Counting where
+  bimap _ _ = coerce
+  first _ = coerce
+  second _ = coerce
 
 instance Cartesian Counting where
   proUnit = Counting 1
