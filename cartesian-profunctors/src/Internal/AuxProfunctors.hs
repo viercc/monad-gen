@@ -19,7 +19,7 @@ type EquivalenceP = Clown Equivalence
 type ComparisonP = Clown Comparison
 
 -- | Basically 'Data.Profunctor.Coyoneda' ('Star' f) but a bit efficient,
---   and isomorphic to Star f if f is contravariant Functor.
+--   and isomorphic to Star f if f is covariant Functor.
 --
 --   Unlike directly using 'Star', two arguments of 'CoYoStar f' is
 --   always representational.
