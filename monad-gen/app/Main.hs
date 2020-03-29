@@ -18,7 +18,7 @@ import           GHC.Generics
 
 import           Data.PTraversable
 import           Data.PTraversable.Extra
-import qualified Data.Functor.Numbering as Vec
+import qualified Data.LazyVec as Vec
 import qualified NatMap                 as NM
 import           Targets
 import           MonadGen

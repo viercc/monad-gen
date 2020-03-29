@@ -6,10 +6,17 @@
 {-# LANGUAGE StandaloneDeriving #-}
 module Targets where
 
+import Data.Bool (bool)
 import GHC.Generics
+import Data.Profunctor
 import Data.PTraversable
+import Data.Transparent
 
-import Newtypes
+data Two = A | B
+  deriving stock (Show, Eq, Ord)
+
+instance Transparent Two where
+  describe = dimap (B ==) (bool A B) describe
 
 data F a = F0 | F2 a a
   deriving stock (Show, Eq, Functor, Foldable, Traversable, Generic1)

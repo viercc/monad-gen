@@ -1,8 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module Data.Functor.Contravariant.CoNumbering(
-  ToN(..),
-  makeToN,
+module Data.ContraVec(
+  ToN(),
   
   genFromEnum,
   range,
@@ -10,19 +9,11 @@ module Data.Functor.Contravariant.CoNumbering(
 ) where
 
 import Data.Void (absurd)
-import Data.Proxy
 
 import Data.Functor.Contravariant
 import Data.Functor.Contravariant.Divisible
 
-import Data.Coerce
-import Data.Reflection
-import Data.IntRange.Unsafe
-
 data ToN a = ToN !Int (a -> Int)
-
-makeToN :: forall n a. (Reifies n Int) => (a -> UpTo n) -> ToN a
-makeToN f = ToN (reflect (Proxy :: Proxy n)) (coerce f)
 
 genFromEnum :: (Enum a) => a -> a -> ToN a
 genFromEnum lo hi =

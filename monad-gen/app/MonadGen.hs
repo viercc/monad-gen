@@ -35,7 +35,7 @@ import           Data.List (sortOn)
 import qualified Data.Map        as Map
 import qualified Data.IntSet     as IS
 import qualified Data.IntMap     as IM
-import qualified Data.Functor.Numbering as Vec
+import qualified Data.LazyVec as Vec
 import qualified NatMap                 as NM
 
 -- Monad properties

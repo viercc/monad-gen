@@ -33,8 +33,7 @@ import qualified Data.IntMap.Lazy as IM
 import Data.PTraversable
 import Data.PTraversable.Extra
 
-import Data.Functor.Numbering (FromN)
-import qualified Data.Functor.Numbering as Vec
+import qualified Data.LazyVec as Vec
 
 newtype NatMap (f :: Type -> Type) (g :: Type -> Type)
   = Mk (IM.IntMap (g Int))
@@ -97,7 +96,7 @@ fromPartialNat fg' = mapMaybe1 fg' identity
 wrapUpdatorA
   :: forall f g any.
      (PTraversable f, Traversable f)
-  => (FromN Int -> Int -> IM.IntMap (g Int) -> IM.IntMap (g Int))
+  => (Vec Int -> Int -> IM.IntMap (g Int) -> IM.IntMap (g Int))
   -> f any
   -> NatMap f g -> NatMap f g
 wrapUpdatorA updator fu (Mk m) =
@@ -108,25 +107,25 @@ wrapUpdatorA updator fu (Mk m) =
 
 alterA :: forall f g any.
           (PTraversable f, Traversable f)
-       => (forall a. FromN a -> Maybe (g a) -> Maybe (g a))
+       => (forall a. Vec a -> Maybe (g a) -> Maybe (g a))
        -> f any -> NatMap f g -> NatMap f g
 alterA updator = wrapUpdatorA $ \arg -> IM.alter (updator arg)
 
 updateA :: forall f g any.
            (PTraversable f, Traversable f)
-        => (forall a. FromN a -> g a -> Maybe (g a))
+        => (forall a. Vec a -> g a -> Maybe (g a))
         -> f any -> NatMap f g -> NatMap f g
 updateA updator = wrapUpdatorA $ \arg -> IM.update (updator arg)
 
 adjustA :: forall f g any.
            (PTraversable f, Traversable f)
-        => (forall a. FromN a -> g a -> g a)
+        => (forall a. Vec a -> g a -> g a)
         -> f any -> NatMap f g -> NatMap f g
 adjustA updator = wrapUpdatorA $ \arg -> IM.adjust (updator arg)
 
 insertA :: forall f g any.
            (PTraversable f, Traversable f)
-        => (forall a. FromN a -> g a)
+        => (forall a. Vec a -> g a)
         -> f any -> NatMap f g -> NatMap f g
 insertA updator = wrapUpdatorA $ \arg i -> IM.insert i (updator arg)
 

@@ -1,7 +1,13 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications    #-}
 {-# LANGUAGE TypeOperators       #-}
-module Data.PTraversable.Extra where
+module Data.PTraversable.Extra(
+  Vec,
+
+  toVec, cache,
+  skolem, skolem2, skolem3,
+  fIdx, eqDefault
+) where
 
 import           Data.Coerce
 
@@ -11,12 +17,10 @@ import           Control.Monad.State
 import           GHC.Generics           ((:.:) (..))
 
 import           Data.Functor.Contravariant.Divisible
-import           Data.Functor.Contravariant.CoNumbering
-import qualified Data.Functor.Numbering as Vec
+import           Data.ContraVec
+import           Data.LazyVec (Vec)
+import qualified Data.LazyVec as Vec
 import           Data.PTraversable
-
-
-type Vec = Vec.FromN
 
 var :: (Vec :.: State Int) Int
 var = Comp1 $ Vec.singleton (state (\i -> (i, i+1)))
