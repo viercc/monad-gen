@@ -16,133 +16,75 @@ import           Data.Foldable
 import           Data.Proxy
 import           GHC.Generics
 
-import           Control.Monad       (guard)
-
 import           Data.PTraversable
-import           Data.Functor.Numbering
+import           Data.PTraversable.Extra
+import qualified Data.Functor.Numbering as Vec
+import qualified NatMap                 as NM
 import           Targets
-import           Gen
+import           MonadGen
 import           Util
 
 ------------------------
 -- Tests
 
-checkLeftUnit :: (PTraversable m, Eq (m b)) =>
-  (forall a. a -> m a) -> (forall a. m (m a) -> m a) -> m b -> Bool
-checkLeftUnit pure' join' mb = join' (pure' mb) == mb
-
-checkRightUnit :: (PTraversable m, Eq (m b)) =>
-  (forall a. a -> m a) -> (forall a. m (m a) -> m a) -> m b -> Bool
-checkRightUnit pure' join' mb = join' (fmap pure' mb) == mb
-
-checkActionAssoc :: (PTraversable m, Eq (m ())) =>
-  (forall a. m (m a) -> m a) ->
-  m () -> m () -> m () -> Bool
-checkActionAssoc join' m1 m2 m3 =
-  (m1 `op` m2) `op` m3 == m1 `op` (m2 `op` m3)
-  where
-    op x y = join' (y <$ x)
-
-checkAssoc :: (PTraversable m, Eq (m b)) =>
-  (forall a. m (m a) -> m a) -> m (m (m b)) -> Bool
-checkAssoc join' mmmb = join' (join' mmmb) == join' (fmap join' mmmb)
-
-counterExamplesUnit :: (PTraversable m, Eq (m Int)) =>
-  (forall a. a -> m a) -> (forall a. m (m a) -> m a) -> [m Int]
-counterExamplesUnit pure' join' =
-  [ ma | ma <- toList skolem, join' (pure' ma) /= ma ] ++
-  [ ma | ma <- toList skolem, join' (fmap pure' ma) /= ma]
-
-counterExamplesAssoc :: (PTraversable m, Eq (m Int)) =>
-  (forall a. m (m a) -> m a) -> [ (m (m (m Int)), m Int, m Int) ]
-counterExamplesAssoc join' =
-  [ (mmma, ma1, ma2)
-    | mmma <- toList skolem3
-    , let ma1 = join' (join' mmma)
-    , let ma2 = join' (fmap join' mmma)
-    , ma1 /= ma2 ]
-
 forAll :: (Foldable t) => t a -> (a -> Bool) -> Bool
 forAll = flip all
-
-cache :: FromN a -> FromN a
-cache = fromVector . toVector
 
 monadGen
   :: forall f.
        (forall a. Eq a => Eq (f a),
        forall a. Show a => Show (f a),
        PTraversable f)
-       => Proxy f -> [String]
-monadGen _ = header ++ (okayPairs >>= docResult)
+       => Proxy f -> (String -> IO ()) -> IO ()
+monadGen _ println = for_ generated docResult
   where
-    puresF :: forall a. FromN (a -> f a)
+    puresF :: forall a. Vec (a -> f a)
     puresF = allPures
     
-    joinsF :: FromN (FromN (f (f a) -> f a))
-    joinsF = fmap (. Comp1) . runTemplate <$> enumTemplates @(f :.: f) @f
-
-    actions :: FromN (f ())
-    actions = cache $ enum1 (singleton ())
-    
-    skolemCache :: FromN (f Int)
+    skolemCache :: Vec (f Int)
     skolemCache = cache skolem
     
-    skolem2Cache :: FromN (f (f Int))
+    skolem2Cache :: Vec (f (f Int))
     skolem2Cache = cache skolem2
     
-    skolem3Cache :: FromN (f (f (f Int)))
+    skolem3Cache :: Vec (f (f (f Int)))
     skolem3Cache = cache skolem3
     
-    numAllJoins = sum [ length joins' | joins' <- toList joinsF ]
-    header =
-      [ "#pure = #(forall a. a -> F a) = " ++ show (length puresF)
-      , "#join = #(forall a. F (F a) -> F a) = " ++ show numAllJoins
-      , "#(F (F ()) -> F ()) = " ++ show (length joinsF)
-      ]
+    validate :: (forall a. a -> f a) -> (forall a. f (f a) -> f a) -> IO ()
+    validate pure' join' =
+      if and allLaws
+        then return ()
+        else fail $ "[leftUnit, rightUnit, assoc] = " ++ show allLaws
+      where
+        leftUnitLaw  = forAll skolemCache $ checkLeftUnit pure' join'
+        rightUnitLaw = forAll skolemCache $ checkRightUnit pure' join'
+        assocLaw     = forAll skolem3Cache $ checkAssoc join'
+        allLaws = [leftUnitLaw, rightUnitLaw, assocLaw]
     
-    okayPairs :: [(Int, Int, Int)]
-    okayPairs =
+    generated :: [(Int, Join f)]
+    generated =
       do i <- [0 .. length puresF - 1]
-         let pure' :: forall b. b -> f b
-             pure' = puresF ! i
-         j <- [0 .. length joinsF - 1]
-         let n = length $ joinsF ! j
-         guard $ n > 0
-         let join0 :: forall b. f (f b) -> f b
-             join0 = (joinsF ! j) ! 0
-         guard $ forAll actions $ checkLeftUnit pure' join0
-         guard $ forAll actions $ checkRightUnit pure' join0
-         guard $ forAll actions $ \m1 ->
-           forAll actions $ \m2 ->
-             forAll actions $ \m3 ->
-               checkActionAssoc join0 m1 m2 m3
-         k <- [0 .. n - 1]
-         let join' :: forall b. f (f b) -> f b
-             join' = (joinsF ! j) ! k
-         guard $ forAll skolemCache $ checkLeftUnit pure' join'
-         guard $ forAll skolemCache $ checkRightUnit pure' join'
-         guard $ forAll skolem3Cache $ checkAssoc join'
-         return (i,j,k)
-
-    joinArgsCache :: FromN String
+         joinsSt <- gen (puresF Vec.! i)
+         return (i, _join joinsSt)
+    
+    joinArgsCache :: Vec String
     joinArgsCache = cache $ fmap pad strs
       where showLen x = let s = show x in (length s, s)
             strs = cache $ showLen <$> skolem2Cache
             maxLen = maximum $ fmap fst strs
             pad (n, s) = "join $ " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
     
-    docResult (i, j, k) =
-      replicate 60 '-' :
-      "pure 0 = " <> show ((puresF ! i) 0 :: f Int) :
-      toList (Data.Functor.Numbering.zipWith docLine joinArgsCache skolem2Cache)
-      
-      where
-        join' :: f (f Int) -> f Int
-        join' = joinsF ! j ! k
-
-        docLine :: String -> f (f Int) -> String
-        docLine s ffx = s ++ show (join' ffx)
+    docResult (i, joinNM) =
+      NM.toTotal joinNM (fail failMsg) $ \join' ->
+        do let pure' :: forall a. a -> f a
+               pure' = puresF Vec.! i
+           validate pure' (join' . Comp1)
+           let docLine s ffx = s ++ show (join' (Comp1 ffx))
+           println $ replicate 60 '-'
+           println $ "pure 0 = " <> show (pure' 0 :: f Int)
+           mapM_ println $
+             Vec.zipWith docLine joinArgsCache skolem2Cache
+      where failMsg = "Non-total join:" ++ show (i, NM.debug joinNM)
 
 main :: IO ()
 main =

@@ -6,14 +6,15 @@ cabal-version:       >=2.0
 executable monad-gen
   hs-source-dirs:      app
   main-is:             Main.hs
-  other-modules:       Util, Gen, Targets, 
+  other-modules:       Data.PTraversable.Extra,
                        Data.Functor.Counting,
                        Data.IntRange,
                        Data.IntRange.Unsafe,
                        Data.Functor.Numbering,
                        Data.Functor.Contravariant.CoNumbering,
                        Data.Profunctor.FinFn,
-                       NatMap
+                       NatMap, Newtypes,
+                       Util, MonadGen, Targets
   default-language:    Haskell2010
   build-depends:       base >= 4.12 && < 5
                      , cartesian-profunctors

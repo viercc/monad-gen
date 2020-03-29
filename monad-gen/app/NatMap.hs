@@ -31,10 +31,10 @@ import Data.Foldable
 import qualified Data.IntMap.Lazy as IM
 
 import Data.PTraversable
+import Data.PTraversable.Extra
 
 import Data.Functor.Numbering (FromN)
 import qualified Data.Functor.Numbering as Vec
-import Gen
 
 newtype NatMap (f :: Type -> Type) (g :: Type -> Type)
   = Mk (IM.IntMap (g Int))
@@ -45,9 +45,6 @@ deriving instance (Ord (g Int)) => Ord (NatMap f g)
 
 holeCount :: Traversable t => t a -> Int
 holeCount = length
-
-toVec :: Traversable t => t a -> FromN a
-toVec = Vec.vec . toList
 
 -- Query --
 
@@ -67,9 +64,10 @@ notMember fa = not . member fa
 lookup :: (PTraversable f, Functor g) => f a -> NatMap f g -> Maybe (g a)
 lookup fa (Mk m) = fmap (toVec fa Vec.!) <$> IM.lookup (fIdx fa) m
 
-toTotal :: (PTraversable f, Functor g) => NatMap f g -> Maybe (f a -> g a)
-toTotal nm@(Mk m) | isTotal nm = Just fg
-                  | otherwise  = Nothing
+toTotal :: (PTraversable f, Functor g) => NatMap f g -> r -> ((forall a. f a -> g a) -> r) -> r
+toTotal nm@(Mk m) failCase justCase
+  | isTotal nm = justCase fg
+  | otherwise  = failCase
   where fg fa = let content = toVec fa
                     gx = m IM.! fIdx fa
                 in content `seq` (content Vec.!) <$> gx

@@ -35,6 +35,6 @@ data T a = T2 Two a a
   deriving stock (Show, Eq, Functor, Foldable, Traversable, Generic1)
 deriving via (Generically1 T) instance PTraversable T
 
-data Y a = Y0 | Y2 Three a a
+data Y a = Y0 | Y2 a a | Y3 a a a
   deriving stock (Show, Eq, Functor, Foldable, Traversable, Generic1)
 deriving via (Generically1 Y) instance PTraversable Y
