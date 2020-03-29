@@ -12,14 +12,17 @@ library
   hs-source-dirs:      src
   exposed-modules:     Data.Profunctor.Cartesian,
                        Data.Profunctor.Counting,
+                       Data.Profunctor.FinFn,
                        Data.Transparent,
                        Data.PTraversable
   other-modules:       Internal.Util,
                        Internal.AuxProfunctors
   build-depends:       base >= 4.12 && < 5
+                     , containers
                      , contravariant
                      , profunctors
                      , bifunctors
+                     , finite-typelits
   ghc-options:         -Wall -Werror -Wcompat
   default-language:    Haskell2010
 

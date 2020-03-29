@@ -22,28 +22,29 @@ import Data.Profunctor.Cartesian
 import qualified Data.Map as Map
 
 import Data.Proxy
-import Data.Reflection
-import Data.IntRange.Unsafe
+import GHC.TypeNats
+import Data.Finite.Internal
 
-data FinFn a b = FinFn !Int (a -> Int) (Int -> b)
+data FinFn a b = FinFn !Integer (a -> Integer) (Integer -> b)
 
 -- | Safe construction
 makeFinFn :: forall n a b.
-             Reifies n Int
-          => (a -> UpTo n) -> (UpTo n -> b) -> FinFn a b
-makeFinFn l r = FinFn nvalue (coerce l) (coerce r)
-  where nvalue = reflect @n Proxy
+             KnownNat n
+          => (a -> Finite n) -> (Finite n -> b) -> FinFn a b
+makeFinFn l r = FinFn (toInteger nvalue) (coerce l) (coerce r)
+  where nvalue = natVal @n Proxy
 
 -- | Safe pattern matching
 withFinFn :: FinFn a b
-          -> (forall n. Reifies n Int => (a -> UpTo n) -> (UpTo n -> b) -> r)
+          -> (forall n. KnownNat n => (a -> Finite n) -> (Finite n -> b) -> r)
           -> r
 withFinFn (FinFn n l r) user =
-    reify n (\name -> user (upcast name . l) (r . downcast name))
+    case someNatVal (fromInteger n) of
+      SomeNat name -> user (upcast name . l) (r . downcast name)
   where
-    upcast :: Proxy n -> Int -> UpTo n
+    upcast :: Proxy n -> Integer -> Finite n
     upcast _ = coerce
-    downcast :: Proxy n -> UpTo n -> Int
+    downcast :: Proxy n -> Finite n -> Integer
     downcast _ = coerce
 
 -- | How I would say... 'applyFinFn' is nice, functor-ish.
@@ -71,7 +72,7 @@ infixr 1 <<<<
 
 -- | > applyFinFn . fromMap = flip Map.lookup
 fromMap :: (Ord a) => Map.Map a b -> FinFn a (Maybe b)
-fromMap m = FinFn n l r
+fromMap m = FinFn (toInteger n) (toInteger . l) (r . fromInteger)
   where
     n = 1 + Map.size m
     l a = maybe 0 (1+) $ Map.lookupIndex a m
