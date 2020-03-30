@@ -68,8 +68,8 @@ data Env f =
   Env {
     _pure  :: forall a. a -> f a
   , _f1    :: Vec (f Int)
-  , _f2    :: Vec ((f :.: f) Int)
-  , _f3    :: Vec ((f :.: f :.: f) Int)
+  , _f2    :: Vec (f (f Int))
+  , _f3    :: Vec (f (f (f Int)))
   }
 
 newtype JoinKey f = JoinKey (f (f ()))
@@ -78,6 +78,12 @@ newtype JoinKey f = JoinKey (f (f ()))
 type Join f = NM.NatMap (f :.: f) f
 type KnownAssoc f = IM.IntMap (f Int)
 type Blockade f = Map.Map (JoinKey f) IS.IntSet
+
+makeRel :: Ord k => [(k, Int)] -> Map.Map k IS.IntSet
+makeRel = Map.fromListWith IS.union . fmap (fmap IS.singleton)
+
+unionRel :: (Ord k) => Map.Map k IS.IntSet -> Map.Map k IS.IntSet -> Map.Map k IS.IntSet
+unionRel = Map.unionWith IS.union
 
 data GenState f =
   GenState {
@@ -105,19 +111,22 @@ debugPrint st = do
           assoc = flip all skolem3 $ checkAssoc join''
       in unless assoc (fail "!?!?")
 
-applyB :: PTraversable f => Join f -> (f :.: f) a -> Either (JoinKey f) (f a)
-applyB m ffa = maybe (Left ff0) Right $ NM.lookup ffa m
-  where ff0 = JoinKey . unComp1 $ void ffa
+applyB :: PTraversable f => Join f -> f (f a) -> Either (JoinKey f) (f a)
+applyB m ffa = maybe (Left ff0) Right $ NM.lookup (Comp1 ffa) m
+  where ff0 = JoinKey $ fmap void ffa
 
-leftAssocB :: PTraversable f => NM.NatMap (f :.: f) f -> (f :.: f :.: f) a -> Either (JoinKey f) (f a)
+leftAssocB :: PTraversable f => Join f -> f (f (f a)) -> Either (JoinKey f) (f a)
 leftAssocB m fffa =
-  do ffa <- applyB m (Comp1 . fmap unComp1 . unComp1 $ fffa)
-     applyB m (Comp1 ffa)
+  do ffa <- applyB m fffa
+     applyB m ffa
 
-rightAssocB :: PTraversable f => NM.NatMap (f :.: f) f -> (f :.: f :.: f) a -> Either (JoinKey f) (f a)
+rightAssocB :: PTraversable f => Join f -> f (f (f a)) -> Either (JoinKey f) (f a)
 rightAssocB m fffa =
-  do ffa <- traverse (applyB m) (unComp1 fffa)
-     applyB m (Comp1 ffa)
+  do ffa <- traverse (applyB m) fffa
+     applyB m ffa
+
+choose :: Foldable t => t a -> Gen f a
+choose = lift . lift . toList
 
 runGen :: forall f r. PTraversable f => (forall a. a -> f a) -> Gen f r -> [(r, GenState f)]
 runGen pure' mr = runStateT (runReaderT mr env) state0
@@ -126,8 +135,8 @@ runGen pure' mr = runStateT (runReaderT mr env) state0
     env = Env {
       _pure = pure',
       _f1 = cache skolem,
-      _f2 = cache skolem,
-      _f3 = cache skolem
+      _f2 = cache skolem2,
+      _f3 = cache skolem3
     }
     
     f3 = _f3 env
@@ -164,7 +173,7 @@ entry lhs rhs =
        Nothing   -> return ()
        Just rhs' -> guard (eqDefault rhs rhs')
      let join2 = NM.insertA (use rhs) lhs join1
-     
+
      f3 <- asks _f3
      assocL <- gets _assocL
      blockadeL <- gets _blockadeL
@@ -174,30 +183,14 @@ entry lhs rhs =
      let lhs' = JoinKey . unComp1 $ void lhs
      
      -- update assocL
-     let postproc k (Left ffi) = Left (ffi, IS.singleton k)
-         postproc k (Right fi) = Right (k, fi)
-         (newBlockadeL, newAssocL) = partitionEithers
-           [ postproc k (leftAssocB join2 (f3 ! k))
-           | k <- maybe [] IS.toList (Map.lookup lhs' blockadeL) ]
-         newBlockadeMapL = Map.fromListWith IS.union newBlockadeL
-         blockadeL' = Map.unionWith IS.union (Map.delete lhs' blockadeL) newBlockadeMapL
-         assocL' = IM.union assocL (IM.fromList newAssocL)
-     for_ newAssocL $ \(k, fi) ->
-       case IM.lookup k assocR of
-         Nothing  -> return ()
-         Just fi' -> guard (eqDefault fi fi')
+     let (newAssocL, blockadeL') = assocUpdates f3 lhs' (leftAssocB join2) blockadeL
+         assocL' = IM.union assocL newAssocL
+     guard $ and $ IM.intersectionWith eqDefault newAssocL assocR
      
      -- update assocR
-     let (newBlockadeR, newAssocR) = partitionEithers
-           [ postproc k (rightAssocB join2 (f3 ! k))
-           | k <- maybe [] IS.toList (Map.lookup lhs' blockadeR) ]
-         newBlockadeMapR = Map.fromListWith IS.union newBlockadeR
-         blockadeR' = Map.unionWith IS.union (Map.delete lhs' blockadeR) newBlockadeMapR
-         assocR' = IM.union assocR (IM.fromList newAssocR)
-     for_ newAssocR $ \(k, fi) ->
-       case IM.lookup k assocL' of
-         Nothing  -> return ()
-         Just fi' -> guard (eqDefault fi fi')
+     let (newAssocR, blockadeR') = assocUpdates f3 lhs' (rightAssocB join2) blockadeR
+         assocR' = IM.union assocR newAssocR
+     guard $ and $ IM.intersectionWith eqDefault newAssocR assocL'
      
      modify $ \s -> s{
        _join = join2,
@@ -207,60 +200,78 @@ entry lhs rhs =
        _blockadeR = blockadeR'
      }
 
-entryUnitEqs :: (forall a. Show a => Show (f a), PTraversable f) => Gen f ()
-entryUnitEqs = do
-  env <- ask
-  entryUU' (_pure env)
-  entryFUG' (_pure env)
+assocUpdates
+  :: PTraversable f
+  => Vec (f (f (f Int)))
+  -> JoinKey f
+  -> (f (f (f Int)) -> Either (JoinKey f) (f Int))
+  -> Blockade f
+  -> (KnownAssoc f, Blockade f)
+assocUpdates f3 lhs' jj blockade = (IM.fromList newAssoc, blockade')
+  where
+    postproc k (Left ffi) = Left (ffi, k)
+    postproc k (Right fi) = Right (k, fi)
+    
+    (newBlockade, newAssoc) = partitionEithers
+        [ postproc k (jj (f3 ! k))
+        | k <- maybe [] IS.toList (Map.lookup lhs' blockade) ]
 
-entryUU' :: forall f. (forall a. Show a => Show (f a), PTraversable f) => (forall a. a -> f a) -> Gen f ()
-entryUU' u = do
-  f1 <- asks _f1
-  let ui = f1 ! fIdx (u ())
+    blockade' = unionRel (Map.delete lhs' blockade) (makeRel newBlockade)
+
+entryUU :: forall f. (forall a. Show a => Show (f a), PTraversable f) => Gen f ()
+entryUU = do
+  env <- ask
+  let f1 = _f1 env
+      u = _pure env
+      ui = f1 ! fIdx (u ())
       uj = fmap (\i -> length ui * i + i) ui 
   entry (Comp1 (u ui)) uj
 
-entryFUG' :: forall f. (forall a. Show a => Show (f a), PTraversable f) => (forall a. a -> f a) -> Gen f ()
-entryFUG' u = do
-  f1 <- asks _f1
-  let targets = [ fi | (i, fi) <- Vec.toList (Vec.indexed f1)
-                          , i /= fIdx (u ()) ]
+entryFUG :: forall f. (forall a. Show a => Show (f a), PTraversable f) => Gen f ()
+entryFUG = do
+  env <- ask
+  let f1 = _f1 env
+      u = _pure env
+      targets = [ fi | (i, fi) <- Vec.toList (Vec.indexed f1)
+                     , i /= fIdx (u ()) ]
+      
+      n = length (u ())
+      makeJuf :: f Int -> [f Int]
+      makeJuf fi = traverse select fi
+        where
+          m = length fi
+          select x = [ y * m + x | y <- [0..n - 1] ]
+      makeJfu :: f Int -> [f Int]
+      makeJfu fi = traverse select fi
+        where
+          select x = [ x * n + y | y <- [0..n - 1] ]
+  
   for_ targets $ \fi -> do
-    juf <- lift . lift $ makeJuf fi
+    juf <- choose $ makeJuf fi
     entry (Comp1 (u fi)) juf
-    jfu <- lift . lift $ makeJfu fi
+    jfu <- choose $ makeJfu fi
     entry (Comp1 (u <$> fi)) jfu
-  where
-    n = length (u ())
-    makeJuf :: f Int -> [f Int]
-    makeJuf fi = traverse select fi
-      where
-        m = length fi
-        select x = [ y * m + x | y <- [0..n - 1] ]
-    makeJfu :: f Int -> [f Int]
-    makeJfu fi = traverse select fi
-      where
-        select x = [ x * n + y | y <- [0..n - 1] ]
 
 remaining :: PTraversable f => Gen f [(f :.: f) Int]
 remaining =
   do f2 <- asks _f2
      join1 <- gets _join
      let notDefined =
-           [ ffi | ffi <- Vec.toList f2
-                 , NM.notMember ffi join1 ]
+           [ ffi' | ffi <- Vec.toList f2
+                 , let ffi' = Comp1 ffi
+                 , NM.notMember ffi' join1 ]
      return (sortOn length notDefined)
 
 entryAllCombs :: (forall a. Show a => Show (f a), PTraversable f) => (f :.: f) Int -> Gen f ()
 entryAllCombs lhs =
-  do let args = toVec lhs
-     rhs <- lift . lift $ Vec.toList (enum1 args)
+  do rhs <- choose $ enum1 (toVec lhs)
      entry lhs rhs
 
 gen :: (forall a. Show a => Show (f a), PTraversable f) => (forall a. a -> f a) -> [GenState f]
 gen u = snd <$> runGen u doEverything
   where
     doEverything =
-      do entryUnitEqs
+      do entryUU
+         entryFUG
          rest <- remaining
          for_ rest entryAllCombs
