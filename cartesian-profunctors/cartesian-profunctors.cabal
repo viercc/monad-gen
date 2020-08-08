@@ -13,6 +13,7 @@ library
   exposed-modules:     Data.Profunctor.Cartesian,
                        Data.Profunctor.Counting,
                        Data.Profunctor.FinFn,
+                       Data.Profunctor.Exhaust,
                        Data.Transparent,
                        Data.PTraversable
   other-modules:       Internal.Util,

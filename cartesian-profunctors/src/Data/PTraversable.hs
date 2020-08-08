@@ -44,8 +44,8 @@ import Data.Bifunctor.Joker
 import Data.Bifunctor.Clown
 
 import Data.Profunctor
-import Data.Profunctor.Yoneda (Coyoneda, returnCoyoneda)
-import Data.Profunctor.Monad (proextract)
+import Data.Profunctor.Yoneda (Yoneda(..), extractYoneda)
+import Data.Profunctor.Monad (proreturn)
 import Data.Profunctor.Cartesian
 import Internal.AuxProfunctors
 import Data.Profunctor.Counting
@@ -99,9 +99,8 @@ instance (Ord a, PTraversable t) => Ord (WrappedPTraversable t a) where
 
 instance (Transparent a, PTraversable t)
          => Transparent (WrappedPTraversable t a) where
-  describe =
-    proextract @Coyoneda . coerceDimap unwrapPTraversable WrapPTraversable $
-      ptraverse @t (describe @a)
+  describe = coerceDimap unwrapPTraversable WrapPTraversable $
+    ptraverse @t (describe @a)
 
 instance (PTraversable t) => Functor (WrappedPTraversable t) where
   fmap f = coerce (fmapDefault @t f)
@@ -130,7 +129,7 @@ coenum1 = runClown . ptraverse . Clown
 --   some cost incurred.
 ptraverseSlow :: forall t p a b. (PTraversable t, Cartesian p, Cocartesian p)
           => p a b -> p (t a) (t b)
-ptraverseSlow = proextract . ptraverse . returnCoyoneda
+ptraverseSlow = extractYoneda . ptraverse @t @(Yoneda p) . proreturn
 {-# INLINEABLE ptraverseSlow #-}
 
 -- | 'enum1', but doesn't require 'Representational1' at expence of

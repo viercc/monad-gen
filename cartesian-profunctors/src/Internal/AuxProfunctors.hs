@@ -1,6 +1,5 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE GADTSyntax #-}
-{-# LANGUAGE RoleAnnotations #-}
 module Internal.AuxProfunctors where
 
 import Data.Void
@@ -25,8 +24,6 @@ type ComparisonP = Clown Comparison
 --   always representational.
 data CoYoStar f a b where
   CoYoStar :: (c -> b) -> (a -> f c) -> CoYoStar f a b
-
-type role CoYoStar _ representational representational
 
 liftCoYoStar :: (a -> f b) -> CoYoStar f a b
 liftCoYoStar = CoYoStar id
@@ -60,8 +57,6 @@ instance (Functor f) => Cocartesian (CoYoStar f) where
 data CoYoJoker f a b where
   CoYoJoker :: (c -> b) -> f c -> CoYoJoker f a b
 
-type role CoYoJoker _ phantom representational
-
 liftCoYoJoker :: f b -> CoYoJoker f a b
 liftCoYoJoker = CoYoJoker id
 
@@ -94,8 +89,6 @@ instance (Alternative f) => Cocartesian (CoYoJoker f) where
 --   always representational.
 data CoYoClown f a b where
   CoYoClown :: (a -> c) -> f c -> CoYoClown f a b
-
-type role CoYoClown _ representational phantom
 
 liftCoYoClown :: f a -> CoYoClown f a b
 liftCoYoClown = CoYoClown id

@@ -1,5 +1,7 @@
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# OPTIONS_GHC -Wno-simplifiable-class-constraints #-}
 module Data.Transparent(
   Transparent(..),
   eqDefault,
@@ -20,17 +22,25 @@ import Data.Bifunctor.Joker
 
 import Data.Profunctor
 import Data.Profunctor.Cartesian
+import Data.Profunctor.Yoneda (Yoneda(..))
+import Data.Profunctor.Exhaust
 
 import Data.Word
 import Data.Int
 import Data.Bits
 import Data.Char(chr, ord)
 
+import Internal.Util
 import Internal.AuxProfunctors
 
 class (Eq x, Ord x) => Transparent x where
-  describe :: (Cartesian p, Cocartesian p)
-           => p x x
+  withDescribe :: forall p a b. (Cartesian p, Cocartesian p)
+               => (a -> x) -> (x -> b) -> p a b
+  withDescribe = runYoneda $ (describe :: Yoneda p x x)
+  
+  describe :: (Representational2 p, Cartesian p, Cocartesian p) => p x x
+  describe = withDescribe id id
+  {-# MINIMAL withDescribe | describe #-}
 
 eqDefault :: forall x. Transparent x => x -> x -> Bool
 eqDefault = coerce $ describe @x @EquivalenceP
@@ -38,48 +48,17 @@ eqDefault = coerce $ describe @x @EquivalenceP
 compareDefault :: forall x. Transparent x => x -> x -> Ordering
 compareDefault = coerce $ describe @x @ComparisonP
 
-enumList :: forall x. (Transparent x) => [x]
-enumList = coerce $ describe @x @(Joker [])
-
 enum :: (Transparent x, Alternative f) => f x
 enum = lowerCoYoJoker describe
+
+enumList :: forall x. (Transparent x) => [x]
+enumList = coerce $ describe @x @(Joker [])
 
 search :: Transparent x => (x -> Bool) -> Maybe x
 search cond = case describe of
   Absurd _  -> Nothing
   Exhaust p -> let x = p cond
                in if cond x then Just x else Nothing
-
-data Exhaust a b = Absurd (a -> Void)
-                 | Exhaust ((b -> Bool) -> b)
-
-instance Profunctor Exhaust where
-  lmap l (Absurd f)  = Absurd (f . l)
-  lmap _ (Exhaust g) = Exhaust g
-  
-  rmap _ (Absurd f)  = Absurd f
-  rmap r (Exhaust s) = Exhaust $ \cond -> r $ s (cond . r)
-
-instance Cartesian Exhaust where
-  proUnit = Exhaust (\_ -> ())
-  Absurd p  *** _         = Absurd (\(a,_) -> p a)
-  Exhaust _ *** Absurd q  = Absurd (\(_,a') -> q a')
-  Exhaust p *** Exhaust q = Exhaust pq
-    where
-      pq cond =
-        let subQuery b = q $ \b' -> cond (b, b')
-            bGot = p $ \b -> cond (b, subQuery b)
-        in (bGot, subQuery bGot)
-
-instance Cocartesian Exhaust where
-  proEmpty = Absurd id
-  Absurd p  +++ Absurd q  = Absurd $ either p q
-  Absurd _  +++ Exhaust q = Exhaust $ \cond -> Right $ q (cond . Right)
-  Exhaust p +++ Absurd _  = Exhaust $ \cond -> Left $ p (cond . Left)
-  Exhaust p +++ Exhaust q = Exhaust $ \cond ->
-    let x = Left $ p (cond . Left)
-        y = Right $ q (cond . Right)
-    in if cond x then x else y
 
 instance Transparent Void where
   describe = proEmpty
@@ -95,20 +74,20 @@ instance (Transparent x, Transparent y) => Transparent (x,y) where
 
 instance (Transparent x1, Transparent x2, Transparent x3)
          => Transparent (x1,x2,x3) where
-  describe = dimap l r $ describe *** describe
+  describe = dimap l r describe
     where
       l (x1,x2,x3) = (x1,(x2,x3))
       r (x1,(x2,x3)) = (x1,x2,x3)
 
 instance (Transparent x1, Transparent x2, Transparent x3, Transparent x4)
          => Transparent (x1,x2,x3,x4) where
-  describe = dimap l r $ describe *** describe
+  describe = dimap l r describe
     where
-      l (x1,x2,x3,x4) = (x1,(x2,x3,x4))
-      r (x1,(x2,x3,x4)) = (x1,x2,x3,x4)
+      l (x1,x2,x3,x4) = ((x1,x2),(x3,x4))
+      r ((x1,x2),(x3,x4)) = (x1,x2,x3,x4)
 
 instance Transparent Bool where
-  describe = dimap l r $ proUnit +++ proUnit
+  describe = dimap l r describe
     where
       l False = Left ()
       l True  = Right ()
@@ -116,7 +95,7 @@ instance Transparent Bool where
       r (Right _) = True
 
 instance Transparent Ordering where
-  describe = dimap l r $ proUnit +++ (proUnit +++ proUnit)
+  describe = dimap l r describe
     where
       l LT = Left ()
       l EQ = Right (Left ())
@@ -127,7 +106,7 @@ instance Transparent Ordering where
       r (Right (Right _)) = GT
 
 instance Transparent x => Transparent (Maybe x) where
-  describe = dimap l r $ proUnit +++ describe
+  describe = dimap l r describe
     where
       l = maybe (Left ()) Right
       r = either (const Nothing) Just
@@ -139,7 +118,7 @@ instance Transparent x => Transparent [x] where
       
       l [] = Left ()
       l (x:xs) = Right (x,xs)
-
+      
       r (Left _) = []
       r (Right (x,xs)) = x:xs
 
@@ -211,14 +190,14 @@ instance Transparent Char where
             in if x < 0x100000 then Left x else Right (x - thresh)
       r = chr . either id (thresh +)
 
-dBit :: (Bits a, Cartesian p, Cocartesian p) => p a a
+dBit :: (Bits a, Representational2 p, Cartesian p, Cocartesian p) => p a a
 dBit = dimap i2b b2i describe
   where
     i2b x = testBit x 0
     b2i False = zeroBits
     b2i True  = bit 0
 
-dBits :: (Bits a, Cartesian p, Cocartesian p) => Int -> p a a
+dBits :: (Bits a, Representational2 p, Cartesian p, Cocartesian p) => Int -> p a a
 dBits n
   | n <= 0 = error "bad!"
   | n == 1 = dBit
@@ -237,7 +216,7 @@ separate x = (r, bit p)
     p = finiteBitSize (0 :: Int) - countLeadingZeros x - 1
     r = clearBit x p
 
-dBitsPow2 :: (Bits a, Cartesian p, Cocartesian p) => Int -> p a a
+dBitsPow2 :: (Bits a, Representational2 p, Cartesian p, Cocartesian p) => Int -> p a a
 dBitsPow2 1 = dBit
 dBitsPow2 n =
   let m = n `div` 2
