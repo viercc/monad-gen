@@ -1,6 +1,7 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE QuantifiedConstraints #-}
 {-# OPTIONS_GHC -Wno-simplifiable-class-constraints #-}
 module Data.Transparent(
   Transparent(..),
@@ -12,7 +13,6 @@ module Data.Transparent(
 ) where
 
 import Data.Coerce
-
 import Data.Void
 
 import Control.Applicative
@@ -34,13 +34,13 @@ import Internal.Util
 import Internal.AuxProfunctors
 
 class (Eq x, Ord x) => Transparent x where
-  withDescribe :: forall p a b. (Cartesian p, Cocartesian p)
+  describeOn :: forall p a b. (Cartesian p, Cocartesian p)
                => (a -> x) -> (x -> b) -> p a b
-  withDescribe = runYoneda $ (describe :: Yoneda p x x)
+  describeOn = runYoneda $ (describe :: Yoneda p x x)
   
   describe :: (Representational2 p, Cartesian p, Cocartesian p) => p x x
-  describe = withDescribe id id
-  {-# MINIMAL withDescribe | describe #-}
+  describe = describeOn id id
+  {-# MINIMAL describeOn | describe #-}
 
 eqDefault :: forall x. Transparent x => x -> x -> Bool
 eqDefault = coerce $ describe @x @EquivalenceP
@@ -190,14 +190,14 @@ instance Transparent Char where
             in if x < 0x100000 then Left x else Right (x - thresh)
       r = chr . either id (thresh +)
 
-dBit :: (Bits a, Representational2 p, Cartesian p, Cocartesian p) => p a a
-dBit = dimap i2b b2i describe
+dBit :: (Bits a, Cartesian p, Cocartesian p) => p a a
+dBit = describeOn i2b b2i
   where
     i2b x = testBit x 0
     b2i False = zeroBits
     b2i True  = bit 0
 
-dBits :: (Bits a, Representational2 p, Cartesian p, Cocartesian p) => Int -> p a a
+dBits :: (Bits a, Cartesian p, Cocartesian p) => Int -> p a a
 dBits n
   | n <= 0 = error "bad!"
   | n == 1 = dBit
@@ -216,7 +216,7 @@ separate x = (r, bit p)
     p = finiteBitSize (0 :: Int) - countLeadingZeros x - 1
     r = clearBit x p
 
-dBitsPow2 :: (Bits a, Representational2 p, Cartesian p, Cocartesian p) => Int -> p a a
+dBitsPow2 :: (Bits a, Cartesian p, Cocartesian p) => Int -> p a a
 dBitsPow2 1 = dBit
 dBitsPow2 n =
   let m = n `div` 2

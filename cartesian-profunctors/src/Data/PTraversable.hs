@@ -6,7 +6,7 @@
   EmptyCase,
   TypeOperators,
   TupleSections,
-
+  
   DerivingVia,
   DeriveTraversable,
   StandaloneDeriving,
@@ -29,17 +29,21 @@ module Data.PTraversable(
   WrappedPTraversable(..),
   
   Generically1(..),
-  GPTraversable'()
+  GPTraversable'(),
+
+  -- * Utility
+  Representational1,
+  Representational2
 ) where
 
 import GHC.Generics
-import Data.Functor.Identity
-
+import Generic.Data(Generically1(..), GFoldable, GTraversable)
 import Data.Coerce
 
 import Control.Applicative
 import Data.Functor.Contravariant
 import Data.Functor.Contravariant.Divisible
+import Data.Functor.Identity
 import Data.Bifunctor.Joker
 import Data.Bifunctor.Clown
 
@@ -147,7 +151,7 @@ coenum1Slow = lowerCoYoClown . ptraverse . liftCoYoClown
 -------------------------------------
 -- Generics
 
-class GPTraversable' t where
+class (Functor t, GFoldable t, GTraversable t) => GPTraversable' t where
   ptraverse' :: (Representational2 p, Cartesian p, Cocartesian p)
              => p a b -> p (t a) (t b)
 
@@ -193,6 +197,7 @@ instance (GPTraversable' f, GPTraversable' g) => GPTraversable' (f :*: g) where
       fromTup (fa, ga) = fa :*: ga
   {-# INLINEABLE ptraverse' #-}
 
-instance (PTraversable f, GPTraversable' g) => GPTraversable' (f :.: g) where
+instance (PTraversable f, GPTraversable' g, Traversable g)
+  => GPTraversable' (f :.: g) where
   ptraverse' = coerceDimap unComp1 Comp1 . ptraverse . ptraverse'
   {-# INLINEABLE ptraverse' #-}

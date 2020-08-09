@@ -4,9 +4,9 @@ description:         see README.md
 version:             0.1.0.0
 build-type:          Simple
 category:            Data, Functor, Profunctor
-cabal-version:       >=2.0
+cabal-version:       2.0
 extra-source-files:  README.md
-tested-with:         GHC == 8.8.1
+tested-with:         GHC == 8.8.1, GHC == 8.10.1
 
 library
   hs-source-dirs:      src
@@ -23,6 +23,7 @@ library
                      , contravariant
                      , profunctors
                      , bifunctors
+                     , generic-data ^>= 0.9.0.0
                      , finite-typelits
   ghc-options:         -Wall -Werror -Wcompat
   default-language:    Haskell2010
