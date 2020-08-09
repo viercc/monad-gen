@@ -9,7 +9,9 @@ module Data.Transparent(
   compareDefault,
   enumList,
   enum,
-  search
+  search,
+  -- * Utility
+  Representational2
 ) where
 
 import Data.Coerce
