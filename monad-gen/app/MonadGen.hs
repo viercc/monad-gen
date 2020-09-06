@@ -33,10 +33,11 @@ import           Data.PTraversable.Extra
 import           Data.Either (partitionEithers)
 import           Data.List (sortOn)
 import qualified Data.Map        as Map
-import qualified Data.IntSet     as IS
-import qualified Data.IntMap     as IM
 import qualified Data.LazyVec as Vec
-import qualified NatMap                 as NM
+
+import qualified NatMap          as NM
+import qualified Set1            as S1
+import Set1(Key(), key)
 
 -- Monad properties
 
@@ -72,18 +73,16 @@ data Env f =
   , _f3    :: Vec (f (f (f Int)))
   }
 
-newtype JoinKey f = JoinKey (f (f ()))
-  deriving (Eq, Ord) via WrappedPTraversable (f :.: f) ()
-
 type Join f = NM.NatMap (f :.: f) f
-type KnownAssoc f = IM.IntMap (f Int)
-type Blockade f = Map.Map (JoinKey f) IS.IntSet
+type JoinKey f = Key (f :.: f)
+type KnownAssoc f = NM.NatMap (f :.: f :.: f) f
+type Blockade f = Map.Map (JoinKey f) (S1.Set1 (f :.: f :.: f))
 
-makeRel :: Ord k => [(k, Int)] -> Map.Map k IS.IntSet
-makeRel = Map.fromListWith IS.union . fmap (fmap IS.singleton)
+makeRel :: Ord k => [(k, Key f)] -> Map.Map k (S1.Set1 f)
+makeRel = Map.fromListWith S1.union . fmap (fmap S1.singleton)
 
-unionRel :: (Ord k) => Map.Map k IS.IntSet -> Map.Map k IS.IntSet -> Map.Map k IS.IntSet
-unionRel = Map.unionWith IS.union
+unionRel :: (Ord k) => Map.Map k (S1.Set1 f) -> Map.Map k (S1.Set1 f) -> Map.Map k (S1.Set1 f)
+unionRel = Map.unionWith S1.union
 
 data GenState f =
   GenState {
@@ -100,9 +99,9 @@ debugPrint st = do
   putStrLn "----- join -----"
   putStrLn (NM.debug (_join st))
   putStrLn "----------------"
-  putStrLn $ "#assocL    = " ++ show (IM.size (_assocL st))
+  putStrLn $ "#assocL    = " ++ show (NM.size (_assocL st))
   putStrLn $ "#blockadeL = " ++ show (Map.size (_blockadeL st))
-  putStrLn $ "#assocR    = " ++ show (IM.size (_assocR st))
+  putStrLn $ "#assocR    = " ++ show (NM.size (_assocR st))
   putStrLn $ "#blockadeR = " ++ show (Map.size (_blockadeR st))
   putStrLn "----------------"
   NM.toTotal (_join st)
@@ -112,8 +111,8 @@ debugPrint st = do
       in unless assoc (fail "!?!?")
 
 applyB :: PTraversable f => Join f -> f (f a) -> Either (JoinKey f) (f a)
-applyB m ffa = maybe (Left ff0) Right $ NM.lookup (Comp1 ffa) m
-  where ff0 = JoinKey $ fmap void ffa
+applyB m ffa = maybe (Left k) Right $ NM.lookup (Comp1 ffa) m
+  where k = key (Comp1 ffa)
 
 leftAssocB :: PTraversable f => Join f -> f (f (f a)) -> Either (JoinKey f) (f a)
 leftAssocB m fffa =
@@ -140,25 +139,26 @@ runGen pure' mr = runStateT (runReaderT mr env) state0
     }
     
     f3 = _f3 env
+    k3 = [minBound .. maxBound] :: [Key (f :.: f :.: f)]
     
     join0 = NM.empty
     blockadeL =
-      Map.fromListWith IS.union
-        [ (ff0, IS.singleton k)
-          | (k, fffi) <- Vec.toList (Vec.indexed f3)
-          , Left ff0 <- [leftAssocB join0 fffi] ]
+      makeRel
+        [ (j, k)
+          | k <- k3
+          , Left j <- [leftAssocB join0 (f3 ! fromEnum k)] ]
     blockadeR =
-      Map.fromListWith IS.union
-        [ (ff0, IS.singleton k)
-          | (k, fffi) <- Vec.toList (Vec.indexed f3)
-          , Left ff0 <- [rightAssocB join0 fffi] ]
+      makeRel
+        [ (j, k)
+          | k <- k3
+          , Left j <- [rightAssocB join0 (f3 ! fromEnum k)] ]
     
     state0 :: GenState f
     state0 = GenState {
       _join = join0
-    , _assocL = IM.empty
+    , _assocL = NM.empty
     , _blockadeL = blockadeL
-    , _assocR = IM.empty
+    , _assocR = NM.empty
     , _blockadeR = blockadeR
     }
 
@@ -172,25 +172,23 @@ entry lhs rhs =
      case NM.lookup lhs join1 of
        Nothing   -> return ()
        Just rhs' -> guard (eqDefault rhs rhs')
-     let join2 = NM.insertA (use rhs) lhs join1
-
+     let join2 = NM.insert (use rhs) (key lhs) join1
+     
      f3 <- asks _f3
      assocL <- gets _assocL
      blockadeL <- gets _blockadeL
      assocR <- gets _assocR
      blockadeR <- gets _blockadeR
      
-     let lhs' = JoinKey . unComp1 $ void lhs
-     
      -- update assocL
-     let (newAssocL, blockadeL') = assocUpdates f3 lhs' (leftAssocB join2) blockadeL
-         assocL' = IM.union assocL newAssocL
-     guard $ and $ IM.intersectionWith eqDefault newAssocL assocR
+     let (newAssocL, blockadeL') = assocUpdates f3 (key lhs) (leftAssocB join2) blockadeL
+         assocL' = NM.union assocL newAssocL
+     guard $ NM.consistentBy eqDefault newAssocL assocR
      
      -- update assocR
-     let (newAssocR, blockadeR') = assocUpdates f3 lhs' (rightAssocB join2) blockadeR
-         assocR' = IM.union assocR newAssocR
-     guard $ and $ IM.intersectionWith eqDefault newAssocR assocL'
+     let (newAssocR, blockadeR') = assocUpdates f3 (key lhs) (rightAssocB join2) blockadeR
+         assocR' = NM.union assocR newAssocR
+     guard $ NM.consistentBy eqDefault newAssocR assocL'
      
      modify $ \s -> s{
        _join = join2,
@@ -207,14 +205,14 @@ assocUpdates
   -> (f (f (f Int)) -> Either (JoinKey f) (f Int))
   -> Blockade f
   -> (KnownAssoc f, Blockade f)
-assocUpdates f3 lhs' jj blockade = (IM.fromList newAssoc, blockade')
+assocUpdates f3 lhs' jj blockade = (NM.fromList newAssoc, blockade')
   where
     postproc k (Left ffi) = Left (ffi, k)
-    postproc k (Right fi) = Right (k, fi)
+    postproc k (Right fi) = Right $ NM.makeEntry k (use fi)
     
     (newBlockade, newAssoc) = partitionEithers
-        [ postproc k (jj (f3 ! k))
-        | k <- maybe [] IS.toList (Map.lookup lhs' blockade) ]
+        [ postproc k (jj (f3 ! fromEnum k))
+        | k <- maybe [] S1.toList (Map.lookup lhs' blockade) ]
 
     blockade' = unionRel (Map.delete lhs' blockade) (makeRel newBlockade)
 
@@ -223,7 +221,7 @@ entryUU = do
   env <- ask
   let f1 = _f1 env
       u = _pure env
-      ui = f1 ! fIdx (u ())
+      ui = f1 ! fromEnum (key (u ()))
       uj = fmap (\i -> length ui * i + i) ui 
   entry (Comp1 (u ui)) uj
 
@@ -233,7 +231,7 @@ entryFUG = do
   let f1 = _f1 env
       u = _pure env
       targets = [ fi | (i, fi) <- Vec.toList (Vec.indexed f1)
-                     , i /= fIdx (u ()) ]
+                     , i /= fromEnum (key (u ())) ]
       
       n = length (u ())
       makeJuf :: f Int -> [f Int]
@@ -258,8 +256,8 @@ remaining =
      join1 <- gets _join
      let notDefined =
            [ ffi' | ffi <- Vec.toList f2
-                 , let ffi' = Comp1 ffi
-                 , NM.notMember ffi' join1 ]
+                  , let ffi' = Comp1 ffi
+                  , NM.notMember (key ffi') join1 ]
      return (sortOn length notDefined)
 
 entryAllCombs :: (forall a. Show a => Show (f a), PTraversable f) => (f :.: f) Int -> Gen f ()
