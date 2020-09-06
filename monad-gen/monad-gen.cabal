@@ -9,7 +9,7 @@ executable monad-gen
   other-modules:       Data.PTraversable.Extra,
                        Data.LazyVec,
                        Data.ContraVec,
-                       NatMap,
+                       Set1.Internal, Set1, NatMap,
                        Util, MonadGen, Targets
   default-language:    Haskell2010
   build-depends:       base >= 4.12 && < 5
@@ -22,4 +22,3 @@ executable monad-gen
                      , mtl
                      , ansi-terminal
   ghc-options:         -Wall -Wcompat -Wno-simplifiable-class-constraints -O2
-
