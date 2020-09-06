@@ -115,7 +115,7 @@ instance (PTraversable t) => Foldable (WrappedPTraversable t) where
 instance (PTraversable t) => Traversable (WrappedPTraversable t) where
   traverse f = fmap WrapPTraversable . traverseDefault @t f . coerce
 
-size1 :: forall proxy t. (PTraversable t) => proxy t -> Int -> Int
+size1 :: forall t proxy. (PTraversable t) => proxy t -> Int -> Int
 size1 _ = getCounting . ptraverse @t . Counting
 {-# INLINEABLE size1 #-}
 
