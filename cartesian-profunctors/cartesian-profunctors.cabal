@@ -14,10 +14,10 @@ library
                        Data.Profunctor.Counting,
                        Data.Profunctor.FinFn,
                        Data.Profunctor.Exhaust,
+                       Data.Profunctor.Extra
                        Data.Transparent,
-                       Data.PTraversable
-  other-modules:       Internal.Util,
-                       Internal.AuxProfunctors
+                       Data.PTraversable,
+                       Data.Coerce.Extra
   build-depends:       base >= 4.12 && < 5
                      , containers
                      , contravariant

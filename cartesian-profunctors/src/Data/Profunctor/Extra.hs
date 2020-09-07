@@ -1,6 +1,6 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE GADTSyntax #-}
-module Internal.AuxProfunctors where
+module Data.Profunctor.Extra where
 
 import Data.Void
 import Data.Coerce

@@ -3,7 +3,7 @@
   FlexibleInstances,
   QuantifiedConstraints
 #-}
-module Internal.Util(
+module Data.Coerce.Extra(
   Representational1,
   Representational2,
   coerceMap,

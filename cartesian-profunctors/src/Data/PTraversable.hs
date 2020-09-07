@@ -51,12 +51,12 @@ import Data.Profunctor
 import Data.Profunctor.Yoneda (Yoneda(..), extractYoneda)
 import Data.Profunctor.Monad (proreturn)
 import Data.Profunctor.Cartesian
-import Internal.AuxProfunctors
+import Data.Profunctor.Extra
 import Data.Profunctor.Counting
 
 import Data.Transparent
 
-import Internal.Util
+import Data.Coerce.Extra
 
 class (Traversable t) => PTraversable t where
   ptraverse :: (Representational2 p, Cartesian p, Cocartesian p)

@@ -32,8 +32,8 @@ import Data.Int
 import Data.Bits
 import Data.Char(chr, ord)
 
-import Internal.Util
-import Internal.AuxProfunctors
+import Data.Coerce.Extra
+import Data.Profunctor.Extra
 
 class (Eq x, Ord x) => Transparent x where
   describeOn :: forall p a b. (Cartesian p, Cocartesian p)
