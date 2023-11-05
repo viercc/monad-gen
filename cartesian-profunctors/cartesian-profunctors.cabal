@@ -10,21 +10,21 @@ tested-with:         GHC == 8.8.1, GHC == 8.10.1
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Data.Profunctor.Cartesian,
-                       Data.Profunctor.Counting,
-                       Data.Profunctor.FinFn,
-                       Data.Profunctor.Exhaust,
-                       Data.Profunctor.Extra
-                       Data.Transparent,
-                       Data.PTraversable,
-                       Data.Coerce.Extra
-  build-depends:       base >= 4.12 && < 5
-                     , containers
-                     , contravariant
-                     , profunctors
-                     , bifunctors
-                     , generic-data ^>= 0.9.0.0
-                     , finite-typelits
+  exposed-modules:
+    Data.Profunctor.Cartesian,
+    Data.Profunctor.Counting,
+    Data.Profunctor.FinFn,
+    Data.Profunctor.Exhaust,
+    Data.Profunctor.Extra
+    Data.Transparent,
+    Data.PTraversable
+  build-depends:
+      base >= 4.17 && < 5
+    , containers
+    , contravariant
+    , profunctors
+    , bifunctors
+    , finite-typelits
   ghc-options:         -Wall -Werror -Wcompat
   default-language:    Haskell2010
 

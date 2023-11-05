@@ -2,16 +2,14 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE QuantifiedConstraints #-}
-{-# OPTIONS_GHC -Wno-simplifiable-class-constraints #-}
 module Data.Transparent(
   Transparent(..),
+  describe,
   eqDefault,
   compareDefault,
   enumList,
   enum,
   search,
-  -- * Utility
-  Representational2
 ) where
 
 import Data.Coerce
@@ -24,7 +22,6 @@ import Data.Bifunctor.Joker
 
 import Data.Profunctor
 import Data.Profunctor.Cartesian
-import Data.Profunctor.Yoneda (Yoneda(..))
 import Data.Profunctor.Exhaust
 
 import Data.Word
@@ -32,17 +29,14 @@ import Data.Int
 import Data.Bits
 import Data.Char(chr, ord)
 
-import Data.Coerce.Extra
 import Data.Profunctor.Extra
 
 class (Eq x, Ord x) => Transparent x where
   describeOn :: forall p a b. (Cartesian p, Cocartesian p)
                => (a -> x) -> (x -> b) -> p a b
-  describeOn = runYoneda $ (describe :: Yoneda p x x)
-  
-  describe :: (Representational2 p, Cartesian p, Cocartesian p) => p x x
-  describe = describeOn id id
-  {-# MINIMAL describeOn | describe #-}
+
+describe :: forall x p. (Transparent x, Cartesian p, Cocartesian p) => p x x
+describe = describeOn id id
 
 eqDefault :: forall x. Transparent x => x -> x -> Bool
 eqDefault = coerce $ describe @x @EquivalenceP
@@ -63,33 +57,33 @@ search cond = case describe of
                in if cond x then Just x else Nothing
 
 instance Transparent Void where
-  describe = proEmpty
+  describeOn f g = dimap f g proEmpty
 
 instance Transparent () where
-  describe = proUnit
+  describeOn f g = dimap f g proUnit
 
 instance (Transparent x, Transparent y) => Transparent (Either x y) where
-  describe = describe +++ describe
+  describeOn f g = dimap f g (describe +++ describe)
 
 instance (Transparent x, Transparent y) => Transparent (x,y) where
-  describe = describe *** describe
+  describeOn f g = dimap f g (describe *** describe)
 
 instance (Transparent x1, Transparent x2, Transparent x3)
          => Transparent (x1,x2,x3) where
-  describe = dimap l r describe
+  describeOn f g = describeOn (l . f) (g . r)
     where
       l (x1,x2,x3) = (x1,(x2,x3))
       r (x1,(x2,x3)) = (x1,x2,x3)
 
 instance (Transparent x1, Transparent x2, Transparent x3, Transparent x4)
          => Transparent (x1,x2,x3,x4) where
-  describe = dimap l r describe
+  describeOn f g = describeOn (l . f) (g . r)
     where
       l (x1,x2,x3,x4) = ((x1,x2),(x3,x4))
       r ((x1,x2),(x3,x4)) = (x1,x2,x3,x4)
 
 instance Transparent Bool where
-  describe = dimap l r describe
+  describeOn f g = describeOn (l . f) (g . r)
     where
       l False = Left ()
       l True  = Right ()
@@ -97,7 +91,7 @@ instance Transparent Bool where
       r (Right _) = True
 
 instance Transparent Ordering where
-  describe = dimap l r describe
+  describeOn f g = describeOn (l . f) (g . r)
     where
       l LT = Left ()
       l EQ = Right (Left ())
@@ -108,13 +102,13 @@ instance Transparent Ordering where
       r (Right (Right _)) = GT
 
 instance Transparent x => Transparent (Maybe x) where
-  describe = dimap l r describe
+  describeOn f g = describeOn (l . f) (g . r)
     where
       l = maybe (Left ()) Right
       r = either (const Nothing) Just
 
 instance Transparent x => Transparent [x] where
-  describe = go 
+  describeOn f g = dimap f g go
     where
       go = dimap l r $ proUnit +++ (describe *** go)
       
@@ -125,12 +119,12 @@ instance Transparent x => Transparent [x] where
       r (Right (x,xs)) = x:xs
 
 instance Transparent Word8 where
-  describe = b8
+  describeOn f g = dimap (l8 . f) (g . r8) b8
     where
-      b1 = dBit
+      b1 = dBit @Word8
       b2 = b1 *** b1
       b4 = b2 *** b2
-      b8 = dimap l8 r8 $ b4 *** b4
+      b8 = b4 *** b4
       
       l2 x = (x `shiftR` 1, x)
       l4 x = (l2 (x `shiftR` 2), l2 x)
@@ -141,45 +135,45 @@ instance Transparent Word8 where
       r8 (a,b) = r4 a `shiftL` 4 .|. r4 b
 
 instance Transparent Int8 where
-  describe = dimap fromIntegral fromIntegral (describe @Word8)
+  describeOn f g = describeOn @Word8 (fromIntegral . f) (g . fromIntegral)
 
 instance Transparent Word16 where
-  describe = dimap l r $ describe @Word8 *** describe @Word8
+  describeOn f g = dimap (l . f) (g . r) $ describe @Word8 *** describe @Word8
     where
       l x = (fromIntegral (x `shiftR` 8), fromIntegral x)
       r (a,b) = fromIntegral a `shiftL` 8 .|. fromIntegral b
 
 instance Transparent Int16 where
-  describe = dimap fromIntegral fromIntegral $ describe @Word16
+  describeOn f g = describeOn @Word16 (fromIntegral . f) (g . fromIntegral)
 
 instance Transparent Word32 where
-  describe = dimap l r $ describe @Word16 *** describe @Word16
+  describeOn f g = dimap (l . f) (g . r) $ describe @Word16 *** describe @Word16
     where
       l x = (fromIntegral (x `shiftR` 16), fromIntegral x)
       r (a,b) = fromIntegral a `shiftL` 16 .|. fromIntegral b
 
 instance Transparent Int32 where
-  describe = dimap fromIntegral fromIntegral $ describe @Word32
+  describeOn f g = describeOn @Word32 (fromIntegral . f) (g . fromIntegral)
 
 instance Transparent Word64 where
-  describe = dimap l r $ describe @Word32 *** describe @Word32
+  describeOn f g = dimap (l . f) (g . r) $ describe @Word32 *** describe @Word32
     where
       l x = (fromIntegral (x `shiftR` 32), fromIntegral x)
       r (a,b) = fromIntegral a `shiftL` 32 .|. fromIntegral b
 
 instance Transparent Int64 where
-  describe = dimap fromIntegral fromIntegral $ describe @Word64
+  describeOn f g = describeOn @Word64 (fromIntegral . f) (g . fromIntegral)
 
 -- Irregular bitwidth types
 
 instance Transparent Word where
-  describe = dBits (finiteBitSize (0 :: Word))
+  describeOn f g = dimap f g $ dBits (finiteBitSize (0 :: Word))
 
 instance Transparent Int where
-  describe = dBits (finiteBitSize (0 :: Int))
+  describeOn f g = dimap f g $ dBits (finiteBitSize (0 :: Int))
 
 instance Transparent Char where
-  describe = dimap l r $ dBits 20 +++ dBits 16
+  describeOn f g = dimap (l . f) (g . r) $ dBits 20 +++ dBits 16
     where
       -- Unicode code points are in range: 0x000000 <= x <= 0x10FFFF
       -- Char ~ 2^20 + 2^16

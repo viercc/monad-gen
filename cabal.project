@@ -1,3 +1,4 @@
 packages: cartesian-profunctors/cartesian-profunctors.cabal
         , monad-gen/monad-gen.cabal
 
+allow-newer: all

@@ -1,83 +1,57 @@
-{-# LANGUAGE
-  ScopedTypeVariables,
-  TypeApplications,
-  RankNTypes,
-  
-  EmptyCase,
-  TypeOperators,
-  TupleSections,
-  
-  DerivingVia,
-  DeriveTraversable,
-  StandaloneDeriving,
-  UndecidableInstances,
-  QuantifiedConstraints
-#-}
-{-# OPTIONS_GHC -Wno-simplifiable-class-constraints #-}
-module Data.PTraversable(
-  PTraversable(..),
-  fmapDefault,
-  foldMapDefault,
-  traverseDefault,
-  size1,
-  enum1,
-  coenum1,
-  
-  ptraverseSlow,
-  enum1Slow,
-  coenum1Slow,
-  WrappedPTraversable(..),
-  
-  Generically1(..),
-  GPTraversable'(),
-
-  -- * Utility
-  Representational1,
-  Representational2
-) where
-
-import GHC.Generics
-import Generic.Data(Generically1(..), GFoldable, GTraversable)
-import Data.Coerce
+{-# LANGUAGE DerivingVia #-}
+{-# LANGUAGE EmptyCase #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE UndecidableInstances #-}
+module Data.PTraversable
+  ( PTraversable (..),
+    fmapDefault,
+    foldMapDefault,
+    traverseDefault,
+    cardinality1,
+    enum1,
+    coenum1,
+    WrappedPTraversable (..),
+    Generically1 (..),
+  )
+where
 
 import Control.Applicative
+import Data.Bifunctor.Clown
+import Data.Bifunctor.Joker
+import Data.Coerce
+import Data.Functor.Compose (Compose ())
 import Data.Functor.Contravariant
 import Data.Functor.Contravariant.Divisible
 import Data.Functor.Identity
-import Data.Bifunctor.Joker
-import Data.Bifunctor.Clown
-
+import Data.Functor.Product (Product)
+import Data.Functor.Sum (Sum)
 import Data.Profunctor
-import Data.Profunctor.Yoneda (Yoneda(..), extractYoneda)
-import Data.Profunctor.Monad (proreturn)
 import Data.Profunctor.Cartesian
-import Data.Profunctor.Extra
 import Data.Profunctor.Counting
-
+import Data.Profunctor.Extra
+import Data.Profunctor.Unsafe ((#.), (.#))
 import Data.Transparent
+import GHC.Generics
 
-import Data.Coerce.Extra
+class (Functor t) => PTraversable t where
+  {-# MINIMAL ptraverseWith #-}
+  ptraverseWith ::
+    (Cartesian p, Cocartesian p) =>
+    (as -> t a) ->
+    (t b -> bs) ->
+    p a b ->
+    p as bs
 
-class (Traversable t) => PTraversable t where
-  ptraverse :: (Representational2 p, Cartesian p, Cocartesian p)
-                => p a b -> p (t a) (t b)
-
-instance (Traversable t, Generic1 t, GPTraversable' (Rep1 t))
-         => PTraversable (Generically1 t) where
-  ptraverse = dimap (from1 . unGenerically1) (Generically1 . to1) . ptraverse'
-  {-# INLINEABLE ptraverse #-}
-
-deriving via (Generically1 Identity) instance PTraversable Identity
-deriving via (Generically1 Maybe) instance PTraversable Maybe
-deriving via (Generically1 []) instance PTraversable []
-deriving via (Generically1 ((,) a))
-  instance Transparent a => PTraversable ((,) a)
-deriving via (Generically1 (Either a))
-  instance Transparent a => PTraversable (Either a)
-
-instance (PTraversable f, PTraversable g) => PTraversable (f :.: g) where
-  ptraverse = coerceDimap unComp1 Comp1 . ptraverse . ptraverse
-  {-# INLINEABLE ptraverse #-}
+ptraverse :: forall t p a b. (PTraversable t, Cartesian p, Cocartesian p) => p a b -> p (t a) (t b)
+ptraverse = ptraverseWith id id
+{-# INLINEABLE ptraverse #-}
 
 fmapDefault :: (PTraversable t) => (a -> b) -> t a -> t b
 fmapDefault = ptraverse
@@ -91,20 +65,74 @@ traverseDefault :: (PTraversable t, Applicative f) => (a -> f b) -> t a -> f (t 
 traverseDefault = lowerCoYoStar . ptraverse . liftCoYoStar
 {-# INLINEABLE traverseDefault #-}
 
-newtype WrappedPTraversable t a = WrapPTraversable { unwrapPTraversable :: t a }
+enum1 :: (PTraversable t, Alternative f) => f a -> f (t a)
+enum1 = runJoker . ptraverse . Joker
+{-# INLINEABLE enum1 #-}
+
+coenum1 :: (PTraversable t, Divisible f, Decidable f) => f b -> f (t b)
+coenum1 = runClown . ptraverse . Clown
+{-# INLINEABLE coenum1 #-}
+
+cardinality1 :: forall t proxy. (PTraversable t) => proxy t -> Int -> Int
+cardinality1 _ = getCounting . ptraverse @t . Counting
+{-# INLINEABLE cardinality1 #-}
+
+unGenerically1 :: Generically1 f a -> f a
+unGenerically1 = coerce
+
+instance (Generic1 t, PTraversable (Rep1 t)) => PTraversable (Generically1 t) where
+  ptraverseWith f g = ptraverseWith (from1 . unGenerically1 . f) (g . Generically1 . to1)
+  {-# INLINEABLE ptraverseWith #-}
+
+deriving via (Generically1 Identity) instance PTraversable Identity
+
+deriving via (Generically1 Maybe) instance PTraversable Maybe
+
+deriving via (Generically1 []) instance PTraversable []
+
+deriving via
+  (Generically1 ((,) a))
+  instance
+    (Transparent a) => PTraversable ((,) a)
+
+deriving via
+  (Generically1 (Either a))
+  instance
+    (Transparent a) => PTraversable (Either a)
+
+deriving via
+  (Generically1 (Sum t u))
+  instance
+    (PTraversable t, PTraversable u) => PTraversable (Sum t u)
+
+deriving via
+  (Generically1 (Product t u))
+  instance
+    (PTraversable t, PTraversable u) => PTraversable (Product t u)
+
+deriving via
+  (Generically1 (Compose t u))
+  instance
+    (PTraversable t, PTraversable u) => PTraversable (Compose t u)
+
+newtype WrappedPTraversable t a = WrapPTraversable {unwrapPTraversable :: t a}
 
 instance (Eq a, PTraversable t) => Eq (WrappedPTraversable t a) where
   (==) = coerce $ ptraverse @t (Clown eqv)
-    where eqv = Equivalence ((==) @a)
+    where
+      eqv = Equivalence ((==) @a)
 
 instance (Ord a, PTraversable t) => Ord (WrappedPTraversable t a) where
   compare = coerce $ ptraverse @t (Clown cmp)
-    where cmp = Comparison (compare @a)
+    where
+      cmp = Comparison (compare @a)
 
-instance (Transparent a, PTraversable t)
-         => Transparent (WrappedPTraversable t a) where
-  describe = coerceDimap unwrapPTraversable WrapPTraversable $
-    ptraverse @t (describe @a)
+instance
+  (Transparent a, PTraversable t) =>
+  Transparent (WrappedPTraversable t a)
+  where
+  describeOn f g =
+    ptraverseWith (unwrapPTraversable . f) (g . WrapPTraversable) describe
 
 instance (PTraversable t) => Functor (WrappedPTraversable t) where
   fmap f = coerce (fmapDefault @t f)
@@ -115,89 +143,55 @@ instance (PTraversable t) => Foldable (WrappedPTraversable t) where
 instance (PTraversable t) => Traversable (WrappedPTraversable t) where
   traverse f = fmap WrapPTraversable . traverseDefault @t f . coerce
 
-size1 :: forall t proxy. (PTraversable t) => proxy t -> Int -> Int
-size1 _ = getCounting . ptraverse @t . Counting
-{-# INLINEABLE size1 #-}
+---- Generics ----
 
-enum1 :: (PTraversable t, Alternative f, Representational1 f)
-      => f a -> f (t a)
-enum1 = runJoker . ptraverse . Joker
-{-# INLINEABLE enum1 #-}
-
-coenum1 :: (PTraversable t, Decidable f, Representational1 f)
-        => f a -> f (t a)
-coenum1 = runClown . ptraverse . Clown
-{-# INLINEABLE coenum1 #-}
-
--- | 'ptraverse', but doesn't require 'Representational2' at expence of
---   some cost incurred.
-ptraverseSlow :: forall t p a b. (PTraversable t, Cartesian p, Cocartesian p)
-          => p a b -> p (t a) (t b)
-ptraverseSlow = extractYoneda . ptraverse @t @(Yoneda p) . proreturn
-{-# INLINEABLE ptraverseSlow #-}
-
--- | 'enum1', but doesn't require 'Representational1' at expence of
---   some cost incurred.
-enum1Slow :: (PTraversable t, Alternative f) => f a -> f (t a)
-enum1Slow = lowerCoYoJoker . ptraverse . liftCoYoJoker
-{-# INLINEABLE enum1Slow #-}
-
--- | 'coenum1', but doesn't require 'Representational1' at expence of
---   some cost incurred.
-coenum1Slow :: (PTraversable t, Decidable f) => f a -> f (t a)
-coenum1Slow = lowerCoYoClown . ptraverse . liftCoYoClown
-{-# INLINEABLE coenum1Slow #-}
-
--------------------------------------
--- Generics
-
-class (Functor t, GFoldable t, GTraversable t) => GPTraversable' t where
-  ptraverse' :: (Representational2 p, Cartesian p, Cocartesian p)
-             => p a b -> p (t a) (t b)
-
-instance GPTraversable' V1 where
-  ptraverse' _ = lmap absurdV1 proEmpty
-  {-# INLINEABLE ptraverse' #-}
+instance PTraversable V1 where
+  ptraverseWith f _ _ = lmap (absurdV1 . f) proEmpty
+  {-# INLINEABLE ptraverseWith #-}
 
 absurdV1 :: V1 a -> b
-absurdV1 v = case v of { }
+absurdV1 v = case v of {}
 
-instance GPTraversable' U1 where
-  ptraverse' _ = rmap (const U1) proUnit
-  {-# INLINEABLE ptraverse' #-}
+instance PTraversable U1 where
+  ptraverseWith _ g _ = rmap (const (g U1)) proUnit
+  {-# INLINEABLE ptraverseWith #-}
 
-instance GPTraversable' Par1 where
-  ptraverse' = coerceDimap unPar1 Par1
-  {-# INLINEABLE ptraverse' #-}
+instance PTraversable Par1 where
+  ptraverseWith :: forall p a b as bs. (Cartesian p, Cocartesian p) => (as -> Par1 a) -> (Par1 b -> bs) -> p a b -> p as bs
+  ptraverseWith = coerce (dimap :: (as -> a) -> (b -> bs) -> p a b -> p as bs)
+  {-# INLINEABLE ptraverseWith #-}
 
-instance (Transparent c) => GPTraversable' (K1 i c) where
-  ptraverse' _ = coerceDimap unK1 K1 $ describe
+instance (Transparent c) => PTraversable (K1 i c) where
+  ptraverseWith f g _ = describeOn (unK1 #. f) (g .# K1)
 
-instance (GPTraversable' f) => GPTraversable' (M1 i c f) where
-  ptraverse' = coerceDimap unM1 M1 . ptraverse'
-  {-# INLINEABLE ptraverse' #-}
+instance (PTraversable f) => PTraversable (M1 i c f) where
+  ptraverseWith f g = ptraverseWith (unM1 . f) (g . M1)
+  {-# INLINEABLE ptraverseWith #-}
 
-instance (PTraversable f) => GPTraversable' (Rec1 f) where
-  ptraverse' = coerceDimap unRec1 Rec1 . ptraverse
-  {-# INLINEABLE ptraverse' #-}
+instance (PTraversable f) => PTraversable (Rec1 f) where
+  ptraverseWith f g = ptraverseWith (unRec1 . f) (g . Rec1)
+  {-# INLINEABLE ptraverseWith #-}
 
-instance (GPTraversable' f, GPTraversable' g) => GPTraversable' (f :+: g) where
-  ptraverse' p = dimap toE fromE $ ptraverse' p +++ ptraverse' p
+instance (PTraversable t, PTraversable u) => PTraversable (t :+: u) where
+  ptraverseWith f g p = dimap f' g' $ ptraverse p +++ ptraverse p
     where
-      toE (L1 fa) = Left fa
-      toE (R1 ga) = Right ga
-      fromE (Left fa) = L1 fa
-      fromE (Right ga) = R1 ga
-  {-# INLINEABLE ptraverse' #-}
+      f' as = case f as of
+        L1 ta -> Left ta
+        R1 ua -> Right ua
+      g' = either (g . L1) (g . R1)
+  {-# INLINEABLE ptraverseWith #-}
 
-instance (GPTraversable' f, GPTraversable' g) => GPTraversable' (f :*: g) where
-  ptraverse' p = dimap toTup fromTup $ ptraverse' p *** ptraverse' p
+instance (PTraversable f, PTraversable g) => PTraversable (f :*: g) where
+  ptraverseWith f g p = dimap f' g' $ ptraverse p *** ptraverse p
     where
-      toTup (fa :*: ga) = (fa, ga)
-      fromTup (fa, ga) = fa :*: ga
-  {-# INLINEABLE ptraverse' #-}
+      f' as = case f as of
+        ta :*: ua -> (ta, ua)
+      g' (ta, ua) = g (ta :*: ua)
+  {-# INLINEABLE ptraverseWith #-}
 
-instance (PTraversable f, GPTraversable' g, Traversable g)
-  => GPTraversable' (f :.: g) where
-  ptraverse' = coerceDimap unComp1 Comp1 . ptraverse . ptraverse'
-  {-# INLINEABLE ptraverse' #-}
+instance
+  (PTraversable t, PTraversable u) =>
+  PTraversable (t :.: u)
+  where
+  ptraverseWith f g = ptraverseWith (unComp1 . f) (g . Comp1) . ptraverse
+  {-# INLINEABLE ptraverseWith #-}
