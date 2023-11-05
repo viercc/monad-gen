@@ -12,10 +12,11 @@ library
   hs-source-dirs:      src
   exposed-modules:
     Data.Profunctor.Cartesian,
+    Data.Profunctor.Cartesian.Free,
     Data.Profunctor.Counting,
     Data.Profunctor.FinFn,
     Data.Profunctor.Exhaust,
-    Data.Profunctor.Extra
+    Data.Profunctor.Extra,
     Data.Transparent,
     Data.PTraversable
   build-depends:
