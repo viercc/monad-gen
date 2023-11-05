@@ -36,6 +36,21 @@ instance Num a => Read (WrappedIntegral a) where
   readPrec = fromInteger <$> readPrec
 
 
+data Int256 = MkInt256 !Int64 !Int64 !Int64 !Int64
+    deriving stock (Eq, Ord)
+    deriving (Show, Read) via (WrappedIntegral Int256)
+
+instance Num Int256
+instance Real Int256
+instance Enum Int256 -- ^ A necessary lie like Enum Integral
+instance Integral Int256
+
+
+newtype WrappedIntegral a =
+  WrapIntegral { unWrapIntegral :: a }
+
+instance Integral a => Show (WrappedIntegral a)
+instance Num a => Read (WrappedIntegral a)
 
 newtype Two = Two Bool
   deriving stock (Eq, Ord)
