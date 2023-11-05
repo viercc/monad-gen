@@ -88,10 +88,10 @@ monadGen _ println = for_ generated docResult
 
 main :: IO ()
 main =
-  do writeFile' "monad-gen-F.txt" $ monadGen @F Proxy
-     writeFile' "monad-gen-G.txt" $ monadGen @G Proxy
-     writeFile' "monad-gen-H.txt" $ monadGen @H Proxy
-     writeFile' "monad-gen-W.txt" $ monadGen @W Proxy
-     writeFile' "monad-gen-J.txt" $ monadGen @J Proxy
-     writeFile' "monad-gen-T.txt" $ monadGen @T Proxy
+  do --writeFile' "monad-gen-F.txt" $ monadGen @F Proxy
+     --writeFile' "monad-gen-G.txt" $ monadGen @G Proxy
+     --writeFile' "monad-gen-H.txt" $ monadGen @H Proxy
+     --writeFile' "monad-gen-W.txt" $ monadGen @W Proxy
+     --writeFile' "monad-gen-J.txt" $ monadGen @J Proxy
+     --writeFile' "monad-gen-T.txt" $ monadGen @T Proxy
      writeFile' "monad-gen-Y.txt" $ monadGen @Y Proxy
