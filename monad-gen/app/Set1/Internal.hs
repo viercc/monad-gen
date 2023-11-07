@@ -47,7 +47,7 @@ instance (PTraversable f, Show (f ())) => Show (Key f) where
 
 instance PTraversable f => Bounded (Key f) where
    minBound = MkKey 0
-   maxBound = MkKey ((size1 @f Proxy 1) - 1)
+   maxBound = MkKey (cardinality1 @f Proxy 1 - 1)
 
 instance PTraversable f => Enum (Key f) where
    fromEnum = keyIdx

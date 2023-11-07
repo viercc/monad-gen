@@ -7,13 +7,14 @@ module Data.PTraversable.Extra(
   toVec, cache,
   skolem, skolem2, skolem3,
   vecSkolem,
-  eqDefault
+  eqDefault,
+
+  _toList, _length, _all
 ) where
 
 import           Data.Coerce
 
-import           Data.Foldable
-import           Data.Monoid (Sum(..))
+import           Data.Monoid (Sum(..), Endo (..), All (..))
 import           Data.Functor.Const
 import           Control.Monad.State
 
@@ -49,5 +50,14 @@ eqDefault = coerce ((==) @(WrappedPTraversable f a))
 cache :: Vec a -> Vec a
 cache = Vec.fromVector . Vec.toVector
 
-toVec :: Foldable t => t a -> Vec a
-toVec = Vec.vec . toList
+toVec :: PTraversable t => t a -> Vec a
+toVec = Vec.vec . _toList
+
+_toList :: PTraversable t => t a -> [a]
+_toList = ($ []) . appEndo . foldMapDefault (Endo . (:))
+
+_length :: PTraversable t => t a -> Int
+_length = getSum . foldMapDefault (const 1)
+
+_all :: PTraversable t => (a -> Bool) -> t a -> Bool
+_all p = getAll . foldMapDefault (All . p)

@@ -16,7 +16,7 @@ data Two = A | B
   deriving stock (Show, Eq, Ord)
 
 instance Transparent Two where
-  describe = dimap (B ==) (bool A B) describe
+  describeOn f g = dimap ((B ==) . f) (g . bool A B) describe
 
 data F a = F0 | F2 a a
   deriving stock (Show, Eq, Functor, Foldable, Traversable, Generic1)

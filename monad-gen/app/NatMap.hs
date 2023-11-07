@@ -102,7 +102,7 @@ size :: NatMap f g -> Int
 size (Mk m) = IM.size m
 
 fullSize :: forall f g. (PTraversable f) => NatMap f g -> Int
-fullSize _ = size1 @f Proxy 1
+fullSize _ = cardinality1 @f Proxy 1
 
 isTotal :: (PTraversable f) => NatMap f g -> Bool
 isTotal nm = size nm == fullSize nm
@@ -221,7 +221,7 @@ debug (Mk m) =
       strs = fmap show args
       maxLen = maximum (length <$> strs)
       mkRhs fx = validate fx <$> IM.lookup (fIdx fx) m
-      validate fx gx = (all (\x -> 0 <= x && x < length fx) gx, gx)
+      validate fx gx = (_all (\x -> 0 <= x && x < _length fx) gx, gx)
       prettyRhs Nothing = "undefined"
       prettyRhs (Just (v, gx)) = (if v then "" else "<invalid>") ++ show gx
       mkLine arg rhs = arg ++ replicate (maxLen - length arg) ' '

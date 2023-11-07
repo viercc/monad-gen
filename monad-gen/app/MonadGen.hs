@@ -121,7 +121,7 @@ leftAssocB m fffa =
 
 rightAssocB :: PTraversable f => Join f -> f (f (f a)) -> Either (JoinKey f) (f a)
 rightAssocB m fffa =
-  do ffa <- traverse (applyB m) fffa
+  do ffa <- traverseDefault (applyB m) fffa
      applyB m ffa
 
 choose :: Foldable t => t a -> Gen f a
@@ -222,7 +222,7 @@ entryUU = do
   let f1 = _f1 env
       u = _pure env
       ui = f1 ! fromEnum (key (u ()))
-      uj = fmap (\i -> length ui * i + i) ui 
+      uj = fmap (\i -> _length ui * i + i) ui 
   entry (Comp1 (u ui)) uj
 
 entryFUG :: forall f. (forall a. Show a => Show (f a), PTraversable f) => Gen f ()
@@ -233,14 +233,14 @@ entryFUG = do
       targets = [ fi | (i, fi) <- Vec.toList (Vec.indexed f1)
                      , i /= fromEnum (key (u ())) ]
       
-      n = length (u ())
+      n = _length (u ())
       makeJuf :: f Int -> [f Int]
-      makeJuf fi = traverse select fi
+      makeJuf fi = traverseDefault select fi
         where
-          m = length fi
+          m = _length fi
           select x = [ y * m + x | y <- [0..n - 1] ]
       makeJfu :: f Int -> [f Int]
-      makeJfu fi = traverse select fi
+      makeJfu fi = traverseDefault select fi
         where
           select x = [ x * n + y | y <- [0..n - 1] ]
   
@@ -258,7 +258,7 @@ remaining =
            [ ffi' | ffi <- Vec.toList f2
                   , let ffi' = Comp1 ffi
                   , NM.notMember (key ffi') join1 ]
-     return (sortOn length notDefined)
+     return (sortOn _length notDefined)
 
 entryAllCombs :: (forall a. Show a => Show (f a), PTraversable f) => (f :.: f) Int -> Gen f ()
 entryAllCombs lhs =

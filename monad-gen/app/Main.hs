@@ -94,4 +94,4 @@ main =
      --writeFile' "monad-gen-W.txt" $ monadGen @W Proxy
      --writeFile' "monad-gen-J.txt" $ monadGen @J Proxy
      --writeFile' "monad-gen-T.txt" $ monadGen @T Proxy
-     writeFile' "monad-gen-Y.txt" $ monadGen @Y Proxy
+     writeFile' "monad-gen-Y-new.txt" $ monadGen @Y Proxy

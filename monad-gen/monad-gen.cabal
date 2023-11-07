@@ -6,19 +6,21 @@ cabal-version:       2.0
 executable monad-gen
   hs-source-dirs:      app
   main-is:             Main.hs
-  other-modules:       Data.PTraversable.Extra,
-                       Data.LazyVec,
-                       Data.ContraVec,
-                       Set1.Internal, Set1, NatMap,
-                       Util, MonadGen, Targets
+  other-modules: 
+    Data.PTraversable.Extra,
+    Data.LazyVec,
+    Data.ContraVec,
+    Set1.Internal, Set1, NatMap,
+    Util, MonadGen, Targets
   default-language:    Haskell2010
-  build-depends:       base >= 4.12 && < 5
-                     , cartesian-profunctors
-                     , contravariant
-                     , profunctors
-                     , reflection
-                     , vector
-                     , containers
-                     , mtl
-                     , ansi-terminal
-  ghc-options:         -Wall -Wcompat -Wno-simplifiable-class-constraints -O2
+  build-depends:
+      base >= 4.17 && < 5
+    , cartesian-profunctors
+    , contravariant
+    , profunctors
+    , reflection
+    , vector
+    , containers
+    , mtl
+    , ansi-terminal
+  ghc-options:        -Wall -Wcompat -O2 -rtsopts=all -with-rtsopts="-M8G"
