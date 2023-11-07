@@ -9,6 +9,8 @@ module Data.Transparent(
   compareDefault,
   enumList,
   enum,
+  coenum,
+  cardinality,
   search,
 ) where
 
@@ -30,6 +32,8 @@ import Data.Bits
 import Data.Char(chr, ord)
 
 import Data.Profunctor.Extra
+import Data.Functor.Contravariant.Divisible
+import Data.Profunctor.Counting (Counting(..))
 
 class (Eq x, Ord x) => Transparent x where
   describeOn :: forall p a b. (Cartesian p, Cocartesian p)
@@ -46,6 +50,12 @@ compareDefault = coerce $ describe @x @ComparisonP
 
 enum :: (Transparent x, Alternative f) => f x
 enum = lowerCoYoJoker describe
+
+coenum :: (Transparent x, Decidable f, Divisible f) => f x
+coenum = lowerCoYoClown describe
+
+cardinality :: forall x proxy. (Transparent x) => proxy x -> Int
+cardinality _ = getCounting (describe @x)
 
 enumList :: forall x. (Transparent x) => [x]
 enumList = coerce $ describe @x @(Joker [])

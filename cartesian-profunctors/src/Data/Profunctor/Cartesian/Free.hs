@@ -11,94 +11,97 @@ module Data.Profunctor.Cartesian.Free where
 import Data.Void (Void, absurd)
 import Data.Profunctor (Profunctor(..), (:->))
 import Data.Profunctor.Cartesian
+import Data.Bifunctor (Bifunctor(..))
 
 -- * Free Cartesian profunctor
 
 data FreeCartesian p a b =
       ProUnit b
-    | forall b1 b2. ProMult (p a b1) (FreeCartesian p a b2) (b1 -> b2 -> b)
+    | forall a1 a2 b1 b2. ProMult (p a1 b1) (FreeCartesian p a2 b2) (a -> (a1, a2)) ((b1, b2) -> b)
 
 deriving instance Functor (FreeCartesian p a)
 
 instance Applicative (FreeCartesian p a) where
     pure = ProUnit
-    ProUnit x <*> qs = x <$> qs
-    ProMult p ps op <*> qs = ProMult p (liftA2 (,) ps qs) (\b1 (b2, b') -> op b1 b2 b')
+    p <*> q = dimap (\a -> (a,a)) (\(f,x) -> f x) $ p *** q
 
-instance Profunctor p => Profunctor (FreeCartesian p) where
-    lmap f fp = case fp of
-        ProUnit b -> ProUnit b
-        ProMult p ps op -> ProMult (lmap f p) (lmap f ps) op
-    
-    rmap = fmap
-
+instance Profunctor (FreeCartesian p) where
     dimap f g fp = case fp of
         ProUnit b -> ProUnit (g b)
-        ProMult p ps op -> ProMult (lmap f p) (lmap f ps) (\b1 b2 -> g (op b1 b2))
+        ProMult p ps opA opB -> ProMult p ps (opA . f) (g . opB)
 
-instance Profunctor p => Cartesian (FreeCartesian p) where
+instance Cartesian (FreeCartesian p) where
     proUnit = ProUnit ()
     ProUnit a *** qs = dimap snd (a,) qs
-    ProMult p ps op *** qs = ProMult (lmap fst p) (ps *** qs) (\b1 (b2, b') -> (op b1 b2, b'))
+    ProMult p ps opA opB *** qs = ProMult p (ps *** qs) (assocTup . first opA) (first opB . unassocTup)
 
-liftFreeCartesian :: Profunctor p => p :-> FreeCartesian p
-liftFreeCartesian p = ProMult p (ProUnit ()) const
+assocTup :: ((a,b), c) -> (a, (b,c))
+assocTup ((a,b), c) = (a, (b,c))
+
+unassocTup :: (a, (b,c)) ->  ((a,b), c)
+unassocTup (a, (b,c)) = ((a,b), c)
+
+liftFreeCartesian :: p :-> FreeCartesian p
+liftFreeCartesian p = ProMult p (ProUnit ()) (, ()) fst
 
 foldFreeCartesian :: Cartesian q => (p :-> q) -> FreeCartesian p :-> q
 foldFreeCartesian _ (ProUnit b) = rmap (const b) proUnit
-foldFreeCartesian handle (ProMult p ps op) = dimap (\a -> (a,a)) (uncurry op) (handle p *** foldFreeCartesian handle ps)
+foldFreeCartesian handle (ProMult p ps opA opB) = dimap opA opB (handle p *** foldFreeCartesian handle ps)
 
 -- * Free Cocartesian profunctor
 
 data FreeCocartesian p a b =
       ProEmpty (a -> Void)
-    | forall a1 a2. ProSum (p a1 b) (FreeCocartesian p a2 b) (a -> Either a1 a2)
+    | forall a1 a2 b1 b2. ProSum (p a1 b1) (FreeCocartesian p a2 b2) (a -> Either a1 a2) (Either b1 b2 -> b)
 
 instance Profunctor p => Functor (FreeCocartesian p a) where
     fmap f ps = case ps of
         ProEmpty z -> ProEmpty z
-        ProSum p ps' op -> ProSum (rmap f p) (rmap f ps') op
-
+        ProSum p ps' opA opB -> ProSum p ps' opA (f . opB)
 instance Profunctor p => Profunctor (FreeCocartesian p) where
-    lmap f ps = case ps of
-        ProEmpty z -> ProEmpty (z . f)
-        ProSum p ps' op -> ProSum p ps' (op . f)
-    
-    rmap = fmap
-
     dimap f g ps = case ps of
         ProEmpty z -> ProEmpty (z . f)
-        ProSum p ps' op -> ProSum (rmap g p) (rmap g ps') (op . f)
+        ProSum p ps' opA opB -> ProSum p ps' (opA . f) (g . opB)
 
 instance Profunctor p => Cocartesian (FreeCocartesian p) where
     proEmpty = ProEmpty id
     ProEmpty z +++ qs = dimap (either (absurd . z) id) Right qs
-    ProSum p ps' op +++ qs = ProSum (rmap Left p) (ps' +++ qs) $
-      either (fmap Left . op) (Right . Right)
+    ProSum p ps' opA opB +++ qs = ProSum p (ps' +++ qs) (assocEither . first opA) (first opB . unassocEither)
 
-liftFreeCocartesian :: Profunctor p => p :-> FreeCocartesian p
-liftFreeCocartesian p = ProSum p (ProEmpty id) Left
+assocEither :: Either (Either a b) c -> Either a (Either b c)
+assocEither = either (second Left) (Right . Right)
+
+unassocEither :: Either a (Either b c) -> Either (Either a b) c
+unassocEither = either (Left . Left) (first Right)
+
+liftFreeCocartesian :: p :-> FreeCocartesian p
+liftFreeCocartesian p = ProSum p (ProEmpty id) Left (either id absurd)
 
 foldFreeCocartesian :: (Cocartesian q) => (p :-> q) -> FreeCocartesian p :-> q
 foldFreeCocartesian handle ps = case ps of
     ProEmpty z -> lmap z proEmpty
-    ProSum p ps' op -> dimap op (either id id) (handle p +++ foldFreeCocartesian handle ps')
+    ProSum p ps' opA opB -> dimap opA opB (handle p +++ foldFreeCocartesian handle ps')
 
 instance Cartesian p => Cartesian (FreeCocartesian p) where
     proUnit = liftFreeCocartesian proUnit
     ProEmpty z *** _ = ProEmpty (z . fst)
-    ProSum p ps' op *** qs = dimap distR (either id id) $ distLeftFree p qs +++ (ps' *** qs)
-      where
-        distR (a, a') = case op a of
-            Left a1 -> Left (a1, a')
-            Right a2 -> Right (a2, a')
+    ProSum p ps' opA opB *** qs = dimap (distR . first opA) (first opB . undistR) $ distLeftFree p qs +++ (ps' *** qs)
 
 distLeftFree :: Cartesian p => p a b -> FreeCocartesian p a' b' -> FreeCocartesian p (a,a') (b,b')
 distLeftFree _ (ProEmpty z) = ProEmpty (z . snd)
-distLeftFree p (ProSum q qs' op) = ProSum (p *** q) (distLeftFree p qs') $ \(a, a') ->
-    case op a' of
-        Left a1' -> Left (a, a1')
-        Right a2' -> Right (a, a2')
+distLeftFree p (ProSum q qs' opA opB) = ProSum (p *** q) (distLeftFree p qs') (distL . second opA) (second opB . undistL)
+
+distR :: (Either a1 a2, b) -> Either (a1, b) (a2, b)
+distR (ea, b) = bimap (, b) (, b) ea
+
+undistR :: Either (a1, b) (a2, b) -> (Either a1 a2, b)
+undistR = either (first Left) (first Right)
+
+distL :: (a, Either b1 b2) -> Either (a, b1) (a, b2)
+distL (a,b) = bimap (a,) (a,) b
+
+undistL :: Either (a, b1) (a, b2) -> (a, Either b1 b2)
+undistL = either (second Left) (second Right)
 
 -- * Free Bicartesian
 

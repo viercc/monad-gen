@@ -9,8 +9,10 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE GADTs #-}
 module Data.PTraversable
   ( PTraversable (..),
+    ptraverse,
     fmapDefault,
     foldMapDefault,
     traverseDefault,
@@ -39,6 +41,9 @@ import Data.Profunctor.Extra
 import Data.Profunctor.Unsafe ((#.), (.#))
 import Data.Transparent
 import GHC.Generics
+
+import Data.Functor.Day (Day)
+import Data.PTraversable.Internal.Day (ptraverseDay)
 
 class (Functor t) => PTraversable t where
   {-# MINIMAL ptraverseWith #-}
@@ -114,6 +119,11 @@ deriving via
   (Generically1 (Compose t u))
   instance
     (PTraversable t, PTraversable u) => PTraversable (Compose t u)
+
+instance (PTraversable t, PTraversable u) => PTraversable (Day t u) where
+  ptraverseWith f g p = dimap f g $ ptraverseDay ptraverse ptraverse p
+
+-- * Wrapping
 
 newtype WrappedPTraversable t a = WrapPTraversable {unwrapPTraversable :: t a}
 

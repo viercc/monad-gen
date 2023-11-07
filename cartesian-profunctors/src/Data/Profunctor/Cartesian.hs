@@ -91,7 +91,7 @@ instance (Functor f) => Cocartesian (Star f) where
 
 instance (Alternative f) => Cocartesian (Joker f) where
   proEmpty = Joker empty
-  Joker p1 +++ Joker p2 = Joker $ (Left <$>) p1 <|> (Right <$> p2)
+  Joker p1 +++ Joker p2 = Joker $ (Left <$> p1) <|> (Right <$> p2)
 
 instance (Decidable f) => Cocartesian (Clown f) where
   proEmpty = Clown lost

@@ -17,14 +17,19 @@ library
     Data.Profunctor.FinFn,
     Data.Profunctor.Exhaust,
     Data.Profunctor.Extra,
+    Data.Profunctor.Power,
     Data.Transparent,
     Data.PTraversable
+  other-modules:
+    Data.PTraversable.Internal.Day
   build-depends:
       base >= 4.17 && < 5
+    , transformers
     , containers
     , contravariant
     , profunctors
     , bifunctors
+    , kan-extensions
     , finite-typelits
   ghc-options:         -Wall -Werror -Wcompat
   default-language:    Haskell2010
