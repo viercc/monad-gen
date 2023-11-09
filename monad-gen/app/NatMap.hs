@@ -33,7 +33,7 @@ module NatMap (
 
     union, unionWith, consistentBy,
     
-    debug,
+    Var(), debug,
 ) where
 
 import Prelude hiding (lookup)

@@ -32,11 +32,11 @@ forAll = flip all
 
 monadGen
   :: forall f.
-       (forall a. Eq a => Eq (f a),
+       (forall a. Ord a => Ord (f a),
        forall a. Show a => Show (f a),
        PTraversable f)
        => Proxy f -> (String -> IO ()) -> IO ()
-monadGen _ println = for_ genMonads docResult
+monadGen _ println = for_ genMonadsModuloIso docResult
   where
     skolemCache :: Vec (f Int)
     skolemCache = cache skolem

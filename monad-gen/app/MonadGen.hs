@@ -4,6 +4,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module MonadGen
   ( checkLeftUnit,
@@ -13,6 +15,7 @@ module MonadGen
     MonadData(..),
     MonadDict(..),
     genMonads,
+    genMonadsModuloIso,
     makeMonadDict,
 
     -- * Debug
@@ -42,6 +45,8 @@ import Set1 (Key (), key, unkey)
 import qualified Set1 as S1
 
 import MonoidGen (MonoidOn(..), genMonoids)
+import Isomorphism (Iso (..), makePositionIsoFactors)
+import Data.Equivalence.Monad
 
 -- Monad properties
 
@@ -71,6 +76,10 @@ checkAssoc join' mmmb = join' (join' mmmb) `eqDefault` join' (fmap join' mmmb)
 -- Monad dictionary
 
 data MonadData f = MonadData (f ()) (NM.NatMap (f :.: f) f)
+
+deriving instance (Eq (f ()), Eq (f NM.Var)) => Eq (MonadData f)
+deriving instance (Ord (f ()), Ord (f NM.Var)) => Ord (MonadData f)
+
 data MonadDict f =
   MonadDict {
     _monadPure :: forall a. a -> f a,
@@ -82,6 +91,22 @@ genMonads =
   do monDict <- genMonoids
      genState <- genFromMonoid monDict
      pure $ MonadData (unkey (monoidUnit monDict)) (_join genState)
+
+applyIso :: PTraversable f => Iso f -> MonadData f -> MonadData f
+applyIso (Iso g g') (MonadData u joinNM) = MonadData (g u) joinNM' 
+  where
+    joinNM' = NM.toTotal joinNM (error "non-total join?") $ \join' ->
+      NM.fromNat (g . join' . Comp1 . g' . fmap g' . unComp1)
+
+genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
+genMonadsModuloIso = runEquivM id min $ do
+    for_ allMonadData $ \mm ->
+        equateAll (mm : [ applyIso iso mm | iso <- isoGenerators ])
+    classes >>= traverse desc
+  where
+    allMonadData = genMonads :: [MonadData f]
+    isoGenerators = concat makePositionIsoFactors :: [Iso f]
+    
 
 makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f
 makeMonadDict (MonadData u joinMap) = 
