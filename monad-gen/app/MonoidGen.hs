@@ -1,5 +1,11 @@
 {-# LANGUAGE KindSignatures #-}
-module MonoidGen where
+module MonoidGen(
+  -- * Generate Monoids
+  MonoidOn(..), genMonoids,
+
+  -- * Internals
+  Env, makeEnv, fakeEnv, fromDef, genMonoidDefs
+) where
 
 import Data.Equivalence.Monad
 import Data.Kind (Type)
@@ -20,7 +26,6 @@ import Set1 (Key, key)
 
 import Data.Ord (comparing)
 import Data.Foldable (Foldable(..), for_)
-import Data.Monoid (First(..))
 
 -- Generate all possible monoids on @f ()@, compatible with @Monad f@, up to iso
 
@@ -30,7 +35,7 @@ data MonoidOn f = MonoidOn
   }
 
 genMonoids :: (PTraversable f) => [MonoidOn f]
-genMonoids = fromDef env <$> monoidDefs env
+genMonoids = fromDef env <$> genMonoidDefs env
   where
     env = makeEnv
 
@@ -66,8 +71,8 @@ fromDef env (Def e mult) = MonoidOn (toKey e) op
     fromKey = (revTable Map.!)
     op f1 f2 = toKey $ mult V.! (fromKey f1 * n + fromKey f2)
 
-monoidDefs :: Env f -> [Def f]
-monoidDefs env = do
+genMonoidDefs :: Env f -> [Def f]
+genMonoidDefs env = do
   e <- unitCandidates
   let mults = mapMaybe (multMapToVec n) (gen n numZeroes e)
   mult <- upToIso env e mults
@@ -208,14 +213,3 @@ applyTranspose n (Transpose a b) xs = V.generate (n * n) $ \i ->
       | i == a = b
       | i == b = a
       | otherwise = i
-
-checkAssociativity :: Int -> Def f -> Maybe (Def f, (Int,Int,Int))
-checkAssociativity n def@(Def _ mult) =
-    getFirst . foldMap (First . assocAt) $ ((,,) <$> xs <*> xs <*> xs)
-    where
-        xs = [0 .. n - 1]
-        op x y = mult V.! (x * n + y)
-        assocAt xyz@(x,y,z) =
-            if op (op x y) z == op x (op y z)
-                then Nothing
-                else Just (def, xyz)
