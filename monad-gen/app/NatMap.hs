@@ -5,13 +5,15 @@
 {-# LANGUAGE RankNTypes          #-}
 {-# LANGUAGE KindSignatures      #-}
 {-# LANGUAGE StandaloneDeriving  #-}
+{-# LANGUAGE QuantifiedConstraints #-}
 module NatMap (
+    Key(),
+    key, unkey,
+
     Entry(),
     entryKey, withEntry,
     makeEntry, tryMakeEntry,
-
-    Key(),
-    key, unkey,
+    prettyEntry,
 
     NatMap(),
     size, fullSize,
@@ -54,33 +56,43 @@ import Set1.Internal (Key(..), unkey, key, Set1)
 -- | Map representing natural transformation
 --   @(forall x. f x -> g x)@ instead of usual function
 newtype NatMap (f :: Type -> Type) (g :: Type -> Type)
-  = Mk (IM.IntMap (g Int))
+  = Mk (IM.IntMap (g Var))
 type role NatMap nominal representational
 
-deriving instance (Eq (g Int)) => Eq (NatMap f g)
-deriving instance (Ord (g Int)) => Ord (NatMap f g)
+deriving instance (Eq (g Var)) => Eq (NatMap f g)
+deriving instance (Ord (g Var)) => Ord (NatMap f g)
 
-keyToSkolem :: forall f. PTraversable f => Key f -> f Int
+keyToSkolem :: forall f. PTraversable f => Key f -> f Var
 keyToSkolem = (table Vec.!) . fromEnum
   where
-     table = cache $ skolem @f
+     table = cache $ fmap (fmap Var) $ skolem @f
 {-# INLINE keyToSkolem #-}
 
-keyToVars :: forall f. PTraversable f => Key f -> Vec Int
+keyToVars :: forall f. PTraversable f => Key f -> Vec Var
 keyToVars = (table Vec.!) . fromEnum
   where
-     table = cache $ vecSkolem @f Proxy
+     table = cache $ fmap (fmap Var) $ vecSkolem @f Proxy
 {-# INLINE keyToVars #-}
 
 fIdx :: PTraversable f => f any -> Int
 fIdx = keyIdx . key
 
+(!) :: Vec a -> Var -> a
+as ! (Var i) = as Vec.! i
+
 -- | An entry of @NatMap f g@
-data Entry (f :: Type -> Type) (g :: Type -> Type) = MkEntry Int (g Int)
+data Entry (f :: Type -> Type) (g :: Type -> Type) = MkEntry Int (g Var)
 type role Entry nominal representational
 
-deriving instance (Eq (g Int)) => Eq (Entry f g)
-deriving instance (Ord (g Int)) => Ord (Entry f g)
+deriving instance (Eq (g Var)) => Eq (Entry f g)
+deriving instance (Ord (g Var)) => Ord (Entry f g)
+
+-- | An opaque type representing syntactic variable.
+newtype Var = Var { unVar :: Int }
+  deriving (Eq, Ord)
+
+instance Show Var where
+  show (Var n) = "x" ++ show n
 
 entryKey :: Entry f g -> Key f
 entryKey (MkEntry i _) = MkKey i
@@ -97,6 +109,11 @@ tryMakeEntry :: PTraversable f => Key f -> (forall x. Vec x -> Maybe (g x)) -> M
 tryMakeEntry k nt = MkEntry (keyIdx k) <$> nt (keyToVars k)
 {-# INLINE tryMakeEntry #-}
 
+prettyEntry :: forall f g. (PTraversable f, Functor g)
+   => (Show (f Var), Show (g Var))
+   => Entry f g -> String
+prettyEntry (MkEntry i gx) = show (keyToSkolem @f (MkKey i)) ++ " -> " ++ show gx
+
 -- Query --
 size :: NatMap f g -> Int
 size (Mk m) = IM.size m
@@ -112,7 +129,7 @@ member k (Mk m) = IM.member (keyIdx k) m
 notMember k = not . member k
 
 lookup :: (PTraversable f, Functor g) => f a -> NatMap f g -> Maybe (g a)
-lookup fa (Mk m) = fmap (toVec fa Vec.!) <$> IM.lookup (fIdx fa) m
+lookup fa (Mk m) = fmap (\x -> toVec fa Vec.! unVar x) <$> IM.lookup (fIdx fa) m
 
 lookup_ :: (PTraversable f, Functor g) => Key f -> NatMap f g -> Maybe (g ())
 lookup_ k (Mk m) = fmap (() <$) $ IM.lookup (keyIdx k) m
@@ -132,14 +149,14 @@ toTotal nm@(Mk m) failCase justCase
   | otherwise  = failCase
   where fg fa = let content = toVec fa
                     gx = m IM.! fIdx fa
-                in content `seq` (content Vec.!) <$> gx
+                in content `seq` (content !) <$> gx
 
 -- Construct --
 empty :: NatMap f g
 empty = Mk IM.empty
 
 identity :: (PTraversable f) => NatMap f f
-identity = Mk . IM.fromList . toList . Vec.indexed $ skolem
+identity = Mk . IM.fromList . toList . Vec.indexed . fmap (fmap Var) $ skolem
 
 singleton :: Entry f g -> NatMap f g
 singleton (MkEntry i gx) = Mk (IM.singleton i gx)
@@ -167,7 +184,7 @@ fromList es = Mk $
 wrapUpdator
   :: forall f g.
      (PTraversable f)
-  => (Vec Int -> Int -> IM.IntMap (g Int) -> IM.IntMap (g Int))
+  => (Vec Var -> Int -> IM.IntMap (g Var) -> IM.IntMap (g Var))
   -> Key f
   -> NatMap f g -> NatMap f g
 wrapUpdator updator k (Mk m) = Mk (updator (keyToVars k) (keyIdx k) m)
@@ -199,13 +216,13 @@ insert updator = wrapUpdator $ \arg i -> IM.insert i (updator arg)
 delete :: forall f g.
           (PTraversable f)
        => Key f -> NatMap f g -> NatMap f g
-delete = coerce (IM.delete @(g Int))
+delete = coerce (IM.delete @(g Var))
 
 union :: forall f g. NatMap f g -> NatMap f g -> NatMap f g
-union = coerce (IM.union @(g Int))
+union = coerce (IM.union @(g Var))
 
 unionWith :: forall f g. (forall a. g a -> g a -> g a) -> NatMap f g -> NatMap f g -> NatMap f g
-unionWith op = coerce (IM.unionWith (op @Int))
+unionWith op = coerce (IM.unionWith (op @Var))
 
 consistentBy :: (forall a. Eq a => g a -> g a -> Bool) -> NatMap f g -> NatMap f g -> Bool
 consistentBy eq (Mk m1) (Mk m2) = and $ IM.intersectionWith eq m1 m2
@@ -213,15 +230,15 @@ consistentBy eq (Mk m1) (Mk m2) = and $ IM.intersectionWith eq m1 m2
 -- Debug --
 
 debug :: forall f g.
-         (Show (f Int),   Show (g Int),
+         (Show (f Var),   Show (g Var),
           PTraversable f, PTraversable g)
       => NatMap f g -> String
 debug (Mk m) =
-  let args = skolem @f
+  let args = fmap Var <$> skolem @f
       strs = fmap show args
       maxLen = maximum (length <$> strs)
       mkRhs fx = validate fx <$> IM.lookup (fIdx fx) m
-      validate fx gx = (_all (\x -> 0 <= x && x < _length fx) gx, gx)
+      validate fx gx = (_all (\(Var x) -> 0 <= x && x < _length fx) gx, gx)
       prettyRhs Nothing = "undefined"
       prettyRhs (Just (v, gx)) = (if v then "" else "<invalid>") ++ show gx
       mkLine arg rhs = arg ++ replicate (maxLen - length arg) ' '

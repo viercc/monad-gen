@@ -13,7 +13,7 @@ module Data.LazyVec(
   zipWith, zipWith3, zip, zip3,
   alignWith,
   
-  (!),
+  (!?), (!),
 
   filter, mapMaybe,
 
@@ -30,6 +30,7 @@ import Control.Monad.Fix
 import Data.Semigroup
 import Data.Foldable
 import qualified Data.Vector as V
+import Data.Maybe (fromMaybe)
 
 data Vec a = Vec !Int (Int -> a)
     deriving Functor
@@ -45,9 +46,16 @@ generate :: Int -> (Int -> a) -> Vec a
 generate n = Vec (max n 0)
 
 -- * Accessing
+
+(!?) :: Vec a -> Int -> Maybe a
+Vec n f !? i
+  | 0 <= i && i < n = Just (f i)
+  | otherwise       = Nothing
+
 (!) :: Vec a -> Int -> a
-Vec n f ! i | 0 <= i && i < n = f i
-            | otherwise       = error $ "out of bounds:" ++ show i ++ " for Vec with length " ++ show n
+v ! i = fromMaybe err (v !? i)
+  where
+    err = error $ "out of bounds:" ++ show i ++ " for Vec with length " ++ show (length v)
 
 -- * Conversion
 toVector :: Vec a -> V.Vector a

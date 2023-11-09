@@ -84,14 +84,15 @@ monadGen _ println = for_ generated docResult
            println $ "pure 0 = " <> show (pure' 0 :: f Int)
            mapM_ println $
              Vec.zipWith docLine joinArgsCache skolem2Cache
+           println ""
       where failMsg = "Non-total join:" ++ show (i, NM.debug joinNM)
 
 main :: IO ()
 main =
-  do --writeFile' "monad-gen-F.txt" $ monadGen @F Proxy
-     --writeFile' "monad-gen-G.txt" $ monadGen @G Proxy
-     --writeFile' "monad-gen-H.txt" $ monadGen @H Proxy
-     --writeFile' "monad-gen-W.txt" $ monadGen @W Proxy
-     --writeFile' "monad-gen-J.txt" $ monadGen @J Proxy
-     --writeFile' "monad-gen-T.txt" $ monadGen @T Proxy
-     writeFile' "monad-gen-Y-new.txt" $ monadGen @Y Proxy
+  do writeFile' "monad-gen-F.txt" $ monadGen @F Proxy
+     writeFile' "monad-gen-G.txt" $ monadGen @G Proxy
+     writeFile' "monad-gen-H.txt" $ monadGen @H Proxy
+     writeFile' "monad-gen-W.txt" $ monadGen @W Proxy
+     writeFile' "monad-gen-J.txt" $ monadGen @J Proxy
+     writeFile' "monad-gen-T.txt" $ monadGen @T Proxy
+     -- writeFile' "monad-gen-Y.txt" $ monadGen @Y Proxy
