@@ -9,9 +9,17 @@ module MonadGen
   ( checkLeftUnit,
     checkRightUnit,
     checkAssoc,
-    allPures,
-    gen,
+
+    MonadData(..),
+    MonadDict(..),
+    genMonads,
+    makeMonadDict,
+
+    -- * Debug
     GenState (..),
+    Gen,
+    runGen,
+    genFromMonoid,
     debugPrint,
     Join,
     Blockade,
@@ -30,8 +38,10 @@ import Data.PTraversable
 import Data.PTraversable.Extra
 import GHC.Generics ((:.:) (..))
 import qualified NatMap as NM
-import Set1 (Key (), key)
+import Set1 (Key (), key, unkey)
 import qualified Set1 as S1
+
+import MonoidGen (MonoidOn(..), genMonoids)
 
 -- Monad properties
 
@@ -58,23 +68,35 @@ checkAssoc ::
   Bool
 checkAssoc join' mmmb = join' (join' mmmb) `eqDefault` join' (fmap join' mmmb)
 
--- Utilities
+-- Monad dictionary
 
-allPures :: forall f a. (PTraversable f) => Vec (a -> f a)
-allPures = fmap (\f1 -> (<$ f1)) (enum1 @f (Vec.singleton ()))
+data MonadData f = MonadData (f ()) (NM.NatMap (f :.: f) f)
+data MonadDict f =
+  MonadDict {
+    _monadPure :: forall a. a -> f a,
+    _monadJoin :: forall a. f (f a) -> f a
+  }
 
-(!) :: Vec a -> Int -> a
-(!) = (Vec.!)
+genMonads :: (PTraversable f, forall a. (Show a) => Show (f a)) => [MonadData f]
+genMonads =
+  do monDict <- genMonoids
+     genState <- genFromMonoid monDict
+     pure $ MonadData (unkey (monoidUnit monDict)) (_join genState)
+
+makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f
+makeMonadDict (MonadData u joinMap) = 
+    NM.toTotal joinMap (error "well...") $ \theJoin -> MonadDict (<$ u) (theJoin . Comp1)
 
 -- Generation
 
 type Gen f = ReaderT (Env f) (StateT (GenState f) [])
 
 data Env f = Env
-  { _pure :: forall a. a -> f a,
+  { _baseMonoid :: MonoidOn f,
     _f1 :: Vec (f Int),
     _f2 :: Vec (f (f Int)),
-    _f3 :: Vec (f (f (f Int)))
+    _f3 :: Vec (f (f (f Int))),
+    _monoidCases :: Map.Map (JoinKey f) (Key f)
   }
 
 type Join f = NM.NatMap (f :.: f) f
@@ -82,26 +104,6 @@ type Join f = NM.NatMap (f :.: f) f
 type JoinKey f = Key (f :.: f)
 
 type Blockade f = Rel (JoinKey f) (f :.: f :.: f)
-
-type Rel k f = Map.Map k (S1.Set1 f)
-
-singletonRel :: k -> Key f -> Rel k f
-singletonRel k fKey = Map.singleton k (S1.singleton fKey)
-
-unionRel :: (Ord k) => Rel k f -> Rel k f -> Rel k f
-unionRel = Map.unionWith S1.union
-
-popRel :: (Ord k) => k -> Rel k f -> (S1.Set1 f, Rel k f)
-popRel k m = case Map.lookup k m of
-  Nothing -> (S1.empty, m)
-  Just s -> (s, Map.delete k m)
-
-mostRelated :: (Ord k) => Rel k f -> Maybe k
-mostRelated m
-  | Map.null m = Nothing
-  | otherwise = Just kTop
-  where
-    (kTop, _) = maximumBy (comparing (S1.size . snd)) $ Map.toList m
 
 data GenState f = GenState
   { _join :: Join f,
@@ -153,17 +155,34 @@ associativity m fffa =
 choose :: (Foldable t) => t a -> Gen f a
 choose = lift . lift . toList
 
-runGen :: forall f r. (PTraversable f) => (forall a. a -> f a) -> Gen f r -> [(r, GenState f)]
-runGen pure' mr = runStateT (runReaderT mr env) state0
+buildInitialEnv :: forall f. PTraversable f => MonoidOn f -> Env f
+buildInitialEnv monDict = Env {
+    _baseMonoid = monDict,
+    _f1 = f1,
+    _f2 = cache skolem2,
+    _f3 = cache skolem3,
+    _monoidCases = monoidCases
+  }
+  where
+    f1 = cache skolem :: Vec (f Int)
+    keys1 = [minBound .. maxBound] :: [Key f]
+    monoidCases = Map.fromList
+      [ (key (Comp1 (void y <$ x)), monoidMult monDict xk yk)
+        | xk <- keys1,
+          let x = f1 ! fromEnum xk,
+          yk <- keys1,
+          let y = f1 ! fromEnum yk ]
+
+_pure :: PTraversable f => Env f -> a -> f a
+_pure env a = a <$ (_f1 env ! fromEnum uKey)
+  where
+    uKey = monoidUnit (_baseMonoid env)
+
+runGen :: forall f r. (PTraversable f) => MonoidOn f -> Gen f r -> [(r, GenState f)]
+runGen monDict mr = runStateT (runReaderT mr env) state0
   where
     env :: Env f
-    env =
-      Env
-        { _pure = pure',
-          _f1 = cache skolem,
-          _f2 = cache skolem2,
-          _f3 = cache skolem3
-        }
+    env = buildInitialEnv monDict
 
     f3 = _f3 env
     k3 = Vec.vec [minBound .. maxBound] :: Vec (Key (f :.: f :.: f))
@@ -178,6 +197,15 @@ runGen pure' mr = runStateT (runReaderT mr env) state0
         { _join = join0,
           _blockade = blockade
         }
+
+_unkey1 :: PTraversable f => Env f -> Key f -> f Int
+_unkey1 env k = _f1 env Vec.! fromEnum k
+
+_unkey2 :: PTraversable f => Env f -> Key (f :.: f) -> f (f Int)
+_unkey2 env k = _f2 env Vec.! fromEnum k
+
+_unkey3 :: PTraversable f => Env f -> Key (f :.: f :.: f) -> f (f (f Int))
+_unkey3 env k = _f3 env Vec.! fromEnum k
 
 use :: (Functor f) => f Int -> Vec a -> f a
 use template as = (as !) <$> template
@@ -197,14 +225,12 @@ entry lhs rhs =
     let lhsKey = key lhs
         join2 = NM.insert (use rhs) lhsKey join1
 
-    f3 <- asks _f3
+    unkey3 <- asks _unkey3
     blockade <- gets _blockade
 
     -- update assocL
     let (blockedAssocs, blockade') = popRel lhsKey blockade
-        newConstraint k3 = foldMap (\nextLhsKey -> singletonRel nextLhsKey k3) <$> associativity join2 fa
-          where
-            fa = f3 Vec.! fromEnum k3
+        newConstraint k3 = foldMap (\nextLhsKey -> singletonRel nextLhsKey k3) <$> associativity join2 (unkey3 k3)
     blockade'' <- case traverse newConstraint (S1.toList blockedAssocs) of
       Nothing -> mzero
       Just newBlockades -> pure $ foldl' unionRel blockade' newBlockades
@@ -240,7 +266,7 @@ entryFUG = do
           m = _length fi
           select x = [y * m + x | y <- [0 .. n - 1]]
       makeJfu :: f Int -> [f Int]
-      makeJfu fi = traverseDefault select fi
+      makeJfu = traverseDefault select
         where
           select x = [x * n + y | y <- [0 .. n - 1]]
 
@@ -252,17 +278,50 @@ entryFUG = do
 
 guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => JoinKey f -> Gen f ()
 guess lhsKey = do
-  f2 <- asks _f2
-  let lhs = Comp1 $ f2 Vec.! fromEnum lhsKey
+  unkey1 <- asks _unkey1
+  unkey2 <- asks _unkey2
+  let lhs = Comp1 $ unkey2 lhsKey
       lhsVars = toVec lhs
-  rhs <- choose (enum1 lhsVars)
+  monoidCases <- asks _monoidCases
+  rhs <- case Map.lookup lhsKey monoidCases of
+    Nothing -> choose (enum1 lhsVars)
+    Just rhsKey -> choose $ traverseDefault (const lhsVars) (unkey1 rhsKey)
   entry lhs rhs
 
-gen :: (forall a. (Show a) => Show (f a), PTraversable f) => (forall a. a -> f a) -> [GenState f]
-gen u = snd <$> runGen u (entryUU >> entryFUG >> loop)
+genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidOn f -> [GenState f]
+genFromMonoid mon = snd <$> runGen mon (entryUU >> entryFUG >> loop)
   where
     loop = do
       blockade <- gets _blockade
       case mostRelated blockade of
         Nothing -> pure ()
         Just lhsKey -> guess lhsKey >> loop
+
+-- * Utilities
+
+-- unsafe access
+
+(!) :: Vec a -> Int -> a
+(!) = (Vec.!)
+
+-- Relation data structure
+
+type Rel k f = Map.Map k (S1.Set1 f)
+
+singletonRel :: k -> Key f -> Rel k f
+singletonRel k fKey = Map.singleton k (S1.singleton fKey)
+
+unionRel :: (Ord k) => Rel k f -> Rel k f -> Rel k f
+unionRel = Map.unionWith S1.union
+
+popRel :: (Ord k) => k -> Rel k f -> (S1.Set1 f, Rel k f)
+popRel k m = case Map.lookup k m of
+  Nothing -> (S1.empty, m)
+  Just s -> (s, Map.delete k m)
+
+mostRelated :: (Ord k) => Rel k f -> Maybe k
+mostRelated m
+  | Map.null m = Nothing
+  | otherwise = Just kTop
+  where
+    (kTop, _) = maximumBy (comparing (S1.size . snd)) $ Map.toList m

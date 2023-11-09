@@ -1,17 +1,6 @@
 ------------------------------------------------------------
 pure 0 = T2 A 0 0
 join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 B 0 3
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 0 2
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 0 2
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 2
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 2
-
-------------------------------------------------------------
-pure 0 = T2 A 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
 join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
 join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 B 0 3
 join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
@@ -30,6 +19,39 @@ join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 0 3
 join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
 join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 3
 join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 A 0 3
+
+------------------------------------------------------------
+pure 0 = T2 A 0 0
+join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
+join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 B 2 0
+join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 1 3
+join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 B 2 1
+join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 1 2
+join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 1 3
+join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 A 2 0
+join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 A 3 0
+
+------------------------------------------------------------
+pure 0 = T2 A 0 0
+join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
+join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 2
+join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 B 3 1
+join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 B 2 1
+join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 1 2
+join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 3 1
+join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 2
+join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 A 3 0
+
+------------------------------------------------------------
+pure 0 = T2 A 0 0
+join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
+join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 B 0 3
+join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
+join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
+join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 0 2
+join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 0 2
+join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 2
+join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 2
 
 ------------------------------------------------------------
 pure 0 = T2 A 0 0
@@ -83,28 +105,6 @@ join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 1 3
 join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 B 2 1
 join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 1 2
 join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 1 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 A 2 0
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 A 3 0
-
-------------------------------------------------------------
-pure 0 = T2 A 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 2
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 B 3 1
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 B 2 1
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 1 2
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 3 1
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 2
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 A 3 0
-
-------------------------------------------------------------
-pure 0 = T2 A 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 B 2 0
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 1 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 B 2 1
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 1 2
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 1 3
 join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 2
 join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
 
@@ -129,136 +129,4 @@ join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 B 1 3
 join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 1 2
 join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 3
 join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 2
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 2
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 2
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 0 2
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 0 2
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 0 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 0 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 3
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 B 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 B 0 3
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 3
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 B 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 B 0 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 0 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 1 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 1 3
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 1 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 1 3
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 3
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 1 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 1 2
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 0 2
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 2 1
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 1 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 A 2 0
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 2
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 1 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 1 2
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 2 1
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 1 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 A 2 0
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 3
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 2
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 1 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 1 2
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 2 1
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 3 1
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 2
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 B 3 0
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 B 2 0
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 1 3
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 1 2
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 2 1
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 B 1 3
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 A 2 0
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 B 3 0
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 2
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 B 3 1
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 1 2
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 2 1
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 3 1
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 2
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
-
-------------------------------------------------------------
-pure 0 = T2 B 0 0
-join $ T2 A (T2 A 0 1) (T2 A 2 3) = T2 A 0 2
-join $ T2 A (T2 A 0 1) (T2 B 2 3) = T2 A 0 3
-join $ T2 A (T2 B 0 1) (T2 A 2 3) = T2 A 1 2
-join $ T2 A (T2 B 0 1) (T2 B 2 3) = T2 A 1 3
-join $ T2 B (T2 A 0 1) (T2 A 2 3) = T2 A 2 1
-join $ T2 B (T2 A 0 1) (T2 B 2 3) = T2 A 3 1
-join $ T2 B (T2 B 0 1) (T2 A 2 3) = T2 B 0 2
-join $ T2 B (T2 B 0 1) (T2 B 2 3) = T2 B 0 3
 

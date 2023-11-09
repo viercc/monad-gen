@@ -36,11 +36,8 @@ monadGen
        forall a. Show a => Show (f a),
        PTraversable f)
        => Proxy f -> (String -> IO ()) -> IO ()
-monadGen _ println = for_ generated docResult
+monadGen _ println = for_ genMonads docResult
   where
-    puresF :: forall a. Vec (a -> f a)
-    puresF = allPures
-    
     skolemCache :: Vec (f Int)
     skolemCache = cache skolem
     
@@ -61,12 +58,6 @@ monadGen _ println = for_ generated docResult
         assocLaw     = forAll skolem3Cache $ checkAssoc join'
         allLaws = [leftUnitLaw, rightUnitLaw, assocLaw]
     
-    generated :: [(Int, Join f)]
-    generated =
-      do i <- [0 .. length puresF - 1]
-         joinsSt <- gen (puresF Vec.! i)
-         return (i, _join joinsSt)
-    
     joinArgsCache :: Vec String
     joinArgsCache = cache $ fmap pad strs
       where showLen x = let s = show x in (length s, s)
@@ -74,18 +65,16 @@ monadGen _ println = for_ generated docResult
             maxLen = maximum $ fmap fst strs
             pad (n, s) = "join $ " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
     
-    docResult (i, joinNM) =
+    docResult (MonadData u joinNM) =
       NM.toTotal joinNM (fail failMsg) $ \join' ->
-        do let pure' :: forall a. a -> f a
-               pure' = puresF Vec.! i
-           validate pure' (join' . Comp1)
+        do validate (<$ u) (join' . Comp1)
            let docLine s ffx = s ++ show (join' (Comp1 ffx))
            println $ replicate 60 '-'
-           println $ "pure 0 = " <> show (pure' 0 :: f Int)
+           println $ "pure 0 = " <> show (0 <$ u :: f Int)
            mapM_ println $
              Vec.zipWith docLine joinArgsCache skolem2Cache
            println ""
-      where failMsg = "Non-total join:" ++ show (i, NM.debug joinNM)
+      where failMsg = "Non-total join:" ++ show (u, NM.debug joinNM)
 
 main :: IO ()
 main =
