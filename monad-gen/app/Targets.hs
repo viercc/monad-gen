@@ -26,6 +26,10 @@ data G a = G1 a | G2 a a
   deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
 deriving via (Generically1 G) instance PTraversable G
 
+data G' a = G2' a a | G3' a a a
+  deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
+deriving via (Generically1 G') instance PTraversable G'
+
 data H a = H0 | H1 a | H2 a a
   deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
 deriving via (Generically1 H) instance PTraversable H

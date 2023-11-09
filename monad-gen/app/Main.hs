@@ -23,6 +23,7 @@ import qualified NatMap                 as NM
 import           Targets
 import           MonadGen
 import           Util
+import Data.List (sort)
 
 ------------------------
 -- Tests
@@ -36,7 +37,7 @@ monadGen
        forall a. Show a => Show (f a),
        PTraversable f)
        => Proxy f -> (String -> IO ()) -> IO ()
-monadGen _ println = for_ genMonadsModuloIso docResult
+monadGen _ println = for_ (sort genMonads) docResult
   where
     skolemCache :: Vec (f Int)
     skolemCache = cache skolem
@@ -80,6 +81,7 @@ main :: IO ()
 main =
   do writeFile' "monad-gen-F.txt" $ monadGen @F Proxy
      writeFile' "monad-gen-G.txt" $ monadGen @G Proxy
+     writeFile' "monad-gen-G-prime.txt" $ monadGen @G' Proxy
      writeFile' "monad-gen-H.txt" $ monadGen @H Proxy
      writeFile' "monad-gen-W.txt" $ monadGen @W Proxy
      writeFile' "monad-gen-J.txt" $ monadGen @J Proxy
