@@ -32,7 +32,7 @@ nonTrivial :: Foldable f => f a -> Bool
 nonTrivial as = length as > 1
 
 makePositionIsoFactors :: PTraversable f => [[Iso f]]
-makePositionIsoFactors = filter nonTrivial $ positionShufflesOf <$> shapes
+makePositionIsoFactors = filter (not . null) $ positionShufflesOf <$> shapes
 
 positionShufflesOf :: PTraversable f => f () -> [Iso f]
 positionShufflesOf f_ = do
