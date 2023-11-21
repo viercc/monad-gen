@@ -1,21 +1,5 @@
-```haskell
-data T x = T Bool x x
-```
 
 ```haskell
-{
-    pure 0 = Ta 0 0
-    join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
-    join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 3
-    join $ Ta (Tb 0 1) (Ta 2 3) = Tb 0 3
-    join $ Ta (Tb 0 1) (Tb 2 3) = Tb 0 3
-
-    join $ Tb (Ta 0 1) (Ta 2 3) = Tb 0 3
-    join $ Tb (Ta 0 1) (Tb 2 3) = Tb 0 3
-    join $ Tb (Tb 0 1) (Ta 2 3) = Ta 0 3
-    join $ Tb (Tb 0 1) (Tb 2 3) = Ta 0 3
-}
-
 {
     data T a = T Bool x x
     pure x = T False x x
@@ -26,18 +10,6 @@ data T x = T Bool x x
 
 ```haskell
 {
-    pure 0 = Ta 0 0
-    join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
-    join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 3
-    join $ Ta (Tb 0 1) (Ta 2 3) = Tb 0 3
-    join $ Ta (Tb 0 1) (Tb 2 3) = Tb 0 3
-    join $ Tb (Ta 0 1) (Ta 2 3) = Tb 0 3
-    join $ Tb (Ta 0 1) (Tb 2 3) = Tb 0 3
-    join $ Tb (Tb 0 1) (Ta 2 3) = Tb 0 3
-    join $ Tb (Tb 0 1) (Tb 2 3) = Tb 0 3
-}
-
-{
     data T a = T Bool x x
     pure x = T False x x
     join ttx = case ttx of
@@ -46,18 +18,6 @@ data T x = T Bool x x
 ```
 
 ```haskell
-{
-    pure 0 = Ta 0 0
-    join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
-    join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 3
-    join $ Ta (Tb 0 1) (Ta 2 3) = Tb 0 3
-    join $ Ta (Tb 0 1) (Tb 2 3) = Tb 0 3
-    join $ Tb (Ta 0 1) (Ta 2 3) = Tb 1 3
-    join $ Tb (Ta 0 1) (Tb 2 3) = Tb 1 3
-    join $ Tb (Tb 0 1) (Ta 2 3) = Tb 1 3
-    join $ Tb (Tb 0 1) (Tb 2 3) = Tb 1 3
-}
-
 {
     data T a = T Bool x x
     pure x = T False x x
