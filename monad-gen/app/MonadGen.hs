@@ -6,12 +6,10 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module MonadGen
-  ( checkLeftUnit,
-    checkRightUnit,
-    checkAssoc,
-
+  (
     MonadData(..),
     MonadDict(..),
     genMonads,
@@ -47,32 +45,9 @@ import qualified Set1 as S1
 import MonoidGen (MonoidOn(..), genMonoids)
 import Isomorphism (Iso (..), makePositionIsoFactors)
 import Data.Equivalence.Monad
-import Debug.Trace (traceShow, traceM)
+import Debug.Trace (traceM)
 
--- Monad properties
-
-checkLeftUnit ::
-  (PTraversable m, Eq b) =>
-  (forall a. a -> m a) ->
-  (forall a. m (m a) -> m a) ->
-  m b ->
-  Bool
-checkLeftUnit pure' join' mb = join' (pure' mb) `eqDefault` mb
-
-checkRightUnit ::
-  (PTraversable m, Eq b) =>
-  (forall a. a -> m a) ->
-  (forall a. m (m a) -> m a) ->
-  m b ->
-  Bool
-checkRightUnit pure' join' mb = join' (fmap pure' mb) `eqDefault` mb
-
-checkAssoc ::
-  (PTraversable m, Eq b) =>
-  (forall a. m (m a) -> m a) ->
-  m (m (m b)) ->
-  Bool
-checkAssoc join' mmmb = join' (join' mmmb) `eqDefault` join' (fmap join' mmmb)
+import MonadLaws
 
 -- Monad dictionary
 

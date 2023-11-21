@@ -1,7 +1,3 @@
-{-# LANGUAGE DeriveFoldable #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE QuantifiedConstraints #-}
@@ -9,7 +5,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
 
 module Main (main) where
 
@@ -20,6 +15,7 @@ import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.Proxy
 import GHC.Generics
+import MonadLaws
 import MonadGen
 import qualified NatMap as NM
 
