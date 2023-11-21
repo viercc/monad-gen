@@ -47,6 +47,7 @@ import qualified Set1 as S1
 import MonoidGen (MonoidOn(..), genMonoids)
 import Isomorphism (Iso (..), makePositionIsoFactors)
 import Data.Equivalence.Monad
+import Debug.Trace (traceShow, traceM)
 
 -- Monad properties
 
@@ -100,6 +101,9 @@ applyIso (Iso g g') (MonadData u joinNM) = MonadData (g u) joinNM'
 
 genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
 genMonadsModuloIso = runEquivM id min $ do
+    traceM $ "length allMonadData == " ++ show (length allMonadData)
+    traceM $ "length isoGenerators == " ++ show (length isoGenerators)
+    for_ allMonadData $ \mm -> equate mm mm
     for_ allMonadData $ \mm ->
         equateAll (mm : [ applyIso iso mm | iso <- isoGenerators ])
     classes >>= traverse desc

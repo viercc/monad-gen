@@ -1,0 +1,2527 @@
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 1 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Ja 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jb 0) (Ja 1)     = Jb 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 1 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 1 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jb 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jb 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 1 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jb 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 1 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 1 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 1 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jb 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jc 0 0
+    join $ Jb (Jc 0 1)          = Jc 1 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 1 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 2 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 3 3
+}
+
+{
+    pure 0 = Jc 0 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Ja 0
+    join $ Ja (Jc 0 1)          = Ja 0
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Ja 0
+    join $ Jc (Ja 0) (Jb 1)     = Jb 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jb 0) (Ja 1)     = Ja 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Ja 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
+}
+
+{
+    pure 0 = Jc 0 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Ja 0
+    join $ Ja (Jc 0 1)          = Ja 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 1
+    join $ Jc (Ja 0) (Ja 1)     = Ja 1
+    join $ Jc (Ja 0) (Jb 1)     = Ja 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Ja 2
+    join $ Jc (Jb 0) (Ja 1)     = Jb 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
+}
+
