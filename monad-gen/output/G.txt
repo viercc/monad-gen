@@ -69,82 +69,12 @@
 }
 
 {
-    pure 0 = Ga 0
-    join $ Ga (Ga 0)            = Ga 0
-    join $ Ga (Gb 0 1)          = Gb 0 1
-    join $ Gb (Ga 0) (Ga 1)     = Gb 0 1
-    join $ Gb (Ga 0) (Gb 1 2)   = Gb 0 2
-    join $ Gb (Gb 0 1) (Ga 2)   = Gb 1 2
-    join $ Gb (Gb 0 1) (Gb 2 3) = Gb 1 3
-}
-
-{
-    pure 0 = Ga 0
-    join $ Ga (Ga 0)            = Ga 0
-    join $ Ga (Gb 0 1)          = Gb 0 1
-    join $ Gb (Ga 0) (Ga 1)     = Gb 0 1
-    join $ Gb (Ga 0) (Gb 1 2)   = Gb 0 2
-    join $ Gb (Gb 0 1) (Ga 2)   = Gb 2 2
-    join $ Gb (Gb 0 1) (Gb 2 3) = Gb 3 3
-}
-
-{
-    pure 0 = Ga 0
-    join $ Ga (Ga 0)            = Ga 0
-    join $ Ga (Gb 0 1)          = Gb 0 1
-    join $ Gb (Ga 0) (Ga 1)     = Gb 0 1
-    join $ Gb (Ga 0) (Gb 1 2)   = Gb 1 2
-    join $ Gb (Gb 0 1) (Ga 2)   = Gb 1 2
-    join $ Gb (Gb 0 1) (Gb 2 3) = Gb 2 3
-}
-
-{
-    pure 0 = Ga 0
-    join $ Ga (Ga 0)            = Ga 0
-    join $ Ga (Gb 0 1)          = Gb 0 1
-    join $ Gb (Ga 0) (Ga 1)     = Gb 0 1
-    join $ Gb (Ga 0) (Gb 1 2)   = Gb 1 2
-    join $ Gb (Gb 0 1) (Ga 2)   = Gb 2 2
-    join $ Gb (Gb 0 1) (Gb 2 3) = Gb 2 3
-}
-
-{
-    pure 0 = Ga 0
-    join $ Ga (Ga 0)            = Ga 0
-    join $ Ga (Gb 0 1)          = Gb 0 1
-    join $ Gb (Ga 0) (Ga 1)     = Gb 0 1
-    join $ Gb (Ga 0) (Gb 1 2)   = Gb 2 2
-    join $ Gb (Gb 0 1) (Ga 2)   = Gb 1 2
-    join $ Gb (Gb 0 1) (Gb 2 3) = Gb 3 3
-}
-
-{
-    pure 0 = Ga 0
-    join $ Ga (Ga 0)            = Ga 0
-    join $ Ga (Gb 0 1)          = Gb 0 1
-    join $ Gb (Ga 0) (Ga 1)     = Gb 0 1
-    join $ Gb (Ga 0) (Gb 1 2)   = Gb 2 2
-    join $ Gb (Gb 0 1) (Ga 2)   = Gb 2 2
-    join $ Gb (Gb 0 1) (Gb 2 3) = Gb 3 3
-}
-
-{
     pure 0 = Gb 0 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Ga 0
     join $ Gb (Ga 0) (Ga 1)     = Ga 0
     join $ Gb (Ga 0) (Gb 1 2)   = Gb 0 2
     join $ Gb (Gb 0 1) (Ga 2)   = Ga 0
-    join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 3
-}
-
-{
-    pure 0 = Gb 0 0
-    join $ Ga (Ga 0)            = Ga 0
-    join $ Ga (Gb 0 1)          = Ga 1
-    join $ Gb (Ga 0) (Ga 1)     = Ga 1
-    join $ Gb (Ga 0) (Gb 1 2)   = Ga 2
-    join $ Gb (Gb 0 1) (Ga 2)   = Gb 0 2
     join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 3
 }
 

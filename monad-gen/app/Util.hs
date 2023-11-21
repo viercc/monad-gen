@@ -19,9 +19,10 @@ writeFile' filePath body =
        counter <- newIORef (1 :: Int)
        body $ \l ->
          do IO.hPutStrLn h l
-            Console.cursorUp 1
             i <- readIORef counter
-            when ((i + 1) `mod` 100 == 0) $ putStrLn $ "Line [" ++ show (i + 1) ++ "]"
+            when ((i + 1) `mod` 100 == 0) $ do
+              Console.cursorUp 1
+              putStrLn $ "Line [" ++ show (i + 1) ++ "]"
             writeIORef counter (i+1)
 
 

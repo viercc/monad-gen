@@ -38,7 +38,7 @@ monadGen ::
   Proxy f ->
   (String -> IO ()) ->
   IO ()
-monadGen _ println = for_ (sort genMonads) docResult
+monadGen _ println = for_ (sort genMonadsModuloIso) docResult
   where
     skolemCache :: Vec (f Int)
     skolemCache = cache skolem
