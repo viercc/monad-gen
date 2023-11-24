@@ -34,6 +34,10 @@ data T a = Ta a a | Tb a a
   deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
 deriving via (Generically1 T) instance PTraversable T
 
+data U a = Ua a a | Ub a a | Uc a a
+  deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
+deriving via (Generically1 U) instance PTraversable U
+
 data Y a = Y | Ya Two Two a | Yb a a
   deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
 deriving via (Generically1 Y) instance PTraversable Y

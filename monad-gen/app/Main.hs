@@ -87,9 +87,10 @@ main = do
   writeFile' "output/Writer.txt" $ monadGen @((,) Two) Proxy
   writeFile' "output/Maybe.txt" $ monadGen @Maybe Proxy
 
-  writeFile' "output/F.txt" $ monadGen @F Proxy
-  writeFile' "output/G.txt" $ monadGen @G Proxy
-  writeFile' "output/H.txt" $ monadGen @H Proxy
-  writeFile' "output/I.txt" $ monadGen @I Proxy
-  writeFile' "output/J.txt" $ monadGen @J Proxy
-  writeFile' "output/T.txt" $ monadGen @T Proxy
+  -- writeFile' "output/F.txt" $ monadGen @F Proxy
+  -- writeFile' "output/G.txt" $ monadGen @G Proxy
+  -- writeFile' "output/H.txt" $ monadGen @H Proxy
+  -- writeFile' "output/I.txt" $ monadGen @I Proxy
+  -- writeFile' "output/J.txt" $ monadGen @J Proxy
+  -- writeFile' "output/T.txt" $ monadGen @T Proxy
+  writeFile' "output/U.txt" $ monadGen @U Proxy
