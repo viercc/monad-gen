@@ -2,7 +2,6 @@
 module MonadLaws where
 
 import Data.PTraversable
-import Data.PTraversable.Extra (eqDefault)
 
 -- Monad properties
 
@@ -12,7 +11,7 @@ checkLeftUnit ::
   (forall a. m (m a) -> m a) ->
   m b ->
   Bool
-checkLeftUnit pure' join' mb = join' (pure' mb) `eqDefault` mb
+checkLeftUnit pure' join' mb = join' (pure' mb) == mb
 
 checkRightUnit ::
   (PTraversable m, Eq b) =>
@@ -20,11 +19,11 @@ checkRightUnit ::
   (forall a. m (m a) -> m a) ->
   m b ->
   Bool
-checkRightUnit pure' join' mb = join' (fmap pure' mb) `eqDefault` mb
+checkRightUnit pure' join' mb = join' (fmap pure' mb) == mb
 
 checkAssoc ::
   (PTraversable m, Eq b) =>
   (forall a. m (m a) -> m a) ->
   m (m (m b)) ->
   Bool
-checkAssoc join' mmmb = join' (join' mmmb) `eqDefault` join' (fmap join' mmmb)
+checkAssoc join' mmmb = join' (join' mmmb) == join' (fmap join' mmmb)

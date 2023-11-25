@@ -53,7 +53,7 @@ envSize = length . envLengths
 makeEnv :: (PTraversable f) => Env f
 makeEnv = Env keys lengths
   where
-    (keys, lengths) = V.unzip $ V.fromList $ sortOn snd [(Set1.key f1, _length f1) | f1 <- shapes]
+    (keys, lengths) = V.unzip $ V.fromList $ sortOn snd [(Set1.key f1, length f1) | f1 <- shapes]
 
 fakeEnv :: [Int] -> Env f
 fakeEnv ns =

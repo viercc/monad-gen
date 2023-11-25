@@ -7,15 +7,12 @@ module Data.PTraversable.Extra(
   toVec, cache,
   skolem, skolem2, skolem3,
   vecSkolem,
-  eqDefault,
   shapes,
 
-  _toList, _length, _all, _indices
+  _indices
 ) where
 
-import           Data.Coerce
-
-import           Data.Monoid (Sum(..), Endo (..), All (..))
+import           Data.Monoid (Sum(..))
 import           Data.Functor.Const
 import           Control.Monad.State
 
@@ -24,6 +21,7 @@ import           GHC.Generics           ((:.:) (..))
 import           Data.LazyVec (Vec)
 import qualified Data.LazyVec as Vec
 import           Data.PTraversable
+import Data.Foldable (toList)
 
 type Fresh = State Int
 
@@ -52,26 +50,14 @@ skolem2 = fmap unComp1 (skolem @(m :.: m))
 skolem3 :: forall m. (PTraversable m) => Vec (m (m (m Int)))
 skolem3 = fmap (fmap unComp1 . unComp1) (skolem @(m :.: m :.: m))
 
-eqDefault :: forall f a. (PTraversable f, Eq a) => f a -> f a -> Bool
-eqDefault = coerce ((==) @(WrappedPTraversable f a))
-
 shapes :: forall f. (PTraversable f) => [f ()]
 shapes = enum1 [()]
 
 cache :: Vec a -> Vec a
 cache = Vec.fromVector . Vec.toVector
 
-toVec :: PTraversable t => t a -> Vec a
-toVec = Vec.vec . _toList
+toVec :: Foldable t => t a -> Vec a
+toVec = Vec.vec . toList
 
-_toList :: PTraversable t => t a -> [a]
-_toList = ($ []) . appEndo . foldMapDefault (Endo . (:))
-
-_length :: PTraversable t => t a -> Int
-_length = getSum . foldMapDefault (const 1)
-
-_all :: PTraversable t => (a -> Bool) -> t a -> Bool
-_all p = getAll . foldMapDefault (All . p)
-
-_indices :: PTraversable t => t a -> t Int
-_indices = runFresh . traverseDefault (const fresh)
+_indices :: Traversable t => t a -> t Int
+_indices = runFresh . traverse (const fresh)

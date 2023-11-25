@@ -1,7 +1,13 @@
+{-# LANGUAGE CPP #-}
+
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
+
+#if MIN_VERSION_GLASGOW_HASKELL(9,8,0,0)
+{-# LANGUAGE TypeAbstractions #-}
+#endif
 
 module Data.PTraversable.Internal.Day (ptraverseDay) where
 

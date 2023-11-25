@@ -238,7 +238,7 @@ debug (Mk m) =
       strs = fmap show args
       maxLen = maximum (length <$> strs)
       mkRhs fx = validate fx <$> IM.lookup (fIdx fx) m
-      validate fx gx = (_all (\(Var x) -> 0 <= x && x < _length fx) gx, gx)
+      validate fx gx = (all (\(Var x) -> 0 <= x && x < length fx) gx, gx)
       prettyRhs Nothing = "undefined"
       prettyRhs (Just (v, gx)) = (if v then "" else "<invalid>") ++ show gx
       mkLine arg rhs = arg ++ replicate (maxLen - length arg) ' '

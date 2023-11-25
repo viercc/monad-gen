@@ -2,7 +2,6 @@
 {-# LANGUAGE QuantifiedConstraints #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -145,12 +144,12 @@ leftAssocB m fffa = applyB m fffa `validatedThen` \ffa -> applyB m ffa
 
 rightAssocB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [JoinKey f] (f a)
 rightAssocB m fffa =
-  traverseDefault (applyB m) fffa `validatedThen` \ffa -> applyB m ffa
+  traverse (applyB m) fffa `validatedThen` \ffa -> applyB m ffa
 
 associativity :: (PTraversable f) => Join f -> f (f (f Int)) -> Maybe [JoinKey f]
 associativity m fffa =
   case (,) <$> leftAssocB m fffa <*> rightAssocB m fffa of
-    Success (leftFa, rightFa) -> if eqDefault leftFa rightFa then Just [] else Nothing
+    Success (leftFa, rightFa) -> if leftFa == rightFa then Just [] else Nothing
     Failure blockades -> Just blockades
 
 choose :: (Foldable t) => t a -> Gen f a
@@ -222,7 +221,7 @@ entry lhs rhs =
     join1 <- gets _join
     case NM.lookup lhs join1 of
       Nothing -> return ()
-      Just rhs' -> guard (eqDefault rhs rhs')
+      Just rhs' -> guard (rhs == rhs')
     let lhsKey = key lhs
         join2 = NM.insert (use rhs) lhsKey join1
 
@@ -248,7 +247,7 @@ entryUU = do
   let f1 = _f1 env
       u = _pure env
       ui = f1 ! fromEnum (key (u ()))
-      uj = fmap (\i -> _length ui * i + i) ui
+      uj = fmap (\i -> length ui * i + i) ui
   entry (Comp1 (u ui)) uj
 
 entryFUG :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
@@ -260,14 +259,14 @@ entryFUG = do
         [ fi | (i, fi) <- Vec.toList (Vec.indexed f1), i /= fromEnum (key (u ()))
         ]
 
-      n = _length (u ())
+      n = length (u ())
       makeJuf :: f Int -> [f Int]
-      makeJuf fi = traverseDefault select fi
+      makeJuf fi = traverse select fi
         where
-          m = _length fi
+          m = length fi
           select x = [y * m + x | y <- [0 .. n - 1]]
       makeJfu :: f Int -> [f Int]
-      makeJfu = traverseDefault select
+      makeJfu = traverse select
         where
           select x = [x * n + y | y <- [0 .. n - 1]]
 
@@ -286,7 +285,7 @@ guess lhsKey = do
   monoidCases <- asks _monoidCases
   rhs <- case Map.lookup lhsKey monoidCases of
     Nothing -> choose (enum1 lhsVars)
-    Just rhsKey -> choose $ traverseDefault (const lhsVars) (unkey1 rhsKey)
+    Just rhsKey -> choose $ traverse (const lhsVars) (unkey1 rhsKey)
   entry lhs rhs
 
 genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidOn f -> [GenState f]
