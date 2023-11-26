@@ -86,7 +86,7 @@ deriving instance (WeakOrd f, Ord (g Var)) => Ord (NatMap f g)
 
 data Entry f g = Entry (Shape f) (g Var)
 
-deriving instance (Show (f Boring), Show (g Var)) => Show (Entry f g)
+deriving instance (Show (f Ignored), Show (g Var)) => Show (Entry f g)
 deriving instance (WeakEq f, Eq (g Var)) => Eq (Entry f g)
 deriving instance (WeakOrd f, Ord (g Var)) => Ord (Entry f g)
 
@@ -213,7 +213,7 @@ identity = Mk $ Map.fromList [ (f1, indices f1) | f1 <- Shape <$> enum1 [()] ]
 compose :: (WeakOrd f, WeakOrd g, Foldable g, Functor h) => NatMap g h -> NatMap f g -> NatMap f h
 compose nm1 nm2 = mapMaybe1 (\gx -> lookup gx nm1) nm2
 
-outerNat :: (Traversable f, Traversable g, PTraversable h, Ord (f (h Boring))) => NatMap f g -> NatMap (Compose f h) (Compose g h)
+outerNat :: (Traversable f, Traversable g, PTraversable h, Ord (f (h Ignored))) => NatMap f g -> NatMap (Compose f h) (Compose g h)
 outerNat nm = fromEntries $
   do Entry (Shape f_) gx <- toEntries nm
      fh_ <- traverse (const hShapes) f_
@@ -234,7 +234,7 @@ innerNat nm = fromEntries $
     es = [ (indices f1, gy) | Entry f1 gy <- toEntries nm ]
     appendVar x (fy, gy) = ((,) x <$> fy, (,) x <$> gy)
 
-horizontalCompose :: (Traversable f, Functor g, Traversable h, Functor j, Ord (f (h Boring)))
+horizontalCompose :: (Traversable f, Functor g, Traversable h, Functor j, Ord (f (h Ignored)))
   => NatMap f g -> NatMap h j -> NatMap (Compose f h) (Compose g j)
 horizontalCompose fgMap hjMap = fromEntries $
   do (fx, gx) <- fgEntries

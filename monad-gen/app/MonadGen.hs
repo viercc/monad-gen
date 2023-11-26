@@ -32,14 +32,14 @@ import Control.Monad.State
 import Data.Either.Validation
 import Data.Foldable
 import qualified Data.LazyVec as Vec
-import qualified Data.Map as Map
+import qualified Data.Map.Lazy as Map
+import qualified Data.Set as Set
 import Data.Ord (comparing)
 import Data.PTraversable
 import Data.PTraversable.Extra
 import GHC.Generics ((:.:) (..))
-import qualified NatMap as NM
-import Set1 (Key (), key, unkey)
-import qualified Set1 as S1
+import Data.FunctorShape
+import qualified Data.NatMap as NM
 
 import MonoidGen (MonoidOn(..), genMonoids)
 import Isomorphism (Iso (..), makePositionIsoFactors)
@@ -49,10 +49,10 @@ import MonadLaws
 
 -- Monad dictionary
 
-data MonadData f = MonadData (f ()) (NM.NatMap (f :.: f) f)
+data MonadData f = MonadData (Shape f) (NM.NatMap (f :.: f) f)
 
-deriving instance (Eq (f ()), Eq (f NM.Var)) => Eq (MonadData f)
-deriving instance (Ord (f ()), Ord (f NM.Var)) => Ord (MonadData f)
+deriving instance (WeakEq f, Eq (f (f Ignored)), Eq (f NM.Var)) => Eq (MonadData f)
+deriving instance (WeakOrd f, Ord (f (f Ignored)), Ord (f NM.Var)) => Ord (MonadData f)
 
 data MonadDict f =
   MonadDict {
@@ -64,13 +64,17 @@ genMonads :: (PTraversable f, forall a. (Show a) => Show (f a)) => [MonadData f]
 genMonads =
   do monDict <- genMonoids
      genState <- genFromMonoid monDict
-     pure $ MonadData (unkey (monoidUnit monDict)) (_join genState)
+     pure $ MonadData (monoidUnit monDict) (_join genState)
 
 applyIso :: PTraversable f => Iso f -> MonadData f -> MonadData f
-applyIso (Iso g g') (MonadData u joinNM) = MonadData (g u) joinNM' 
+applyIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM' 
   where
-    joinNM' = NM.toTotal joinNM (error "non-total join?") $ \join' ->
-      NM.fromNat (g . join' . Comp1 . g' . fmap g' . unComp1)
+    joinNM' =
+      NM.fromEntries $ do
+        (ff1, fx) <- NM.getKeyValue <$> NM.toEntries joinNM
+        let ffx = NM.indices ff1
+        Just e' <- [ NM.makeEntry (Comp1 . g . fmap g . unComp1 $ ffx) (g fx) ]
+        pure e'
 
 genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
 genMonadsModuloIso = runEquivM id min $ do
@@ -84,8 +88,10 @@ genMonadsModuloIso = runEquivM id min $ do
     
 
 makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f
-makeMonadDict (MonadData u joinMap) = 
-    NM.toTotal joinMap (error "well...") $ \theJoin -> MonadDict (<$ u) (theJoin . Comp1)
+makeMonadDict (MonadData (Shape u) joinMap) = 
+    case NM.toTotal joinMap of
+      Nothing -> error "well..."
+      Just theJoin -> MonadDict (<$ u) (NM.runNT theJoin . Comp1)
 
 -- Generation
 
@@ -96,14 +102,12 @@ data Env f = Env
     _f1 :: Vec (f Int),
     _f2 :: Vec (f (f Int)),
     _f3 :: Vec (f (f (f Int))),
-    _monoidCases :: Map.Map (JoinKey f) (Key f)
+    _monoidCases :: Map.Map (Shape (f :.: f)) (Shape f)
   }
 
 type Join f = NM.NatMap (f :.: f) f
 
-type JoinKey f = Key (f :.: f)
-
-type Blockade f = Rel (JoinKey f) (f :.: f :.: f)
+type Blockade f = Rel (Shape (f :.: f)) Int
 
 data GenState f = GenState
   { _join :: Join f,
@@ -116,17 +120,16 @@ debugPrint ::
   IO ()
 debugPrint st = do
   putStrLn "----- join ------"
-  putStrLn (NM.debug (_join st))
+  mapM_ print $ NM.toEntries (_join st)
   putStrLn "----- blockade --"
   putStrLn $ "#blockade = " ++ show (Map.size (_blockade st))
   putStrLn "-----------------"
-  NM.toTotal
-    (_join st)
-    (putStrLn "Not completed yet")
-    $ \join' ->
-      let join'' = join' . Comp1
+  case NM.toTotal (_join st) of
+    Just join' ->
+      let join'' = NM.runNT join' . Comp1
           assoc = flip all skolem3 $ checkAssoc join''
        in unless assoc (fail "!?!?")
+    Nothing -> putStrLn "incomplete"
 
 -- (>>=) on Validation
 validatedThen :: Validation e a -> (a -> Validation e b) -> Validation e b
@@ -134,19 +137,19 @@ validatedThen ea k = case ea of
   Failure e -> Failure e
   Success a -> k a
 
-applyB :: (PTraversable f) => Join f -> f (f a) -> Validation [JoinKey f] (f a)
+applyB :: (PTraversable f) => Join f -> f (f a) -> Validation [Shape (f :.: f)] (f a)
 applyB m ffa = maybe (Failure [k]) Success $ NM.lookup (Comp1 ffa) m
   where
-    k = key (Comp1 ffa)
+    k = Shape (Comp1 ffa)
 
-leftAssocB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [JoinKey f] (f a)
+leftAssocB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [Shape (f :.: f)] (f a)
 leftAssocB m fffa = applyB m fffa `validatedThen` \ffa -> applyB m ffa
 
-rightAssocB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [JoinKey f] (f a)
+rightAssocB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [Shape (f :.: f)] (f a)
 rightAssocB m fffa =
   traverse (applyB m) fffa `validatedThen` \ffa -> applyB m ffa
 
-associativity :: (PTraversable f) => Join f -> f (f (f Int)) -> Maybe [JoinKey f]
+associativity :: (PTraversable f) => Join f -> f (f (f Int)) -> Maybe [Shape (f :.: f)]
 associativity m fffa =
   case (,) <$> leftAssocB m fffa <*> rightAssocB m fffa of
     Success (leftFa, rightFa) -> if leftFa == rightFa then Just [] else Nothing
@@ -165,18 +168,14 @@ buildInitialEnv monDict = Env {
   }
   where
     f1 = cache skolem :: Vec (f Int)
-    keys1 = [minBound .. maxBound] :: [Key f]
     monoidCases = Map.fromList
-      [ (key (Comp1 (void y <$ x)), monoidMult monDict xk yk)
-        | xk <- keys1,
-          let x = f1 ! fromEnum xk,
-          yk <- keys1,
-          let y = f1 ! fromEnum yk ]
+      [ (Shape (Comp1 (y <$ x)), monoidMult monDict (Shape x) (Shape y))
+        | x <- toList f1,
+          y <- toList f1 ]
 
 _pure :: PTraversable f => Env f -> a -> f a
-_pure env a = a <$ (_f1 env ! fromEnum uKey)
-  where
-    uKey = monoidUnit (_baseMonoid env)
+_pure env = case monoidUnit (_baseMonoid env) of
+  Shape u -> (<$ u)
 
 runGen :: forall f r. (PTraversable f) => MonoidOn f -> Gen f r -> [(r, GenState f)]
 runGen monDict mr = runStateT (runReaderT mr env) state0
@@ -185,11 +184,10 @@ runGen monDict mr = runStateT (runReaderT mr env) state0
     env = buildInitialEnv monDict
 
     f3 = _f3 env
-    k3 = Vec.vec [minBound .. maxBound] :: Vec (Key (f :.: f :.: f))
 
     join0 = NM.empty
-    blockade = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse newConstraint (Vec.zip f3 k3)
-    newConstraint (fa, k) = foldMap (\blockKey -> Map.singleton blockKey (S1.singleton k)) <$> associativity join0 fa
+    blockade = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse newConstraint (Vec.indexed f3)
+    newConstraint (k, fa) = foldMap (\blockKey -> singletonRel blockKey k) <$> associativity join0 fa
 
     state0 :: GenState f
     state0 =
@@ -197,18 +195,6 @@ runGen monDict mr = runStateT (runReaderT mr env) state0
         { _join = join0,
           _blockade = blockade
         }
-
-_unkey1 :: PTraversable f => Env f -> Key f -> f Int
-_unkey1 env k = _f1 env Vec.! fromEnum k
-
-_unkey2 :: PTraversable f => Env f -> Key (f :.: f) -> f (f Int)
-_unkey2 env k = _f2 env Vec.! fromEnum k
-
-_unkey3 :: PTraversable f => Env f -> Key (f :.: f :.: f) -> f (f (f Int))
-_unkey3 env k = _f3 env Vec.! fromEnum k
-
-use :: (Functor f) => f Int -> Vec a -> f a
-use template as = (as !) <$> template
 
 entry ::
   forall f.
@@ -222,16 +208,15 @@ entry lhs rhs =
     case NM.lookup lhs join1 of
       Nothing -> return ()
       Just rhs' -> guard (rhs == rhs')
-    let lhsKey = key lhs
-        join2 = NM.insert (use rhs) lhsKey join1
+    let join2 = NM.insert (NM.unsafeMakeEntry lhs rhs) join1
 
-    unkey3 <- asks _unkey3
+    f3 <- asks _f3
     blockade <- gets _blockade
 
     -- update assocL
-    let (blockedAssocs, blockade') = popRel lhsKey blockade
-        newConstraint k3 = foldMap (\nextLhsKey -> singletonRel nextLhsKey k3) <$> associativity join2 (unkey3 k3)
-    blockade'' <- case traverse newConstraint (S1.toList blockedAssocs) of
+    let (blockedAssocs, blockade') = popRel (Shape lhs) blockade
+        newConstraint k = foldMap (\nextLhsKey -> singletonRel nextLhsKey k) <$> associativity join2 (f3 ! k)
+    blockade'' <- case traverse newConstraint (Set.toList blockedAssocs) of
       Nothing -> mzero
       Just newBlockades -> pure $ foldl' unionRel blockade' newBlockades
 
@@ -244,48 +229,40 @@ entry lhs rhs =
 entryUU :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
 entryUU = do
   env <- ask
-  let f1 = _f1 env
-      u = _pure env
-      ui = f1 ! fromEnum (key (u ()))
+  let ui = _indices (_pure env ())
+      uuj = fmap (\i -> fmap (\j -> length ui * i + j) ui) ui
       uj = fmap (\i -> length ui * i + i) ui
-  entry (Comp1 (u ui)) uj
+  entry (Comp1 uuj) uj
 
 entryFUG :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
 entryFUG = do
   env <- ask
   let f1 = _f1 env
-      u = _pure env
-      targets =
-        [ fi | (i, fi) <- Vec.toList (Vec.indexed f1), i /= fromEnum (key (u ()))
-        ]
+      ui = _indices (_pure env ())
+      n = length ui
+      targets = filter (\fj -> Shape fj /= Shape ui) $ Vec.toList f1
 
-      n = length (u ())
-      makeJuf :: f Int -> [f Int]
-      makeJuf fi = traverse select fi
-        where
-          m = length fi
-          select x = [y * m + x | y <- [0 .. n - 1]]
-      makeJfu :: f Int -> [f Int]
-      makeJfu = traverse select
-        where
-          select x = [x * n + y | y <- [0 .. n - 1]]
+      prod gx hy =
+        let w = length hy
+        in  fmap (\x -> fmap (\y -> w * x + y) hy) gx
 
-  for_ targets $ \fi -> do
-    juf <- choose $ makeJuf fi
-    entry (Comp1 (u fi)) juf
-    jfu <- choose $ makeJfu fi
-    entry (Comp1 (u <$> fi)) jfu
+  for_ targets $ \fj -> do
+    let m = length fj
+    let uf = Comp1 (prod ui fj)
+    let fu = Comp1 (prod fj ui)
+    joinUF <- choose $ traverse (\j -> [ i * m + j | i <- [0 .. n - 1] ]) fj
+    entry uf joinUF
+    joinFU <- choose $ traverse (\j -> [ j * n + i | i <- [0 .. n - 1] ]) fj
+    entry fu joinFU
 
-guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => JoinKey f -> Gen f ()
+guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Shape (f :.: f) -> Gen f ()
 guess lhsKey = do
-  unkey1 <- asks _unkey1
-  unkey2 <- asks _unkey2
-  let lhs = Comp1 $ unkey2 lhsKey
+  let lhs = keyIndices lhsKey
       lhsVars = toVec lhs
   monoidCases <- asks _monoidCases
   rhs <- case Map.lookup lhsKey monoidCases of
     Nothing -> choose (enum1 lhsVars)
-    Just rhsKey -> choose $ traverse (const lhsVars) (unkey1 rhsKey)
+    Just rhsKey -> choose $ traverse (const lhsVars) (keyIndices rhsKey)
   entry lhs rhs
 
 genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidOn f -> [GenState f]
@@ -299,6 +276,9 @@ genFromMonoid mon = snd <$> runGen mon (entryUU >> entryFUG >> loop)
 
 -- * Utilities
 
+keyIndices :: Traversable f => Shape f -> f Int
+keyIndices (Shape f1) = _indices f1
+
 -- unsafe access
 
 (!) :: Vec a -> Int -> a
@@ -306,22 +286,22 @@ genFromMonoid mon = snd <$> runGen mon (entryUU >> entryFUG >> loop)
 
 -- Relation data structure
 
-type Rel k f = Map.Map k (S1.Set1 f)
+type Rel a b = Map.Map a (Set.Set b)
 
-singletonRel :: k -> Key f -> Rel k f
-singletonRel k fKey = Map.singleton k (S1.singleton fKey)
+singletonRel :: a -> b -> Rel a b
+singletonRel a b = Map.singleton a (Set.singleton b)
 
-unionRel :: (Ord k) => Rel k f -> Rel k f -> Rel k f
-unionRel = Map.unionWith S1.union
+unionRel :: (Ord a, Ord b) => Rel a b -> Rel a b -> Rel a b
+unionRel = Map.unionWith Set.union
 
-popRel :: (Ord k) => k -> Rel k f -> (S1.Set1 f, Rel k f)
+popRel :: (Ord a, Ord b) => a -> Rel a b -> (Set.Set b, Rel a b)
 popRel k m = case Map.lookup k m of
-  Nothing -> (S1.empty, m)
+  Nothing -> (Set.empty, m)
   Just s -> (s, Map.delete k m)
 
-mostRelated :: (Ord k) => Rel k f -> Maybe k
+mostRelated :: (Ord a) => Rel a b -> Maybe a
 mostRelated m
   | Map.null m = Nothing
   | otherwise = Just kTop
   where
-    (kTop, _) = maximumBy (comparing (S1.size . snd)) $ Map.toList m
+    (kTop, _) = maximumBy (comparing (Set.size . snd)) $ Map.toList m

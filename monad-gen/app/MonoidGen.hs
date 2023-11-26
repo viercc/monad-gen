@@ -22,16 +22,16 @@ import Data.PTraversable.Extra
 
 import qualified Data.Vector as V
 
-import Set1 (Key, key)
-
 import Data.Ord (comparing)
 import Data.Foldable (Foldable(..), for_)
 
--- Generate all possible monoids on @f ()@, compatible with @Monad f@, up to iso
+import Data.FunctorShape
+
+-- Generate all possible monoids on @Shape f@, compatible with @Monad f@, up to iso
 
 data MonoidOn f = MonoidOn
-  { monoidUnit :: Key f,
-    monoidMult :: Key f -> Key f -> Key f
+  { monoidUnit :: Shape f,
+    monoidMult :: Shape f -> Shape f -> Shape f
   }
 
 genMonoids :: (PTraversable f) => [MonoidOn f]
@@ -43,7 +43,7 @@ data Def (f :: Type -> Type) = Def !Int !(V.Vector Int)
   deriving (Show)
 
 data Env f = Env {
-    envKeys :: V.Vector (Key f),
+    envKeys :: V.Vector (Shape f),
     envLengths :: V.Vector Int
     }
 
@@ -53,7 +53,7 @@ envSize = length . envLengths
 makeEnv :: (PTraversable f) => Env f
 makeEnv = Env keys lengths
   where
-    (keys, lengths) = V.unzip $ V.fromList $ sortOn snd [(Set1.key f1, length f1) | f1 <- shapes]
+    (keys, lengths) = V.unzip $ V.fromList $ sortOn snd [(Shape f1, length f1) | f1 <- shapes]
 
 fakeEnv :: [Int] -> Env f
 fakeEnv ns =
@@ -62,7 +62,7 @@ fakeEnv ns =
         keys = undefined <$> ls
     in Env keys ls
 
-fromDef :: Env f -> Def f -> MonoidOn f
+fromDef :: WeakOrd f => Env f -> Def f -> MonoidOn f
 fromDef env (Def e mult) = MonoidOn (toKey e) op
   where
     n = envSize env

@@ -14,10 +14,8 @@ import Data.List (sort)
 import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.Proxy
-import GHC.Generics
 import MonadLaws
 import MonadGen
-import qualified NatMap as NM
 
 import Data.Two
 import Targets
@@ -49,8 +47,8 @@ monadGen _ println = for_ (sort genMonadsModuloIso) docResult
     skolem3Cache :: Vec (f (f (f Int)))
     skolem3Cache = cache skolem3
 
-    validate :: (forall a. a -> f a) -> (forall a. f (f a) -> f a) -> IO ()
-    validate pure' join' =
+    validate :: MonadDict f -> IO ()
+    validate MonadDict{ _monadPure = pure', _monadJoin = join' } =
       if and allLaws
         then return ()
         else fail $ "[leftUnit, rightUnit, assoc] = " ++ show allLaws
@@ -68,29 +66,27 @@ monadGen _ println = for_ (sort genMonadsModuloIso) docResult
         maxLen = maximum $ fmap fst strs
         pad (n, s) = "join $ " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
 
-    docResult (MonadData u joinNM) =
-      NM.toTotal joinNM (fail failMsg) $ \join' ->
-        do
-          validate (<$ u) (join' . Comp1)
-          println "{"
-          println $ indent <> "pure 0 = " <> show (0 <$ u :: f Int)
-          let docLine s ffx = indent <> s <> show (join' (Comp1 ffx))
-          mapM_ println $
-            Vec.zipWith docLine joinArgsCache skolem2Cache
-          println "}\n"
+    docResult monadData = do
+        validate dict
+        println "{"
+        println $ indent <> "pure 0 = " <> show (_monadPure dict (0 :: Int))
+        let docLine s ffx = indent <> s <> show (_monadJoin dict ffx)
+        mapM_ println $
+          Vec.zipWith docLine joinArgsCache skolem2Cache
+        println "}\n"
       where
         indent = "    "
-        failMsg = "Non-total join:" ++ show (u, NM.debug joinNM)
+        dict = makeMonadDict monadData
 
 main :: IO ()
 main = do
   writeFile' "output/Writer.txt" $ monadGen @((,) Two) Proxy
   writeFile' "output/Maybe.txt" $ monadGen @Maybe Proxy
 
-  -- writeFile' "output/F.txt" $ monadGen @F Proxy
-  -- writeFile' "output/G.txt" $ monadGen @G Proxy
-  -- writeFile' "output/H.txt" $ monadGen @H Proxy
-  -- writeFile' "output/I.txt" $ monadGen @I Proxy
-  -- writeFile' "output/J.txt" $ monadGen @J Proxy
-  -- writeFile' "output/T.txt" $ monadGen @T Proxy
+  writeFile' "output/F.txt" $ monadGen @F Proxy
+  writeFile' "output/G.txt" $ monadGen @G Proxy
+  writeFile' "output/H.txt" $ monadGen @H Proxy
+  writeFile' "output/I.txt" $ monadGen @I Proxy
+  writeFile' "output/J.txt" $ monadGen @J Proxy
+  writeFile' "output/T.txt" $ monadGen @T Proxy
   writeFile' "output/U.txt" $ monadGen @U Proxy

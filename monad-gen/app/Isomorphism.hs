@@ -6,14 +6,14 @@ module Isomorphism(
     makeShapeIsoFactors
 ) where
 
-import qualified Data.LazyVec as Vec
 import qualified Data.Vector as V
 
 import qualified Data.Map as Map
 import Data.PTraversable
 import Data.PTraversable.Extra
-import NatMap (NatMap)
-import qualified NatMap
+
+import Data.NatMap (NatMap)
+import qualified Data.NatMap as NatMap
 import Data.Functor (void)
 import Data.Maybe (mapMaybe)
 import Data.Foldable (toList)
@@ -69,13 +69,12 @@ makeShapeIsoFactors = map (mapMaybe buildIso . adjacents) groups
             let fj = ss V.! j
                 fk = ss V.! k
                 nt = insertSym fj fk . insertSym fk fj $ idNat
-            in NatMap.toTotal nt Nothing $ \g -> Just (Iso g g)
+            in (\(NatMap.NT g) -> Iso g g) <$> NatMap.toTotal nt
 
 adjacents :: [b] -> [(b,b)]
 adjacents bs = zip bs (drop 1 bs)
 
 insertSym :: (PTraversable f) => f () -> f () -> NatMap f f -> NatMap f f
-insertSym fKey fVal = NatMap.alter (\as _ -> tryFillUp as fVal) (NatMap.key fKey)
-
-tryFillUp :: (Traversable f) => Vec.Vec a -> f b -> Maybe (f a)
-tryFillUp as f = traverse (as Vec.!?) (_indices f)
+insertSym fKey fVal = case NatMap.makeEntry (_indices fKey) (_indices fVal) of
+    Nothing -> id
+    Just e -> NatMap.insert e

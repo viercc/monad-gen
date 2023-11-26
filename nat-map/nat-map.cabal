@@ -21,8 +21,6 @@ library
     exposed-modules:
       Data.FunctorShape,
       Data.NatMap,
-      Data.ShapeSet,
-      Data.ShapeMap
 
     -- Modules included in this library but not exported.
     -- other-modules:
