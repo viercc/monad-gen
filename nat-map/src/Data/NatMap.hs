@@ -6,6 +6,7 @@
 {-# LANGUAGE KindSignatures      #-}
 {-# LANGUAGE StandaloneDeriving  #-}
 {-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE TypeOperators #-}
 module Data.NatMap (
     NatMap(),
 
@@ -46,8 +47,10 @@ module Data.NatMap (
     -- * Totality
 
     fullSize, isTotal,
-    NT(..),
     toTotal,
+
+    -- * Re-exports
+    (:~>)(..), wrapNT, unwrapNT,
 
     -- * Utility
     Var(), indices,
@@ -73,8 +76,26 @@ import Data.PTraversable
 
 import Data.FunctorShape
 
--- | Map representing natural transformation
---   @(forall x. f x -> g x)@ instead of usual function
+import Control.Natural
+
+-- | Data structure which represents partial natural transformations,
+--   like usual 'Map' which represents partial functions.
+--
+-- @'Map' k v@ can be seen as a partial function.
+--
+-- @
+-- m :: Map k v
+-- (\k -> Data.Map.lookup k m) :: k -> Maybe v
+-- @
+-- 
+-- Analogically, a @'NatMap' f g@ can be seen as a partial natural transformation,
+-- in the same sense @Map@ represents a partial function.
+-- 
+-- @
+-- nm :: NatMap f g
+-- (\fa -> 'lookup' fa nm) :: forall a. f a -> Maybe (g a)
+-- @
+-- 
 newtype NatMap (f :: Type -> Type) (g :: Type -> Type)
   = Mk (Map.Map (Shape f) (g Var))
 type role NatMap nominal representational
@@ -258,9 +279,7 @@ fullSize _ = cardinality1 @f Proxy 1
 isTotal :: (PTraversable f) => NatMap f g -> Bool
 isTotal nm = size nm == fullSize nm
 
-newtype NT f g = NT { runNT :: forall x. f x -> g x }
-
-toTotal :: (PTraversable f, Functor g) => NatMap f g -> Maybe (NT f g)
+toTotal :: (PTraversable f, Functor g) => NatMap f g -> Maybe (f :~> g)
 toTotal nm
   | isTotal nm = Just (NT (\fx -> fromMaybe err (lookup fx nm)))
   | otherwise  = Nothing

@@ -91,7 +91,7 @@ makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f
 makeMonadDict (MonadData (Shape u) joinMap) = 
     case NM.toTotal joinMap of
       Nothing -> error "well..."
-      Just theJoin -> MonadDict (<$ u) (NM.runNT theJoin . Comp1)
+      Just theJoin -> MonadDict (<$ u) (NM.unwrapNT theJoin . Comp1)
 
 -- Generation
 
@@ -126,7 +126,7 @@ debugPrint st = do
   putStrLn "-----------------"
   case NM.toTotal (_join st) of
     Just join' ->
-      let join'' = NM.runNT join' . Comp1
+      let join'' = NM.unwrapNT join' . Comp1
           assoc = flip all skolem3 $ checkAssoc join''
        in unless assoc (fail "!?!?")
     Nothing -> putStrLn "incomplete"
