@@ -13,6 +13,7 @@ module MonadGen
     MonadDict(..),
     genMonads,
     genMonadsModuloIso,
+    genMonadsIsoGroups,
     makeMonadDict,
 
     -- * Debug
@@ -41,7 +42,7 @@ import GHC.Generics ((:.:) (..))
 import Data.FunctorShape
 import qualified Data.NatMap as NM
 
-import MonoidGen (MonoidOn(..), genMonoids)
+import MonoidGen (MonoidDict(..), genMonoids, makeMonoidDict)
 import Isomorphism (Iso (..), makePositionIsoFactors)
 import Data.Equivalence.Monad
 
@@ -62,9 +63,8 @@ data MonadDict f =
 
 genMonads :: (PTraversable f, forall a. (Show a) => Show (f a)) => [MonadData f]
 genMonads =
-  do monDict <- genMonoids
-     genState <- genFromMonoid monDict
-     pure $ MonadData (monoidUnit monDict) (_join genState)
+  do monDict <- makeMonoidDict <$> genMonoids
+     genFromMonoid monDict
 
 applyIso :: PTraversable f => Iso f -> MonadData f -> MonadData f
 applyIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM' 
@@ -77,15 +77,35 @@ applyIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM'
         pure e'
 
 genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
-genMonadsModuloIso = runEquivM id min $ do
+genMonadsModuloIso = 
+  do monDict <- makeMonoidDict <$> genMonoids
+     uniqueByIso isoGenerators $ genFromMonoid monDict
+  where
+    isoGenerators = concat makePositionIsoFactors :: [Iso f]
+
+genMonadsIsoGroups :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [[MonadData f]]
+genMonadsIsoGroups = 
+  do monDict <- makeMonoidDict <$> genMonoids
+     isoGroup <- groupByIso isoGenerators $ genFromMonoid monDict
+     pure (Set.toList isoGroup)
+  where
+    isoGenerators = concat makePositionIsoFactors :: [Iso f]
+
+uniqueByIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a))
+  => [Iso f] -> [MonadData f] -> [MonadData f]
+uniqueByIso isoGenerators allMonadData = runEquivM id min $ do
     for_ allMonadData $ \mm -> equate mm mm
     for_ allMonadData $ \mm ->
-        equateAll (mm : [ applyIso iso mm | iso <- isoGenerators ])
+      equateAll (mm : [ applyIso iso mm | iso <- isoGenerators ])
     classes >>= traverse desc
-  where
-    allMonadData = genMonads :: [MonadData f]
-    isoGenerators = concat makePositionIsoFactors :: [Iso f]
-    
+
+groupByIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a))
+  => [Iso f] -> [MonadData f] -> [Set.Set (MonadData f)]
+groupByIso isoGenerators allMonadData = runEquivM Set.singleton Set.union $ do
+    for_ allMonadData $ \mm -> equate mm mm
+    for_ allMonadData $ \mm ->
+      equateAll (mm : [ applyIso iso mm | iso <- isoGenerators ])
+    classes >>= traverse desc
 
 makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f
 makeMonadDict (MonadData (Shape u) joinMap) = 
@@ -98,7 +118,7 @@ makeMonadDict (MonadData (Shape u) joinMap) =
 type Gen f = ReaderT (Env f) (StateT (GenState f) [])
 
 data Env f = Env
-  { _baseMonoid :: MonoidOn f,
+  { _baseMonoid :: MonoidDict f,
     _f1 :: Vec (f Int),
     _f2 :: Vec (f (f Int)),
     _f3 :: Vec (f (f (f Int))),
@@ -158,7 +178,7 @@ associativity m fffa =
 choose :: (Foldable t) => t a -> Gen f a
 choose = lift . lift . toList
 
-buildInitialEnv :: forall f. PTraversable f => MonoidOn f -> Env f
+buildInitialEnv :: forall f. PTraversable f => MonoidDict f -> Env f
 buildInitialEnv monDict = Env {
     _baseMonoid = monDict,
     _f1 = f1,
@@ -177,7 +197,7 @@ _pure :: PTraversable f => Env f -> a -> f a
 _pure env = case monoidUnit (_baseMonoid env) of
   Shape u -> (<$ u)
 
-runGen :: forall f r. (PTraversable f) => MonoidOn f -> Gen f r -> [(r, GenState f)]
+runGen :: forall f r. (PTraversable f) => MonoidDict f -> Gen f r -> [(r, GenState f)]
 runGen monDict mr = runStateT (runReaderT mr env) state0
   where
     env :: Env f
@@ -265,14 +285,15 @@ guess lhsKey = do
     Just rhsKey -> choose $ traverse (const lhsVars) (keyIndices rhsKey)
   entry lhs rhs
 
-genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidOn f -> [GenState f]
-genFromMonoid mon = snd <$> runGen mon (entryUU >> entryFUG >> loop)
+genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidDict f -> [MonadData f]
+genFromMonoid mon = postproc . snd <$> runGen mon (entryUU >> entryFUG >> loop)
   where
     loop = do
       blockade <- gets _blockade
       case mostRelated blockade of
         Nothing -> pure ()
         Just lhsKey -> guess lhsKey >> loop
+    postproc finalState = MonadData (monoidUnit mon) (_join finalState)
 
 -- * Utilities
 

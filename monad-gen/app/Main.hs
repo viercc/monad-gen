@@ -10,7 +10,6 @@ module Main (main) where
 
 import Data.Foldable
 import qualified Data.LazyVec as Vec
-import Data.List (sort)
 import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.Proxy
@@ -36,7 +35,7 @@ monadGen ::
   Proxy f ->
   (String -> IO ()) ->
   IO ()
-monadGen _ println = for_ (sort genMonadsModuloIso) docResult
+monadGen _ println = for_ (zip [1 :: Int ..] genMonadsModuloIso) docResult
   where
     skolemCache :: Vec (f Int)
     skolemCache = cache skolem
@@ -66,9 +65,9 @@ monadGen _ println = for_ (sort genMonadsModuloIso) docResult
         maxLen = maximum $ fmap fst strs
         pad (n, s) = "join $ " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
 
-    docResult monadData = do
+    docResult (monadIndex, monadData) = do
         validate dict
-        println "{"
+        println $ "Monad_" ++ show monadIndex ++ " {"
         println $ indent <> "pure 0 = " <> show (_monadPure dict (0 :: Int))
         let docLine s ffx = indent <> s <> show (_monadJoin dict ffx)
         mapM_ println $

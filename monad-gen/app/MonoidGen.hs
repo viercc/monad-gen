@@ -1,14 +1,18 @@
 {-# LANGUAGE KindSignatures #-}
 module MonoidGen(
   -- * Generate Monoids
-  MonoidOn(..), genMonoids,
+  MonoidDict(..),
+  genMonoids,
+  
+  MonoidData(..), RawMonoidData(..),
+  makeMonoidDict,
 
   -- * Internals
-  Env, makeEnv, fakeEnv, fromDef, genMonoidDefs
+  Signature,
+  makeEnv, fakeEnv, genMonoidDefs
 ) where
 
 import Data.Equivalence.Monad
-import Data.Kind (Type)
 import Data.List (sortOn, sort, maximumBy)
 import Data.Maybe (mapMaybe)
 
@@ -29,57 +33,62 @@ import Data.FunctorShape
 
 -- Generate all possible monoids on @Shape f@, compatible with @Monad f@, up to iso
 
-data MonoidOn f = MonoidOn
+data MonoidDict f = MonoidDict
   { monoidUnit :: Shape f,
     monoidMult :: Shape f -> Shape f -> Shape f
   }
 
-genMonoids :: (PTraversable f) => [MonoidOn f]
-genMonoids = fromDef env <$> genMonoidDefs env
+data MonoidData f = MonoidData
+  {
+    _elemTable :: V.Vector (Shape f),
+    _rawMonoidData :: RawMonoidData
+  }
+
+genMonoids :: (PTraversable f) => [MonoidData f]
+genMonoids = MonoidData env <$> genMonoidDefs sig
   where
-    env = makeEnv
+    (env, sig) = makeEnv
 
-data Def (f :: Type -> Type) = Def !Int !(V.Vector Int)
-  deriving (Show)
+data RawMonoidData = RawMonoidData {
+  _unitElem :: Int,
+  _multTable :: V.Vector Int
+  }
+  deriving Show
 
-data Env f = Env {
-    envKeys :: V.Vector (Shape f),
-    envLengths :: V.Vector Int
-    }
+type Signature = V.Vector Int
 
-envSize :: Env f -> Int
-envSize = length . envLengths
-
-makeEnv :: (PTraversable f) => Env f
-makeEnv = Env keys lengths
+makeEnv :: (PTraversable f) => (V.Vector (Shape f), Signature)
+makeEnv = (keys, lengths)
   where
     (keys, lengths) = V.unzip $ V.fromList $ sortOn snd [(Shape f1, length f1) | f1 <- shapes]
 
-fakeEnv :: [Int] -> Env f
-fakeEnv ns =
-    let ns' = sort ns
-        ls = V.fromList ns'
-        keys = undefined <$> ls
-    in Env keys ls
+fakeEnv :: [Int] -> Signature
+fakeEnv ns = V.fromList (sort ns)
 
-fromDef :: WeakOrd f => Env f -> Def f -> MonoidOn f
-fromDef env (Def e mult) = MonoidOn (toKey e) op
+makeMonoidDict :: WeakOrd f => MonoidData f -> MonoidDict f
+makeMonoidDict
+  MonoidData{
+    _elemTable = env,
+    _rawMonoidData = RawMonoidData {
+      _unitElem = e,
+      _multTable = mult
+    }
+  } = MonoidDict (env V.! e) op
   where
-    n = envSize env
-    revTable = Map.fromList [(f_, i) | (i, f_) <- V.toList (V.indexed (envKeys env))]
-    toKey = (envKeys env V.!)
+    n = V.length env
+    revTable = Map.fromList [(f_, i) | (i, f_) <- V.toList (V.indexed env)]
     fromKey = (revTable Map.!)
-    op f1 f2 = toKey $ mult V.! (fromKey f1 * n + fromKey f2)
+    op f1 f2 = env V.! (mult V.! (fromKey f1 * n + fromKey f2))
 
-genMonoidDefs :: Env f -> [Def f]
+genMonoidDefs :: Signature -> [RawMonoidData]
 genMonoidDefs env = do
   e <- unitCandidates
   let mults = mapMaybe (multMapToVec n) (gen n numZeroes e)
   mult <- upToIso env e mults
-  pure (Def e mult)
+  pure (RawMonoidData e mult)
   where
-    n = envSize env
-    lengths = V.toList $ envLengths env
+    n = V.length env
+    lengths = V.toList env
     numZeroes = length $ takeWhile (== 0) lengths
     unitCandidates =
       [x | (x, lenX', lenX) <- zip3 [0 ..] (0 : lengths) lengths, lenX' < lenX]
@@ -183,7 +192,7 @@ gen n numZeroes e = go initialTable initialEqn initialBlocker
     guess _ y = if y < numZeroes then zeroes else xs
 
 
-upToIso :: Env f -> Int -> [V.Vector Int] -> [V.Vector Int]
+upToIso :: Signature -> Int -> [V.Vector Int] -> [V.Vector Int]
 upToIso env e tabs = runEquivM id min $ do
   for_ tabs $ \mm -> do
     equate mm mm
@@ -191,16 +200,16 @@ upToIso env e tabs = runEquivM id min $ do
     for_ tabs $ \mm -> equate mm (applyTranspose n tr mm)
   classes >>= traverse desc
   where
-    n = envSize env
+    n = V.length env
 
 data Transposition = Transpose Int Int
   deriving (Show)
 
-isoGenerators :: Env f -> Int -> [Transposition]
+isoGenerators :: Signature -> Int -> [Transposition]
 isoGenerators env e =
   [Transpose i j | ((i, n), (j, m)) <- zip lengths' (drop 1 lengths'), n == m]
   where
-    lengths = V.toList $ V.indexed (envLengths env)
+    lengths = V.toList $ V.indexed env
     lengths' = filter ((/= e) . fst) lengths
 
 applyTranspose :: Int -> Transposition -> V.Vector Int -> V.Vector Int
