@@ -1,4 +1,4 @@
-{
+Monad_1 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -17,7 +17,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_2 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -36,7 +36,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_3 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -55,7 +55,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_4 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -74,7 +74,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_5 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -93,7 +93,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_6 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -112,7 +112,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
 }
 
-{
+Monad_7 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -131,7 +131,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
 }
 
-{
+Monad_8 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -150,7 +150,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
 }
 
-{
+Monad_9 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -169,7 +169,45 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
 }
 
-{
+Monad_10 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+Monad_11 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jb 0
+    join $ Jc (Jb 0) (Jb 1)     = Jb 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+Monad_12 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -188,26 +226,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
 }
 
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jb 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jb 0
-    join $ Jc (Jb 0) (Jb 1)     = Jb 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
-}
-
-{
+Monad_13 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -226,7 +245,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_14 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -245,7 +264,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_15 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -264,45 +283,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jb 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jb 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
+Monad_16 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -321,7 +302,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_17 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -340,7 +321,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_18 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -359,26 +340,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
 }
 
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jb 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
-    join $ Jc (Jb 0) (Ja 1)     = Jb 0
-    join $ Jc (Jb 0) (Jb 1)     = Jb 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
-}
-
-{
+Monad_19 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -397,7 +359,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_20 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -416,7 +378,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_21 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -435,7 +397,45 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
 }
 
-{
+Monad_22 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_23 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jb 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_24 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -454,7 +454,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_25 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -473,7 +473,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
 }
 
-{
+Monad_26 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -492,140 +492,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
+Monad_27 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -644,83 +511,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
-}
-
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 0
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
-    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
-}
-
-{
+Monad_28 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -739,26 +530,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
-    pure 0 = Ja 0
-    join $ Ja (Ja 0)            = Ja 0
-    join $ Ja (Jb 0)            = Jb 0
-    join $ Ja (Jc 0 1)          = Jc 0 1
-    join $ Jb (Ja 0)            = Jb 0
-    join $ Jb (Jb 0)            = Jb 0
-    join $ Jb (Jc 0 1)          = Jc 0 1
-    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Ja 0) (Jb 1)     = Jb 1
-    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
-    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
-    join $ Jc (Jb 0) (Jb 1)     = Jb 1
-    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
-    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
-    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
-    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
-}
-
-{
+Monad_29 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -777,7 +549,235 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
 }
 
-{
+Monad_30 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 1
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jb 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jb 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 1 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 2 3
+}
+
+Monad_31 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+Monad_32 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jb 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jb 0
+}
+
+Monad_33 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_34 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_35 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_36 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_37 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_38 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_39 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 0
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_40 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 0
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
+}
+
+Monad_41 {
+    pure 0 = Ja 0
+    join $ Ja (Ja 0)            = Ja 0
+    join $ Ja (Jb 0)            = Jb 0
+    join $ Ja (Jc 0 1)          = Jc 0 1
+    join $ Jb (Ja 0)            = Jb 0
+    join $ Jb (Jb 0)            = Jb 0
+    join $ Jb (Jc 0 1)          = Jc 0 0
+    join $ Jc (Ja 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Ja 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jb 0) (Ja 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jb 1)     = Jc 0 1
+    join $ Jc (Jb 0) (Jc 1 2)   = Jc 0 1
+    join $ Jc (Jc 0 1) (Ja 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jb 2)   = Jc 0 2
+    join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
+}
+
+Monad_42 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -796,7 +796,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_43 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -815,7 +815,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_44 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -834,7 +834,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_45 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -853,7 +853,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_46 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -872,7 +872,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_47 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -891,7 +891,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_48 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -910,7 +910,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_49 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -929,7 +929,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_50 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -948,7 +948,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_51 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -967,7 +967,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_52 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -986,7 +986,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_53 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1005,7 +1005,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_54 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1024,7 +1024,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_55 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1043,7 +1043,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_56 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1062,7 +1062,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
 }
 
-{
+Monad_57 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1081,7 +1081,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
 }
 
-{
+Monad_58 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1100,7 +1100,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_59 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1119,7 +1119,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_60 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1138,7 +1138,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_61 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1157,7 +1157,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_62 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1176,7 +1176,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_63 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1195,7 +1195,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 0
 }
 
-{
+Monad_64 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1214,7 +1214,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 2
 }
 
-{
+Monad_65 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1233,7 +1233,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_66 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1252,7 +1252,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 1
 }
 
-{
+Monad_67 {
     pure 0 = Ja 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Jb 0
@@ -1271,7 +1271,7 @@
     join $ Jc (Jc 0 1) (Jc 2 3) = Jc 0 3
 }
 
-{
+Monad_68 {
     pure 0 = Jc 0 0
     join $ Ja (Ja 0)            = Ja 0
     join $ Ja (Jb 0)            = Ja 0

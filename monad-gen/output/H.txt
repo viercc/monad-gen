@@ -1,4 +1,4 @@
-{
+Monad_1 {
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -15,7 +15,7 @@
     join $ Hb (Hb 0 1) (Hb 2 3) = H
 }
 
-{
+Monad_2 {
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -32,7 +32,24 @@
     join $ Hb (Hb 0 1) (Hb 2 3) = H
 }
 
-{
+Monad_3 {
+    pure 0 = Ha 0
+    join $ H                    = H
+    join $ Ha H                 = H
+    join $ Ha (Ha 0)            = Ha 0
+    join $ Ha (Hb 0 1)          = Hb 0 1
+    join $ Hb H H               = H
+    join $ Hb H (Ha 0)          = Hb 0 0
+    join $ Hb H (Hb 0 1)        = H
+    join $ Hb (Ha 0) H          = Hb 0 0
+    join $ Hb (Ha 0) (Ha 1)     = Hb 0 1
+    join $ Hb (Ha 0) (Hb 1 2)   = Hb 0 0
+    join $ Hb (Hb 0 1) H        = H
+    join $ Hb (Hb 0 1) (Ha 2)   = Hb 2 2
+    join $ Hb (Hb 0 1) (Hb 2 3) = H
+}
+
+Monad_4 {
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -49,7 +66,7 @@
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 0
 }
 
-{
+Monad_5 {
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -66,7 +83,7 @@
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 0
 }
 
-{
+Monad_6 {
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -83,7 +100,7 @@
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 1
 }
 
-{
+Monad_7 {
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -100,7 +117,7 @@
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 0
 }
 
-{
+Monad_8 {
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -117,7 +134,7 @@
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 2
 }
 
-{
+Monad_9 {
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -132,22 +149,5 @@
     join $ Hb (Hb 0 1) H        = Hb 0 1
     join $ Hb (Hb 0 1) (Ha 2)   = Hb 0 1
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 1
-}
-
-{
-    pure 0 = Ha 0
-    join $ H                    = H
-    join $ Ha H                 = H
-    join $ Ha (Ha 0)            = Ha 0
-    join $ Ha (Hb 0 1)          = Hb 0 1
-    join $ Hb H H               = H
-    join $ Hb H (Ha 0)          = Hb 0 0
-    join $ Hb H (Hb 0 1)        = H
-    join $ Hb (Ha 0) H          = Hb 0 0
-    join $ Hb (Ha 0) (Ha 1)     = Hb 0 1
-    join $ Hb (Ha 0) (Hb 1 2)   = Hb 0 0
-    join $ Hb (Hb 0 1) H        = H
-    join $ Hb (Hb 0 1) (Ha 2)   = Hb 2 2
-    join $ Hb (Hb 0 1) (Hb 2 3) = H
 }
 

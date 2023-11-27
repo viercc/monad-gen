@@ -34,4 +34,4 @@ executable monad-gen
     , either
     , cartesian-profunctors
     , nat-map
-  ghc-options:        -Wall -Wcompat -O2 -rtsopts=all -with-rtsopts=-M8G
+  ghc-options:        -Wall -Wcompat -rtsopts=all -with-rtsopts=-M8G

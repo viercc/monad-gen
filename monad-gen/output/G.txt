@@ -1,4 +1,4 @@
-{
+Monad_1 {
     pure 0 = Ga 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Gb 0 1
@@ -8,7 +8,7 @@
     join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 0
 }
 
-{
+Monad_2 {
     pure 0 = Ga 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Gb 0 1
@@ -18,7 +18,7 @@
     join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 1
 }
 
-{
+Monad_3 {
     pure 0 = Ga 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Gb 0 1
@@ -28,7 +28,7 @@
     join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 0
 }
 
-{
+Monad_4 {
     pure 0 = Ga 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Gb 0 1
@@ -38,7 +38,7 @@
     join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 0
 }
 
-{
+Monad_5 {
     pure 0 = Ga 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Gb 0 1
@@ -48,7 +48,7 @@
     join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 1
 }
 
-{
+Monad_6 {
     pure 0 = Ga 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Gb 0 1
@@ -58,7 +58,7 @@
     join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 2
 }
 
-{
+Monad_7 {
     pure 0 = Ga 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Gb 0 1
@@ -68,7 +68,7 @@
     join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 3
 }
 
-{
+Monad_8 {
     pure 0 = Gb 0 0
     join $ Ga (Ga 0)            = Ga 0
     join $ Ga (Gb 0 1)          = Ga 0

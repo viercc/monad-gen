@@ -1,35 +1,4 @@
-{
-    pure 0 = Ua 0 0
-    join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
-    join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
-    join $ Ua (Ua 0 1) (Uc 2 3) = Ua 0 2
-    join $ Ua (Ub 0 1) (Ua 2 3) = Ub 3 1
-    join $ Ua (Ub 0 1) (Ub 2 3) = Ub 2 1
-    join $ Ua (Ub 0 1) (Uc 2 3) = Ub 2 1
-    join $ Ua (Uc 0 1) (Ua 2 3) = Uc 3 1
-    join $ Ua (Uc 0 1) (Ub 2 3) = Uc 2 1
-    join $ Ua (Uc 0 1) (Uc 2 3) = Uc 2 1
-    join $ Ub (Ua 0 1) (Ua 2 3) = Ub 1 2
-    join $ Ub (Ua 0 1) (Ub 2 3) = Ua 3 1
-    join $ Ub (Ua 0 1) (Uc 2 3) = Uc 1 3
-    join $ Ub (Ub 0 1) (Ua 2 3) = Ub 0 2
-    join $ Ub (Ub 0 1) (Ub 2 3) = Ua 3 0
-    join $ Ub (Ub 0 1) (Uc 2 3) = Uc 0 3
-    join $ Ub (Uc 0 1) (Ua 2 3) = Ub 0 2
-    join $ Ub (Uc 0 1) (Ub 2 3) = Ua 3 0
-    join $ Ub (Uc 0 1) (Uc 2 3) = Uc 0 3
-    join $ Uc (Ua 0 1) (Ua 2 3) = Uc 1 2
-    join $ Uc (Ua 0 1) (Ub 2 3) = Uc 1 3
-    join $ Uc (Ua 0 1) (Uc 2 3) = Uc 1 3
-    join $ Uc (Ub 0 1) (Ua 2 3) = Uc 0 2
-    join $ Uc (Ub 0 1) (Ub 2 3) = Uc 0 3
-    join $ Uc (Ub 0 1) (Uc 2 3) = Uc 0 3
-    join $ Uc (Uc 0 1) (Ua 2 3) = Uc 0 2
-    join $ Uc (Uc 0 1) (Ub 2 3) = Uc 0 3
-    join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
-}
-
-{
+Monad_1 {
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -60,7 +29,38 @@
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 2
 }
 
-{
+Monad_2 {
+    pure 0 = Ua 0 0
+    join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
+    join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
+    join $ Ua (Ua 0 1) (Uc 2 3) = Ua 0 2
+    join $ Ua (Ub 0 1) (Ua 2 3) = Ub 3 1
+    join $ Ua (Ub 0 1) (Ub 2 3) = Ub 2 1
+    join $ Ua (Ub 0 1) (Uc 2 3) = Ub 2 1
+    join $ Ua (Uc 0 1) (Ua 2 3) = Uc 3 1
+    join $ Ua (Uc 0 1) (Ub 2 3) = Uc 2 1
+    join $ Ua (Uc 0 1) (Uc 2 3) = Uc 2 1
+    join $ Ub (Ua 0 1) (Ua 2 3) = Ub 1 2
+    join $ Ub (Ua 0 1) (Ub 2 3) = Ua 3 1
+    join $ Ub (Ua 0 1) (Uc 2 3) = Uc 1 3
+    join $ Ub (Ub 0 1) (Ua 2 3) = Ub 0 2
+    join $ Ub (Ub 0 1) (Ub 2 3) = Ua 3 0
+    join $ Ub (Ub 0 1) (Uc 2 3) = Uc 0 3
+    join $ Ub (Uc 0 1) (Ua 2 3) = Ub 0 2
+    join $ Ub (Uc 0 1) (Ub 2 3) = Ua 3 0
+    join $ Ub (Uc 0 1) (Uc 2 3) = Uc 0 3
+    join $ Uc (Ua 0 1) (Ua 2 3) = Uc 1 2
+    join $ Uc (Ua 0 1) (Ub 2 3) = Uc 1 3
+    join $ Uc (Ua 0 1) (Uc 2 3) = Uc 1 3
+    join $ Uc (Ub 0 1) (Ua 2 3) = Uc 0 2
+    join $ Uc (Ub 0 1) (Ub 2 3) = Uc 0 3
+    join $ Uc (Ub 0 1) (Uc 2 3) = Uc 0 3
+    join $ Uc (Uc 0 1) (Ua 2 3) = Uc 0 2
+    join $ Uc (Uc 0 1) (Ub 2 3) = Uc 0 3
+    join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
+}
+
+Monad_3 {
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -91,7 +91,7 @@
     join $ Uc (Uc 0 1) (Uc 2 3) = Ub 0 3
 }
 
-{
+Monad_4 {
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -122,7 +122,69 @@
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 
-{
+Monad_5 {
+    pure 0 = Ua 0 0
+    join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
+    join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
+    join $ Ua (Ua 0 1) (Uc 2 3) = Ua 0 2
+    join $ Ua (Ub 0 1) (Ua 2 3) = Ub 3 1
+    join $ Ua (Ub 0 1) (Ub 2 3) = Ub 2 1
+    join $ Ua (Ub 0 1) (Uc 2 3) = Ub 2 1
+    join $ Ua (Uc 0 1) (Ua 2 3) = Uc 3 1
+    join $ Ua (Uc 0 1) (Ub 2 3) = Uc 2 1
+    join $ Ua (Uc 0 1) (Uc 2 3) = Uc 2 1
+    join $ Ub (Ua 0 1) (Ua 2 3) = Ub 1 3
+    join $ Ub (Ua 0 1) (Ub 2 3) = Ub 1 2
+    join $ Ub (Ua 0 1) (Uc 2 3) = Ub 1 2
+    join $ Ub (Ub 0 1) (Ua 2 3) = Ub 0 3
+    join $ Ub (Ub 0 1) (Ub 2 3) = Ub 0 2
+    join $ Ub (Ub 0 1) (Uc 2 3) = Ub 0 2
+    join $ Ub (Uc 0 1) (Ua 2 3) = Ub 0 3
+    join $ Ub (Uc 0 1) (Ub 2 3) = Ub 0 2
+    join $ Ub (Uc 0 1) (Uc 2 3) = Ub 0 2
+    join $ Uc (Ua 0 1) (Ua 2 3) = Uc 1 2
+    join $ Uc (Ua 0 1) (Ub 2 3) = Ub 1 3
+    join $ Uc (Ua 0 1) (Uc 2 3) = Uc 1 3
+    join $ Uc (Ub 0 1) (Ua 2 3) = Uc 0 2
+    join $ Uc (Ub 0 1) (Ub 2 3) = Ub 0 3
+    join $ Uc (Ub 0 1) (Uc 2 3) = Uc 0 3
+    join $ Uc (Uc 0 1) (Ua 2 3) = Uc 0 2
+    join $ Uc (Uc 0 1) (Ub 2 3) = Ub 0 3
+    join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
+}
+
+Monad_6 {
+    pure 0 = Ua 0 0
+    join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
+    join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
+    join $ Ua (Ua 0 1) (Uc 2 3) = Ua 0 2
+    join $ Ua (Ub 0 1) (Ua 2 3) = Ub 3 1
+    join $ Ua (Ub 0 1) (Ub 2 3) = Ub 2 1
+    join $ Ua (Ub 0 1) (Uc 2 3) = Ub 2 1
+    join $ Ua (Uc 0 1) (Ua 2 3) = Uc 3 1
+    join $ Ua (Uc 0 1) (Ub 2 3) = Uc 2 1
+    join $ Ua (Uc 0 1) (Uc 2 3) = Uc 2 1
+    join $ Ub (Ua 0 1) (Ua 2 3) = Ub 1 3
+    join $ Ub (Ua 0 1) (Ub 2 3) = Ub 1 2
+    join $ Ub (Ua 0 1) (Uc 2 3) = Ub 1 2
+    join $ Ub (Ub 0 1) (Ua 2 3) = Ub 0 3
+    join $ Ub (Ub 0 1) (Ub 2 3) = Ub 0 2
+    join $ Ub (Ub 0 1) (Uc 2 3) = Ub 0 2
+    join $ Ub (Uc 0 1) (Ua 2 3) = Ub 0 3
+    join $ Ub (Uc 0 1) (Ub 2 3) = Ub 0 2
+    join $ Ub (Uc 0 1) (Uc 2 3) = Ub 0 2
+    join $ Uc (Ua 0 1) (Ua 2 3) = Uc 1 3
+    join $ Uc (Ua 0 1) (Ub 2 3) = Uc 1 2
+    join $ Uc (Ua 0 1) (Uc 2 3) = Uc 1 2
+    join $ Uc (Ub 0 1) (Ua 2 3) = Uc 0 3
+    join $ Uc (Ub 0 1) (Ub 2 3) = Uc 0 2
+    join $ Uc (Ub 0 1) (Uc 2 3) = Uc 0 2
+    join $ Uc (Uc 0 1) (Ua 2 3) = Uc 0 3
+    join $ Uc (Uc 0 1) (Ub 2 3) = Uc 0 2
+    join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 2
+}
+
+Monad_7 {
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -153,7 +215,7 @@
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 
-{
+Monad_8 {
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -184,38 +246,7 @@
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 
-{
-    pure 0 = Ua 0 0
-    join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
-    join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
-    join $ Ua (Ua 0 1) (Uc 2 3) = Ua 0 2
-    join $ Ua (Ub 0 1) (Ua 2 3) = Ub 3 1
-    join $ Ua (Ub 0 1) (Ub 2 3) = Ub 2 1
-    join $ Ua (Ub 0 1) (Uc 2 3) = Ub 2 1
-    join $ Ua (Uc 0 1) (Ua 2 3) = Uc 3 1
-    join $ Ua (Uc 0 1) (Ub 2 3) = Uc 2 1
-    join $ Ua (Uc 0 1) (Uc 2 3) = Uc 2 1
-    join $ Ub (Ua 0 1) (Ua 2 3) = Ub 1 2
-    join $ Ub (Ua 0 1) (Ub 2 3) = Ub 1 3
-    join $ Ub (Ua 0 1) (Uc 2 3) = Uc 1 3
-    join $ Ub (Ub 0 1) (Ua 2 3) = Ub 0 2
-    join $ Ub (Ub 0 1) (Ub 2 3) = Ub 0 3
-    join $ Ub (Ub 0 1) (Uc 2 3) = Uc 0 3
-    join $ Ub (Uc 0 1) (Ua 2 3) = Ub 0 2
-    join $ Ub (Uc 0 1) (Ub 2 3) = Ub 0 3
-    join $ Ub (Uc 0 1) (Uc 2 3) = Uc 0 3
-    join $ Uc (Ua 0 1) (Ua 2 3) = Uc 1 2
-    join $ Uc (Ua 0 1) (Ub 2 3) = Uc 1 3
-    join $ Uc (Ua 0 1) (Uc 2 3) = Ub 1 3
-    join $ Uc (Ub 0 1) (Ua 2 3) = Uc 0 2
-    join $ Uc (Ub 0 1) (Ub 2 3) = Uc 0 3
-    join $ Uc (Ub 0 1) (Uc 2 3) = Ub 0 3
-    join $ Uc (Uc 0 1) (Ua 2 3) = Uc 0 2
-    join $ Uc (Uc 0 1) (Ub 2 3) = Uc 0 3
-    join $ Uc (Uc 0 1) (Uc 2 3) = Ub 0 3
-}
-
-{
+Monad_9 {
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -246,7 +277,7 @@
     join $ Uc (Uc 0 1) (Uc 2 3) = Ub 0 3
 }
 
-{
+Monad_10 {
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -257,54 +288,23 @@
     join $ Ua (Uc 0 1) (Ua 2 3) = Uc 3 1
     join $ Ua (Uc 0 1) (Ub 2 3) = Uc 2 1
     join $ Ua (Uc 0 1) (Uc 2 3) = Uc 2 1
-    join $ Ub (Ua 0 1) (Ua 2 3) = Ub 1 3
-    join $ Ub (Ua 0 1) (Ub 2 3) = Ub 1 2
-    join $ Ub (Ua 0 1) (Uc 2 3) = Ub 1 2
-    join $ Ub (Ub 0 1) (Ua 2 3) = Ub 0 3
-    join $ Ub (Ub 0 1) (Ub 2 3) = Ub 0 2
-    join $ Ub (Ub 0 1) (Uc 2 3) = Ub 0 2
-    join $ Ub (Uc 0 1) (Ua 2 3) = Ub 0 3
-    join $ Ub (Uc 0 1) (Ub 2 3) = Ub 0 2
-    join $ Ub (Uc 0 1) (Uc 2 3) = Ub 0 2
+    join $ Ub (Ua 0 1) (Ua 2 3) = Ub 1 2
+    join $ Ub (Ua 0 1) (Ub 2 3) = Ub 1 3
+    join $ Ub (Ua 0 1) (Uc 2 3) = Uc 1 3
+    join $ Ub (Ub 0 1) (Ua 2 3) = Ub 0 2
+    join $ Ub (Ub 0 1) (Ub 2 3) = Ub 0 3
+    join $ Ub (Ub 0 1) (Uc 2 3) = Uc 0 3
+    join $ Ub (Uc 0 1) (Ua 2 3) = Ub 0 2
+    join $ Ub (Uc 0 1) (Ub 2 3) = Ub 0 3
+    join $ Ub (Uc 0 1) (Uc 2 3) = Uc 0 3
     join $ Uc (Ua 0 1) (Ua 2 3) = Uc 1 2
-    join $ Uc (Ua 0 1) (Ub 2 3) = Ub 1 3
-    join $ Uc (Ua 0 1) (Uc 2 3) = Uc 1 3
+    join $ Uc (Ua 0 1) (Ub 2 3) = Uc 1 3
+    join $ Uc (Ua 0 1) (Uc 2 3) = Ub 1 3
     join $ Uc (Ub 0 1) (Ua 2 3) = Uc 0 2
-    join $ Uc (Ub 0 1) (Ub 2 3) = Ub 0 3
-    join $ Uc (Ub 0 1) (Uc 2 3) = Uc 0 3
+    join $ Uc (Ub 0 1) (Ub 2 3) = Uc 0 3
+    join $ Uc (Ub 0 1) (Uc 2 3) = Ub 0 3
     join $ Uc (Uc 0 1) (Ua 2 3) = Uc 0 2
-    join $ Uc (Uc 0 1) (Ub 2 3) = Ub 0 3
-    join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
-}
-
-{
-    pure 0 = Ua 0 0
-    join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
-    join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
-    join $ Ua (Ua 0 1) (Uc 2 3) = Ua 0 2
-    join $ Ua (Ub 0 1) (Ua 2 3) = Ub 3 1
-    join $ Ua (Ub 0 1) (Ub 2 3) = Ub 2 1
-    join $ Ua (Ub 0 1) (Uc 2 3) = Ub 2 1
-    join $ Ua (Uc 0 1) (Ua 2 3) = Uc 3 1
-    join $ Ua (Uc 0 1) (Ub 2 3) = Uc 2 1
-    join $ Ua (Uc 0 1) (Uc 2 3) = Uc 2 1
-    join $ Ub (Ua 0 1) (Ua 2 3) = Ub 1 3
-    join $ Ub (Ua 0 1) (Ub 2 3) = Ub 1 2
-    join $ Ub (Ua 0 1) (Uc 2 3) = Ub 1 2
-    join $ Ub (Ub 0 1) (Ua 2 3) = Ub 0 3
-    join $ Ub (Ub 0 1) (Ub 2 3) = Ub 0 2
-    join $ Ub (Ub 0 1) (Uc 2 3) = Ub 0 2
-    join $ Ub (Uc 0 1) (Ua 2 3) = Ub 0 3
-    join $ Ub (Uc 0 1) (Ub 2 3) = Ub 0 2
-    join $ Ub (Uc 0 1) (Uc 2 3) = Ub 0 2
-    join $ Uc (Ua 0 1) (Ua 2 3) = Uc 1 3
-    join $ Uc (Ua 0 1) (Ub 2 3) = Uc 1 2
-    join $ Uc (Ua 0 1) (Uc 2 3) = Uc 1 2
-    join $ Uc (Ub 0 1) (Ua 2 3) = Uc 0 3
-    join $ Uc (Ub 0 1) (Ub 2 3) = Uc 0 2
-    join $ Uc (Ub 0 1) (Uc 2 3) = Uc 0 2
-    join $ Uc (Uc 0 1) (Ua 2 3) = Uc 0 3
-    join $ Uc (Uc 0 1) (Ub 2 3) = Uc 0 2
-    join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 2
+    join $ Uc (Uc 0 1) (Ub 2 3) = Uc 0 3
+    join $ Uc (Uc 0 1) (Uc 2 3) = Ub 0 3
 }
 
