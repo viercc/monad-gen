@@ -1,0 +1,4350 @@
+Monad_1 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = V
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_2 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vb 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_3 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_4 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vb 0
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vb 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vb 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 2
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_5 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vb 0
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vb 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 2
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_6 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 1 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_7 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
+}
+
+Monad_8 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_9 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_10 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_11 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_12 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_13 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_14 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vb 0
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vb 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_15 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_16 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_17 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_18 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_19 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_20 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_21 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_22 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_23 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_24 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_25 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_26 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_27 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vb 0
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = Vb 0
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vb 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_28 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_29 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_30 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_31 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_32 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_33 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = V
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_34 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_35 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 1 0
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 1 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_36 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_37 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = Vc 0 0
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_38 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = Vc 0 0
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 1 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 1 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_39 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 1 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_40 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 1 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 1 0
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 1 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_41 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 1 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = Vc 0 0
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_42 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 1 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = Vc 0 0
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 1 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 1 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_43 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_44 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_45 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_46 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_47 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_48 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Va 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_49 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = V
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_50 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = V
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_51 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_52 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_53 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 1 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_54 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_55 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_56 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_57 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_58 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_59 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_60 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_61 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_62 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_63 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_64 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_65 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_66 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_67 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_68 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = Vc 0 0
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_69 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vb 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
+}
+
+Monad_70 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vb 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
+}
+
+Monad_71 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
+}
+
+Monad_72 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
+}
+
+Monad_73 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
+}
+
+Monad_74 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_75 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_76 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_77 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_78 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_79 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_80 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_81 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_82 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_83 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_84 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_85 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_86 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_87 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_88 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_89 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_90 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = V
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_91 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = V
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_92 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_93 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_94 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 1 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_95 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_96 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_97 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vb 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_98 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_99 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_100 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_101 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_102 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_103 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_104 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_105 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_106 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_107 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_108 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_109 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_110 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = Vc 0 0
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_111 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
+}
+
+Monad_112 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vb 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vb 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
+}
+
+Monad_113 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_114 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_115 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_116 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_117 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_118 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_119 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_120 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_121 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_122 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_123 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_124 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_125 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_126 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_127 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_128 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_129 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_130 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_131 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_132 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_133 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_134 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_135 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_136 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_137 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = V
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = V
+    join $ Vc (Va 0) (Vc 1 2)   = V
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_138 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = V
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_139 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = V
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = Vc 0 0
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = Vc 1 1
+    join $ Vc (Vb 0) (Vb 1)     = V
+    join $ Vc (Vb 0) (Vc 1 2)   = V
+    join $ Vc (Vc 0 1) V        = V
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 2 2
+    join $ Vc (Vc 0 1) (Vb 2)   = V
+    join $ Vc (Vc 0 1) (Vc 2 3) = V
+}
+
+Monad_140 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_141 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vb 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vb 0
+    join $ Vc (Vb 0) (Va 1)     = Vb 0
+    join $ Vc (Vb 0) (Vb 1)     = Vb 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_142 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vb 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vb 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_143 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vb 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_144 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_145 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_146 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
+}
+
+Monad_147 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vc 0 0
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) V        = Vc 0 0
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
+}
+
+Monad_148 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_149 {
+    pure 0 = Va 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = Vb 0
+    join $ Va (Vc 0 1)          = Vc 0 1
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = Vb 0
+    join $ Vb (Vb 0)            = Vc 0 0
+    join $ Vb (Vc 0 1)          = Vc 0 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = V
+    join $ Vc V (Vc 0 1)        = V
+    join $ Vc (Va 0) V          = Vc 0 0
+    join $ Vc (Va 0) (Va 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 1
+    join $ Vc (Vb 0) V          = Vc 0 0
+    join $ Vc (Vb 0) (Va 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vb 1)     = Vc 0 0
+    join $ Vc (Vb 0) (Vc 1 2)   = Vc 0 0
+    join $ Vc (Vc 0 1) V        = Vc 0 1
+    join $ Vc (Vc 0 1) (Va 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 1
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
+}
+
+Monad_150 {
+    pure 0 = Vc 0 0
+    join $ V                    = V
+    join $ Va V                 = V
+    join $ Va (Va 0)            = Va 0
+    join $ Va (Vb 0)            = V
+    join $ Va (Vc 0 1)          = Va 0
+    join $ Vb V                 = V
+    join $ Vb (Va 0)            = V
+    join $ Vb (Vb 0)            = Vb 0
+    join $ Vb (Vc 0 1)          = Vb 1
+    join $ Vc V V               = V
+    join $ Vc V (Va 0)          = V
+    join $ Vc V (Vb 0)          = Vb 0
+    join $ Vc V (Vc 0 1)        = Vb 1
+    join $ Vc (Va 0) V          = Va 0
+    join $ Vc (Va 0) (Va 1)     = Va 0
+    join $ Vc (Va 0) (Vb 1)     = Vc 0 1
+    join $ Vc (Va 0) (Vc 1 2)   = Vc 0 2
+    join $ Vc (Vb 0) V          = V
+    join $ Vc (Vb 0) (Va 1)     = V
+    join $ Vc (Vb 0) (Vb 1)     = Vb 1
+    join $ Vc (Vb 0) (Vc 1 2)   = Vb 2
+    join $ Vc (Vc 0 1) V        = Va 0
+    join $ Vc (Vc 0 1) (Va 2)   = Va 0
+    join $ Vc (Vc 0 1) (Vb 2)   = Vc 0 2
+    join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 3
+}
+
