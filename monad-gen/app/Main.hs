@@ -80,6 +80,7 @@ monadGen _ println = for_ (zip [1 :: Int ..] genMonadsModuloIso) docResult
 main :: IO ()
 main = do
   writeFile' "output/Writer.txt" $ monadGen @((,) Two) Proxy
+  writeFile' "output/Writer3.txt" $ monadGen @((,) N3) Proxy
   writeFile' "output/Maybe.txt" $ monadGen @Maybe Proxy
 
   writeFile' "output/F.txt" $ monadGen @F Proxy
@@ -87,6 +88,7 @@ main = do
   writeFile' "output/H.txt" $ monadGen @H Proxy
   writeFile' "output/I.txt" $ monadGen @I Proxy
   writeFile' "output/J.txt" $ monadGen @J Proxy
---  writeFile' "output/T.txt" $ monadGen @T Proxy
---  writeFile' "output/U.txt" $ monadGen @U Proxy
+  writeFile' "output/T.txt" $ monadGen @T Proxy
+  writeFile' "output/U.txt" $ monadGen @U Proxy
   writeFile' "output/V.txt" $ monadGen @V Proxy
+  -- writeFile' "output/Y.txt" $ monadGen @Y Proxy
