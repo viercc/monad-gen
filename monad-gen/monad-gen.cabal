@@ -9,7 +9,6 @@ executable monad-gen
   other-modules: 
     Data.PTraversable.Extra,
     Data.LazyVec,
-    Data.ContraVec,
     
     MonadLaws,
     MonadTerm,
