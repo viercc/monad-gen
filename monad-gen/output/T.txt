@@ -1,4 +1,27 @@
-Monad_1 {
+M_1 = Monoid{
+  Elements:
+    0 = Shape (Ta _ _)
+    1 = Shape (Tb _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 0 1 
+    1 | 1 0 
+}
+M_2 = Monoid{
+  Elements:
+    0 = Shape (Ta _ _)
+    1 = Shape (Tb _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 0 1 
+    1 | 1 1 
+}
+Monad_1 = Monad{
+    baseMonoid = M_1
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 2
@@ -10,7 +33,8 @@ Monad_1 {
     join $ Tb (Tb 0 1) (Tb 2 3) = Ta 3 0
 }
 
-Monad_2 {
+Monad_2 = Monad{
+    baseMonoid = M_2
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 2
@@ -22,7 +46,8 @@ Monad_2 {
     join $ Tb (Tb 0 1) (Tb 2 3) = Tb 0 2
 }
 
-Monad_3 {
+Monad_3 = Monad{
+    baseMonoid = M_2
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 2

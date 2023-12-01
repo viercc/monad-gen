@@ -1,4 +1,49 @@
-Monad_1 {
+M_1 = Monoid{
+  Elements:
+    0 = Shape (Ia _)
+    1 = Shape (Ib _ _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 0 1 
+    1 | 1 0 
+}
+M_2 = Monoid{
+  Elements:
+    0 = Shape (Ia _)
+    1 = Shape (Ib _ _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 0 1 
+    1 | 1 1 
+}
+M_3 = Monoid{
+  Elements:
+    0 = Shape (Ia _)
+    1 = Shape (Ib _ _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 0 0 
+    1 | 0 1 
+}
+M_4 = Monoid{
+  Elements:
+    0 = Shape (Ia _)
+    1 = Shape (Ib _ _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 1 0 
+    1 | 0 1 
+}
+Monad_1 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -12,7 +57,8 @@ Monad_1 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_2 {
+Monad_2 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -26,7 +72,8 @@ Monad_2 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_3 {
+Monad_3 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -40,7 +87,8 @@ Monad_3 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_4 {
+Monad_4 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -54,7 +102,8 @@ Monad_4 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_5 {
+Monad_5 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -68,7 +117,8 @@ Monad_5 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_6 {
+Monad_6 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -82,7 +132,8 @@ Monad_6 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_7 {
+Monad_7 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -96,7 +147,8 @@ Monad_7 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_8 {
+Monad_8 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -110,7 +162,8 @@ Monad_8 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_9 {
+Monad_9 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -124,7 +177,8 @@ Monad_9 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_10 {
+Monad_10 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -138,7 +192,8 @@ Monad_10 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_11 {
+Monad_11 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -152,7 +207,8 @@ Monad_11 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_12 {
+Monad_12 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -166,7 +222,8 @@ Monad_12 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_13 {
+Monad_13 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -180,7 +237,8 @@ Monad_13 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_14 {
+Monad_14 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -194,7 +252,8 @@ Monad_14 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_15 {
+Monad_15 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -208,7 +267,8 @@ Monad_15 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_16 {
+Monad_16 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -222,7 +282,8 @@ Monad_16 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 6
 }
 
-Monad_17 {
+Monad_17 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -236,7 +297,8 @@ Monad_17 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_18 {
+Monad_18 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -250,7 +312,8 @@ Monad_18 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 6
 }
 
-Monad_19 {
+Monad_19 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -264,7 +327,8 @@ Monad_19 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_20 {
+Monad_20 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -278,7 +342,8 @@ Monad_20 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_21 {
+Monad_21 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -292,7 +357,8 @@ Monad_21 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 6
 }
 
-Monad_22 {
+Monad_22 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -306,7 +372,8 @@ Monad_22 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_23 {
+Monad_23 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -320,7 +387,8 @@ Monad_23 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 6
 }
 
-Monad_24 {
+Monad_24 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -334,7 +402,8 @@ Monad_24 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_25 {
+Monad_25 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -348,7 +417,8 @@ Monad_25 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_26 {
+Monad_26 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -362,7 +432,8 @@ Monad_26 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 6
 }
 
-Monad_27 {
+Monad_27 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -376,7 +447,8 @@ Monad_27 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_28 {
+Monad_28 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -390,7 +462,8 @@ Monad_28 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 8
 }
 
-Monad_29 {
+Monad_29 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -404,7 +477,8 @@ Monad_29 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 8
 }
 
-Monad_30 {
+Monad_30 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -418,7 +492,8 @@ Monad_30 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 8
 }
 
-Monad_31 {
+Monad_31 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -432,7 +507,8 @@ Monad_31 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 8
 }
 
-Monad_32 {
+Monad_32 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -446,7 +522,8 @@ Monad_32 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 8
 }
 
-Monad_33 {
+Monad_33 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -460,7 +537,8 @@ Monad_33 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 8
 }
 
-Monad_34 {
+Monad_34 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -474,7 +552,8 @@ Monad_34 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_35 {
+Monad_35 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -488,7 +567,8 @@ Monad_35 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 2 2
 }
 
-Monad_36 {
+Monad_36 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -502,7 +582,8 @@ Monad_36 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_37 {
+Monad_37 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -516,7 +597,8 @@ Monad_37 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_38 {
+Monad_38 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -530,7 +612,8 @@ Monad_38 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_39 {
+Monad_39 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -544,7 +627,8 @@ Monad_39 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_40 {
+Monad_40 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -558,7 +642,8 @@ Monad_40 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_41 {
+Monad_41 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -572,7 +657,8 @@ Monad_41 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_42 {
+Monad_42 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -586,7 +672,8 @@ Monad_42 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 1
 }
 
-Monad_43 {
+Monad_43 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -600,7 +687,8 @@ Monad_43 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_44 {
+Monad_44 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -614,7 +702,8 @@ Monad_44 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_45 {
+Monad_45 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -628,7 +717,8 @@ Monad_45 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 0
 }
 
-Monad_46 {
+Monad_46 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -642,7 +732,8 @@ Monad_46 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 8 8 8
 }
 
-Monad_47 {
+Monad_47 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -656,7 +747,8 @@ Monad_47 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_48 {
+Monad_48 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -670,7 +762,8 @@ Monad_48 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_49 {
+Monad_49 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -684,7 +777,8 @@ Monad_49 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 1
 }
 
-Monad_50 {
+Monad_50 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -698,7 +792,8 @@ Monad_50 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_51 {
+Monad_51 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -712,7 +807,8 @@ Monad_51 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 2 2 8
 }
 
-Monad_52 {
+Monad_52 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -726,7 +822,8 @@ Monad_52 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 3 3
 }
 
-Monad_53 {
+Monad_53 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -740,7 +837,8 @@ Monad_53 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_54 {
+Monad_54 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -754,7 +852,8 @@ Monad_54 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_55 {
+Monad_55 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -768,7 +867,8 @@ Monad_55 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_56 {
+Monad_56 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -782,7 +882,8 @@ Monad_56 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 2 2
 }
 
-Monad_57 {
+Monad_57 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -796,7 +897,8 @@ Monad_57 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_58 {
+Monad_58 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -810,7 +912,8 @@ Monad_58 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_59 {
+Monad_59 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -824,7 +927,8 @@ Monad_59 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_60 {
+Monad_60 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -838,7 +942,8 @@ Monad_60 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_61 {
+Monad_61 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -852,7 +957,8 @@ Monad_61 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_62 {
+Monad_62 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -866,7 +972,8 @@ Monad_62 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 2 2
 }
 
-Monad_63 {
+Monad_63 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -880,7 +987,8 @@ Monad_63 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_64 {
+Monad_64 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -894,7 +1002,8 @@ Monad_64 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 4 4 4
 }
 
-Monad_65 {
+Monad_65 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -908,7 +1017,8 @@ Monad_65 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 8 8 8
 }
 
-Monad_66 {
+Monad_66 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -922,7 +1032,8 @@ Monad_66 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 4 4 4
 }
 
-Monad_67 {
+Monad_67 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -936,7 +1047,8 @@ Monad_67 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 4 4 4
 }
 
-Monad_68 {
+Monad_68 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -950,7 +1062,8 @@ Monad_68 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 3 4 3
 }
 
-Monad_69 {
+Monad_69 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -964,7 +1077,8 @@ Monad_69 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 3 4 5
 }
 
-Monad_70 {
+Monad_70 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -978,7 +1092,8 @@ Monad_70 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 2 2 8
 }
 
-Monad_71 {
+Monad_71 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -992,7 +1107,8 @@ Monad_71 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 1 4 1
 }
 
-Monad_72 {
+Monad_72 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1006,7 +1122,8 @@ Monad_72 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 4 4 4
 }
 
-Monad_73 {
+Monad_73 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1020,7 +1137,8 @@ Monad_73 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 3 4 3
 }
 
-Monad_74 {
+Monad_74 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1034,7 +1152,8 @@ Monad_74 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 3 4 5
 }
 
-Monad_75 {
+Monad_75 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1048,7 +1167,8 @@ Monad_75 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 2 2 8
 }
 
-Monad_76 {
+Monad_76 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1062,7 +1182,8 @@ Monad_76 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 1 4 1
 }
 
-Monad_77 {
+Monad_77 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1076,7 +1197,8 @@ Monad_77 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_78 {
+Monad_78 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1090,7 +1212,8 @@ Monad_78 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_79 {
+Monad_79 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1104,7 +1227,8 @@ Monad_79 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 4 4 4
 }
 
-Monad_80 {
+Monad_80 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1118,7 +1242,8 @@ Monad_80 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 3 4 5
 }
 
-Monad_81 {
+Monad_81 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1132,7 +1257,8 @@ Monad_81 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 4 4 4
 }
 
-Monad_82 {
+Monad_82 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1146,7 +1272,8 @@ Monad_82 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_83 {
+Monad_83 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1160,7 +1287,8 @@ Monad_83 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 2 2
 }
 
-Monad_84 {
+Monad_84 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1174,7 +1302,8 @@ Monad_84 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_85 {
+Monad_85 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1188,7 +1317,8 @@ Monad_85 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_86 {
+Monad_86 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1202,7 +1332,8 @@ Monad_86 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_87 {
+Monad_87 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1216,7 +1347,8 @@ Monad_87 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_88 {
+Monad_88 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1230,7 +1362,8 @@ Monad_88 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_89 {
+Monad_89 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1244,7 +1377,8 @@ Monad_89 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_90 {
+Monad_90 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1258,7 +1392,8 @@ Monad_90 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_91 {
+Monad_91 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1272,7 +1407,8 @@ Monad_91 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 0
 }
 
-Monad_92 {
+Monad_92 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1286,7 +1422,8 @@ Monad_92 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 3 0
 }
 
-Monad_93 {
+Monad_93 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1300,7 +1437,8 @@ Monad_93 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_94 {
+Monad_94 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1314,7 +1452,8 @@ Monad_94 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 3 2
 }
 
-Monad_95 {
+Monad_95 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1328,7 +1467,8 @@ Monad_95 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_96 {
+Monad_96 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1342,7 +1482,8 @@ Monad_96 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 0
 }
 
-Monad_97 {
+Monad_97 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1356,7 +1497,8 @@ Monad_97 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 3 0
 }
 
-Monad_98 {
+Monad_98 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1370,7 +1512,8 @@ Monad_98 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_99 {
+Monad_99 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1384,7 +1527,8 @@ Monad_99 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 1
 }
 
-Monad_100 {
+Monad_100 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1398,7 +1542,8 @@ Monad_100 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_101 {
+Monad_101 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1412,7 +1557,8 @@ Monad_101 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 2 2 8
 }
 
-Monad_102 {
+Monad_102 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1426,7 +1572,8 @@ Monad_102 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 3 3
 }
 
-Monad_103 {
+Monad_103 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1440,7 +1587,8 @@ Monad_103 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_104 {
+Monad_104 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1454,7 +1602,8 @@ Monad_104 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 
-Monad_105 {
+Monad_105 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1468,7 +1617,8 @@ Monad_105 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 2
 }
 
-Monad_106 {
+Monad_106 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1482,7 +1632,8 @@ Monad_106 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 6
 }
 
-Monad_107 {
+Monad_107 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1496,7 +1647,8 @@ Monad_107 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 1
 }
 
-Monad_108 {
+Monad_108 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1510,7 +1662,8 @@ Monad_108 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 2
 }
 
-Monad_109 {
+Monad_109 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1524,7 +1677,8 @@ Monad_109 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 1 6
 }
 
-Monad_110 {
+Monad_110 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1538,7 +1692,8 @@ Monad_110 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 2 2 8
 }
 
-Monad_111 {
+Monad_111 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1552,7 +1707,8 @@ Monad_111 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 3 6
 }
 
-Monad_112 {
+Monad_112 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1566,7 +1722,8 @@ Monad_112 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 3 4 4
 }
 
-Monad_113 {
+Monad_113 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1580,7 +1737,8 @@ Monad_113 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 1 4 4
 }
 
-Monad_114 {
+Monad_114 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1594,7 +1752,8 @@ Monad_114 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 0
 }
 
-Monad_115 {
+Monad_115 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1608,7 +1767,8 @@ Monad_115 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 2
 }
 
-Monad_116 {
+Monad_116 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1622,7 +1782,8 @@ Monad_116 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 0
 }
 
-Monad_117 {
+Monad_117 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1636,7 +1797,8 @@ Monad_117 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 0
 }
 
-Monad_118 {
+Monad_118 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1650,7 +1812,8 @@ Monad_118 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 2
 }
 
-Monad_119 {
+Monad_119 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1664,7 +1827,8 @@ Monad_119 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 6
 }
 
-Monad_120 {
+Monad_120 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1678,7 +1842,8 @@ Monad_120 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 8
 }
 
-Monad_121 {
+Monad_121 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1692,7 +1857,8 @@ Monad_121 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 4
 }
 
-Monad_122 {
+Monad_122 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2
@@ -1706,7 +1872,8 @@ Monad_122 {
     join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 4 5
 }
 
-Monad_123 {
+Monad_123 = Monad{
+    baseMonoid = M_2
     pure 0 = Ia 0
     join $ Ia (Ia 0)                           = Ia 0
     join $ Ia (Ib 0 1 2)                       = Ib 0 1 2

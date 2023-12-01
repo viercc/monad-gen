@@ -1,4 +1,16 @@
-Monad_1 {
+M_1 = Monoid{
+  Elements:
+    0 = Shape Nothing
+    1 = Shape (Just _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 0 0 
+    1 | 0 1 
+}
+Monad_1 = Monad{
+    baseMonoid = M_1
     pure 0 = Just 0
     join $ Nothing       = Nothing
     join $ Just Nothing  = Nothing

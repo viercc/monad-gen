@@ -1,4 +1,96 @@
-Monad_1 {
+M_1 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 0 2 
+    2 | 2 2 2 
+}
+M_2 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 1 1 
+}
+M_3 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 1 2 
+}
+M_4 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 2 2 
+}
+M_5 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 2 
+    2 | 2 1 2 
+}
+M_6 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 2 0 
+    2 | 2 0 1 
+}
+M_7 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 2 
+    2 | 2 2 1 
+}
+Monad_1 = Monad{
+    baseMonoid = M_1
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -29,7 +121,8 @@ Monad_1 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 2
 }
 
-Monad_2 {
+Monad_2 = Monad{
+    baseMonoid = M_1
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -60,7 +153,8 @@ Monad_2 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 
-Monad_3 {
+Monad_3 = Monad{
+    baseMonoid = M_2
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -91,7 +185,8 @@ Monad_3 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Ub 0 3
 }
 
-Monad_4 {
+Monad_4 = Monad{
+    baseMonoid = M_3
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -122,7 +217,8 @@ Monad_4 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 
-Monad_5 {
+Monad_5 = Monad{
+    baseMonoid = M_3
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -153,7 +249,8 @@ Monad_5 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 
-Monad_6 {
+Monad_6 = Monad{
+    baseMonoid = M_4
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -184,7 +281,8 @@ Monad_6 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 2
 }
 
-Monad_7 {
+Monad_7 = Monad{
+    baseMonoid = M_4
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -215,7 +313,8 @@ Monad_7 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 
-Monad_8 {
+Monad_8 = Monad{
+    baseMonoid = M_5
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -246,7 +345,8 @@ Monad_8 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 
-Monad_9 {
+Monad_9 = Monad{
+    baseMonoid = M_6
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2
@@ -277,7 +377,8 @@ Monad_9 {
     join $ Uc (Uc 0 1) (Uc 2 3) = Ub 0 3
 }
 
-Monad_10 {
+Monad_10 = Monad{
+    baseMonoid = M_7
     pure 0 = Ua 0 0
     join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
     join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 2

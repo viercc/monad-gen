@@ -14,7 +14,9 @@ import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.Proxy
 import MonadLaws
+import MonoidGen
 import MonadGen
+import Isomorphism (makePositionIsoFactors)
 
 import Data.Two
 import Targets
@@ -35,7 +37,16 @@ monadGen ::
   Proxy f ->
   (String -> IO ()) ->
   IO ()
-monadGen _ println = for_ (zip [1 :: Int ..] genMonadsModuloIso) docResult
+monadGen _ println = do
+  let monoidNames = [ "M_" ++ show i | i <- [ 1 :: Int .. ] ]
+      monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
+      monoids = zip monoidNames genMonoids
+      monads = do
+        (monoidName, monData) <- monoids
+        monadData <- uniqueByIso (concat makePositionIsoFactors) $ genFromMonoid (makeMonoidDict monData)
+        pure (monoidName, monadData)
+  for_ monoids $ \(monoidName, monData) -> mapM_ println (prettyMonoidData monoidName monData)
+  for_ (zip monadNames monads) docResult
   where
     skolemCache :: Vec (f Int)
     skolemCache = cache skolem
@@ -65,9 +76,10 @@ monadGen _ println = for_ (zip [1 :: Int ..] genMonadsModuloIso) docResult
         maxLen = maximum $ fmap fst strs
         pad (n, s) = "join $ " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
 
-    docResult (monadIndex, monadData) = do
+    docResult (monadName, (monoidName, monadData)) = do
         validate dict
-        println $ "Monad_" ++ show monadIndex ++ " {"
+        println $ monadName ++ " = Monad{"
+        println $ indent <> "baseMonoid = " ++ monoidName
         println $ indent <> "pure 0 = " <> show (_monadPure dict (0 :: Int))
         let docLine s ffx = indent <> s <> show (_monadJoin dict ffx)
         mapM_ println $
@@ -91,4 +103,4 @@ main = do
   writeFile' "output/T.txt" $ monadGen @T Proxy
   writeFile' "output/U.txt" $ monadGen @U Proxy
   writeFile' "output/V.txt" $ monadGen @V Proxy
-  -- writeFile' "output/Y.txt" $ monadGen @Y Proxy
+  --writeFile' "output/Y.txt" $ monadGen @Y Proxy

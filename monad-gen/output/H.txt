@@ -1,4 +1,83 @@
-Monad_1 {
+M_1 = Monoid{
+  Elements:
+    0 = Shape H
+    1 = Shape (Ha _)
+    2 = Shape (Hb _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 0 0 
+    1 | 0 1 2 
+    2 | 0 2 0 
+}
+M_2 = Monoid{
+  Elements:
+    0 = Shape H
+    1 = Shape (Ha _)
+    2 = Shape (Hb _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 0 0 
+    1 | 0 1 2 
+    2 | 0 2 1 
+}
+M_3 = Monoid{
+  Elements:
+    0 = Shape H
+    1 = Shape (Ha _)
+    2 = Shape (Hb _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 0 0 
+    1 | 0 1 2 
+    2 | 0 2 2 
+}
+M_4 = Monoid{
+  Elements:
+    0 = Shape H
+    1 = Shape (Ha _)
+    2 = Shape (Hb _ _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 0 0 
+    1 | 0 0 1 
+    2 | 0 1 2 
+}
+M_5 = Monoid{
+  Elements:
+    0 = Shape H
+    1 = Shape (Ha _)
+    2 = Shape (Hb _ _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 0 0 
+    1 | 0 1 1 
+    2 | 0 1 2 
+}
+M_6 = Monoid{
+  Elements:
+    0 = Shape H
+    1 = Shape (Ha _)
+    2 = Shape (Hb _ _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 0 0 
+    1 | 0 2 1 
+    2 | 0 1 2 
+}
+Monad_1 = Monad{
+    baseMonoid = M_1
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -15,7 +94,8 @@ Monad_1 {
     join $ Hb (Hb 0 1) (Hb 2 3) = H
 }
 
-Monad_2 {
+Monad_2 = Monad{
+    baseMonoid = M_1
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -32,7 +112,8 @@ Monad_2 {
     join $ Hb (Hb 0 1) (Hb 2 3) = H
 }
 
-Monad_3 {
+Monad_3 = Monad{
+    baseMonoid = M_1
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -49,7 +130,8 @@ Monad_3 {
     join $ Hb (Hb 0 1) (Hb 2 3) = H
 }
 
-Monad_4 {
+Monad_4 = Monad{
+    baseMonoid = M_3
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -66,7 +148,8 @@ Monad_4 {
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 0
 }
 
-Monad_5 {
+Monad_5 = Monad{
+    baseMonoid = M_3
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -83,7 +166,8 @@ Monad_5 {
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 0
 }
 
-Monad_6 {
+Monad_6 = Monad{
+    baseMonoid = M_3
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -100,7 +184,8 @@ Monad_6 {
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 1
 }
 
-Monad_7 {
+Monad_7 = Monad{
+    baseMonoid = M_3
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -117,7 +202,8 @@ Monad_7 {
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 0
 }
 
-Monad_8 {
+Monad_8 = Monad{
+    baseMonoid = M_3
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H
@@ -134,7 +220,8 @@ Monad_8 {
     join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 2
 }
 
-Monad_9 {
+Monad_9 = Monad{
+    baseMonoid = M_3
     pure 0 = Ha 0
     join $ H                    = H
     join $ Ha H                 = H

@@ -7,6 +7,8 @@ module MonoidGen(
   MonoidData(..), RawMonoidData(..),
   makeMonoidDict,
 
+  prettyMonoidData,
+
   -- * Internals
   Signature,
   makeEnv, fakeEnv, genMonoidDefs
@@ -48,6 +50,48 @@ genMonoids :: (PTraversable f) => [MonoidData f]
 genMonoids = MonoidData env <$> genMonoidDefs sig
   where
     (env, sig) = makeEnv
+
+prettyMonoidData :: (Show (f Ignored)) => String -> MonoidData f -> [String]
+prettyMonoidData monName monoidData =
+  [monName ++ " = Monoid{"] ++
+  map ("  " ++) (
+    [ "Elements:" ] ++
+    map indent (prettyElems env) ++
+    [ "Unit element: " ++ show e ] ++
+    [ "Multiplication table: " ] ++
+    map indent (prettyMultTable n (_multTable (_rawMonoidData monoidData)))
+  ) ++
+  ["}"]
+  where
+    env = _elemTable monoidData
+    e = _unitElem (_rawMonoidData monoidData)
+    n = V.length env
+    indent = ("  " ++)
+
+prettyElems :: (Show (f Ignored)) => V.Vector (Shape f) -> [String]
+prettyElems env = [ show i ++ " = " ++ show f_ | (i, f_) <- V.toList (V.indexed env) ]
+
+prettyMultTable :: Int -> V.Vector Int -> [String]
+prettyMultTable n table = formatTable $ headerRow : zipWith (:) elemNames content
+  where
+    xs = [0 .. n - 1]
+    elemNames = show <$> xs
+    headerRow = "" : elemNames
+    content = [ [ show (op i j) | j <- xs ] | i <- xs ]
+    op i j = table V.! (i * n + j)
+
+formatTable :: [[String]] -> [String]
+formatTable cells = addHRule $ renderRow <$> cells
+  where
+    cellSizes = foldr (zipWith max) (repeat 0) [ length <$> row | row <- cells ]
+    renderRow row = addVRule $ zipWith renderCell cellSizes row
+    renderCell n cellStr = replicate (n - length cellStr) ' ' ++ cellStr ++ " "
+    addVRule [] = []
+    addVRule (headerCell : rest) = headerCell ++ "| " ++ concat rest
+    addHRule [] = []
+    addHRule (headerRow : rest) = headerRow : map hrule headerRow : rest
+    hrule '|' = '+'
+    hrule _ = '-'
 
 data RawMonoidData = RawMonoidData {
   _unitElem :: Int,

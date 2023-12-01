@@ -9,18 +9,22 @@
 
 module MonadGen
   (
-    MonadData(..),
     MonadDict(..),
+    makeMonadDict,
+
+    MonadData(..),
     genMonads,
     genMonadsModuloIso,
     genMonadsIsoGroups,
-    makeMonadDict,
+  
+    genFromMonoid,
+    uniqueByIso,
+    groupByIso,
 
     -- * Debug
     GenState (..),
     Gen,
     runGen,
-    genFromMonoid,
     debugPrint,
     Join,
     Blockade,
