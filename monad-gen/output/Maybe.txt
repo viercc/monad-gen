@@ -10,10 +10,9 @@ M_1 = Monoid{
     1 | 0 1 
 }
 Monad_1 = Monad{
-    baseMonoid = M_1
-    pure 0 = Just 0
-    join $ Nothing       = Nothing
-    join $ Just Nothing  = Nothing
-    join $ Just (Just 0) = Just 0
+  baseMonoid = M_1
+  pure 0 = Just 0
+  join $ Nothing       = Nothing
+  join $ Just Nothing  = Nothing
+  join $ Just (Just 0) = Just 0
 }
-

@@ -156,4 +156,4 @@ main = do
   writeFile' "output/U.txt" $ monadGen @U Proxy
   writeFile' "output/Ugroups.txt" $ monadGenGroup @U Proxy
   writeFile' "output/V.txt" $ monadGen @V Proxy
-  writeFile' "output/Y.txt" $ monadGen @Y Proxy
+  -- writeFile' "output/Y.txt" $ monadGen @Y Proxy
