@@ -16,6 +16,7 @@ executable monad-gen
     Isomorphism,
     MonoidGen,
 --    ApplicativeGen,
+    EquationSolver,
 
     Util,
     Targets,
