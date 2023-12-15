@@ -2,16 +2,24 @@
 module MonoidGen(
   -- * Generate Monoids
   MonoidDict(..),
-  genMonoids,
-  
-  MonoidData(..), RawMonoidData(..),
   makeMonoidDict,
-
+  
+  MonoidData(..),
+  genMonoids,
+  genMonoidsWithSig,
+  genMonoidsForApplicative,
+  genMonoidsForMonad,
   prettyMonoidData,
 
-  -- * Internals
+  -- * Raw monoids
+  RawMonoidData(..),
   Signature,
-  makeEnv, fakeEnv, genMonoidDefs
+  genRawMonoids,
+  genRawMonoidsForApplicative,
+  genRawMonoidsForMonad,
+  
+  -- * Internals
+  makeEnv, fakeEnv,
 ) where
 
 import Data.Equivalence.Monad
@@ -24,7 +32,6 @@ import Data.Map (Map)
 import qualified Data.Map.Lazy as Map
 
 import Data.PTraversable
-import Data.PTraversable.Extra
 
 import qualified Data.Vector as V
 
@@ -32,26 +39,58 @@ import Data.Ord (comparing)
 import Data.Foldable (Foldable(..), for_)
 
 import Data.FunctorShape
+import Data.Transparent
 
--- Generate all possible monoids on @Shape f@, compatible with @Monad f@, up to iso
+-- * MonoidDict
 
-data MonoidDict f = MonoidDict
-  { monoidUnit :: Shape f,
-    monoidMult :: Shape f -> Shape f -> Shape f
+data MonoidDict a = MonoidDict
+  { monoidUnit :: a,
+    monoidMult :: a -> a -> a
   }
 
-data MonoidData f = MonoidData
+makeMonoidDict :: Ord a => MonoidData a -> MonoidDict a
+makeMonoidDict
+  MonoidData{
+    _elemTable = env,
+    _rawMonoidData = RawMonoidData {
+      _unitElem = e,
+      _multTable = mult
+    }
+  } = MonoidDict (env V.! e) op
+  where
+    n = V.length env
+    revTable = Map.fromList [(f_, i) | (i, f_) <- V.toList (V.indexed env)]
+    fromKey = (revTable Map.!)
+    op f1 f2 = env V.! (mult V.! (fromKey f1 * n + fromKey f2))
+
+
+-- * MonoidData
+
+data MonoidData a = MonoidData
   {
-    _elemTable :: V.Vector (Shape f),
+    _elemTable :: V.Vector a,
     _rawMonoidData :: RawMonoidData
   }
 
-genMonoids :: (PTraversable f) => [MonoidData f]
-genMonoids = MonoidData env <$> genMonoidDefs sig
-  where
-    (env, sig) = makeEnv
+genMonoids :: (Transparent a) => [MonoidData a]
+genMonoids = genMonoidsWithSig (const 1)
 
-prettyMonoidData :: (Show (f Ignored)) => String -> MonoidData f -> [String]
+genMonoidsWithSig :: (Transparent a) => (a -> Int) -> [MonoidData a]
+genMonoidsWithSig f = MonoidData env <$> genRawMonoids sig
+  where
+    (env, sig) = makeEnv f
+
+genMonoidsForApplicative :: (PTraversable f) => [MonoidData (Shape f)]
+genMonoidsForApplicative = MonoidData env <$> genRawMonoidsForApplicative sig
+  where
+    (env, sig) = makeEnv (\(Shape f1) -> length f1)
+
+genMonoidsForMonad :: (PTraversable f) => [MonoidData (Shape f)]
+genMonoidsForMonad = MonoidData env <$> genRawMonoidsForMonad sig
+  where
+    (env, sig) = makeEnv (\(Shape f1) -> length f1)
+
+prettyMonoidData :: (Show a) => String -> MonoidData a -> [String]
 prettyMonoidData monName monoidData =
   [monName ++ " = Monoid{"] ++
   map ("  " ++) (
@@ -68,7 +107,7 @@ prettyMonoidData monName monoidData =
     n = V.length env
     indent = ("  " ++)
 
-prettyElems :: (Show (f Ignored)) => V.Vector (Shape f) -> [String]
+prettyElems :: (Show a) => V.Vector a -> [String]
 prettyElems env = [ show i ++ " = " ++ show f_ | (i, f_) <- V.toList (V.indexed env) ]
 
 prettyMultTable :: Int -> V.Vector Int -> [String]
@@ -93,6 +132,16 @@ formatTable cells = addHRule $ renderRow <$> cells
     hrule '|' = '+'
     hrule _ = '-'
 
+makeEnv :: (Transparent a) => (a -> Int) -> (V.Vector a, Signature)
+makeEnv f = (keys, sigs)
+  where
+    (keys, sigs) = V.unzip $ V.fromList $ sortOn snd [(a, f a) | a <- enum]
+
+fakeEnv :: [Int] -> Signature
+fakeEnv ns = V.fromList (sort ns)
+
+-- * RawMonoidData
+
 data RawMonoidData = RawMonoidData {
   _unitElem :: Int,
   _multTable :: V.Vector Int
@@ -101,41 +150,44 @@ data RawMonoidData = RawMonoidData {
 
 type Signature = V.Vector Int
 
-makeEnv :: (PTraversable f) => (V.Vector (Shape f), Signature)
-makeEnv = (keys, lengths)
-  where
-    (keys, lengths) = V.unzip $ V.fromList $ sortOn snd [(Shape f1, length f1) | f1 <- shapes]
+countZeroes :: Signature -> Int
+countZeroes = length . takeWhile (== 0) . V.toList
 
-fakeEnv :: [Int] -> Signature
-fakeEnv ns = V.fromList (sort ns)
-
-makeMonoidDict :: WeakOrd f => MonoidData f -> MonoidDict f
-makeMonoidDict
-  MonoidData{
-    _elemTable = env,
-    _rawMonoidData = RawMonoidData {
-      _unitElem = e,
-      _multTable = mult
-    }
-  } = MonoidDict (env V.! e) op
-  where
-    n = V.length env
-    revTable = Map.fromList [(f_, i) | (i, f_) <- V.toList (V.indexed env)]
-    fromKey = (revTable Map.!)
-    op f1 f2 = env V.! (mult V.! (fromKey f1 * n + fromKey f2))
-
-genMonoidDefs :: Signature -> [RawMonoidData]
-genMonoidDefs env = do
+genRawMonoids :: Signature -> [RawMonoidData]
+genRawMonoids sig = do
+  let n = V.length sig
   e <- unitCandidates
-  let mults = mapMaybe (multMapToVec n) (gen n numZeroes e)
-  mult <- upToIso env e mults
+  let mults = mapMaybe (multMapToVec n) (gen n e)
+  mult <- upToIso sig e mults
   pure (RawMonoidData e mult)
   where
-    n = V.length env
-    lengths = V.toList env
-    numZeroes = length $ takeWhile (== 0) lengths
-    unitCandidates =
-      [x | (x, lenX', lenX) <- zip3 [0 ..] (0 : lengths) lengths, lenX' < lenX]
+    lengths = V.toList sig
+    unitCandidates = [x | (x, lenX', lenX) <- zip3 [0 ..] (-1 : lengths) lengths, lenX' < lenX]
+
+genRawMonoidsForApplicative :: Signature -> [RawMonoidData]
+genRawMonoidsForApplicative sig = do
+  let n = V.length sig
+  e <- unitCandidates
+  let mults = mapMaybe (multMapToVec n) (genForApplicative n (countZeroes sig) e)
+  mult <- upToIso sig e mults
+  pure (RawMonoidData e mult)
+  where
+    lengths = V.toList sig
+    unitCandidates
+      | null sig       = []
+      | all (== 0) sig = [0]
+      | otherwise      = [x | (x, lenX', lenX) <- zip3 [0 ..] (-1 : lengths) lengths, lenX' < lenX]
+
+genRawMonoidsForMonad :: Signature -> [RawMonoidData]
+genRawMonoidsForMonad sig = do
+  let n = V.length sig
+  e <- unitCandidates
+  let mults = mapMaybe (multMapToVec n) (genForMonad n (countZeroes sig) e)
+  mult <- upToIso sig e mults
+  pure (RawMonoidData e mult)
+  where
+    lengths = V.toList sig
+    unitCandidates = [x | (x, lenX', lenX) <- zip3 [0 ..] (0 : lengths) lengths, lenX' < lenX]
 
 multMapToVec :: Int -> MultTable -> Maybe (V.Vector Int)
 multMapToVec n multMap = V.generateM (n * n) (\i -> Map.lookup (quotRem i n) multMap)
@@ -193,8 +245,42 @@ mostWanted (Blocker m)
   where
     (k,_) = maximumBy (comparing (Set.size . snd)) $ Map.toList m
 
-gen :: Int -> Int -> Int -> [MultTable]
-gen n numZeroes e = go initialTable initialEqn initialBlocker
+enter :: MultTable -> KnownEq -> Blocker -> [(MultTable, [KnownEq], Blocker)]
+enter table (KnownEq x y z) (Blocker m) =
+    case Map.lookup (x,y) m of
+        Nothing -> [(table', [], Blocker m)]
+        Just eqs -> case checkEquations table' eqs of
+            Nothing -> []
+            Just (newEqs, newBlockers) ->
+                [(table', newEqs, newBlockers <> Blocker (Map.delete (x,y) m))]
+    where
+        table' = Map.insert (x,y) z table
+
+gen :: Int -> Int -> [MultTable]
+gen n e = genTable n e initialTable guess
+  where
+    xs = [0 .. n - 1]
+    initialTable =
+      Map.fromList $
+             [ ((e, x), x) | x <- xs]
+          ++ [ ((x, e), x) | x <- xs]
+    guess _ _ = xs
+
+genForApplicative :: Int -> Int -> Int -> [MultTable]
+genForApplicative n numZeroes e = genTable n e initialTable guess
+  where
+    xs = [0 .. n - 1]
+    zeroes = [0 .. numZeroes - 1]
+    initialTable =
+      Map.fromList $
+             [ ((e, x), x) | x <- xs]
+          ++ [ ((x, e), x) | x <- xs]
+    guess x y
+      | x < numZeroes || y < numZeroes = zeroes
+      | otherwise = xs
+
+genForMonad :: Int -> Int -> Int -> [MultTable]
+genForMonad n numZeroes e = genTable n e initialTable guess
   where
     xs = [0 .. n - 1]
     zeroes = [0 .. numZeroes - 1]
@@ -205,11 +291,11 @@ gen n numZeroes e = go initialTable initialEqn initialBlocker
           ++ [ ((e, x), x) | x <- xs]
           ++ [ ((x, e), x) | x <- nonzeroes]
     
-    allAssocEq = [ AssocEq x y z | x <- nonzeroes, y <- nonzeroes, z <- xs, z /= e ]
-    (initialEqn, initialBlocker) = case checkEquations initialTable allAssocEq of
-        Nothing -> error "Bad initial table?"
-        Just updates -> updates
-    
+    guess _ y = if y < numZeroes then zeroes else xs
+
+genTable :: Int -> Int -> MultTable -> (Int -> Int -> [Int]) -> [MultTable]
+genTable n e initialTable guess = go initialTable initialEqn initialBlocker
+  where
     go table (KnownEq x y xy : eqs) blocker = case Map.lookup (x,y) table of
         Nothing -> do
             (table', newEqs, blocker') <- enter table (KnownEq x y xy) blocker
@@ -223,18 +309,12 @@ gen n numZeroes e = go initialTable initialEqn initialBlocker
                (table', newEqs, blocker') <- enter table (KnownEq x y z) blocker
                go table' newEqs blocker'
     
-    enter table (KnownEq x y z) (Blocker m) =
-        case Map.lookup (x,y) m of
-            Nothing -> [(table', [], Blocker m)]
-            Just eqs -> case checkEquations table' eqs of
-                Nothing -> []
-                Just (newEqs, newBlockers) ->
-                    [(table', newEqs, newBlockers <> Blocker (Map.delete (x,y) m))]
-        where
-            table' = Map.insert (x,y) z table
+    nonUnits = filter (/= e) [0 .. n - 1]
 
-    guess _ y = if y < numZeroes then zeroes else xs
-
+    allAssocEq = AssocEq <$> nonUnits <*> nonUnits <*> nonUnits
+    (initialEqn, initialBlocker) = case checkEquations initialTable allAssocEq of
+        Nothing -> error "Bad initial table?"
+        Just updates -> updates
 
 upToIso :: Signature -> Int -> [V.Vector Int] -> [V.Vector Int]
 upToIso env e tabs = runEquivM id min $ do
@@ -250,10 +330,10 @@ data Transposition = Transpose Int Int
   deriving (Show)
 
 isoGenerators :: Signature -> Int -> [Transposition]
-isoGenerators env e =
+isoGenerators sig e =
   [Transpose i j | ((i, n), (j, m)) <- zip lengths' (drop 1 lengths'), n == m]
   where
-    lengths = V.toList $ V.indexed env
+    lengths = V.toList $ V.indexed sig
     lengths' = filter ((/= e) . fst) lengths
 
 applyTranspose :: Int -> Transposition -> V.Vector Int -> V.Vector Int

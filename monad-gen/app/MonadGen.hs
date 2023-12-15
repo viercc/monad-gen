@@ -46,7 +46,7 @@ import GHC.Generics ((:.:) (..))
 import Data.FunctorShape
 import qualified Data.NatMap as NM
 
-import MonoidGen (MonoidDict(..), genMonoids, makeMonoidDict)
+import MonoidGen (MonoidDict(..), genMonoidsForMonad, makeMonoidDict)
 import Isomorphism (Iso (..), makePositionIsoFactors)
 import Data.Equivalence.Monad
 
@@ -67,7 +67,7 @@ data MonadDict f =
 
 genMonads :: (PTraversable f, forall a. (Show a) => Show (f a)) => [MonadData f]
 genMonads =
-  do monDict <- makeMonoidDict <$> genMonoids
+  do monDict <- makeMonoidDict <$> genMonoidsForMonad
      genFromMonoid monDict
 
 applyIso :: PTraversable f => Iso f -> MonadData f -> MonadData f
@@ -82,14 +82,14 @@ applyIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM'
 
 genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
 genMonadsModuloIso = 
-  do monDict <- makeMonoidDict <$> genMonoids
+  do monDict <- makeMonoidDict <$> genMonoidsForMonad
      uniqueByIso isoGenerators $ genFromMonoid monDict
   where
     isoGenerators = concat makePositionIsoFactors :: [Iso f]
 
 genMonadsIsoGroups :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [[MonadData f]]
 genMonadsIsoGroups = 
-  do monDict <- makeMonoidDict <$> genMonoids
+  do monDict <- makeMonoidDict <$> genMonoidsForMonad
      isoGroup <- groupByIso isoGenerators $ genFromMonoid monDict
      pure (Set.toList isoGroup)
   where
@@ -122,7 +122,7 @@ makeMonadDict (MonadData (Shape u) joinMap) =
 type Gen f = ReaderT (Env f) (StateT (GenState f) [])
 
 data Env f = Env
-  { _baseMonoid :: MonoidDict f,
+  { _baseMonoid :: MonoidDict (Shape f),
     _f1 :: Vec (f Int),
     _f2 :: Vec (f (f Int)),
     _f3 :: Vec (f (f (f Int))),
@@ -182,7 +182,7 @@ associativity m fffa =
 choose :: (Foldable t) => t a -> Gen f a
 choose = lift . lift . toList
 
-buildInitialEnv :: forall f. PTraversable f => MonoidDict f -> Env f
+buildInitialEnv :: forall f. PTraversable f => MonoidDict (Shape f) -> Env f
 buildInitialEnv monDict = Env {
     _baseMonoid = monDict,
     _f1 = f1,
@@ -201,7 +201,7 @@ _pure :: PTraversable f => Env f -> a -> f a
 _pure env = case monoidUnit (_baseMonoid env) of
   Shape u -> (<$ u)
 
-runGen :: forall f r. (PTraversable f) => MonoidDict f -> Gen f r -> [(r, GenState f)]
+runGen :: forall f r. (PTraversable f) => MonoidDict (Shape f) -> Gen f r -> [(r, GenState f)]
 runGen monDict mr = runStateT (runReaderT mr env) state0
   where
     env :: Env f
@@ -289,7 +289,7 @@ guess lhsKey = do
     Just rhsKey -> choose $ traverse (const lhsVars) (keyIndices rhsKey)
   entry lhs rhs
 
-genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidDict f -> [MonadData f]
+genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidDict (Shape f) -> [MonadData f]
 genFromMonoid mon = postproc . snd <$> runGen mon (entryUU >> entryFUG >> loop)
   where
     loop = do

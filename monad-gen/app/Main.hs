@@ -23,6 +23,7 @@ import Isomorphism (makePositionIsoFactors)
 import Data.Two
 import Targets
 import Util
+import Data.FunctorShape
 
 ------------------------
 -- Tests
@@ -34,7 +35,7 @@ monoidGen ::
   ) =>
   Proxy f ->
   (String -> IO ()) ->
-  IO [ (String, MonoidData f) ]
+  IO [ (String, MonoidData (Shape f)) ]
 monoidGen _ println = do
   let monoidNames = [ "M_" ++ show i | i <- [ 1 :: Int .. ] ]
       monoids = zip monoidNames genMonoids

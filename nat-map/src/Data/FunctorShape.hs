@@ -6,12 +6,17 @@
 {-# LANGUAGE ConstraintKinds #-}
 module Data.FunctorShape(
     Shape(), pattern Shape,
-    mapShape,
+    mapShape, unShape,
     Ignored(..), WeakEq, WeakOrd
 ) where
 
 import qualified Unsafe.Coerce (unsafeCoerce)
 import Data.Functor.Classes (showsUnaryWith)
+
+import Data.PTraversable
+import Data.Transparent
+import Data.Profunctor.Cartesian
+import Data.Profunctor (Profunctor(..))
 
 newtype Shape f = UnsafeMkShape (f Ignored)
 type role Shape representational
@@ -30,6 +35,9 @@ instance (WeakOrd f) => Ord (Shape f) where
 instance (Show (f Ignored)) => Show (Shape f) where
     showsPrec p (UnsafeMkShape fa) = showsUnaryWith showsPrec "Shape" p fa
 
+instance PTraversable f => Transparent (Shape f) where
+    describeOn f g = ptraverseWith (unShape . f) (g . UnsafeMkShape) (rmap (const Ignored) proUnit)
+
 {-# COMPLETE Shape #-}
 pattern Shape :: f a -> Shape f
 pattern Shape x <- UnsafeMkShape x
@@ -37,6 +45,9 @@ pattern Shape x <- UnsafeMkShape x
 
 mapShape :: (forall a. f a -> g a) -> Shape f -> Shape g
 mapShape fg (Shape f) = Shape (fg f)
+
+unShape :: Shape f -> f Ignored
+unShape (UnsafeMkShape f) = f
 
 data Ignored = Ignored
 

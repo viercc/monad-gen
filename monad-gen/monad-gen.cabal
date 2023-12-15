@@ -15,6 +15,7 @@ executable monad-gen
     MonadGen,
     Isomorphism,
     MonoidGen,
+--    ApplicativeGen,
 
     Util,
     Targets,
@@ -26,6 +27,7 @@ executable monad-gen
     , profunctors
     , reflection
     , vector
+    , array
     , containers
     , mtl
     , ansi-terminal
