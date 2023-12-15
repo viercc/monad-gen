@@ -70,8 +70,8 @@ M_5 = Monoid{
     --+---------
     0 | 0 0 0 0 
     1 | 0 1 2 3 
-    2 | 0 2 0 0 
-    3 | 3 3 3 3 
+    2 | 0 2 0 2 
+    3 | 0 3 0 3 
 }
 M_6 = Monoid{
   Elements:
@@ -86,7 +86,7 @@ M_6 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 2 3 
     2 | 0 2 0 2 
-    3 | 0 3 0 3 
+    3 | 0 3 2 1 
 }
 M_7 = Monoid{
   Elements:
@@ -101,7 +101,7 @@ M_7 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 2 3 
     2 | 0 2 0 2 
-    3 | 0 3 2 1 
+    3 | 0 3 2 3 
 }
 M_8 = Monoid{
   Elements:
@@ -115,8 +115,8 @@ M_8 = Monoid{
     --+---------
     0 | 0 0 0 0 
     1 | 0 1 2 3 
-    2 | 0 2 0 2 
-    3 | 0 3 2 3 
+    2 | 0 2 1 3 
+    3 | 0 3 3 0 
 }
 M_9 = Monoid{
   Elements:
@@ -131,7 +131,7 @@ M_9 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 2 3 
     2 | 0 2 1 3 
-    3 | 0 3 3 0 
+    3 | 0 3 3 3 
 }
 M_10 = Monoid{
   Elements:
@@ -145,8 +145,8 @@ M_10 = Monoid{
     --+---------
     0 | 0 0 0 0 
     1 | 0 1 2 3 
-    2 | 0 2 1 3 
-    3 | 0 3 3 3 
+    2 | 0 2 2 0 
+    3 | 0 3 0 0 
 }
 M_11 = Monoid{
   Elements:
@@ -161,7 +161,7 @@ M_11 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 2 3 
     2 | 0 2 2 0 
-    3 | 0 3 0 0 
+    3 | 0 3 0 3 
 }
 M_12 = Monoid{
   Elements:
@@ -176,39 +176,9 @@ M_12 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 2 3 
     2 | 0 2 2 0 
-    3 | 0 3 0 3 
-}
-M_13 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 1
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 2 3 
-    2 | 0 2 2 0 
     3 | 0 3 3 0 
 }
-M_14 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 1
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 2 3 
-    2 | 0 2 2 0 
-    3 | 3 3 3 3 
-}
-M_15 = Monoid{
+M_13 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -223,7 +193,7 @@ M_15 = Monoid{
     2 | 0 2 2 2 
     3 | 0 3 2 1 
 }
-M_16 = Monoid{
+M_14 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -238,7 +208,7 @@ M_16 = Monoid{
     2 | 0 2 2 2 
     3 | 0 3 2 2 
 }
-M_17 = Monoid{
+M_15 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -253,7 +223,7 @@ M_17 = Monoid{
     2 | 0 2 2 2 
     3 | 0 3 2 3 
 }
-M_18 = Monoid{
+M_16 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -267,6 +237,36 @@ M_18 = Monoid{
     1 | 0 1 2 3 
     2 | 0 2 2 2 
     3 | 0 3 3 3 
+}
+M_17 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 0 0 
+}
+M_18 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 2 3 
 }
 M_19 = Monoid{
   Elements:
@@ -281,7 +281,7 @@ M_19 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 2 3 
     2 | 0 2 2 3 
-    3 | 0 3 0 0 
+    3 | 0 3 3 0 
 }
 M_20 = Monoid{
   Elements:
@@ -296,7 +296,7 @@ M_20 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 2 3 
     2 | 0 2 2 3 
-    3 | 0 3 2 3 
+    3 | 0 3 3 2 
 }
 M_21 = Monoid{
   Elements:
@@ -311,39 +311,9 @@ M_21 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 2 3 
     2 | 0 2 2 3 
-    3 | 0 3 3 0 
-}
-M_22 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 1
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 2 3 
-    2 | 0 2 2 3 
-    3 | 0 3 3 2 
-}
-M_23 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 1
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 2 3 
-    2 | 0 2 2 3 
     3 | 0 3 3 3 
 }
-M_24 = Monoid{
+M_22 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -358,7 +328,7 @@ M_24 = Monoid{
     2 | 0 2 3 0 
     3 | 0 3 0 0 
 }
-M_25 = Monoid{
+M_23 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -373,7 +343,7 @@ M_25 = Monoid{
     2 | 0 2 3 1 
     3 | 0 3 1 2 
 }
-M_26 = Monoid{
+M_24 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -388,7 +358,7 @@ M_26 = Monoid{
     2 | 0 2 3 2 
     3 | 0 3 2 3 
 }
-M_27 = Monoid{
+M_25 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -403,67 +373,7 @@ M_27 = Monoid{
     2 | 0 2 3 3 
     3 | 0 3 3 3 
 }
-M_28 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 1
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 2 3 
-    2 | 2 2 2 2 
-    3 | 0 3 0 0 
-}
-M_29 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 1
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 2 3 
-    2 | 2 2 2 2 
-    3 | 0 3 0 3 
-}
-M_30 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 1
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 2 3 
-    2 | 2 2 2 2 
-    3 | 2 3 0 1 
-}
-M_31 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 1
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 2 3 
-    2 | 3 2 1 0 
-    3 | 3 3 3 3 
-}
-M_32 = Monoid{
+M_26 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -478,7 +388,7 @@ M_32 = Monoid{
     2 | 0 0 0 2 
     3 | 0 1 2 3 
 }
-M_33 = Monoid{
+M_27 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -493,7 +403,7 @@ M_33 = Monoid{
     2 | 0 0 2 2 
     3 | 0 1 2 3 
 }
-M_34 = Monoid{
+M_28 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -508,7 +418,7 @@ M_34 = Monoid{
     2 | 0 1 2 2 
     3 | 0 1 2 3 
 }
-M_35 = Monoid{
+M_29 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -523,7 +433,7 @@ M_35 = Monoid{
     2 | 0 1 3 2 
     3 | 0 1 2 3 
 }
-M_36 = Monoid{
+M_30 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -538,7 +448,7 @@ M_36 = Monoid{
     2 | 0 0 2 2 
     3 | 0 1 2 3 
 }
-M_37 = Monoid{
+M_31 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -553,7 +463,7 @@ M_37 = Monoid{
     2 | 0 0 2 2 
     3 | 0 1 2 3 
 }
-M_38 = Monoid{
+M_32 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -568,7 +478,7 @@ M_38 = Monoid{
     2 | 0 1 1 2 
     3 | 0 1 2 3 
 }
-M_39 = Monoid{
+M_33 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -583,7 +493,7 @@ M_39 = Monoid{
     2 | 0 1 2 2 
     3 | 0 1 2 3 
 }
-M_40 = Monoid{
+M_34 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -598,7 +508,7 @@ M_40 = Monoid{
     2 | 0 1 3 2 
     3 | 0 1 2 3 
 }
-M_41 = Monoid{
+M_35 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -613,7 +523,7 @@ M_41 = Monoid{
     2 | 0 2 2 2 
     3 | 0 1 2 3 
 }
-M_42 = Monoid{
+M_36 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -628,7 +538,7 @@ M_42 = Monoid{
     2 | 0 1 2 2 
     3 | 0 1 2 3 
 }
-M_43 = Monoid{
+M_37 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -643,7 +553,7 @@ M_43 = Monoid{
     2 | 0 1 2 2 
     3 | 0 1 2 3 
 }
-M_44 = Monoid{
+M_38 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -658,7 +568,7 @@ M_44 = Monoid{
     2 | 0 0 1 2 
     3 | 0 1 2 3 
 }
-M_45 = Monoid{
+M_39 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -673,7 +583,7 @@ M_45 = Monoid{
     2 | 0 2 1 2 
     3 | 0 1 2 3 
 }
-M_46 = Monoid{
+M_40 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -686,51 +596,6 @@ M_46 = Monoid{
     0 | 0 0 0 0 
     1 | 0 2 3 1 
     2 | 0 3 1 2 
-    3 | 0 1 2 3 
-}
-M_47 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 3
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 0 0 1 
-    2 | 2 2 2 2 
-    3 | 0 1 2 3 
-}
-M_48 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 3
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 0 1 
-    2 | 2 2 2 2 
-    3 | 0 1 2 3 
-}
-M_49 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 3
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 1 1 1 1 
-    2 | 1 0 3 2 
     3 | 0 1 2 3 
 }
 Monad_1 = Monad{
@@ -1314,7 +1179,7 @@ Monad_20 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_21 = Monad{
-  baseMonoid = M_6
+  baseMonoid = M_5
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1343,7 +1208,7 @@ Monad_21 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_22 = Monad{
-  baseMonoid = M_6
+  baseMonoid = M_5
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1372,7 +1237,7 @@ Monad_22 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_23 = Monad{
-  baseMonoid = M_6
+  baseMonoid = M_5
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1401,7 +1266,7 @@ Monad_23 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_24 = Monad{
-  baseMonoid = M_6
+  baseMonoid = M_5
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1430,7 +1295,7 @@ Monad_24 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_25 = Monad{
-  baseMonoid = M_6
+  baseMonoid = M_5
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1459,7 +1324,7 @@ Monad_25 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_26 = Monad{
-  baseMonoid = M_6
+  baseMonoid = M_5
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1488,7 +1353,7 @@ Monad_26 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_27 = Monad{
-  baseMonoid = M_6
+  baseMonoid = M_5
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1517,7 +1382,7 @@ Monad_27 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_28 = Monad{
-  baseMonoid = M_8
+  baseMonoid = M_7
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1546,7 +1411,7 @@ Monad_28 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_29 = Monad{
-  baseMonoid = M_8
+  baseMonoid = M_7
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1575,7 +1440,7 @@ Monad_29 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_30 = Monad{
-  baseMonoid = M_8
+  baseMonoid = M_7
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1604,7 +1469,7 @@ Monad_30 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_31 = Monad{
-  baseMonoid = M_8
+  baseMonoid = M_7
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1633,7 +1498,7 @@ Monad_31 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_32 = Monad{
-  baseMonoid = M_8
+  baseMonoid = M_7
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1662,7 +1527,7 @@ Monad_32 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_33 = Monad{
-  baseMonoid = M_8
+  baseMonoid = M_7
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1691,7 +1556,7 @@ Monad_33 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_34 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1720,7 +1585,7 @@ Monad_34 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_35 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1749,7 +1614,7 @@ Monad_35 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_36 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1778,7 +1643,7 @@ Monad_36 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_37 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1807,7 +1672,7 @@ Monad_37 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_38 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1836,7 +1701,7 @@ Monad_38 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_39 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1865,7 +1730,7 @@ Monad_39 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_40 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1894,7 +1759,7 @@ Monad_40 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_41 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1923,7 +1788,7 @@ Monad_41 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_42 = Monad{
-  baseMonoid = M_9
+  baseMonoid = M_8
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1952,7 +1817,7 @@ Monad_42 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_43 = Monad{
-  baseMonoid = M_10
+  baseMonoid = M_9
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -1981,7 +1846,7 @@ Monad_43 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_44 = Monad{
-  baseMonoid = M_10
+  baseMonoid = M_9
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2010,7 +1875,7 @@ Monad_44 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_45 = Monad{
-  baseMonoid = M_10
+  baseMonoid = M_9
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2039,7 +1904,7 @@ Monad_45 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_46 = Monad{
-  baseMonoid = M_10
+  baseMonoid = M_9
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2068,7 +1933,7 @@ Monad_46 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_47 = Monad{
-  baseMonoid = M_10
+  baseMonoid = M_9
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2097,7 +1962,7 @@ Monad_47 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_48 = Monad{
-  baseMonoid = M_10
+  baseMonoid = M_9
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2126,7 +1991,7 @@ Monad_48 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_49 = Monad{
-  baseMonoid = M_11
+  baseMonoid = M_10
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2155,7 +2020,7 @@ Monad_49 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_50 = Monad{
-  baseMonoid = M_11
+  baseMonoid = M_10
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2184,7 +2049,7 @@ Monad_50 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_51 = Monad{
-  baseMonoid = M_11
+  baseMonoid = M_10
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2213,7 +2078,7 @@ Monad_51 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_52 = Monad{
-  baseMonoid = M_11
+  baseMonoid = M_10
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2242,7 +2107,7 @@ Monad_52 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_53 = Monad{
-  baseMonoid = M_11
+  baseMonoid = M_10
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2271,7 +2136,7 @@ Monad_53 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_54 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2300,7 +2165,7 @@ Monad_54 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_55 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2329,7 +2194,7 @@ Monad_55 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_56 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2358,7 +2223,7 @@ Monad_56 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_57 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2387,7 +2252,7 @@ Monad_57 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_58 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2416,7 +2281,7 @@ Monad_58 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_59 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2445,7 +2310,7 @@ Monad_59 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_60 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2474,7 +2339,7 @@ Monad_60 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_61 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2503,7 +2368,7 @@ Monad_61 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_62 = Monad{
-  baseMonoid = M_12
+  baseMonoid = M_11
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2532,7 +2397,7 @@ Monad_62 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_63 = Monad{
-  baseMonoid = M_13
+  baseMonoid = M_12
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2561,7 +2426,7 @@ Monad_63 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_64 = Monad{
-  baseMonoid = M_13
+  baseMonoid = M_12
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2590,7 +2455,7 @@ Monad_64 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_65 = Monad{
-  baseMonoid = M_13
+  baseMonoid = M_12
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2619,7 +2484,7 @@ Monad_65 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_66 = Monad{
-  baseMonoid = M_13
+  baseMonoid = M_12
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2648,7 +2513,7 @@ Monad_66 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_67 = Monad{
-  baseMonoid = M_13
+  baseMonoid = M_12
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2677,7 +2542,7 @@ Monad_67 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_68 = Monad{
-  baseMonoid = M_13
+  baseMonoid = M_12
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2706,7 +2571,7 @@ Monad_68 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_69 = Monad{
-  baseMonoid = M_16
+  baseMonoid = M_14
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2735,7 +2600,7 @@ Monad_69 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
 }
 Monad_70 = Monad{
-  baseMonoid = M_16
+  baseMonoid = M_14
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2764,7 +2629,7 @@ Monad_70 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
 }
 Monad_71 = Monad{
-  baseMonoid = M_16
+  baseMonoid = M_14
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2793,7 +2658,7 @@ Monad_71 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
 }
 Monad_72 = Monad{
-  baseMonoid = M_16
+  baseMonoid = M_14
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2822,7 +2687,7 @@ Monad_72 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
 }
 Monad_73 = Monad{
-  baseMonoid = M_16
+  baseMonoid = M_14
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2851,7 +2716,7 @@ Monad_73 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
 }
 Monad_74 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2880,7 +2745,7 @@ Monad_74 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_75 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2909,7 +2774,7 @@ Monad_75 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_76 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2938,7 +2803,7 @@ Monad_76 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_77 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2967,7 +2832,7 @@ Monad_77 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_78 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -2996,7 +2861,7 @@ Monad_78 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_79 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3025,7 +2890,7 @@ Monad_79 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_80 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3054,7 +2919,7 @@ Monad_80 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_81 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3083,7 +2948,7 @@ Monad_81 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_82 = Monad{
-  baseMonoid = M_17
+  baseMonoid = M_15
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3112,7 +2977,7 @@ Monad_82 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_83 = Monad{
-  baseMonoid = M_18
+  baseMonoid = M_16
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3141,7 +3006,7 @@ Monad_83 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_84 = Monad{
-  baseMonoid = M_18
+  baseMonoid = M_16
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3170,7 +3035,7 @@ Monad_84 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_85 = Monad{
-  baseMonoid = M_18
+  baseMonoid = M_16
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3199,7 +3064,7 @@ Monad_85 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_86 = Monad{
-  baseMonoid = M_18
+  baseMonoid = M_16
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3228,7 +3093,7 @@ Monad_86 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_87 = Monad{
-  baseMonoid = M_18
+  baseMonoid = M_16
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3257,7 +3122,7 @@ Monad_87 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_88 = Monad{
-  baseMonoid = M_19
+  baseMonoid = M_17
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3286,7 +3151,7 @@ Monad_88 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_89 = Monad{
-  baseMonoid = M_19
+  baseMonoid = M_17
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3315,7 +3180,7 @@ Monad_89 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_90 = Monad{
-  baseMonoid = M_19
+  baseMonoid = M_17
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3344,7 +3209,7 @@ Monad_90 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_91 = Monad{
-  baseMonoid = M_19
+  baseMonoid = M_17
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3373,7 +3238,7 @@ Monad_91 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_92 = Monad{
-  baseMonoid = M_19
+  baseMonoid = M_17
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3402,7 +3267,7 @@ Monad_92 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_93 = Monad{
-  baseMonoid = M_19
+  baseMonoid = M_17
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3431,7 +3296,7 @@ Monad_93 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_94 = Monad{
-  baseMonoid = M_19
+  baseMonoid = M_17
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3460,7 +3325,7 @@ Monad_94 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_95 = Monad{
-  baseMonoid = M_20
+  baseMonoid = M_18
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3489,7 +3354,7 @@ Monad_95 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_96 = Monad{
-  baseMonoid = M_20
+  baseMonoid = M_18
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3518,7 +3383,7 @@ Monad_96 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_97 = Monad{
-  baseMonoid = M_20
+  baseMonoid = M_18
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3547,7 +3412,7 @@ Monad_97 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_98 = Monad{
-  baseMonoid = M_20
+  baseMonoid = M_18
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3576,7 +3441,7 @@ Monad_98 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_99 = Monad{
-  baseMonoid = M_20
+  baseMonoid = M_18
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3605,7 +3470,7 @@ Monad_99 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_100 = Monad{
-  baseMonoid = M_20
+  baseMonoid = M_18
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3634,7 +3499,7 @@ Monad_100 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_101 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3663,7 +3528,7 @@ Monad_101 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_102 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3692,7 +3557,7 @@ Monad_102 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_103 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3721,7 +3586,7 @@ Monad_103 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_104 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3750,7 +3615,7 @@ Monad_104 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_105 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3779,7 +3644,7 @@ Monad_105 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_106 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3808,7 +3673,7 @@ Monad_106 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_107 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3837,7 +3702,7 @@ Monad_107 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_108 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3866,7 +3731,7 @@ Monad_108 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_109 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3895,7 +3760,7 @@ Monad_109 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_110 = Monad{
-  baseMonoid = M_21
+  baseMonoid = M_19
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3924,7 +3789,7 @@ Monad_110 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_111 = Monad{
-  baseMonoid = M_22
+  baseMonoid = M_20
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3953,7 +3818,7 @@ Monad_111 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
 }
 Monad_112 = Monad{
-  baseMonoid = M_22
+  baseMonoid = M_20
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -3982,7 +3847,7 @@ Monad_112 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vb 0
 }
 Monad_113 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4011,7 +3876,7 @@ Monad_113 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_114 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4040,7 +3905,7 @@ Monad_114 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_115 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4069,7 +3934,7 @@ Monad_115 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_116 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4098,7 +3963,7 @@ Monad_116 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_117 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4127,7 +3992,7 @@ Monad_117 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_118 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4156,7 +4021,7 @@ Monad_118 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_119 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4185,7 +4050,7 @@ Monad_119 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_120 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4214,7 +4079,7 @@ Monad_120 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_121 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4243,7 +4108,7 @@ Monad_121 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_122 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4272,7 +4137,7 @@ Monad_122 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_123 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4301,7 +4166,7 @@ Monad_123 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_124 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4330,7 +4195,7 @@ Monad_124 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_125 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4359,7 +4224,7 @@ Monad_125 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_126 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4388,7 +4253,7 @@ Monad_126 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_127 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4417,7 +4282,7 @@ Monad_127 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_128 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4446,7 +4311,7 @@ Monad_128 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_129 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4475,7 +4340,7 @@ Monad_129 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_130 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4504,7 +4369,7 @@ Monad_130 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_131 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4533,7 +4398,7 @@ Monad_131 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_132 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4562,7 +4427,7 @@ Monad_132 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_133 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4591,7 +4456,7 @@ Monad_133 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_134 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4620,7 +4485,7 @@ Monad_134 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_135 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4649,7 +4514,7 @@ Monad_135 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_136 = Monad{
-  baseMonoid = M_23
+  baseMonoid = M_21
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4678,7 +4543,7 @@ Monad_136 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_137 = Monad{
-  baseMonoid = M_24
+  baseMonoid = M_22
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4707,7 +4572,7 @@ Monad_137 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_138 = Monad{
-  baseMonoid = M_24
+  baseMonoid = M_22
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4736,7 +4601,7 @@ Monad_138 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_139 = Monad{
-  baseMonoid = M_24
+  baseMonoid = M_22
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4765,7 +4630,7 @@ Monad_139 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = V
 }
 Monad_140 = Monad{
-  baseMonoid = M_26
+  baseMonoid = M_24
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4794,7 +4659,7 @@ Monad_140 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_141 = Monad{
-  baseMonoid = M_26
+  baseMonoid = M_24
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4823,7 +4688,7 @@ Monad_141 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_142 = Monad{
-  baseMonoid = M_27
+  baseMonoid = M_25
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4852,7 +4717,7 @@ Monad_142 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_143 = Monad{
-  baseMonoid = M_27
+  baseMonoid = M_25
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4881,7 +4746,7 @@ Monad_143 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_144 = Monad{
-  baseMonoid = M_27
+  baseMonoid = M_25
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4910,7 +4775,7 @@ Monad_144 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_145 = Monad{
-  baseMonoid = M_27
+  baseMonoid = M_25
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4939,7 +4804,7 @@ Monad_145 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_146 = Monad{
-  baseMonoid = M_27
+  baseMonoid = M_25
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4968,7 +4833,7 @@ Monad_146 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 0
 }
 Monad_147 = Monad{
-  baseMonoid = M_27
+  baseMonoid = M_25
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -4997,7 +4862,7 @@ Monad_147 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_148 = Monad{
-  baseMonoid = M_27
+  baseMonoid = M_25
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -5026,7 +4891,7 @@ Monad_148 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_149 = Monad{
-  baseMonoid = M_27
+  baseMonoid = M_25
   pure 0 = Va 0
   join $ V                    = V
   join $ Va V                 = V
@@ -5055,7 +4920,7 @@ Monad_149 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 1
 }
 Monad_150 = Monad{
-  baseMonoid = M_37
+  baseMonoid = M_31
   pure 0 = Vc 0 0
   join $ V                    = V
   join $ Va V                 = V

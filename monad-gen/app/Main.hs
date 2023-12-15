@@ -38,7 +38,7 @@ monoidGen ::
   IO [ (String, MonoidData (Shape f)) ]
 monoidGen _ println = do
   let monoidNames = [ "M_" ++ show i | i <- [ 1 :: Int .. ] ]
-      monoids = zip monoidNames genMonoids
+      monoids = zip monoidNames genMonoidsForMonad
   for_ monoids $ \(monoidName, monData) -> mapM_ println (prettyMonoidData monoidName monData)
   pure monoids
 
