@@ -13,6 +13,9 @@ module MonoidGen(
 
   -- * Raw monoids
   RawMonoidData(..),
+  prettyRawMonoidData,
+
+  -- * Raw monoid generation
   Signature,
   genRawMonoids,
   genRawMonoidsForApplicative,
@@ -25,6 +28,8 @@ module MonoidGen(
 import Data.Equivalence.Monad
 import Data.List (sortOn, sort, maximumBy)
 import Data.Maybe (mapMaybe)
+import Data.Foldable (Foldable(..), for_)
+import Data.Traversable.WithIndex (TraversableWithIndex(..))
 
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -34,9 +39,10 @@ import qualified Data.Map.Lazy as Map
 import Data.PTraversable
 
 import qualified Data.Vector as V
+import Data.Array ((!), Ix(..), Array)
+import qualified Data.Array as Array
 
 import Data.Ord (comparing)
-import Data.Foldable (Foldable(..), for_)
 
 import Data.FunctorShape
 import Data.Transparent
@@ -58,10 +64,9 @@ makeMonoidDict
     }
   } = MonoidDict (env V.! e) op
   where
-    n = V.length env
     revTable = Map.fromList [(f_, i) | (i, f_) <- V.toList (V.indexed env)]
     fromKey = (revTable Map.!)
-    op f1 f2 = env V.! (mult V.! (fromKey f1 * n + fromKey f2))
+    op f1 f2 = env V.! (mult ! (fromKey f1, fromKey f2))
 
 
 -- * MonoidData
@@ -98,26 +103,25 @@ prettyMonoidData monName monoidData =
     map indent (prettyElems env) ++
     [ "Unit element: " ++ show e ] ++
     [ "Multiplication table: " ] ++
-    map indent (prettyMultTable n (_multTable (_rawMonoidData monoidData)))
+    map indent (prettyArray (_multTable (_rawMonoidData monoidData)))
   ) ++
   ["}"]
   where
     env = _elemTable monoidData
     e = _unitElem (_rawMonoidData monoidData)
-    n = V.length env
     indent = ("  " ++)
 
 prettyElems :: (Show a) => V.Vector a -> [String]
 prettyElems env = [ show i ++ " = " ++ show f_ | (i, f_) <- V.toList (V.indexed env) ]
 
-prettyMultTable :: Int -> V.Vector Int -> [String]
-prettyMultTable n table = formatTable $ headerRow : zipWith (:) elemNames content
+prettyArray :: (Ix i, Ix j, Show i, Show j, Show a) => Array (i,j) a -> [String]
+prettyArray table = formatTable $ headerRow : map row xs
   where
-    xs = [0 .. n - 1]
-    elemNames = show <$> xs
-    headerRow = "" : elemNames
-    content = [ [ show (op i j) | j <- xs ] | i <- xs ]
-    op i j = table V.! (i * n + j)
+    ((xLo, yLo), (xHi, yHi)) = Array.bounds table
+    xs = range (xLo, xHi)
+    ys = range (yLo, yHi)
+    headerRow = "" : map show ys
+    row x = show x : [ show (table ! (x,y)) | y <- ys]
 
 formatTable :: [[String]] -> [String]
 formatTable cells = addHRule $ renderRow <$> cells
@@ -143,10 +147,27 @@ fakeEnv ns = V.fromList (sort ns)
 -- * RawMonoidData
 
 data RawMonoidData = RawMonoidData {
+  _monoidSize :: Int,
   _unitElem :: Int,
-  _multTable :: V.Vector Int
+  _multTable :: Array (Int,Int) Int
   }
   deriving Show
+
+prettyRawMonoidData :: String -> RawMonoidData -> [String]
+prettyRawMonoidData monName raw =
+  [monName ++ " = RawMonoid{"] ++
+  map ("  " ++) (
+    [ "Elements: [0 .. " ++ show n ++ " - 1]" ] ++
+    [ "Unit element: " ++ show (_unitElem raw) ] ++
+    [ "Multiplication table: " ] ++
+    map indent (prettyArray (_multTable raw))
+  ) ++
+  ["}"]
+  where
+    n = _monoidSize raw
+    indent = ("  " ++)
+
+-- generation
 
 type Signature = V.Vector Int
 
@@ -157,9 +178,9 @@ genRawMonoids :: Signature -> [RawMonoidData]
 genRawMonoids sig = do
   let n = V.length sig
   e <- unitCandidates
-  let mults = mapMaybe (multMapToVec n) (gen n e)
+  let mults = mapMaybe (multMapToArray n) (gen n e)
   mult <- upToIso sig e mults
-  pure (RawMonoidData e mult)
+  pure (RawMonoidData n e mult)
   where
     lengths = V.toList sig
     unitCandidates = [x | (x, lenX', lenX) <- zip3 [0 ..] (-1 : lengths) lengths, lenX' < lenX]
@@ -168,9 +189,9 @@ genRawMonoidsForApplicative :: Signature -> [RawMonoidData]
 genRawMonoidsForApplicative sig = do
   let n = V.length sig
   e <- unitCandidates
-  let mults = mapMaybe (multMapToVec n) (genForApplicative n (countZeroes sig) e)
+  let mults = mapMaybe (multMapToArray n) (genForApplicative n (countZeroes sig) e)
   mult <- upToIso sig e mults
-  pure (RawMonoidData e mult)
+  pure (RawMonoidData n e mult)
   where
     lengths = V.toList sig
     unitCandidates
@@ -182,15 +203,18 @@ genRawMonoidsForMonad :: Signature -> [RawMonoidData]
 genRawMonoidsForMonad sig = do
   let n = V.length sig
   e <- unitCandidates
-  let mults = mapMaybe (multMapToVec n) (genForMonad n (countZeroes sig) e)
+  let mults = mapMaybe (multMapToArray n) (genForMonad n (countZeroes sig) e)
   mult <- upToIso sig e mults
-  pure (RawMonoidData e mult)
+  pure (RawMonoidData n e mult)
   where
     lengths = V.toList sig
     unitCandidates = [x | (x, lenX', lenX) <- zip3 [0 ..] (0 : lengths) lengths, lenX' < lenX]
 
-multMapToVec :: Int -> MultTable -> Maybe (V.Vector Int)
-multMapToVec n multMap = V.generateM (n * n) (\i -> Map.lookup (quotRem i n) multMap)
+unitArray :: Ix i => (i,i) -> Array i ()
+unitArray bound = Array.accumArray const () bound []
+
+multMapToArray :: Int -> MultTable -> Maybe (Array (Int,Int) Int)
+multMapToArray n multMap = itraverse (\ij _ -> Map.lookup ij multMap) $ unitArray ((0,0), (n - 1, n - 1))
 
 type MultTable = Map (Int, Int) Int
 
@@ -316,7 +340,7 @@ genTable n e initialTable guess = go initialTable initialEqn initialBlocker
         Nothing -> error "Bad initial table?"
         Just updates -> updates
 
-upToIso :: Signature -> Int -> [V.Vector Int] -> [V.Vector Int]
+upToIso :: Signature -> Int -> [Array (Int,Int) Int] -> [Array (Int,Int) Int]
 upToIso env e tabs = runEquivM id min $ do
   for_ tabs $ \mm -> do
     equate mm mm
@@ -336,11 +360,10 @@ isoGenerators sig e =
     lengths = V.toList $ V.indexed sig
     lengths' = filter ((/= e) . fst) lengths
 
-applyTranspose :: Int -> Transposition -> V.Vector Int -> V.Vector Int
-applyTranspose n (Transpose a b) xs = V.generate (n * n) $ \i ->
-  let (j, k) = quotRem i n
-      i' = tr j * n + tr k
-   in tr (xs V.! i')
+applyTranspose :: Int -> Transposition -> Array (Int,Int) Int -> Array (Int,Int) Int
+applyTranspose n (Transpose a b) table =
+  Array.array ((0,0), (n - 1, n - 1))
+    [ ((tr x, tr y), tr z) | ((x,y),z) <- Array.assocs table ]
   where
     tr i
       | i == a = b
