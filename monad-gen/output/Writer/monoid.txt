@@ -1,0 +1,22 @@
+M_1 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 0 1 
+    1 | 1 0 
+}
+M_2 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 
+    --+-----
+    0 | 0 1 
+    1 | 1 1 
+}

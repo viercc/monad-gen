@@ -10,6 +10,7 @@ module Main (main) where
 
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
+import System.Directory (createDirectoryIfMissing)
 
 import Data.Foldable
 import Data.PTraversable
@@ -22,8 +23,13 @@ import Isomorphism (makePositionIsoFactors)
 
 import Data.Two
 import Targets
-import Util
+import Util ( writeFile' )
 import Data.FunctorShape
+import ApplicativeGen (
+  ApplicativeDict(..),
+  makeApplicativeDict,
+  ApplicativeData,
+  genApplicativeDataFrom)
 
 ------------------------
 -- Tests
@@ -38,20 +44,67 @@ monoidGen ::
   IO [ (String, MonoidData (Shape f)) ]
 monoidGen _ println = do
   let monoidNames = [ "M_" ++ show i | i <- [ 1 :: Int .. ] ]
-      monoids = zip monoidNames genMonoidsForMonad
+      monoids = zip monoidNames (genMonoidsWithSig (length . unShape))
   for_ monoids $ \(monoidName, monData) -> mapM_ println (prettyMonoidData monoidName monData)
   pure monoids
 
-monadGen ::
+applicativeGen ::
   forall f.
   ( forall a. (Show a) => Show (f a),
-    PTraversable f
-  ) =>
-  Proxy f ->
-  (String -> IO ()) ->
-  IO ()
-monadGen proxy println = do
-  monoids <- monoidGen proxy println
+    PTraversable f )
+  => [ (String, MonoidData (Shape f)) ]
+  -> (String -> IO ())
+  -> IO [ (String, ApplicativeData f) ]
+applicativeGen monoids println = do
+  let applicativeNames = [ "A_" ++ show i | i <- [ 1 :: Int ..] ]
+      applicatives :: [ (String, ApplicativeData f) ]
+      applicatives = do
+        (monoidName, monData) <- monoids
+        applicativeData <- genApplicativeDataFrom monData
+        pure (monoidName, applicativeData)
+  for_ (zip applicativeNames applicatives) $ \(applicativeName, (monoidName, applicativeData)) -> do
+    let dict = makeApplicativeDict applicativeData
+    mapM_ println $ prettyApplicativeDict applicativeName monoidName dict
+  pure applicatives
+
+prettyApplicativeDict :: forall f.
+     (PTraversable f, forall a. Show a => Show (f a))
+  => String -> String -> ApplicativeDict f -> [String]
+prettyApplicativeDict = docResult
+  where
+    skolemCache :: [f Int]
+    skolemCache = toList skolem
+    
+    lhsCache :: [String]
+    lhsCache = pad <$> strs
+      where
+        showLen x y =
+          let s = "(" ++ show x ++ ") (" ++ show y ++ ")"
+          in (length s, s)
+        strs = showLen <$> skolemCache <*> skolemCache
+        maxLen = maximum $ (0 : fmap fst strs)
+        pad (n, s) = "liftA2 (,) " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
+    
+    indent = "  "
+    
+    docResult monadName monoidName dict =
+        [ monadName <> " = Applicative{" ] ++
+        map (indent <>) (
+          [ "baseMonoid = " ++ monoidName,
+            "pure 0 = " <> show (_applicativePure dict (0 :: Int)) ] ++
+          zipWith (<>) lhsCache (show <$> rhs)
+        ) ++
+        ["}"]
+        where
+          rhs = _applicativeLiftA2 dict (,) <$> skolemCache <*> skolemCache
+
+monadGen
+  :: forall f.
+    ( forall a. (Show a) => Show (f a), PTraversable f)
+  => [ (String, MonoidData (Shape f)) ]
+  -> (String -> IO ())
+  -> IO ()
+monadGen monoids println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
       monads :: [ (String, MonadData f) ]
       monads = do
@@ -63,16 +116,13 @@ monadGen proxy println = do
     validateMonadDict dict
     mapM_ println $ prettyMonadDict monadName monoidName dict
 
-monadGenGroup ::
-  forall f.
-  ( forall a. (Show a) => Show (f a),
-    PTraversable f
-  ) =>
-  Proxy f ->
-  (String -> IO ()) ->
-  IO ()
-monadGenGroup proxy println = do
-  monoids <- monoidGen proxy println
+monadGenGroup
+  :: forall f.
+    ( forall a. (Show a) => Show (f a), PTraversable f)
+  => [ (String, MonoidData (Shape f)) ]
+  -> (String -> IO ())
+  -> IO ()
+monadGenGroup monoids println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
       monads :: [ (String, [MonadData f]) ]
       monads = do
@@ -141,20 +191,37 @@ prettyMonadDict = docResult
         ) ++
         ["}"]
 
+generateAllToDir
+  :: (PTraversable f, forall a. Show a => Show (f a))
+  => Proxy f -> FilePath -> IO ()
+generateAllToDir name outDir = do
+  createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
+  monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
+  _applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
+  writeFile' (outDir ++ "/monad.txt") $ monadGen monoids
+
+generateAllToDir_andGroups
+  :: (PTraversable f, forall a. Show a => Show (f a))
+  => Proxy f -> FilePath -> IO ()
+generateAllToDir_andGroups name outDir = do
+  createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
+  monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
+  _applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
+  writeFile' (outDir ++ "/monad.txt") $ monadGen monoids
+  writeFile' (outDir ++ "/monad_group.txt") $ monadGenGroup monoids
+
 main :: IO ()
 main = do
-  writeFile' "output/Writer.txt" $ monadGen @((,) Two) Proxy
-  writeFile' "output/Writer3.txt" $ monadGen @((,) N3) Proxy
-  writeFile' "output/Maybe.txt" $ monadGen @Maybe Proxy
+  generateAllToDir @Maybe Proxy "output/Maybe"
+  generateAllToDir @((,) Two) Proxy "output/Writer"
+  generateAllToDir @((,) N3) Proxy "output/Writer3"
 
-  writeFile' "output/F.txt" $ monadGen @F Proxy
-  writeFile' "output/G.txt" $ monadGen @G Proxy
-  writeFile' "output/H.txt" $ monadGen @H Proxy
-  writeFile' "output/I.txt" $ monadGen @I Proxy
-  writeFile' "output/J.txt" $ monadGen @J Proxy
-  writeFile' "output/T.txt" $ monadGen @T Proxy
-  writeFile' "output/Tgroups.txt" $ monadGenGroup @T Proxy
-  writeFile' "output/U.txt" $ monadGen @U Proxy
-  writeFile' "output/Ugroups.txt" $ monadGenGroup @U Proxy
-  writeFile' "output/V.txt" $ monadGen @V Proxy
-  -- writeFile' "output/Y.txt" $ monadGen @Y Proxy
+  generateAllToDir @F Proxy "output/F"
+  generateAllToDir @G Proxy "output/G"
+  generateAllToDir @H Proxy "output/H"
+  generateAllToDir @I Proxy "output/I"
+  generateAllToDir @J Proxy "output/J"
+  generateAllToDir_andGroups @T Proxy "output/T"
+  generateAllToDir_andGroups @U Proxy "output/U"
+  generateAllToDir @V Proxy "output/V"
+  -- generateAllToDir @Y Proxy "output/Y"

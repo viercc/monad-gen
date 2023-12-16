@@ -1,0 +1,4920 @@
+M_1 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 2 
+}
+M_2 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 3 
+}
+M_3 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_4 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 2 3 
+}
+M_5 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 2 3 2 
+    3 | 3 3 2 3 
+}
+M_6 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 3 2 
+    2 | 2 3 0 1 
+    3 | 3 2 1 0 
+}
+M_7 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 3 2 
+    2 | 2 3 1 0 
+    3 | 3 2 0 1 
+}
+M_8 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 1 1 
+    3 | 3 1 1 1 
+}
+M_9 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 1 1 
+    3 | 3 1 1 2 
+}
+M_10 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 1 1 
+    3 | 3 1 1 3 
+}
+M_11 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 1 1 
+    3 | 3 1 2 3 
+}
+M_12 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 1 1 
+    3 | 3 3 3 3 
+}
+M_13 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 1 2 
+    3 | 3 1 1 3 
+}
+M_14 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 1 2 
+    3 | 3 1 2 0 
+}
+M_15 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 1 2 
+    3 | 3 1 2 3 
+}
+M_16 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 1 
+    3 | 3 1 1 1 
+}
+M_17 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 1 
+    3 | 3 1 1 3 
+}
+M_18 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 1 
+    3 | 3 3 3 3 
+}
+M_19 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 2 
+    3 | 3 1 2 0 
+}
+M_20 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 2 
+    3 | 3 1 2 2 
+}
+M_21 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 2 
+    3 | 3 1 2 3 
+}
+M_22 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 3 
+    3 | 3 1 1 1 
+}
+M_23 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 3 0 
+    3 | 3 1 0 2 
+}
+M_24 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 3 1 
+    3 | 3 1 1 1 
+}
+M_25 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 3 1 1 1 
+}
+M_26 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 3 1 1 3 
+}
+M_27 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 3 1 2 0 
+}
+M_28 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 3 1 2 3 
+}
+M_29 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 3 2 1 0 
+}
+M_30 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_31 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 3 2 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_32 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 2 
+}
+M_33 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 3 
+}
+M_34 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 1 1 3 
+    3 | 3 1 1 3 
+}
+M_35 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 1 1 3 
+    3 | 3 3 3 1 
+}
+M_36 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 1 1 3 
+    3 | 3 3 3 3 
+}
+M_37 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 1 2 3 
+    3 | 3 1 1 3 
+}
+M_38 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 1 2 3 
+    3 | 3 3 3 1 
+}
+M_39 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 1 2 3 
+    3 | 3 3 3 3 
+}
+M_40 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 3 
+}
+M_41 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 1 2 1 
+    3 | 3 1 2 1 
+}
+M_42 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 1 2 1 
+    3 | 3 1 2 3 
+}
+M_43 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 1 2 2 
+    3 | 3 1 2 0 
+}
+M_44 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 1 2 2 
+    3 | 3 1 2 3 
+}
+M_45 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 3 1 2 0 
+}
+M_46 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 3 1 2 1 
+}
+M_47 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 3 1 2 3 
+}
+M_48 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 2 
+    3 | 3 1 3 3 
+}
+M_49 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 2 
+    2 | 2 1 2 1 
+    3 | 3 1 2 0 
+}
+M_50 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 1 
+    3 | 3 1 3 1 
+}
+M_51 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 1 2 3 
+    3 | 3 1 2 3 
+}
+M_52 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 1 2 3 
+    3 | 3 3 3 3 
+}
+M_53 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 3 
+    3 | 3 1 2 3 
+}
+M_54 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 3 
+    3 | 3 1 3 2 
+}
+M_55 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 3 
+    3 | 3 1 3 1 
+}
+M_56 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 3 
+    3 | 3 1 3 3 
+}
+M_57 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 2 3 
+    3 | 3 3 3 3 
+}
+M_58 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 1 2 3 
+    3 | 3 1 3 3 
+}
+M_59 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 2 3 1 
+    3 | 3 3 1 2 
+}
+M_60 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 2 3 2 
+    3 | 3 3 2 3 
+}
+M_61 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 3 2 3 
+    3 | 3 3 2 3 
+}
+M_62 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 3 2 3 
+    3 | 3 2 2 3 
+}
+M_63 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 3 2 3 
+    3 | 3 3 3 3 
+}
+M_64 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 3 3 
+    2 | 2 2 3 3 
+    3 | 3 3 3 3 
+}
+M_65 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 3 2 
+    2 | 2 3 2 3 
+    3 | 3 2 3 2 
+}
+M_66 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 3 3 
+    2 | 2 3 1 1 
+    3 | 3 3 1 1 
+}
+M_67 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 3 3 
+    2 | 2 3 2 3 
+    3 | 3 3 3 3 
+}
+M_68 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 2 0 3 
+    2 | 2 0 1 3 
+    3 | 3 3 3 3 
+}
+M_69 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 2 
+    2 | 2 2 1 1 
+    3 | 3 2 1 0 
+}
+M_70 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 2 
+    2 | 2 2 1 1 
+    3 | 3 2 1 1 
+}
+M_71 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 2 1 3 
+    3 | 3 3 3 3 
+}
+M_72 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 2 3 1 
+    2 | 2 3 1 2 
+    3 | 3 1 2 3 
+}
+M_73 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 3 0 2 
+    2 | 2 0 3 1 
+    3 | 3 2 1 0 
+}
+M_74 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 2 3 
+    2 | 2 2 3 3 
+    3 | 3 3 3 3 
+}
+M_75 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 2 3 3 
+    3 | 3 3 3 3 
+}
+M_76 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 3 2 
+    3 | 3 1 2 3 
+}
+M_77 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 1 3 3 
+    3 | 3 1 3 3 
+}
+M_78 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 3 1 1 
+    2 | 2 1 3 3 
+    3 | 3 1 3 3 
+}
+M_79 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 3 3 
+    2 | 2 1 3 3 
+    3 | 3 1 3 3 
+}
+M_80 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 0 3 2 
+    2 | 2 3 3 2 
+    3 | 3 2 2 3 
+}
+M_81 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 3 3 1 
+    2 | 2 3 3 1 
+    3 | 3 1 1 3 
+}
+M_82 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 3 3 3 
+    3 | 3 3 3 3 
+}
+M_83 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
+    2 | 2 3 3 3 
+    3 | 3 3 3 3 
+}
+M_84 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 2 3 3 
+    2 | 2 3 3 3 
+    3 | 3 3 3 3 
+}
+M_85 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 3 3 
+    2 | 2 3 3 3 
+    3 | 3 3 3 3 
+}
+M_86 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 3 3 3 
+    2 | 2 3 3 3 
+    3 | 3 3 3 3 
+}
+M_87 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 0 0 
+    3 | 0 3 0 0 
+}
+M_88 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 0 0 
+    3 | 0 3 0 2 
+}
+M_89 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 0 0 
+    3 | 0 3 0 3 
+}
+M_90 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 0 0 
+    3 | 0 3 2 3 
+}
+M_91 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 0 0 
+    3 | 3 3 3 3 
+}
+M_92 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 0 2 
+    3 | 0 3 0 3 
+}
+M_93 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 0 2 
+    3 | 0 3 2 1 
+}
+M_94 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 0 2 
+    3 | 0 3 2 3 
+}
+M_95 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 0 3 3 0 
+}
+M_96 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 0 3 3 3 
+}
+M_97 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 3 3 3 3 
+}
+M_98 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 0 3 0 0 
+}
+M_99 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 0 3 0 3 
+}
+M_100 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 0 3 3 0 
+}
+M_101 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 3 3 3 3 
+}
+M_102 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 1 
+}
+M_103 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 2 
+}
+M_104 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 3 
+}
+M_105 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 3 3 
+}
+M_106 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 0 0 
+}
+M_107 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 2 3 
+}
+M_108 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 3 0 
+}
+M_109 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 3 2 
+}
+M_110 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 3 3 
+}
+M_111 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 3 3 3 3 
+}
+M_112 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 3 0 
+    3 | 0 3 0 0 
+}
+M_113 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 3 1 
+    3 | 0 3 1 2 
+}
+M_114 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 3 2 
+    3 | 0 3 2 3 
+}
+M_115 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 3 3 
+    3 | 0 3 3 3 
+}
+M_116 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 0 0 
+}
+M_117 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 0 3 
+}
+M_118 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 1 
+}
+M_119 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 3 
+}
+M_120 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 0 1 
+}
+M_121 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 2 
+}
+M_122 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 3 
+}
+M_123 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_124 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 3 2 1 0 
+    3 | 3 3 3 3 
+}
+M_125 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 3 3 3 3 
+}
+M_126 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 3 
+    2 | 3 2 3 3 
+    3 | 3 3 3 3 
+}
+M_127 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 0 3 
+    3 | 0 3 0 3 
+}
+M_128 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 0 3 
+    3 | 3 3 3 0 
+}
+M_129 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 0 3 
+    3 | 3 3 3 3 
+}
+M_130 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 0 3 3 3 
+}
+M_131 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 3 3 3 0 
+}
+M_132 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 3 3 3 3 
+}
+M_133 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 0 3 
+}
+M_134 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 3 3 
+}
+M_135 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 3 3 3 0 
+}
+M_136 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 3 3 3 3 
+}
+M_137 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 3 
+}
+M_138 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 0 3 2 0 
+}
+M_139 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 0 3 2 3 
+}
+M_140 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 1 
+}
+M_141 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 3 
+}
+M_142 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 0 2 
+    3 | 0 3 2 0 
+}
+M_143 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 0 2 
+    3 | 0 3 2 1 
+}
+M_144 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 0 2 
+    3 | 0 3 2 3 
+}
+M_145 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 0 
+}
+M_146 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 1 
+}
+M_147 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 3 
+}
+M_148 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 3 
+}
+M_149 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 0 3 2 1 
+}
+M_150 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 2 
+}
+M_151 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 3 
+}
+M_152 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 0 0 
+    3 | 2 3 0 0 
+}
+M_153 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 0 0 
+    3 | 2 3 0 1 
+}
+M_154 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 2 
+}
+M_155 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 3 
+}
+M_156 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 2 
+}
+M_157 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_158 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 2 3 
+}
+M_159 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 3 3 3 3 
+}
+M_160 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 0 3 
+    3 | 3 3 3 3 
+}
+M_161 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 3 
+}
+M_162 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 2 
+}
+M_163 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 0 
+}
+M_164 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 2 
+}
+M_165 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 3 
+}
+M_166 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_167 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 2 3 2 3 
+}
+M_168 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 2 3 
+}
+M_169 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 2 
+}
+M_170 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 3 
+}
+M_171 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 3 0 
+    3 | 3 3 0 2 
+}
+M_172 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 3 2 
+    3 | 3 3 2 3 
+}
+M_173 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 3 3 
+    3 | 3 3 3 3 
+}
+M_174 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 3 3 2 3 
+}
+M_175 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 3 
+    1 | 0 1 2 3 
+    2 | 3 2 3 3 
+    3 | 3 3 3 3 
+}
+M_176 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 0 3 0 3 
+}
+M_177 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 3 3 
+}
+M_178 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 0 2 3 3 
+    3 | 0 3 3 3 
+}
+M_179 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_180 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 2 2 3 3 
+    3 | 3 3 3 3 
+}
+M_181 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 3 2 0 0 
+    3 | 3 3 0 0 
+}
+M_182 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 3 2 1 0 
+    3 | 3 3 0 0 
+}
+M_183 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 3 3 3 3 
+}
+M_184 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 3 3 
+    1 | 0 1 2 3 
+    2 | 3 2 3 3 
+    3 | 3 3 3 3 
+}
+M_185 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 2 
+}
+M_186 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 3 
+}
+M_187 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_188 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 2 3 
+}
+M_189 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 2 
+}
+M_190 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 3 
+}
+M_191 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 3 2 
+    3 | 3 3 2 3 
+}
+M_192 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 3 3 
+    3 | 3 3 3 3 
+}
+M_193 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 3 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 2 3 2 3 
+}
+M_194 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 3 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_195 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 3 2 
+    1 | 0 1 2 3 
+    2 | 3 2 0 1 
+    3 | 2 3 1 0 
+}
+M_196 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 3 2 
+    1 | 0 1 2 3 
+    2 | 3 2 1 0 
+    3 | 2 3 0 1 
+}
+M_197 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 3 2 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 2 3 3 2 
+}
+M_198 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 3 2 
+    1 | 0 1 2 3 
+    2 | 3 2 3 2 
+    3 | 2 3 2 3 
+}
+M_199 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 1 
+}
+M_200 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 2 
+}
+M_201 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 2 
+    3 | 0 3 2 3 
+}
+M_202 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 0 2 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 2 3 0 1 
+}
+M_203 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 0 2 
+    1 | 0 1 2 3 
+    2 | 0 2 2 0 
+    3 | 2 3 0 2 
+}
+M_204 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 3 3 3 3 
+}
+M_205 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 1 3 
+    1 | 0 1 2 3 
+    2 | 1 2 0 3 
+    3 | 3 3 3 3 
+}
+M_206 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 1 
+}
+M_207 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 3 
+}
+M_208 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 3 
+}
+M_209 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 3 
+}
+M_210 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 0 
+}
+M_211 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 2 
+}
+M_212 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 3 
+}
+M_213 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_214 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 2 3 2 3 
+}
+M_215 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 2 
+}
+M_216 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 3 
+}
+M_217 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 3 0 
+    1 | 0 1 2 3 
+    2 | 3 2 0 2 
+    3 | 0 3 2 3 
+}
+M_218 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 3 1 
+    1 | 0 1 2 3 
+    2 | 3 2 1 0 
+    3 | 1 3 0 2 
+}
+M_219 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 3 2 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 2 3 3 2 
+}
+M_220 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 2 0 3 3 
+    1 | 0 1 2 3 
+    2 | 3 2 3 3 
+    3 | 3 3 3 3 
+}
+M_221 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 0 3 3 3 
+}
+M_222 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 0 3 3 3 
+}
+M_223 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 0 0 
+    1 | 0 1 2 3 
+    2 | 0 2 3 3 
+    3 | 0 3 3 3 
+}
+M_224 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 0 2 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 2 3 3 0 
+}
+M_225 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 1 3 
+    3 | 3 3 3 3 
+}
+M_226 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 0 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 3 3 3 3 
+}
+M_227 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 0 3 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 3 3 3 3 
+}
+M_228 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 1 2 
+    1 | 0 1 2 3 
+    2 | 1 2 3 0 
+    3 | 2 3 0 1 
+}
+M_229 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 2 0 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 0 3 2 3 
+}
+M_230 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 2 1 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 1 3 2 0 
+}
+M_231 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 2 2 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 2 3 2 2 
+}
+M_232 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 2 3 
+}
+M_233 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 2 3 
+    1 | 0 1 2 3 
+    2 | 2 2 3 2 
+    3 | 3 3 2 3 
+}
+M_234 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 2 3 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 3 3 2 3 
+}
+M_235 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 3 0 
+    1 | 0 1 2 3 
+    2 | 3 2 1 0 
+    3 | 0 3 0 3 
+}
+M_236 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 3 0 
+    1 | 0 1 2 3 
+    2 | 3 2 3 0 
+    3 | 0 3 0 3 
+}
+M_237 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 3 2 
+    1 | 0 1 2 3 
+    2 | 3 2 3 2 
+    3 | 2 3 2 3 
+}
+M_238 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 3 3 
+    1 | 0 1 2 3 
+    2 | 0 2 2 3 
+    3 | 3 3 3 3 
+}
+M_239 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 3 3 
+    1 | 0 1 2 3 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
+}
+M_240 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 3 3 
+    1 | 0 1 2 3 
+    2 | 3 2 0 3 
+    3 | 3 3 3 3 
+}
+M_241 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 3 3 
+    1 | 0 1 2 3 
+    2 | 3 2 2 3 
+    3 | 3 3 3 3 
+}
+M_242 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 1
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 0 3 3 
+    1 | 0 1 2 3 
+    2 | 3 2 3 3 
+    3 | 3 3 3 3 
+}
+M_243 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 0 0 1 
+    2 | 0 0 0 2 
+    3 | 0 1 2 3 
+}
+M_244 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 0 1 1 
+    2 | 0 0 2 2 
+    3 | 0 1 2 3 
+}
+M_245 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 0 1 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_246 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 0 1 1 
+    2 | 0 1 3 2 
+    3 | 0 1 2 3 
+}
+M_247 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 0 0 1 
+    2 | 0 0 2 2 
+    3 | 0 1 2 3 
+}
+M_248 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 0 1 
+    2 | 0 0 2 2 
+    3 | 0 1 2 3 
+}
+M_249 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 1 1 
+    2 | 0 1 1 2 
+    3 | 0 1 2 3 
+}
+M_250 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 1 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_251 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 1 1 
+    2 | 0 1 3 2 
+    3 | 0 1 2 3 
+}
+M_252 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 1 1 
+    2 | 0 2 2 2 
+    3 | 0 1 2 3 
+}
+M_253 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 0 0 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_254 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_255 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 0 0 1 
+    2 | 0 0 1 2 
+    3 | 0 1 2 3 
+}
+M_256 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 1 
+    2 | 0 2 1 2 
+    3 | 0 1 2 3 
+}
+M_257 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 2 3 1 
+    2 | 0 3 1 2 
+    3 | 0 1 2 3 
+}
+M_258 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 0 0 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_259 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 0 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_260 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 1 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_261 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 0 3 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_262 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 1 1 1 1 
+    2 | 1 0 3 2 
+    3 | 0 1 2 3 
+}
+M_263 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 1 1 1 1 
+    2 | 1 1 1 2 
+    3 | 0 1 2 3 
+}
+M_264 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 1 1 1 1 
+    2 | 1 1 2 2 
+    3 | 0 1 2 3 
+}
+M_265 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_266 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 0 2 1 
+    2 | 0 0 2 2 
+    3 | 0 1 2 3 
+}
+M_267 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 1 
+    2 | 0 0 2 2 
+    3 | 0 1 2 3 
+}
+M_268 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 1 
+    2 | 0 2 2 2 
+    3 | 0 1 2 3 
+}
+M_269 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 3 2 1 
+    2 | 0 2 2 2 
+    3 | 0 1 2 3 
+}
+M_270 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 0 2 1 
+    2 | 2 2 0 2 
+    3 | 0 1 2 3 
+}
+M_271 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 1 
+    2 | 2 2 0 2 
+    3 | 0 1 2 3 
+}
+M_272 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 3 2 1 
+    2 | 2 2 0 2 
+    3 | 0 1 2 3 
+}
+M_273 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 0 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_274 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 1 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_275 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 0 3 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_276 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 2 0 
+    1 | 1 1 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_277 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 0 1 1 1 
+    2 | 0 1 1 2 
+    3 | 0 1 2 3 
+}
+M_278 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 0 1 1 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_279 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 1 0 0 1 
+    2 | 1 0 0 2 
+    3 | 0 1 2 3 
+}
+M_280 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 1 0 0 1 
+    2 | 1 0 3 2 
+    3 | 0 1 2 3 
+}
+M_281 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 1 1 1 1 
+    2 | 1 1 1 2 
+    3 | 0 1 2 3 
+}
+M_282 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 1 1 1 1 
+    2 | 1 1 2 2 
+    3 | 0 1 2 3 
+}
+M_283 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 1 1 1 1 
+    2 | 2 1 1 2 
+    3 | 0 1 2 3 
+}
+M_284 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_285 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 0 1 2 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_286 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 0 1 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_287 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 1 1 1 
+    2 | 1 1 1 2 
+    3 | 0 1 2 3 
+}
+M_288 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 0 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_289 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 1 1 1 
+    2 | 2 1 1 2 
+    3 | 0 1 2 3 
+}
+M_290 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 1 1 1 
+    2 | 2 1 2 2 
+    3 | 0 1 2 3 
+}
+M_291 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_292 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 1 2 1 
+    2 | 1 1 2 2 
+    3 | 0 1 2 3 
+}
+M_293 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 1 2 1 
+    2 | 2 1 2 2 
+    3 | 0 1 2 3 
+}
+M_294 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 2 0 1 
+    2 | 2 0 1 2 
+    3 | 0 1 2 3 
+}
+M_295 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 0 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 0 1 2 3 
+}
+M_296 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 1 0 
+    1 | 0 1 0 1 
+    2 | 0 1 3 2 
+    3 | 0 1 2 3 
+}
+M_297 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 0 0 
+    1 | 0 1 1 1 
+    2 | 0 1 1 2 
+    3 | 0 1 2 3 
+}
+M_298 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 0 0 
+    1 | 0 1 1 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_299 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 0 0 
+    1 | 0 1 1 1 
+    2 | 0 1 3 2 
+    3 | 0 1 2 3 
+}
+M_300 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 1 0 
+    1 | 0 1 0 1 
+    2 | 1 0 1 2 
+    3 | 0 1 2 3 
+}
+M_301 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 1 0 
+    1 | 0 1 0 1 
+    2 | 1 0 3 2 
+    3 | 0 1 2 3 
+}
+M_302 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 0 0 
+    1 | 1 1 1 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_303 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 0 0 
+    1 | 1 1 1 1 
+    2 | 0 1 3 2 
+    3 | 0 1 2 3 
+}
+M_304 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 0 0 
+    1 | 1 1 1 1 
+    2 | 1 1 2 2 
+    3 | 0 1 2 3 
+}
+M_305 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 1 0 
+    1 | 1 1 1 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_306 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 1 0 
+    1 | 1 1 1 1 
+    2 | 1 1 0 2 
+    3 | 0 1 2 3 
+}
+M_307 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 1 0 
+    1 | 1 1 1 1 
+    2 | 1 1 1 2 
+    3 | 0 1 2 3 
+}
+M_308 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 1 0 
+    1 | 1 1 1 1 
+    2 | 1 1 2 2 
+    3 | 0 1 2 3 
+}
+M_309 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 1 0 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_310 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 2 0 
+    1 | 1 1 2 1 
+    2 | 1 1 2 2 
+    3 | 0 1 2 3 
+}
+M_311 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 2 0 0 
+    1 | 2 0 1 1 
+    2 | 0 1 2 2 
+    3 | 0 1 2 3 
+}
+M_312 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 2 3 0 
+    1 | 2 3 0 1 
+    2 | 3 0 1 2 
+    3 | 0 1 2 3 
+}
+M_313 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 2 0 
+    1 | 0 1 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_314 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 2 2 0 
+    1 | 2 2 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_315 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 2 0 
+    1 | 1 1 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_316 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 1 2 0 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 0 1 2 3 
+}
+M_317 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 3 2 0 
+    1 | 3 0 2 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_318 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 2 1 0 
+    1 | 2 1 2 1 
+    2 | 1 2 1 2 
+    3 | 0 1 2 3 
+}
+M_319 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 1 2 0 
+    1 | 1 1 1 1 
+    2 | 2 1 1 2 
+    3 | 0 1 2 3 
+}
+M_320 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 1 2 0 
+    1 | 1 1 1 1 
+    2 | 2 1 2 2 
+    3 | 0 1 2 3 
+}
+M_321 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 1 2 0 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_322 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 1 2 0 
+    1 | 1 1 2 1 
+    2 | 2 1 2 2 
+    3 | 0 1 2 3 
+}
+M_323 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 1 2 0 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 0 1 2 3 
+}
+M_324 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 1 2 0 
+    1 | 2 1 2 1 
+    2 | 1 1 2 2 
+    3 | 0 1 2 3 
+}
+M_325 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 2 1 0 
+    1 | 1 1 1 1 
+    2 | 2 2 2 2 
+    3 | 0 1 2 3 
+}
+M_326 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 2 1 0 
+    1 | 2 0 3 1 
+    2 | 1 3 0 2 
+    3 | 0 1 2 3 
+}
+M_327 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 2 1 0 
+    1 | 2 1 2 1 
+    2 | 1 2 1 2 
+    3 | 0 1 2 3 
+}
+M_328 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 3 2 1 0 
+    1 | 2 3 0 1 
+    2 | 1 0 3 2 
+    3 | 0 1 2 3 
+}

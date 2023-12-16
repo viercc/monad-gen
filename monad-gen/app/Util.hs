@@ -11,7 +11,7 @@ import Control.Monad (when)
 coerceMap :: Coercible (f a) (f b) => (a -> b) -> f a -> f b
 coerceMap _ = coerce
 
-writeFile' :: FilePath -> ((String -> IO ()) -> IO ()) -> IO ()
+writeFile' :: FilePath -> ((String -> IO ()) -> IO a) -> IO a
 writeFile' filePath body =
   IO.withFile filePath IO.WriteMode $ \h ->
     do putStrLn $ "Writing " ++ show filePath
@@ -26,7 +26,7 @@ writeFile' filePath body =
             writeIORef counter (i+1)
 
 
-writeFile'debug :: FilePath -> ((String -> IO ()) -> IO ()) -> IO ()
+writeFile'debug :: FilePath -> ((String -> IO ()) -> IO a) -> IO a
 writeFile'debug filePath body =
   IO.withFile filePath IO.WriteMode $ \h ->
     do putStrLn $ "Writing " ++ show filePath

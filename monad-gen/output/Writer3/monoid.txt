@@ -1,0 +1,91 @@
+M_1 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+    2 = Shape (2,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 0 2 
+    2 | 2 2 2 
+}
+M_2 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+    2 = Shape (2,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 1 1 
+}
+M_3 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+    2 = Shape (2,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 1 2 
+}
+M_4 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+    2 = Shape (2,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 2 2 
+}
+M_5 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+    2 = Shape (2,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 2 
+    2 | 2 1 2 
+}
+M_6 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+    2 = Shape (2,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 2 0 
+    2 | 2 0 1 
+}
+M_7 = Monoid{
+  Elements:
+    0 = Shape (0,_)
+    1 = Shape (1,_)
+    2 = Shape (2,_)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 2 
+    2 | 2 2 1 
+}
