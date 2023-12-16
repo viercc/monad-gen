@@ -3,6 +3,7 @@ module Data.Array.Extra(
   (!?),
   genArray,
   genArrayM,
+  imap,
   prettyArray
 ) where
 
@@ -19,6 +20,9 @@ genArray r f = listArray r (f <$> range r)
 
 genArrayM :: (Ix i, Monad f) => (i, i) -> (i -> f a) -> f (Array i a)
 genArrayM r f = listArray r <$> mapM f (range r)
+
+imap :: (Ix i) => (i -> a -> b) -> Array i a -> Array i b
+imap f a = listArray (bounds a) (uncurry f <$> assocs a)
 
 prettyArray :: (Ix i, Ix j, Show i, Show j, Show a) => Array (i,j) a -> [String]
 prettyArray table = formatTable $ headerRow : map row xs

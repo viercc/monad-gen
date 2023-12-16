@@ -23,7 +23,7 @@ module ApplicativeGen(
 
 import Data.Array (Array, (!))
 import Data.Array.Extra qualified as Array
-import Data.Foldable (toList)
+import Data.Foldable (toList, for_)
 import Data.FunctorShape
 import Data.Map.Strict qualified as Map
 import Data.PTraversable
@@ -32,6 +32,8 @@ import Data.Tuple (swap)
 import Data.Vector qualified as V
 import EquationSolver
 import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData)
+import Data.Equivalence.Monad
+import Control.Exception (assert)
 
 data ApplicativeDict f = ApplicativeDict
   { _applicativePure :: forall a. a -> f a,
@@ -83,10 +85,12 @@ genApplicativeData = ApplicativeData env <$> genRawApplicatives sig
 data RawApplicativeData = RawApplicativeData
   { _signature :: V.Vector Int,
     _baseMonoid :: RawMonoidData,
-    _leftFactorTable :: Array (Int, Int) (V.Vector Int),
-    _rightFactorTable :: Array (Int, Int) (V.Vector Int)
+    _leftFactorTable :: FactorTable,
+    _rightFactorTable :: FactorTable
   }
   deriving Show
+
+type FactorTable = Array (Int, Int) (V.Vector Int)
 
 prettyRawApplicativeData :: String -> RawApplicativeData -> [String]
 prettyRawApplicativeData name raw =
@@ -116,10 +120,10 @@ leftFactorOp raw = leftFactor
     leftFactor i j x = table ! (i, j) V.! x
 
 rightFactorOp :: RawApplicativeData -> Int -> Int -> Int -> Int
-rightFactorOp raw = leftFactor
+rightFactorOp raw = rightFactor
   where
-    table = _leftFactorTable raw
-    leftFactor i j x = table ! (i, j) V.! x
+    table = _rightFactorTable raw
+    rightFactor i j x = table ! (i, j) V.! x
 
 prop_LeftUnit :: RawApplicativeData -> Bool
 prop_LeftUnit raw = and result
@@ -202,8 +206,12 @@ prop_LeftRight raw = and result
 genRawApplicatives :: Signature -> [RawApplicativeData]
 genRawApplicatives sig = do
   mon <- genRawMonoidsForApplicative sig
-  defTable <- gen sig mon
-  Just (leftFactorTable, rightFactorTable) <- [completeTable sig mon defTable]
+  genRawApplicativesFromMon sig mon
+
+genRawApplicativesFromMon :: Signature -> RawMonoidData -> [RawApplicativeData]
+genRawApplicativesFromMon sig mon = do
+  let tables = completeTable sig mon <$> gen sig mon
+  (leftFactorTable, rightFactorTable) <- upToIso sig mon tables
   let result =
         RawApplicativeData
           { _signature = sig,
@@ -211,6 +219,10 @@ genRawApplicatives sig = do
             _leftFactorTable = leftFactorTable,
             _rightFactorTable = rightFactorTable
           }
+  -- sanity check
+  let checkAll = prop_LeftUnit result && prop_RightUnit result &&
+        prop_LeftLeft result && prop_LeftRight result && prop_RightRight result
+  assert checkAll (pure ())
   pure result
 
 data Fn a = LeftFactor Int Int a | RightFactor Int Int a
@@ -247,9 +259,8 @@ makeEqAssocLR mon (i, j, k) x =
     ij = op i j
     jk = op j k
 
-type Table' = DefTable Fn Int
 
-gen :: Signature -> RawMonoidData -> [Table']
+gen :: Signature -> RawMonoidData -> [DefTable Fn Int]
 gen sig mon = genDefTables guess equations
   where
     n = _monoidSize mon
@@ -272,8 +283,12 @@ gen sig mon = genDefTables guess equations
     guess (LeftFactor i _ _) = [0 .. (sig V.! i) - 1]
     guess (RightFactor _ j _) = [0 .. (sig V.! j) - 1]
 
-completeTable :: Signature -> RawMonoidData -> Table' -> Maybe (Array (Int, Int) (V.Vector Int), Array (Int, Int) (V.Vector Int))
-completeTable sig mon table = (,) <$> leftTable <*> rightTable
+completeTable :: Signature -> RawMonoidData
+  -> DefTable Fn Int
+  -> (FactorTable, FactorTable)
+completeTable sig mon table = case (,) <$> leftTable <*> rightTable of
+    Nothing -> error "incomplete table?"
+    Just tabs -> tabs
   where
     n = _monoidSize mon
     op i j = _multTable mon ! (i, j)
@@ -281,3 +296,48 @@ completeTable sig mon table = (,) <$> leftTable <*> rightTable
 
     leftTable = Array.genArrayM arrayRange (\(i, j) -> V.generateM (sig V.! op i j) (\x -> Map.lookup (LeftFactor i j x) table))
     rightTable = Array.genArrayM arrayRange (\(i, j) -> V.generateM (sig V.! op i j) (\x -> Map.lookup (RightFactor i j x) table))
+
+
+upToIso :: Signature -> RawMonoidData -> [(FactorTable, FactorTable)] -> [(FactorTable, FactorTable)]
+upToIso sig mon tabs = runEquivM id min $ do
+  for_ tabs $ \mm -> do
+    equate mm mm
+  for_ (isoGenerators sig) $ \tr ->
+    for_ tabs $ \mm -> equate mm (applyTransposition op tr mm)
+  classes >>= traverse desc
+  where
+    op i j = _multTable mon ! (i,j)
+
+data Transposition = Transpose Int Int Int
+    deriving Show
+
+isoGenerators :: Signature -> [Transposition]
+isoGenerators sig =
+  [ Transpose i x (x + 1) | (i,n) <- lengths, x <- [0 .. n - 2]]
+  where
+    lengths = V.toList $ V.indexed sig
+
+applyTransposition :: (Int -> Int -> Int) -> Transposition -> (FactorTable, FactorTable) -> (FactorTable, FactorTable)
+applyTransposition op (Transpose k x y) (leftTable, rightTable) = (leftTable', rightTable')
+  where
+    tr z
+      | z == x    = y
+      | z == y    = x
+      | otherwise = z
+    swapVector vec = vec V.// [ (x, vec V.! y), (y, vec V.! x) ]
+
+    leftTrans (i,j) = onRange . onDomain
+      where
+        onDomain | op i j == k = swapVector
+                 | otherwise   = id
+        onRange | i == k    = fmap tr
+                | otherwise = id
+    
+    rightTrans (i,j) = onRange . onDomain
+      where
+        onDomain | op i j == k = swapVector
+                 | otherwise   = id
+        onRange | j == k    = fmap tr
+                | otherwise = id
+    leftTable' = Array.imap leftTrans leftTable
+    rightTable' = Array.imap rightTrans rightTable
