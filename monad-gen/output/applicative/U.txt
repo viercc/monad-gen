@@ -1,0 +1,1976 @@
+M_1 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 0 2 
+    2 | 2 2 2 
+}
+M_2 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 1 1 
+}
+M_3 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 1 2 
+}
+M_4 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 1 
+    2 | 2 2 2 
+}
+M_5 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 2 
+    2 | 2 1 2 
+}
+M_6 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 2 0 
+    2 | 2 0 1 
+}
+M_7 = Monoid{
+  Elements:
+    0 = Shape (Ua _ _)
+    1 = Shape (Ub _ _)
+    2 = Shape (Uc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 
+    --+-------
+    0 | 0 1 2 
+    1 | 1 1 2 
+    2 | 2 2 1 
+}
+A_1 = Applicative{
+  baseMonoid = M_1
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_2 = Applicative{
+  baseMonoid = M_1
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_3 = Applicative{
+  baseMonoid = M_1
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_4 = Applicative{
+  baseMonoid = M_1
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_5 = Applicative{
+  baseMonoid = M_1
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_6 = Applicative{
+  baseMonoid = M_1
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_7 = Applicative{
+  baseMonoid = M_1
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_8 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_9 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+}
+A_10 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_11 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_12 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_13 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+}
+A_14 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+}
+A_15 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+}
+A_16 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+}
+A_17 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_18 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_19 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_20 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_21 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+}
+A_22 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+}
+A_23 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_24 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_25 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_26 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_27 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_28 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_29 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_30 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_31 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+}
+A_32 = Applicative{
+  baseMonoid = M_2
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+}
+A_33 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_34 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_35 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_36 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_37 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_38 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_39 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_40 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_41 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_42 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_43 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_44 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_45 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_46 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_47 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_48 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_49 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_50 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_51 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_52 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_53 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_54 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_55 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_56 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_57 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_58 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_59 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_60 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_61 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_62 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_63 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_64 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_65 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_66 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_67 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_68 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_69 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_70 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_71 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_72 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_73 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_74 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_75 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_76 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_77 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_78 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_79 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_80 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_81 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_82 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_83 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_84 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_85 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_86 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_87 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_88 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_89 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_90 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_91 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_92 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_93 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_94 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_95 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_96 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_97 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_98 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_99 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_100 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_101 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_102 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_103 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_104 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_105 = Applicative{
+  baseMonoid = M_3
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_106 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_107 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_108 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_109 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_110 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_111 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_112 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_113 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (1,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (1,0) (1,1)
+}
+A_114 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_115 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_116 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_117 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_118 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_119 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_120 = Applicative{
+  baseMonoid = M_4
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (1,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ub (1,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (1,0) (1,1)
+}
+A_121 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_122 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_123 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_124 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_125 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_126 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_127 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+}
+A_128 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_129 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+}
+A_130 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_131 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,1) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,1) (1,1)
+}
+A_132 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_133 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+}
+A_134 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,1) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,1) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,1) (1,1)
+}
+A_135 = Applicative{
+  baseMonoid = M_5
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+}
+A_136 = Applicative{
+  baseMonoid = M_6
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+}
+A_137 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,0)
+}
+A_138 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+}
+A_139 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (0,1)
+}
+A_140 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+}
+A_141 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,1) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,1) (1,0)
+}
+A_142 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (0,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (0,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+}
+A_143 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,0)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,0)
+}
+A_144 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,0) (1,1)
+}
+A_145 = Applicative{
+  baseMonoid = M_7
+  pure 0 = Ua 0 0
+  liftA2 (,) (Ua 0 1) (Ua 0 1) = Ua (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ua 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ua 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Ub 0 1) = Ub (0,0) (1,1)
+  liftA2 (,) (Ub 0 1) (Uc 0 1) = Uc (0,0) (1,1)
+  liftA2 (,) (Uc 0 1) (Ua 0 1) = Uc (0,1) (1,0)
+  liftA2 (,) (Uc 0 1) (Ub 0 1) = Uc (0,1) (1,0)
+  liftA2 (,) (Uc 0 1) (Uc 0 1) = Ub (0,1) (1,0)
+}
