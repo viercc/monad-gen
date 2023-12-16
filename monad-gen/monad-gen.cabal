@@ -9,13 +9,14 @@ executable monad-gen
   other-modules: 
     Data.PTraversable.Extra,
     Data.LazyVec,
+    Data.Array.Extra,
     
     MonadLaws,
     MonadTerm,
     MonadGen,
     Isomorphism,
     MonoidGen,
---    ApplicativeGen,
+    ApplicativeGen,
     EquationSolver,
 
     Util,
@@ -24,12 +25,11 @@ executable monad-gen
   default-language:    Haskell2010
   build-depends:
       base >= 4.18 && < 5
-    , contravariant
+    , contravariant >= 1.5
+    , array >= 0.5.5
     , profunctors
-    , indexed-traversable
     , reflection
     , vector
-    , array
     , containers
     , equivalence
     , either

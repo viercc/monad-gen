@@ -30,7 +30,6 @@ import Data.Equivalence.Monad
 import Data.List (sortOn, sort)
 import Data.Maybe (mapMaybe)
 import Data.Foldable (for_)
-import Data.Traversable.WithIndex (TraversableWithIndex(..))
 
 import Data.Map (Map)
 import qualified Data.Map.Lazy as Map
@@ -38,8 +37,8 @@ import qualified Data.Map.Lazy as Map
 import Data.PTraversable
 
 import qualified Data.Vector as V
-import Data.Array ((!), Ix(..), Array)
-import qualified Data.Array as Array
+import Data.Array ((!), Array)
+import qualified Data.Array.Extra as Array
 
 import Data.FunctorShape
 import Data.Transparent
@@ -102,7 +101,7 @@ prettyMonoidData monName monoidData =
     map indent (prettyElems env) ++
     [ "Unit element: " ++ show e ] ++
     [ "Multiplication table: " ] ++
-    map indent (prettyArray (_multTable (_rawMonoidData monoidData)))
+    map indent (Array.prettyArray (_multTable (_rawMonoidData monoidData)))
   ) ++
   ["}"]
   where
@@ -112,28 +111,6 @@ prettyMonoidData monName monoidData =
 
 prettyElems :: (Show a) => V.Vector a -> [String]
 prettyElems env = [ show i ++ " = " ++ show f_ | (i, f_) <- V.toList (V.indexed env) ]
-
-prettyArray :: (Ix i, Ix j, Show i, Show j, Show a) => Array (i,j) a -> [String]
-prettyArray table = formatTable $ headerRow : map row xs
-  where
-    ((xLo, yLo), (xHi, yHi)) = Array.bounds table
-    xs = range (xLo, xHi)
-    ys = range (yLo, yHi)
-    headerRow = "" : map show ys
-    row x = show x : [ show (table ! (x,y)) | y <- ys]
-
-formatTable :: [[String]] -> [String]
-formatTable cells = addHRule $ renderRow <$> cells
-  where
-    cellSizes = foldr (zipWith max) (repeat 0) [ length <$> row | row <- cells ]
-    renderRow row = addVRule $ zipWith renderCell cellSizes row
-    renderCell n cellStr = replicate (n - length cellStr) ' ' ++ cellStr ++ " "
-    addVRule [] = []
-    addVRule (headerCell : rest) = headerCell ++ "| " ++ concat rest
-    addHRule [] = []
-    addHRule (headerRow : rest) = headerRow : map hrule headerRow : rest
-    hrule '|' = '+'
-    hrule _ = '-'
 
 makeEnv :: (Transparent a) => (a -> Int) -> (V.Vector a, Signature)
 makeEnv f = (keys, sigs)
@@ -156,10 +133,10 @@ prettyRawMonoidData :: String -> RawMonoidData -> [String]
 prettyRawMonoidData monName raw =
   [monName ++ " = RawMonoid{"] ++
   map ("  " ++) (
-    [ "Elements: [0 .. " ++ show n ++ " - 1]" ] ++
+    [ "Elements: [0 .. " ++ show (n - 1) ++ "]" ] ++
     [ "Unit element: " ++ show (_unitElem raw) ] ++
     [ "Multiplication table: " ] ++
-    map indent (prettyArray (_multTable raw))
+    map indent (Array.prettyArray (_multTable raw))
   ) ++
   ["}"]
   where
@@ -209,11 +186,8 @@ genRawMonoidsForMonad sig = do
     lengths = V.toList sig
     unitCandidates = [x | (x, lenX', lenX) <- zip3 [0 ..] (0 : lengths) lengths, lenX' < lenX]
 
-unitArray :: Ix i => (i,i) -> Array i ()
-unitArray bound = Array.accumArray const () bound []
-
 multMapToArray :: Int -> MultTable -> Maybe (Array (Int,Int) Int)
-multMapToArray n multMap = itraverse (\(i,j) _ -> Map.lookup (M i j) multMap) $ unitArray ((0,0), (n - 1, n - 1))
+multMapToArray n multMap = Array.genArrayM ((0,0), (n - 1, n - 1)) (\(i,j) -> Map.lookup (M i j) multMap)
 
 data M a = M !a !a
     deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
