@@ -9,6 +9,7 @@ module ApplicativeGen(
 
   ApplicativeData(..),
   genApplicativeData,
+  genApplicativeDataFrom,
 
   RawApplicativeData(..),
   prettyRawApplicativeData,
@@ -18,7 +19,8 @@ module ApplicativeGen(
   prop_RightRight,
   prop_LeftRight,
 
-  genRawApplicatives
+  genRawApplicativeData,
+  genRawApplicativeDataFrom
 ) where
 
 import Data.Array (Array, (!))
@@ -31,7 +33,7 @@ import Data.PTraversable.Extra (_indices)
 import Data.Tuple (swap)
 import Data.Vector qualified as V
 import EquationSolver
-import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData)
+import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData, MonoidData (..))
 import Data.Equivalence.Monad
 import Control.Exception (assert)
 
@@ -76,9 +78,16 @@ data ApplicativeData f = ApplicativeData
   }
 
 genApplicativeData :: PTraversable f => [ApplicativeData f]
-genApplicativeData = ApplicativeData env <$> genRawApplicatives sig
+genApplicativeData = ApplicativeData env <$> genRawApplicativeData sig
   where
     (env, sig) = makeEnv (length . unShape)
+
+genApplicativeDataFrom :: (Foldable f) => MonoidData (Shape f) -> [ApplicativeData f]
+genApplicativeDataFrom monData = ApplicativeData env <$> genRawApplicativeDataFrom sig mon
+  where
+    env = _elemTable monData
+    sig = length . unShape <$> env
+    mon = _rawMonoidData monData
 
 -- * Raw applicatives
 
@@ -203,13 +212,13 @@ prop_LeftRight raw = and result
       x <- [0 .. numX - 1]
       pure $ rightFactor i j (leftFactor ij k x) == leftFactor j k (rightFactor i jk x)
 
-genRawApplicatives :: Signature -> [RawApplicativeData]
-genRawApplicatives sig = do
+genRawApplicativeData :: Signature -> [RawApplicativeData]
+genRawApplicativeData sig = do
   mon <- genRawMonoidsForApplicative sig
-  genRawApplicativesFromMon sig mon
+  genRawApplicativeDataFrom sig mon
 
-genRawApplicativesFromMon :: Signature -> RawMonoidData -> [RawApplicativeData]
-genRawApplicativesFromMon sig mon = do
+genRawApplicativeDataFrom :: Signature -> RawMonoidData -> [RawApplicativeData]
+genRawApplicativeDataFrom sig mon = do
   let tables = completeTable sig mon <$> gen sig mon
   (leftFactorTable, rightFactorTable) <- upToIso sig mon tables
   let result =

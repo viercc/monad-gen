@@ -3,10 +3,9 @@ version:             0.1.0.0
 build-type:          Simple
 cabal-version:       2.0
 
-executable monad-gen
-  hs-source-dirs:      app
-  main-is:             Main.hs
-  other-modules: 
+library
+  hs-source-dirs: lib
+  exposed-modules:
     Data.PTraversable.Extra,
     Data.LazyVec,
     Data.Array.Extra,
@@ -19,24 +18,49 @@ executable monad-gen
     ApplicativeGen,
     EquationSolver,
 
-    Util,
     Targets,
     Data.Two
-  default-language:    Haskell2010
   build-depends:
       base >= 4.18 && < 5
     , contravariant >= 1.5
     , array >= 0.5.5
     , profunctors
-    , reflection
     , vector
     , containers
     , equivalence
     , either
 
     , mtl
-    , ansi-terminal
 
     , cartesian-profunctors
     , nat-map
+  default-language: Haskell2010
+  ghc-options:        -Wall -Wcompat
+
+executable monad-gen
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  other-modules:
+    Util
+  default-language:    Haskell2010
+  build-depends:
+      base >= 4.18 && < 5
+    , ansi-terminal
+    , cartesian-profunctors
+    , nat-map
+    , monad-gen
+  ghc-options:        -Wall -Wcompat -rtsopts=all -with-rtsopts=-M8G
+
+executable applicative-gen
+  hs-source-dirs:      app
+  main-is:             ApplicativeGenMain.hs
+  other-modules:
+    Util
+  default-language:    Haskell2010
+  build-depends:
+      base >= 4.18 && < 5
+    , ansi-terminal
+    , cartesian-profunctors
+    , nat-map
+    , monad-gen
   ghc-options:        -Wall -Wcompat -rtsopts=all -with-rtsopts=-M8G
