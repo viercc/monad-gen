@@ -1,5 +1,5 @@
 Monad_1 = Monad{
-  baseMonoid = M_2
+  baseApplicative = A_1
   pure 0 = Ga 0
   join $ Ga (Ga 0)            = Ga 0
   join $ Ga (Gb 0 1)          = Gb 0 1
@@ -9,17 +9,7 @@ Monad_1 = Monad{
   join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 0
 }
 Monad_2 = Monad{
-  baseMonoid = M_2
-  pure 0 = Ga 0
-  join $ Ga (Ga 0)            = Ga 0
-  join $ Ga (Gb 0 1)          = Gb 0 1
-  join $ Gb (Ga 0) (Ga 1)     = Gb 0 1
-  join $ Gb (Ga 0) (Gb 1 2)   = Gb 0 0
-  join $ Gb (Gb 0 1) (Ga 2)   = Gb 0 1
-  join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 1
-}
-Monad_3 = Monad{
-  baseMonoid = M_2
+  baseApplicative = A_1
   pure 0 = Ga 0
   join $ Ga (Ga 0)            = Ga 0
   join $ Ga (Gb 0 1)          = Gb 0 1
@@ -28,8 +18,8 @@ Monad_3 = Monad{
   join $ Gb (Gb 0 1) (Ga 2)   = Gb 0 2
   join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 0
 }
-Monad_4 = Monad{
-  baseMonoid = M_2
+Monad_3 = Monad{
+  baseApplicative = A_1
   pure 0 = Ga 0
   join $ Ga (Ga 0)            = Ga 0
   join $ Ga (Gb 0 1)          = Gb 0 1
@@ -38,8 +28,18 @@ Monad_4 = Monad{
   join $ Gb (Gb 0 1) (Ga 2)   = Gb 0 0
   join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 0
 }
+Monad_4 = Monad{
+  baseApplicative = A_2
+  pure 0 = Ga 0
+  join $ Ga (Ga 0)            = Ga 0
+  join $ Ga (Gb 0 1)          = Gb 0 1
+  join $ Gb (Ga 0) (Ga 1)     = Gb 0 1
+  join $ Gb (Ga 0) (Gb 1 2)   = Gb 0 0
+  join $ Gb (Gb 0 1) (Ga 2)   = Gb 0 1
+  join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 1
+}
 Monad_5 = Monad{
-  baseMonoid = M_2
+  baseApplicative = A_2
   pure 0 = Ga 0
   join $ Ga (Ga 0)            = Ga 0
   join $ Ga (Gb 0 1)          = Gb 0 1
@@ -49,7 +49,7 @@ Monad_5 = Monad{
   join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 1
 }
 Monad_6 = Monad{
-  baseMonoid = M_2
+  baseApplicative = A_3
   pure 0 = Ga 0
   join $ Ga (Ga 0)            = Ga 0
   join $ Ga (Gb 0 1)          = Gb 0 1
@@ -59,7 +59,7 @@ Monad_6 = Monad{
   join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 2
 }
 Monad_7 = Monad{
-  baseMonoid = M_2
+  baseApplicative = A_4
   pure 0 = Ga 0
   join $ Ga (Ga 0)            = Ga 0
   join $ Ga (Gb 0 1)          = Gb 0 1
@@ -69,7 +69,7 @@ Monad_7 = Monad{
   join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 3
 }
 Monad_8 = Monad{
-  baseMonoid = M_3
+  baseApplicative = A_5
   pure 0 = Gb 0 0
   join $ Ga (Ga 0)            = Ga 0
   join $ Ga (Gb 0 1)          = Ga 0

@@ -17,7 +17,7 @@ module MonadGen
     genMonadsModuloIso,
     genMonadsIsoGroups,
   
-    genFromMonoid,
+    genFromApplicative,
     uniqueByIso,
     groupByIso,
 
@@ -46,7 +46,8 @@ import GHC.Generics ((:.:) (..))
 import Data.FunctorShape
 import qualified Data.NatMap as NM
 
-import MonoidGen (MonoidDict(..), genMonoidsForMonad, makeMonoidDict)
+-- import MonoidGen (MonoidDict(..), genMonoidsForMonad, makeMonoidDict)
+import ApplicativeGen
 import Isomorphism (Iso (..), makePositionIsoFactors)
 import Data.Equivalence.Monad
 
@@ -67,8 +68,8 @@ data MonadDict f =
 
 genMonads :: (PTraversable f, forall a. (Show a) => Show (f a)) => [MonadData f]
 genMonads =
-  do monDict <- makeMonoidDict <$> genMonoidsForMonad
-     genFromMonoid monDict
+  do apDict <- makeApplicativeDict <$> genApplicativeData
+     genFromApplicative apDict
 
 applyIso :: PTraversable f => Iso f -> MonadData f -> MonadData f
 applyIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM' 
@@ -82,15 +83,15 @@ applyIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM'
 
 genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
 genMonadsModuloIso = 
-  do monDict <- makeMonoidDict <$> genMonoidsForMonad
-     uniqueByIso isoGenerators $ genFromMonoid monDict
+  do apDict <- makeApplicativeDict <$> genApplicativeData
+     uniqueByIso isoGenerators $ genFromApplicative apDict
   where
     isoGenerators = concat makePositionIsoFactors :: [Iso f]
 
 genMonadsIsoGroups :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [[MonadData f]]
 genMonadsIsoGroups = 
-  do monDict <- makeMonoidDict <$> genMonoidsForMonad
-     isoGroup <- groupByIso isoGenerators $ genFromMonoid monDict
+  do apDict <- makeApplicativeDict <$> genApplicativeData
+     isoGroup <- groupByIso isoGenerators $ genFromApplicative apDict
      pure (Set.toList isoGroup)
   where
     isoGenerators = concat makePositionIsoFactors :: [Iso f]
@@ -122,11 +123,10 @@ makeMonadDict (MonadData (Shape u) joinMap) =
 type Gen f = ReaderT (Env f) (StateT (GenState f) [])
 
 data Env f = Env
-  { _baseMonoid :: MonoidDict (Shape f),
+  { _baseApplicative :: ApplicativeDict f,
     _f1 :: Vec (f Int),
     _f2 :: Vec (f (f Int)),
-    _f3 :: Vec (f (f (f Int))),
-    _monoidCases :: Map.Map (Shape (f :.: f)) (Shape f)
+    _f3 :: Vec (f (f (f Int)))
   }
 
 type Join f = NM.NatMap (f :.: f) f
@@ -182,30 +182,22 @@ associativity m fffa =
 choose :: (Foldable t) => t a -> Gen f a
 choose = lift . lift . toList
 
-buildInitialEnv :: forall f. PTraversable f => MonoidDict (Shape f) -> Env f
-buildInitialEnv monDict = Env {
-    _baseMonoid = monDict,
-    _f1 = f1,
+buildInitialEnv :: forall f. PTraversable f => ApplicativeDict f -> Env f
+buildInitialEnv apDict = Env {
+    _baseApplicative = apDict,
+    _f1 = cache skolem,
     _f2 = cache skolem2,
-    _f3 = cache skolem3,
-    _monoidCases = monoidCases
+    _f3 = cache skolem3
   }
-  where
-    f1 = cache skolem :: Vec (f Int)
-    monoidCases = Map.fromList
-      [ (Shape (Comp1 (y <$ x)), monoidMult monDict (Shape x) (Shape y))
-        | x <- toList f1,
-          y <- toList f1 ]
 
 _pure :: PTraversable f => Env f -> a -> f a
-_pure env = case monoidUnit (_baseMonoid env) of
-  Shape u -> (<$ u)
+_pure env = _applicativePure (_baseApplicative env)
 
-runGen :: forall f r. (PTraversable f) => MonoidDict (Shape f) -> Gen f r -> [(r, GenState f)]
-runGen monDict mr = runStateT (runReaderT mr env) state0
+runGen :: forall f r. (PTraversable f) => ApplicativeDict f -> Gen f r -> [(r, GenState f)]
+runGen apDict mr = runStateT (runReaderT mr env) state0
   where
     env :: Env f
-    env = buildInitialEnv monDict
+    env = buildInitialEnv apDict
 
     f3 = _f3 env
 
@@ -221,10 +213,11 @@ runGen monDict mr = runStateT (runReaderT mr env) state0
         }
 
 entry ::
-  forall f.
+  forall f b.
   (forall a. (Show a) => Show (f a), PTraversable f) =>
-  (f :.: f) Int ->
-  f Int ->
+  (Ord b) =>
+  (f :.: f) b ->
+  f b ->
   Gen f ()
 entry lhs rhs =
   do
@@ -250,54 +243,33 @@ entry lhs rhs =
           _blockade = blockade''
         }
 
-entryUU :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
-entryUU = do
-  env <- ask
-  let ui = _indices (_pure env ())
-      uuj = fmap (\i -> fmap (\j -> length ui * i + j) ui) ui
-      uj = fmap (\i -> length ui * i + i) ui
-  entry (Comp1 uuj) uj
-
-entryFUG :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
-entryFUG = do
+entryApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
+entryApplicative = do
   env <- ask
   let f1 = _f1 env
-      ui = _indices (_pure env ())
-      n = length ui
-      targets = filter (\fj -> Shape fj /= Shape ui) $ Vec.toList f1
-
-      prod gx hy =
-        let w = length hy
-        in  fmap (\x -> fmap (\y -> w * x + y) hy) gx
-
-  for_ targets $ \fj -> do
-    let m = length fj
-    let uf = Comp1 (prod ui fj)
-    let fu = Comp1 (prod fj ui)
-    joinUF <- choose $ traverse (\j -> [ i * m + j | i <- [0 .. n - 1] ]) fj
-    entry uf joinUF
-    joinFU <- choose $ traverse (\j -> [ j * n + i | i <- [0 .. n - 1] ]) fj
-    entry fu joinFU
+  for_ f1 $ \fi ->
+    for_ f1 $ \fj ->
+      let ffij = fmap (\i -> fmap ((,) i) fj) fi
+          fk = _applicativeLiftA2 (_baseApplicative env) (,) fi fj
+      in entry (Comp1 ffij) fk
 
 guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Shape (f :.: f) -> Gen f ()
 guess lhsKey = do
   let lhs = keyIndices lhsKey
       lhsVars = toVec lhs
-  monoidCases <- asks _monoidCases
-  rhs <- case Map.lookup lhsKey monoidCases of
-    Nothing -> choose (enum1 lhsVars)
-    Just rhsKey -> choose $ traverse (const lhsVars) (keyIndices rhsKey)
+  rhs <- choose (enum1 lhsVars)
   entry lhs rhs
 
-genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidDict (Shape f) -> [MonadData f]
-genFromMonoid mon = postproc . snd <$> runGen mon (entryUU >> entryFUG >> loop)
+genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
+genFromApplicative apDict = postproc . snd <$> runGen apDict (entryApplicative >> loop)
   where
+    apPure = _applicativePure apDict
     loop = do
       blockade <- gets _blockade
       case mostRelated blockade of
         Nothing -> pure ()
         Just lhsKey -> guess lhsKey >> loop
-    postproc finalState = MonadData (monoidUnit mon) (_join finalState)
+    postproc finalState = MonadData (Shape (apPure ())) (_join finalState)
 
 -- * Utilities
 

@@ -1,6 +1,6 @@
 IsomorphismClass {
   Monad_1 = Monad{
-    baseMonoid = M_1
+    baseApplicative = A_2
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 2
@@ -12,7 +12,7 @@ IsomorphismClass {
     join $ Tb (Tb 0 1) (Tb 2 3) = Ta 3 0
   }
   Monad_1 = Monad{
-    baseMonoid = M_1
+    baseApplicative = A_2
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 3
@@ -24,7 +24,7 @@ IsomorphismClass {
     join $ Tb (Tb 0 1) (Tb 2 3) = Ta 0 3
   }
   Monad_1 = Monad{
-    baseMonoid = M_1
+    baseApplicative = A_2
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Tb 0 3
@@ -36,7 +36,7 @@ IsomorphismClass {
     join $ Tb (Tb 0 1) (Tb 2 3) = Ta 0 3
   }
   Monad_1 = Monad{
-    baseMonoid = M_1
+    baseApplicative = A_2
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Tb 2 0
@@ -50,7 +50,7 @@ IsomorphismClass {
 }
 IsomorphismClass {
   Monad_2 = Monad{
-    baseMonoid = M_2
+    baseApplicative = A_8
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 2
@@ -62,19 +62,7 @@ IsomorphismClass {
     join $ Tb (Tb 0 1) (Tb 2 3) = Tb 0 2
   }
   Monad_2 = Monad{
-    baseMonoid = M_2
-    pure 0 = Ta 0 0
-    join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
-    join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 3
-    join $ Ta (Tb 0 1) (Ta 2 3) = Tb 0 3
-    join $ Ta (Tb 0 1) (Tb 2 3) = Tb 0 3
-    join $ Tb (Ta 0 1) (Ta 2 3) = Tb 1 3
-    join $ Tb (Ta 0 1) (Tb 2 3) = Tb 1 3
-    join $ Tb (Tb 0 1) (Ta 2 3) = Tb 1 3
-    join $ Tb (Tb 0 1) (Tb 2 3) = Tb 1 3
-  }
-  Monad_2 = Monad{
-    baseMonoid = M_2
+    baseApplicative = A_8
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Tb 0 3
@@ -86,7 +74,7 @@ IsomorphismClass {
     join $ Tb (Tb 0 1) (Tb 2 3) = Tb 0 2
   }
   Monad_2 = Monad{
-    baseMonoid = M_2
+    baseApplicative = A_8
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Tb 2 0
@@ -100,7 +88,7 @@ IsomorphismClass {
 }
 IsomorphismClass {
   Monad_3 = Monad{
-    baseMonoid = M_2
+    baseApplicative = A_9
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 2
@@ -112,7 +100,7 @@ IsomorphismClass {
     join $ Tb (Tb 0 1) (Tb 2 3) = Tb 0 3
   }
   Monad_3 = Monad{
-    baseMonoid = M_2
+    baseApplicative = A_9
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Ta 0 3
@@ -124,7 +112,7 @@ IsomorphismClass {
     join $ Tb (Tb 0 1) (Tb 2 3) = Tb 0 3
   }
   Monad_3 = Monad{
-    baseMonoid = M_2
+    baseApplicative = A_9
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Tb 0 3
@@ -136,7 +124,7 @@ IsomorphismClass {
     join $ Tb (Tb 0 1) (Tb 2 3) = Tb 0 3
   }
   Monad_3 = Monad{
-    baseMonoid = M_2
+    baseApplicative = A_9
     pure 0 = Ta 0 0
     join $ Ta (Ta 0 1) (Ta 2 3) = Ta 0 3
     join $ Ta (Ta 0 1) (Tb 2 3) = Tb 2 0

@@ -65,7 +65,7 @@ applicativeGen monoids println = do
   for_ (zip applicativeNames applicatives) $ \(applicativeName, (monoidName, applicativeData)) -> do
     let dict = makeApplicativeDict applicativeData
     mapM_ println $ prettyApplicativeDict applicativeName monoidName dict
-  pure applicatives
+  pure (zip applicativeNames (snd <$> applicatives))
 
 prettyApplicativeDict :: forall f.
      (PTraversable f, forall a. Show a => Show (f a))
@@ -101,40 +101,40 @@ prettyApplicativeDict = docResult
 monadGen
   :: forall f.
     ( forall a. (Show a) => Show (f a), PTraversable f)
-  => [ (String, MonoidData (Shape f)) ]
+  => [ (String, ApplicativeData f) ]
   -> (String -> IO ())
   -> IO ()
-monadGen monoids println = do
+monadGen applicatives println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
       monads :: [ (String, MonadData f) ]
       monads = do
-        (monoidName, monData) <- monoids
-        monadData <- uniqueByIso (concat makePositionIsoFactors) $ genFromMonoid (makeMonoidDict monData)
-        pure (monoidName, monadData)
-  for_ (zip monadNames monads) $ \(monadName, (monoidName, monadData)) -> do
+        (apName, apData) <- applicatives
+        monadData <- uniqueByIso (concat makePositionIsoFactors) $ genFromApplicative (makeApplicativeDict apData)
+        pure (apName, monadData)
+  for_ (zip monadNames monads) $ \(monadName, (apName, monadData)) -> do
     let dict = makeMonadDict monadData
     validateMonadDict dict
-    mapM_ println $ prettyMonadDict monadName monoidName dict
+    mapM_ println $ prettyMonadDict monadName apName dict
 
 monadGenGroup
   :: forall f.
     ( forall a. (Show a) => Show (f a), PTraversable f)
-  => [ (String, MonoidData (Shape f)) ]
+  => [ (String, ApplicativeData f) ]
   -> (String -> IO ())
   -> IO ()
-monadGenGroup monoids println = do
+monadGenGroup applicatives println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
       monads :: [ (String, [MonadData f]) ]
       monads = do
-        (monoidName, monData) <- monoids
-        monadDataGroup <- groupByIso (concat makePositionIsoFactors) $ genFromMonoid (makeMonoidDict monData)
-        pure (monoidName, toList monadDataGroup)
-  for_ (zip monadNames monads) $ \(monadName, (monoidName, monadDataGroup)) -> do
+        (apName, apData) <- applicatives
+        monadDataGroup <- groupByIso (concat makePositionIsoFactors) $ genFromApplicative (makeApplicativeDict apData)
+        pure (apName, toList monadDataGroup)
+  for_ (zip monadNames monads) $ \(monadName, (apName, monadDataGroup)) -> do
     let dicts = makeMonadDict <$> monadDataGroup
     mapM_ validateMonadDict dicts
     let
       prettyGroup = ["IsomorphismClass {"]
-        ++ map ("  " <>) (concatMap (prettyMonadDict monadName monoidName) dicts)
+        ++ map ("  " <>) (concatMap (prettyMonadDict monadName apName) dicts)
         ++ ["}"]
     mapM_ println prettyGroup
 
@@ -170,22 +170,22 @@ prettyMonadDict :: forall f.
 prettyMonadDict = docResult
   where
     skolem2Cache :: [f (f Int)]
-    skolem2Cache = toList $ skolem2
+    skolem2Cache = toList skolem2
     
     joinArgsCache :: [String]
     joinArgsCache = pad <$> strs
       where
         showLen x = let s = show x in (length s, s)
         strs = showLen <$> skolem2Cache
-        maxLen = maximum $ (0 : fmap fst strs)
+        maxLen = maximum (0 : fmap fst strs)
         pad (n, s) = "join $ " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
     
     indent = "  "
     
-    docResult monadName monoidName dict =
+    docResult monadName apName dict =
         [ monadName <> " = Monad{" ] ++
         map (indent <>) (
-          [ "baseMonoid = " ++ monoidName,
+          [ "baseApplicative = " ++ apName,
             "pure 0 = " <> show (_monadPure dict (0 :: Int)) ] ++
           zipWith (<>) joinArgsCache (show . _monadJoin dict <$> skolem2Cache)
         ) ++
@@ -197,8 +197,8 @@ generateAllToDir
 generateAllToDir name outDir = do
   createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
   monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
-  _applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
-  writeFile' (outDir ++ "/monad.txt") $ monadGen monoids
+  applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
+  writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives
 
 generateAllToDir_andGroups
   :: (PTraversable f, forall a. Show a => Show (f a))
@@ -206,9 +206,9 @@ generateAllToDir_andGroups
 generateAllToDir_andGroups name outDir = do
   createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
   monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
-  _applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
-  writeFile' (outDir ++ "/monad.txt") $ monadGen monoids
-  writeFile' (outDir ++ "/monad_group.txt") $ monadGenGroup monoids
+  applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
+  writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives
+  writeFile' (outDir ++ "/monad_group.txt") $ monadGenGroup applicatives
 
 main :: IO ()
 main = do

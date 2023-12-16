@@ -1,5 +1,5 @@
 Monad_1 = Monad{
-  baseMonoid = M_1
+  baseApplicative = A_1
   pure 0 = (0,0)
   join $ (0,(0,0)) = (0,0)
   join $ (0,(1,0)) = (1,0)
@@ -12,7 +12,7 @@ Monad_1 = Monad{
   join $ (2,(2,0)) = (2,0)
 }
 Monad_2 = Monad{
-  baseMonoid = M_2
+  baseApplicative = A_2
   pure 0 = (0,0)
   join $ (0,(0,0)) = (0,0)
   join $ (0,(1,0)) = (1,0)
@@ -25,7 +25,7 @@ Monad_2 = Monad{
   join $ (2,(2,0)) = (1,0)
 }
 Monad_3 = Monad{
-  baseMonoid = M_3
+  baseApplicative = A_3
   pure 0 = (0,0)
   join $ (0,(0,0)) = (0,0)
   join $ (0,(1,0)) = (1,0)
@@ -38,7 +38,7 @@ Monad_3 = Monad{
   join $ (2,(2,0)) = (2,0)
 }
 Monad_4 = Monad{
-  baseMonoid = M_4
+  baseApplicative = A_4
   pure 0 = (0,0)
   join $ (0,(0,0)) = (0,0)
   join $ (0,(1,0)) = (1,0)
@@ -51,7 +51,7 @@ Monad_4 = Monad{
   join $ (2,(2,0)) = (2,0)
 }
 Monad_5 = Monad{
-  baseMonoid = M_5
+  baseApplicative = A_5
   pure 0 = (0,0)
   join $ (0,(0,0)) = (0,0)
   join $ (0,(1,0)) = (1,0)
@@ -64,7 +64,7 @@ Monad_5 = Monad{
   join $ (2,(2,0)) = (2,0)
 }
 Monad_6 = Monad{
-  baseMonoid = M_6
+  baseApplicative = A_6
   pure 0 = (0,0)
   join $ (0,(0,0)) = (0,0)
   join $ (0,(1,0)) = (1,0)
@@ -77,7 +77,7 @@ Monad_6 = Monad{
   join $ (2,(2,0)) = (1,0)
 }
 Monad_7 = Monad{
-  baseMonoid = M_7
+  baseApplicative = A_7
   pure 0 = (0,0)
   join $ (0,(0,0)) = (0,0)
   join $ (0,(1,0)) = (1,0)

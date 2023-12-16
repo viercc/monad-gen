@@ -1,12 +1,5 @@
 Monad_1 = Monad{
-  baseMonoid = M_3
-  pure 0 = Just 0
-  join $ Nothing       = Nothing
-  join $ Just Nothing  = Nothing
-  join $ Just (Just 0) = Just 0
-}
-Monad_2 = Monad{
-  baseMonoid = M_4
+  baseApplicative = A_1
   pure 0 = Just 0
   join $ Nothing       = Nothing
   join $ Just Nothing  = Nothing
