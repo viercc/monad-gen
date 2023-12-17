@@ -4,7 +4,7 @@ module MonoidGen(
   -- * Generate Monoids
   MonoidDict(..),
   makeMonoidDict,
-  
+
   MonoidData(..),
   genMonoids,
   genMonoidsWithSig,
@@ -21,13 +21,17 @@ module MonoidGen(
   genRawMonoids,
   genRawMonoidsForApplicative,
   genRawMonoidsForMonad,
-  
+
+  -- * Permutations
+  Permutation(..),
+  stabilizingPermutations,
+
   -- * Internals
   makeEnv, fakeEnv,
 ) where
 
 import Data.Equivalence.Monad
-import Data.List (sortOn, sort)
+import Data.List (sortOn, sort, groupBy, permutations)
 import Data.Maybe (mapMaybe)
 import Data.Foldable (for_)
 
@@ -44,6 +48,7 @@ import Data.FunctorShape
 import Data.Transparent
 
 import EquationSolver
+import Data.Function (on)
 
 -- * MonoidDict
 
@@ -239,7 +244,7 @@ genForMonad n numZeroes eInt = genDefTables guess equations
      ++ [ x |*| e `Equals` x | x <- Leaf <$> xs]
      ++ [ z |*| y `Equals` z | z <- Leaf <$> zeroes, y <- Leaf <$> xs ]
      ++ [ assocLaw x y z | x <- nonUnits, y <- nonUnits, z <- nonUnits ]
-    
+
     guess (M _ y) = if y < numZeroes then zeroes else xs
 
 
@@ -272,3 +277,36 @@ applyTranspose n (Transpose a b) table =
       | i == a = b
       | i == b = a
       | otherwise = i
+
+
+newtype Permutation = MkPermutation (V.Vector Int)
+   deriving (Eq, Ord, Show)
+
+stabilizingPermutations :: Signature -> RawMonoidData -> [[Permutation]]
+stabilizingPermutations sig rawData = filter nonTrivial $ filter (isFixing tab) . subPermutations n <$> permGroups sig e
+  where
+    n = _monoidSize rawData
+    e = _unitElem rawData
+    tab = _multTable rawData
+    nonTrivial = (> 1) . length
+
+permGroups :: Eq a => V.Vector a -> Int -> [[Int]]
+permGroups sig e = groups
+  where
+    lengths = V.toList $ V.indexed sig
+    lengths' = filter ((/= e) . fst) lengths
+    groups = fmap fst <$> groupBy ((==) `on` snd) lengths'
+
+subPermutations :: Int -> [Int] -> [Permutation]
+subPermutations n xs = MkPermutation <$> [ iota V.// zip xs ys | ys <- permutations xs ]
+  where
+    iota = V.generate n id
+
+isFixing :: Array (Int, Int) Int -> Permutation -> Bool
+isFixing tab perm = tab == applyPermutation perm tab
+
+applyPermutation :: Permutation -> Array (Int, Int) Int -> Array (Int, Int) Int
+applyPermutation (MkPermutation permVector) tab = tab'
+  where
+    p = (permVector V.!)
+    tab' = Array.array (Array.bounds tab) [ ((p i, p j), p k) | ((i, j), k) <- Array.assocs tab ]

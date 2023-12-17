@@ -4320,7 +4320,7 @@ Monad_149 = Monad{
   join $ Vc (Vc 0 1) (Vc 2 3) = Vc 0 2
 }
 Monad_150 = Monad{
-  baseApplicative = A_83
+  baseApplicative = A_81
   pure 0 = Vc 0 0
   join $ V                    = V
   join $ Va V                 = V

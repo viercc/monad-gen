@@ -18,8 +18,8 @@ module MonadGen
     genMonadsIsoGroups,
   
     genFromApplicative,
-    uniqueByIso,
-    groupByIso,
+    genFromApplicativeModuloIso,
+    genFromApplicativeIsoGroups,
 
     -- * Debug
     GenState (..),
@@ -48,7 +48,7 @@ import qualified Data.NatMap as NM
 
 -- import MonoidGen (MonoidDict(..), genMonoidsForMonad, makeMonoidDict)
 import ApplicativeGen
-import Isomorphism (Iso (..), makePositionIsoFactors)
+import Isomorphism (Iso (..))
 import Data.Equivalence.Monad
 
 import MonadLaws
@@ -82,19 +82,15 @@ applyIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM'
         pure e'
 
 genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
-genMonadsModuloIso = 
-  do apDict <- makeApplicativeDict <$> genApplicativeData
-     uniqueByIso isoGenerators $ genFromApplicative apDict
-  where
-    isoGenerators = concat makePositionIsoFactors :: [Iso f]
+genMonadsModuloIso = do
+  apDict <- makeApplicativeDict <$> genApplicativeData
+  genFromApplicativeModuloIso apDict
 
 genMonadsIsoGroups :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [[MonadData f]]
 genMonadsIsoGroups = 
   do apDict <- makeApplicativeDict <$> genApplicativeData
-     isoGroup <- groupByIso isoGenerators $ genFromApplicative apDict
+     isoGroup <- genFromApplicativeIsoGroups apDict
      pure (Set.toList isoGroup)
-  where
-    isoGenerators = concat makePositionIsoFactors :: [Iso f]
 
 uniqueByIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a))
   => [Iso f] -> [MonadData f] -> [MonadData f]
@@ -270,6 +266,16 @@ genFromApplicative apDict = postproc . snd <$> runGen apDict (entryApplicative >
         Nothing -> pure ()
         Just lhsKey -> guess lhsKey >> loop
     postproc finalState = MonadData (Shape (apPure ())) (_join finalState)
+
+genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
+genFromApplicativeModuloIso apDict = uniqueByIso isoGenerators $ genFromApplicative apDict
+  where
+    isoGenerators = stabilizingIsomorphisms apDict
+
+genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
+genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict
+  where
+    isoGenerators = stabilizingIsomorphisms apDict
 
 -- * Utilities
 

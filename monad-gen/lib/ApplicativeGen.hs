@@ -4,23 +4,30 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module ApplicativeGen(
+  -- * Dict
   ApplicativeDict(..),
   makeApplicativeDict,
 
+  -- * Data
   ApplicativeData(..),
   genApplicativeData,
   genApplicativeDataFrom,
 
+  -- * Raw
   RawApplicativeData(..),
   prettyRawApplicativeData,
+  genRawApplicativeData,
+  genRawApplicativeDataFrom,
+
+  -- * Applicative laws for Raw
   prop_LeftUnit,
   prop_RightUnit,
   prop_LeftLeft,
   prop_RightRight,
   prop_LeftRight,
 
-  genRawApplicativeData,
-  genRawApplicativeDataFrom
+  -- * Applicative-preserving isomorphisms
+  stabilizingIsomorphisms
 ) where
 
 import Data.Array (Array, (!))
@@ -29,13 +36,15 @@ import Data.Foldable (toList, for_)
 import Data.FunctorShape
 import Data.Map.Strict qualified as Map
 import Data.PTraversable
-import Data.PTraversable.Extra (_indices)
+import Data.PTraversable.Extra (_indices, skolem)
 import Data.Tuple (swap)
 import Data.Vector qualified as V
 import EquationSolver
-import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData, MonoidData (..))
+import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData, MonoidData (..), stabilizingPermutations, Permutation (..))
 import Data.Equivalence.Monad
 import Control.Exception (assert)
+import Isomorphism
+import Data.List (sort)
 
 data ApplicativeDict f = ApplicativeDict
   { _applicativePure :: forall a. a -> f a,
@@ -311,11 +320,20 @@ upToIso :: Signature -> RawMonoidData -> [(FactorTable, FactorTable)] -> [(Facto
 upToIso sig mon tabs = runEquivM id min $ do
   for_ tabs $ \mm -> do
     equate mm mm
-  for_ (isoGenerators sig) $ \tr ->
-    for_ tabs $ \mm -> equate mm (applyTransposition op tr mm)
+  for_ tabs $ \mm -> do
+    for_ (stabilizingPermutations sig mon) $ \perms ->
+      equateAll (applyShapePermutation <$> perms <*> [mm])
+    equateAll (mm : (applyTransposition op <$> isoGenerators sig <*> [mm]))
   classes >>= traverse desc
   where
     op i j = _multTable mon ! (i,j)
+
+applyShapePermutation :: Permutation -> (FactorTable, FactorTable) -> (FactorTable, FactorTable)
+applyShapePermutation (MkPermutation permVector) = applyBoth
+  where
+    p = (permVector V.!)
+    apply tab = Array.array (Array.bounds tab) [ ((p i, p j), v) | ((i,j), v) <- Array.assocs tab ]
+    applyBoth (tabL, tabR) = (apply tabL, apply tabR)
 
 data Transposition = Transpose Int Int Int
     deriving Show
@@ -350,3 +368,22 @@ applyTransposition op (Transpose k x y) (leftTable, rightTable) = (leftTable', r
                 | otherwise = id
     leftTable' = Array.imap leftTrans leftTable
     rightTable' = Array.imap rightTrans rightTable
+
+stabilizingIsomorphisms :: PTraversable f => ApplicativeDict f -> [Iso f]
+stabilizingIsomorphisms apDict = result
+  where
+    pureData = _applicativePure apDict ()
+    fk = sort (toList skolem)
+    -- lhs is sorted, since fk is sorted
+    lhs = (,) <$> fk <*> fk
+    rhs = uncurry (_applicativeLiftA2 apDict (,)) <$> lhs
+
+    isFixing iso = (iso1 iso pureData == pureData) && rhs == rhs'
+      where
+        rhs' = op' <$> lhs
+        op' (fa, fb) = iso2 iso $ _applicativeLiftA2 apDict (,) (iso1 iso fa) (iso1 iso fb)
+
+    allSubIsos = makePositionIso ++ makeShapeIso
+    allIsos = foldr (liftA2 (<>)) [mempty] allSubIsos
+    -- numAllIsos = product (length <$> allSubIsos)
+    result = filter isFixing allIsos

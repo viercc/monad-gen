@@ -32,9 +32,9 @@ writeFile'debug filePath body =
     do putStrLn $ "Writing " ++ show filePath
        putStrLn "Line [0]"
        counter <- newIORef (1 :: Int)
-       body $ \l ->
+       a <- body $ \l ->
          do IO.hPutStrLn h l
-            i <- readIORef counter
-            putStrLn $ "Line [" ++ show (i + 1) ++ "]"
-            writeIORef counter (i+1)
-
+            modifyIORef' counter (+ 1)
+       i <- readIORef counter
+       putStrLn $ "Line [" ++ show (i + 1) ++ "]"
+       pure a

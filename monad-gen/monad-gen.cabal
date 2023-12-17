@@ -16,6 +16,7 @@ library
     Isomorphism,
     MonoidGen,
     ApplicativeGen,
+    ApplicativeLaws,
     EquationSolver,
 
     Targets,

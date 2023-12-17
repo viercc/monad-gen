@@ -16,10 +16,10 @@ import Data.Foldable
 import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.Proxy
+import qualified ApplicativeLaws as Ap
 import MonadLaws
 import MonoidGen
 import MonadGen
-import Isomorphism (makePositionIsoFactors)
 
 import Data.Two
 import Targets
@@ -64,8 +64,35 @@ applicativeGen monoids println = do
         pure (monoidName, applicativeData)
   for_ (zip applicativeNames applicatives) $ \(applicativeName, (monoidName, applicativeData)) -> do
     let dict = makeApplicativeDict applicativeData
+    putStrLn $ monoidName ++ " > " ++ applicativeName
     mapM_ println $ prettyApplicativeDict applicativeName monoidName dict
+    validateApplicativeDict dict
   pure (zip applicativeNames (snd <$> applicatives))
+
+validateApplicativeDict :: forall f.
+     (PTraversable f, forall a. Show a => Show (f a))
+  => ApplicativeDict f -> IO ()
+validateApplicativeDict ApplicativeDict{ _applicativePure = pure', _applicativeLiftA2 = liftA2' }
+   = if null allFails
+       then pure ()
+       else dieWithErrors allFails
+  where
+    skolemCache :: [f Int]
+    skolemCache = toList skolem
+
+    leftUnitFails = 
+      [ "leftUnit " ++ show fx | fx <- skolemCache, not (Ap.checkLeftUnit pure' liftA2' fx) ]
+    rightUnitFails = 
+      [ "rightUnit " ++ show fx | fx <- skolemCache, not (Ap.checkRightUnit pure' liftA2' fx) ]
+    assocFails = 
+      [ "assoc " ++ show (fx, fy, fz)
+        | fx <- skolemCache,
+          fy <- skolemCache,
+          fz <- skolemCache,
+          not (Ap.checkAssoc liftA2' fx fy fz)
+      ]
+
+    allFails = leftUnitFails ++ rightUnitFails ++ assocFails
 
 prettyApplicativeDict :: forall f.
      (PTraversable f, forall a. Show a => Show (f a))
@@ -109,12 +136,13 @@ monadGen applicatives println = do
       monads :: [ (String, MonadData f) ]
       monads = do
         (apName, apData) <- applicatives
-        monadData <- uniqueByIso (concat makePositionIsoFactors) $ genFromApplicative (makeApplicativeDict apData)
+        monadData <- genFromApplicativeModuloIso (makeApplicativeDict apData)
         pure (apName, monadData)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadData)) -> do
     let dict = makeMonadDict monadData
-    validateMonadDict dict
+    putStrLn $ apName ++ " > " ++ monadName
     mapM_ println $ prettyMonadDict monadName apName dict
+    validateMonadDict dict
 
 monadGenGroup
   :: forall f.
@@ -127,16 +155,16 @@ monadGenGroup applicatives println = do
       monads :: [ (String, [MonadData f]) ]
       monads = do
         (apName, apData) <- applicatives
-        monadDataGroup <- groupByIso (concat makePositionIsoFactors) $ genFromApplicative (makeApplicativeDict apData)
+        monadDataGroup <- genFromApplicativeIsoGroups (makeApplicativeDict apData)
         pure (apName, toList monadDataGroup)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadDataGroup)) -> do
     let dicts = makeMonadDict <$> monadDataGroup
-    mapM_ validateMonadDict dicts
-    let
-      prettyGroup = ["IsomorphismClass {"]
-        ++ map ("  " <>) (concatMap (prettyMonadDict monadName apName) dicts)
-        ++ ["}"]
-    mapM_ println prettyGroup
+        indent = ("  " <>)
+    println "IsomorphismClass {"
+    for_ dicts $ \dict -> do
+      mapM_ (println . indent) $ prettyMonadDict monadName apName dict
+      validateMonadDict dict
+    println "}"
 
 validateMonadDict :: forall f.
      (PTraversable f, forall a. Show a => Show (f a))
@@ -200,10 +228,10 @@ generateAllToDir name outDir = do
   applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
   writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives
 
-generateAllToDir_andGroups
+generateAllAndGroupsToDir
   :: (PTraversable f, forall a. Show a => Show (f a))
   => Proxy f -> FilePath -> IO ()
-generateAllToDir_andGroups name outDir = do
+generateAllAndGroupsToDir name outDir = do
   createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
   monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
   applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
@@ -221,7 +249,7 @@ main = do
   generateAllToDir @H Proxy "output/H"
   generateAllToDir @I Proxy "output/I"
   generateAllToDir @J Proxy "output/J"
-  generateAllToDir_andGroups @T Proxy "output/T"
-  generateAllToDir_andGroups @U Proxy "output/U"
+  generateAllAndGroupsToDir @T Proxy "output/T"
+  generateAllToDir @U Proxy "output/U"
   generateAllToDir @V Proxy "output/V"
   -- generateAllToDir @Y Proxy "output/Y"

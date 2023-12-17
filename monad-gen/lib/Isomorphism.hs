@@ -2,21 +2,24 @@
 
 module Isomorphism(
     Iso(..),
+    makePositionIso,
     makePositionIsoFactors,
+    makeShapeIso,
     makeShapeIsoFactors
 ) where
 
-import qualified Data.Vector as V
+import Data.List (foldl', permutations)
+import Data.Functor (void)
+import Data.Maybe (mapMaybe)
+import Data.Foldable (toList)
 
+import qualified Data.Vector as V
 import qualified Data.Map as Map
 import Data.PTraversable
 import Data.PTraversable.Extra
 
 import Data.NatMap (NatMap)
 import qualified Data.NatMap as NatMap
-import Data.Functor (void)
-import Data.Maybe (mapMaybe)
-import Data.Foldable (toList)
 
 data Iso f = Iso
   { iso1 :: forall a. f a -> f a,
@@ -32,16 +35,31 @@ instance Monoid (Iso f) where
 nonTrivial :: Foldable f => f a -> Bool
 nonTrivial as = length as > 1
 
-makePositionIsoFactors :: PTraversable f => [[Iso f]]
-makePositionIsoFactors = filter (not . null) $ positionShufflesOf <$> shapes
+makePositionIso :: PTraversable f => [[Iso f]]
+makePositionIso = result
+  where
+    result = filter nonTrivial $ positionShufflesOf <$> shapes
 
 positionShufflesOf :: PTraversable f => f () -> [Iso f]
 positionShufflesOf f_ = do
     let n = length f_
         fk = _indices f_
+    perm <- V.fromListN n <$> permutations [0 .. n - 1]
+    let perm' = V.backpermute (V.generate n id) perm
+        fs = (perm V.!) <$> fk
+        fs' = (perm' V.!) <$> fk
+    pure $ Iso (shuffleNatAt fs) (shuffleNatAt fs')
+
+makePositionIsoFactors :: PTraversable f => [[Iso f]]
+makePositionIsoFactors = filter (not . null) $ positionTranspositionsOf <$> shapes
+
+positionTranspositionsOf :: PTraversable f => f () -> [Iso f]
+positionTranspositionsOf f_ = do
+    let n = length f_
+        fk = _indices f_
     k <- [0 .. n - 2]
     let fk' = fmap (tp k) fk
-        iso = shuffleNatAt f_ (\as -> (as V.!) <$> fk')
+        iso = shuffleNatAt fk'
     pure $ Iso iso iso
 
 tp :: Int -> Int -> Int
@@ -50,26 +68,38 @@ tp k x
   | x == k + 1 = k
   | otherwise  = x
 
-shuffleNatAt :: PTraversable f => f () -> (forall b. V.Vector b -> f b) -> f a -> f a
-shuffleNatAt f_ mk fa =
-    if f_ == void fa
-        then mk (V.fromList (toList fa))
+shuffleNatAt :: PTraversable f => f Int -> f a -> f a
+shuffleNatAt fk fa =
+    if void fk == void fa
+        then let as = V.fromList (toList fa)
+             in (as V.!) <$> fk
         else fa
 
+makeShapeIso :: (PTraversable f) => [[Iso f]]
+makeShapeIso = result
+  where
+    idNat = NatMap.identity
+    permAssocs as = [ zip as pas | pas <- permutations as ]
+    buildIso pAssocs = do
+        let nt = foldl' (\m (fj, fk) -> insertSym fj fk m) idNat pAssocs
+            nt' = foldl' (\m (fj, fk) -> insertSym fk fj m) idNat pAssocs
+        g <- NatMap.toTotal nt
+        g' <- NatMap.toTotal nt'
+        pure $ Iso (g NatMap.$$) (g' NatMap.$$)
+    result = map (mapMaybe buildIso . permAssocs) $ filter nonTrivial $ groupByLength shapes
+
 makeShapeIsoFactors :: (PTraversable f) => [[Iso f]]
-makeShapeIsoFactors = map (mapMaybe buildIso . adjacents) groups
+makeShapeIsoFactors = map (mapMaybe buildIso . adjacents) $ groupByLength shapes
     where
-        ss = V.fromList shapes
-        lens = length <$> ss
-        ks = [ 0 .. length ss - 1 ]
         idNat = NatMap.identity
-        groupsMap = Map.fromListWith Map.union [(lens V.! k, Map.singleton k k) | k <- ks]
-        groups = map Map.elems . filter nonTrivial $ Map.elems groupsMap
-        buildIso (j,k) =
-            let fj = ss V.! j
-                fk = ss V.! k
-                nt = insertSym fj fk . insertSym fk fj $ idNat
+        buildIso (fj,fk) =
+            let nt = insertSym fj fk . insertSym fk fj $ idNat
             in (\(NatMap.NT g) -> Iso g g) <$> NatMap.toTotal nt
+
+groupByLength :: Foldable f => [f a] -> [[f a]]
+groupByLength fs = Map.elems groupsMap
+  where
+    groupsMap = Map.fromListWith (++) [ (length fa, [fa]) | fa <- fs ]
 
 adjacents :: [b] -> [(b,b)]
 adjacents bs = zip bs (drop 1 bs)
