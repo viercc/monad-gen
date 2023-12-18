@@ -240,16 +240,19 @@ generateAllAndGroupsToDir name outDir = do
 
 main :: IO ()
 main = do
-  generateAllToDir @Maybe Proxy "output/Maybe"
-  generateAllToDir @((,) Two) Proxy "output/Writer"
-  generateAllToDir @((,) N3) Proxy "output/Writer3"
+  -- generateAllToDir @Maybe Proxy "output/Maybe"
+  -- generateAllToDir @((,) Two) Proxy "output/Writer"
+  -- generateAllToDir @((,) N3) Proxy "output/Writer3"
 
-  generateAllToDir @F Proxy "output/F"
-  generateAllToDir @G Proxy "output/G"
-  generateAllToDir @H Proxy "output/H"
-  generateAllToDir @I Proxy "output/I"
-  generateAllToDir @J Proxy "output/J"
-  generateAllAndGroupsToDir @T Proxy "output/T"
-  generateAllToDir @U Proxy "output/U"
-  generateAllToDir @V Proxy "output/V"
+  -- generateAllToDir @F Proxy "output/F"
+  -- generateAllToDir @G Proxy "output/G"
+  -- generateAllToDir @H Proxy "output/H"
+  -- generateAllToDir @I Proxy "output/I"
+  -- generateAllToDir @J Proxy "output/J"
+  generateAllToDir @K Proxy "output/K"
+  generateAllToDir @L Proxy "output/L"
+  -- generateAllAndGroupsToDir @T Proxy "output/T"
+  -- generateAllToDir @U Proxy "output/U"
+  -- generateAllToDir @V Proxy "output/V"
+  
   -- generateAllToDir @Y Proxy "output/Y"

@@ -28,6 +28,14 @@ data J a = Ja a | Jb a | Jc a a
   deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
 deriving via (Generically1 J) instance PTraversable J
 
+data K a = K | K' | Ka a | Kb a
+  deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
+deriving via (Generically1 K) instance PTraversable K
+
+data L a = La a a a | Lb a a a
+  deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
+deriving via (Generically1 L) instance PTraversable L
+
 data T a = Ta a a | Tb a a
   deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
 deriving via (Generically1 T) instance PTraversable T
