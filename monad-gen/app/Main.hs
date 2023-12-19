@@ -11,11 +11,16 @@ module Main (main) where
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import System.Directory (createDirectoryIfMissing)
+import Data.Either (partitionEithers)
 
 import Data.Foldable
 import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.Proxy
+import qualified Data.Set as Set
+import qualified Data.Map.Strict as Map
+import Type.Reflection
+
 import qualified ApplicativeLaws as Ap
 import MonadLaws
 import MonoidGen
@@ -30,6 +35,7 @@ import ApplicativeGen (
   makeApplicativeDict,
   ApplicativeData,
   genApplicativeDataFrom)
+import System.Environment (getArgs)
 
 ------------------------
 -- Tests
@@ -238,21 +244,77 @@ generateAllAndGroupsToDir name outDir = do
   writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives
   writeFile' (outDir ++ "/monad_group.txt") $ monadGenGroup applicatives
 
-main :: IO ()
-main = do
-  -- generateAllToDir @Maybe Proxy "output/Maybe"
-  -- generateAllToDir @((,) Two) Proxy "output/Writer"
-  -- generateAllToDir @((,) N3) Proxy "output/Writer3"
+target :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
+  => Proxy f -> (String, IO ())
+target name = (nameStr, generateAllToDir name ("output/" ++ nameStr))
+  where
+    nameStr = show (someTypeRep name)
 
-  -- generateAllToDir @F Proxy "output/F"
-  -- generateAllToDir @G Proxy "output/G"
-  -- generateAllToDir @H Proxy "output/H"
-  -- generateAllToDir @I Proxy "output/I"
-  -- generateAllToDir @J Proxy "output/J"
-  generateAllToDir @K Proxy "output/K"
-  generateAllToDir @L Proxy "output/L"
-  -- generateAllAndGroupsToDir @T Proxy "output/T"
-  -- generateAllToDir @U Proxy "output/U"
-  -- generateAllToDir @V Proxy "output/V"
-  
-  -- generateAllToDir @Y Proxy "output/Y"
+targetG :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
+  => Proxy f -> (String, IO ())
+targetG name = (nameStr ++ "-groups", generateAllAndGroupsToDir name ("output/" ++ nameStr))
+  where
+    nameStr = show (someTypeRep name)
+
+targets :: Map.Map String (IO ())
+targets = Map.fromList
+  [
+    target @Maybe Proxy,
+    target @((,) Two) Proxy,
+    target @((,) N3) Proxy,
+
+    target @F Proxy,
+    target @G Proxy,
+    target @H Proxy,
+    target @I Proxy,
+    target @J Proxy,
+    target @K Proxy,
+    target @L Proxy,
+
+    target @T Proxy,
+    targetG @T Proxy,
+
+    target @U Proxy,
+    target @V Proxy,
+    target @W Proxy,
+    target @Y Proxy
+  ]
+
+main :: IO ()
+main = getArgs >>= \args -> case args of
+  [] -> printUsage
+  _ -> argsToTargetSet args >>= mapM_ runTarget
+  where
+    runTarget :: String -> IO ()
+    runTarget name = Map.findWithDefault (fail "!?") name targets
+
+printUsage :: IO a
+printUsage = do
+  putStrLn "Usage: monad-gen [TARGET]..."
+  putStrLn ""
+  putStrLn "\tTARGET = all | [-]<FunctorName>"
+  putStrLn $ "\tFunctorName = " ++ show (Map.keys targets)
+  exitFailure
+
+argsToTargetSet :: [String] -> IO [String]
+argsToTargetSet args = case partitionEithers (concatMap parseArg args) of
+  (err, targetList)
+    | null err -> case subtractList (partitionEithers targetList) of
+        [] -> hPutStrLn stderr "No targets" >> exitFailure
+        targetList' -> pure targetList'
+    | otherwise -> mapM_ (\s -> hPutStrLn stderr $ "Unknown target:" ++ show s ) err >> exitFailure
+  where
+    parseArg arg = case arg of
+      "all" -> Right . Left <$> Map.keys targets
+      ('-' : negArg)
+        | Map.member negArg targets -> [ Right . Right $ negArg ]
+      _ | Map.member arg targets -> [ Right . Left $ arg ]
+        | otherwise -> [ Left arg ]
+
+subtractList :: Ord a => ([a], [a]) -> [a]
+subtractList (xs, ys) = go (Set.fromList ys) xs
+  where
+    go _ [] = []
+    go used (z:zs)
+      | Set.member z used = go used zs
+      | otherwise = z : go (Set.insert z used) zs

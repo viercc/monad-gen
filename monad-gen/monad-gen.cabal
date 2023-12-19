@@ -48,6 +48,7 @@ executable monad-gen
       base >= 4.18 && < 5
     , ansi-terminal
     , directory
+    , containers
     , cartesian-profunctors
     , nat-map
     , monad-gen
