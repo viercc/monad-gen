@@ -18,6 +18,7 @@ library
     Data.Profunctor.Exhaust,
     Data.Profunctor.Extra,
     Data.Profunctor.Power,
+    Data.Profunctor.UniconEncoding,
     Data.Transparent,
     Data.PTraversable,
     GHC.Generics.Orphans
