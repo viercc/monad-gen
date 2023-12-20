@@ -16,10 +16,14 @@ module Data.PTraversable
     fmapDefault,
     foldMapDefault,
     traverseDefault,
+
+    -- * Default equality and comparison
     eq1Default,
     liftEq',
+    liftEqDefault,
     compare1Default,
     liftCompare',
+    liftCompareDefault,
 
     cardinality1,
     enum1,
@@ -51,8 +55,9 @@ import GHC.Generics.Orphans()
 
 import Data.Functor.Day (Day)
 import qualified Data.PTraversable.Internal.Day as DayImpl (ptraverseDay)
+import Data.Functor.Classes
 
-class ((forall a. Eq a => Eq (t a)), (forall a. Ord a => Ord (t a)), Traversable t) => PTraversable t where
+class (Ord1 t, Traversable t) => PTraversable t where
   {-# MINIMAL ptraverseWith #-}
   ptraverseWith ::
     (Cartesian p, Cocartesian p) =>
@@ -95,6 +100,15 @@ liftEq' :: (PTraversable t) => (a -> a -> Bool) -> t a -> t a -> Bool
 liftEq' = getEquivalence . coenum1 . Equivalence
 {-# INLINEABLE liftEq' #-}
 
+liftEqDefault :: (PTraversable t) => (a -> b -> Bool) -> t a -> t b -> Bool
+liftEqDefault eq ta tb = eqEithers (Left <$> ta) (Right <$> tb)
+  where
+    eqEithers = getEquivalence . coenum1 $ Equivalence eq'
+    eq' (Left _) (Left _) = True
+    eq' (Right _) (Right _) = True
+    eq' (Left a) (Right b) = eq a b
+    eq' (Right b) (Left a) = eq a b
+
 eq1Default :: (PTraversable t, Eq a) => t a -> t a -> Bool
 eq1Default = liftEq' (==)
 {-# INLINEABLE eq1Default #-}
@@ -113,6 +127,18 @@ compare1Default :: (PTraversable t, Ord a) => t a -> t a -> Ordering
 compare1Default = liftCompare' compare
 {-# INLINEABLE compare1Default #-}
 
+liftCompareDefault :: (PTraversable t) => (a -> b -> Ordering) -> t a -> t b -> Ordering
+liftCompareDefault cmp ta tb = cmpEithers (Left <$> ta) (Right <$> tb)
+  where
+    cmpEithers = getComparison . coenum1 $ Comparison cmp'
+    cmp' (Left _) (Left _) = EQ
+    cmp' (Right _) (Right _) = EQ
+    cmp' (Left a) (Right b) = cmp a b
+    cmp' (Right b) (Left a) = case cmp a b of
+      EQ -> EQ
+      LT -> GT
+      GT -> LT
+
 cardinality1 :: forall t proxy. (PTraversable t) => proxy t -> Int -> Int
 cardinality1 _ = getCounting . ptraverse @t . Counting
 {-# INLINEABLE cardinality1 #-}
@@ -120,7 +146,7 @@ cardinality1 _ = getCounting . ptraverse @t . Counting
 unGenerically1 :: Generically1 f a -> f a
 unGenerically1 = coerce
 
-instance (Generic1 t, (forall a. Eq a => Eq (t a)), (forall a. Ord a => Ord (t a)), Traversable t, PTraversable (Rep1 t)) => PTraversable (Generically1 t) where
+instance (Generic1 t, PTraversable (Rep1 t)) => PTraversable (Generically1 t) where
   ptraverseWith f g = ptraverseWith (from1 . unGenerically1 . f) (g . Generically1 . to1)
   {-# INLINEABLE ptraverseWith #-}
 
@@ -171,16 +197,23 @@ ptraverseDayWith f g = dimap f g . ptraverseDay
 -- * Wrapping
 
 newtype WrappedPTraversable t a = WrapPTraversable {unwrapPTraversable :: t a}
+  deriving (PTraversable) via t
 
 instance (Eq a, PTraversable t) => Eq (WrappedPTraversable t a) where
   (==) = coerce $ ptraverse @t (Clown eqv)
     where
       eqv = Equivalence ((==) @a)
 
+instance PTraversable t => Eq1 (WrappedPTraversable t) where
+  liftEq = liftEqDefault
+
 instance (Ord a, PTraversable t) => Ord (WrappedPTraversable t a) where
   compare = coerce $ ptraverse @t (Clown cmp)
     where
       cmp = Comparison (compare @a)
+
+instance PTraversable t => Ord1 (WrappedPTraversable t) where
+  liftCompare = liftCompareDefault
 
 instance
   (Transparent a, PTraversable t) =>
