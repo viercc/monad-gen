@@ -49,10 +49,10 @@ compareDefault :: forall x. Transparent x => x -> x -> Ordering
 compareDefault = coerce $ describe @x @ComparisonP
 
 enum :: (Transparent x, Alternative f) => f x
-enum = lowerCoYoJoker describe
+enum = runJoker describe
 
 coenum :: (Transparent x, Decidable f, Divisible f) => f x
-coenum = lowerCoYoClown describe
+coenum = runClown describe
 
 cardinality :: forall x proxy. (Transparent x) => proxy x -> Int
 cardinality _ = getCounting (describe @x)

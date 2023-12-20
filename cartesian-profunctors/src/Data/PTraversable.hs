@@ -44,7 +44,6 @@ import Data.Functor.Sum (Sum)
 import Data.Profunctor
 import Data.Profunctor.Cartesian
 import Data.Profunctor.Counting
-import Data.Profunctor.Extra
 import Data.Profunctor.Unsafe ((#.), (.#))
 import Data.Transparent
 import GHC.Generics
@@ -75,7 +74,7 @@ foldMapDefault = runForget . ptraverse . Forget
 {-# INLINEABLE foldMapDefault #-}
 
 traverseDefault :: (PTraversable t, Applicative f) => (a -> f b) -> t a -> f (t b)
-traverseDefault = lowerCoYoStar . ptraverse . liftCoYoStar
+traverseDefault = runStar . ptraverse . Star
 {-# INLINEABLE traverseDefault #-}
 
 enum1 :: (PTraversable t, Alternative f) => f a -> f (t a)
