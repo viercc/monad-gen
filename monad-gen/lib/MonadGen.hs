@@ -36,7 +36,6 @@ import Control.Monad.Reader
 import Control.Monad.State
 import Data.Either.Validation
 import Data.Foldable
-import qualified Data.LazyVec as Vec
 import qualified Data.Map.Lazy as Map
 import qualified Data.Set as Set
 import Data.Ord (comparing)
@@ -52,6 +51,7 @@ import Isomorphism (Iso (..))
 import Data.Equivalence.Monad
 
 import MonadLaws
+import qualified Data.Vector as V
 
 -- Monad dictionary
 
@@ -120,9 +120,9 @@ type Gen f = ReaderT (Env f) (StateT (GenState f) [])
 
 data Env f = Env
   { _baseApplicative :: ApplicativeDict f,
-    _f1 :: Vec (f Int),
-    _f2 :: Vec (f (f Int)),
-    _f3 :: Vec (f (f (f Int)))
+    _f1 :: V.Vector (f Int),
+    _f2 :: V.Vector (f (f Int)),
+    _f3 :: V.Vector (f (f (f Int)))
   }
 
 type Join f = NM.NatMap (f :.: f) f
@@ -181,9 +181,9 @@ choose = lift . lift . toList
 buildInitialEnv :: forall f. PTraversable f => ApplicativeDict f -> Env f
 buildInitialEnv apDict = Env {
     _baseApplicative = apDict,
-    _f1 = cache skolem,
-    _f2 = cache skolem2,
-    _f3 = cache skolem3
+    _f1 = skolem,
+    _f2 = skolem2,
+    _f3 = skolem3
   }
 
 _pure :: PTraversable f => Env f -> a -> f a
@@ -198,7 +198,7 @@ runGen apDict mr = runStateT (runReaderT mr env) state0
     f3 = _f3 env
 
     join0 = NM.empty
-    blockade = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse newConstraint (Vec.indexed f3)
+    blockade = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse newConstraint (V.indexed f3)
     newConstraint (k, fa) = foldMap (\blockKey -> singletonRel blockKey k) <$> associativity join0 fa
 
     state0 :: GenState f
@@ -228,7 +228,7 @@ entry lhs rhs =
 
     -- update assocL
     let (blockedAssocs, blockade') = popRel (Shape lhs) blockade
-        newConstraint k = foldMap (\nextLhsKey -> singletonRel nextLhsKey k) <$> associativity join2 (f3 ! k)
+        newConstraint k = foldMap (\nextLhsKey -> singletonRel nextLhsKey k) <$> associativity join2 (f3 V.! k)
     blockade'' <- case traverse newConstraint (Set.toList blockedAssocs) of
       Nothing -> mzero
       Just newBlockades -> pure $ foldl' unionRel blockade' newBlockades
@@ -252,8 +252,7 @@ entryApplicative = do
 guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Shape (f :.: f) -> Gen f ()
 guess lhsKey = do
   let lhs = keyIndices lhsKey
-      lhsVars = toVec lhs
-  rhs <- choose (enum1 lhsVars)
+  rhs <- choose (enum1 (toList lhs))
   entry lhs rhs
 
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
@@ -281,11 +280,6 @@ genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicati
 
 keyIndices :: Traversable f => Shape f -> f Int
 keyIndices (Shape f1) = _indices f1
-
--- unsafe access
-
-(!) :: Vec a -> Int -> a
-(!) = (Vec.!)
 
 -- Relation data structure
 
