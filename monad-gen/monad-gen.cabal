@@ -3,7 +3,7 @@ version:             0.1.0.0
 build-type:          Simple
 cabal-version:       2.0
 
-library
+library monad-gen-internal
   hs-source-dirs: lib
   exposed-modules:
     Data.PTraversable.Extra,
@@ -50,5 +50,5 @@ executable monad-gen
     , containers
     , cartesian-profunctors
     , nat-map
-    , monad-gen
+    , monad-gen-internal
   ghc-options:        -Wall -Wcompat -rtsopts=all -with-rtsopts=-M8G
