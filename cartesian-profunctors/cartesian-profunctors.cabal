@@ -11,6 +11,7 @@ tested-with:         GHC == 9.6
 library
   hs-source-dirs:      src
   exposed-modules:
+    Data.FunctorShape,
     Data.Profunctor.Cartesian,
     Data.Profunctor.Cartesian.Free,
     Data.Profunctor.Counting,
