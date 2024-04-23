@@ -104,8 +104,8 @@ liftEqDefault :: (PTraversable t) => (a -> b -> Bool) -> t a -> t b -> Bool
 liftEqDefault eq ta tb = eqEithers (Left <$> ta) (Right <$> tb)
   where
     eqEithers = getEquivalence . coenum1 $ Equivalence eq'
-    eq' (Left _) (Left _) = True
-    eq' (Right _) (Right _) = True
+    eq' (Left _) (Left _) = error "liftEqDefault: should be unreachable here"
+    eq' (Right _) (Right _) = error "liftEqDefault: should be unreachable here"
     eq' (Left a) (Right b) = eq a b
     eq' (Right b) (Left a) = eq a b
 
@@ -131,8 +131,8 @@ liftCompareDefault :: (PTraversable t) => (a -> b -> Ordering) -> t a -> t b -> 
 liftCompareDefault cmp ta tb = cmpEithers (Left <$> ta) (Right <$> tb)
   where
     cmpEithers = getComparison . coenum1 $ Comparison cmp'
-    cmp' (Left _) (Left _) = EQ
-    cmp' (Right _) (Right _) = EQ
+    cmp' (Left _) (Left _) = error "liftCompareDefault: should be unreachable here"
+    cmp' (Right _) (Right _) = error "liftCompareDefault: should be unreachable here"
     cmp' (Left a) (Right b) = cmp a b
     cmp' (Right b) (Left a) = case cmp a b of
       EQ -> EQ
