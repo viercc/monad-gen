@@ -23,6 +23,7 @@ import Data.Transparent
 
 import Data.Functor.Day ( Day(..) )
 import Control.Monad.Trans.State.Lazy (State, state, runState)
+import qualified Data.Profunctor.Day as Prof
 
 type Optic p s t a b = p a b -> p s t
 type Traversal s t a b = forall p. (Cartesian p, Cocartesian p) => Optic p s t a b
@@ -63,8 +64,8 @@ ptraverseDay' :: forall t u p a b.
 ptraverseDay' travT travU p = go (travT idSOP)
   where
     go :: forall s0 t0. SOP Int Int s0 t0 -> p (s0, u (Int -> a)) (t0, u (Int -> b))
-    go (ProEmpty z) = lmap (z . fst) proEmpty
-    go (ProSum (SomePower @x _ mkT) rest opA opB) = dimap pre post $ uFn +++ go rest
+    go (Neutral z _) = lmap (z . fst) proEmpty
+    go (Cons (Prof.Day (SomePower @x _ mkT) rest opA opB)) = dimap pre post $ uFn +++ go rest
       where
         uFn = travU (ptraverseFunction @x p)
         (x2i, i2x) = embeddingToInt @x

@@ -12,8 +12,10 @@ library
   hs-source-dirs:      src
   exposed-modules:
     Data.FunctorShape,
+    Data.Profunctor.Day,
     Data.Profunctor.Cartesian,
     Data.Profunctor.Cartesian.Free,
+    Data.Profunctor.Cartesian.FreeBicartesian,
     Data.Profunctor.Counting,
     Data.Profunctor.FinFn,
     Data.Profunctor.Exhaust,
@@ -34,6 +36,7 @@ library
     , bifunctors
     , kan-extensions
     , finite-typelits
+    , finitary
   ghc-options:         -Wall -Werror -Wcompat
   default-language:    Haskell2010
 

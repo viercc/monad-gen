@@ -1,8 +1,21 @@
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE TypeOperators #-}
 module Data.Profunctor.Cartesian(
   Cartesian(..),
+  prodDay,
+
   Cocartesian(..),
-  (&&&),
-  (|||)
+  sumDay,
+  
+  -- * @Cartesian p@ iff @forall x. Applicative (p x)@
+  pureDefault,
+  proUnitDefault,
+  liftA2Default,
+  fanoutDefault,
+
+  -- * About distributivy laws between 'Cartesian' and 'Cocartesian'
+  --
+  -- $distributivity
 ) where
 
 import Control.Applicative
@@ -18,16 +31,53 @@ import Data.Profunctor
 import Data.Profunctor.Monad
 import Data.Profunctor.Yoneda
 import Data.Profunctor.Composition
+import Data.Profunctor.Day
 
 class Profunctor p => Cartesian p where
+  {-# MINIMAL proUnit, (proProduct | (***) | (&&&)) #-}
+
+  -- | Unit of the product.
+  --
+  -- The type of 'proUnit' can be understood as @proUnit' :: p () ()@
+  -- treated to have more generally-typed @p a ()@ using 'lmap'.
+  -- 
+  -- @
+  -- const () :: a -> ()
+  -- proUnit' :: p () ()
+  -- 'lmap' (const ()) proUnit' :: p a ()
+  -- @
   proUnit :: p a ()
+  
+  proProduct :: (a -> (a1,a2)) -> ((b1, b2) -> b) -> p a1 b1 -> p a2 b2 -> p a b
+  proProduct f g p q = dimap f g $ p *** q
+  
+  -- | Product of two profunctors
   (***) :: p a b -> p a' b' -> p (a,a') (b,b')
+  p *** q = lmap fst p &&& lmap snd q
+  
+  -- | Alternative way to define the product (pronounced \"fan-out\")
+  (&&&) :: p a b -> p a b' -> p a (b, b')
+  (&&&) = proProduct delta id
 
 delta :: a -> (a,a)
 delta a = (a,a)
 
-(&&&) :: Cartesian p => p a b -> p a b' -> p a (b, b')
-p1 &&& p2 = lmap delta (p1 *** p2)
+prodDay :: Cartesian r => (p :-> r) -> (q :-> r) -> Day (,) p q :-> r
+prodDay pr qr (Day p q opA opB) = proProduct opA opB (pr p) (qr q)
+
+-- * @Cartesian p@ iff @forall x. Applicative (p x)@
+
+pureDefault :: Cartesian p => b -> p a b
+pureDefault b = rmap (const b) proUnit
+
+proUnitDefault :: Applicative (p a) => p a ()
+proUnitDefault = pure ()
+
+liftA2Default :: Cartesian p => (a -> b -> c) -> p x a -> p x b -> p x c
+liftA2Default f = proProduct delta (uncurry f)
+
+fanoutDefault :: (Profunctor p, Applicative (p a)) => p a b1 -> p a b2 -> p a (b1, b2)
+fanoutDefault = liftA2 (,)
 
 instance Cartesian (->) where
   proUnit = const ()
@@ -68,14 +118,36 @@ instance (Cartesian p) => Cartesian (Coyoneda p) where
     = Coyoneda (l1 *** l2) (r1 *** r2) (p *** q)
 
 class Profunctor p => Cocartesian p where
-  proEmpty :: p Void a
+  {-# MINIMAL proEmpty, (proSum | (+++) | (|||)) #-}
+
+  -- | Unit of the sum.
+  --
+  -- The type of 'proEmpty' can be understood as @proEmpty' :: p Void 'Void'@
+  -- treated to have more generally-typed @p Void b@ using 'rmap'.
+  -- 
+  -- @
+  -- 'absurd'    :: Void -> b
+  -- proEmpty' :: p Void Void
+  -- 'rmap' absurd proEmpty' :: p Void b
+  -- @
+  proEmpty :: p Void b
+  
+  proSum :: (a -> Either a1 a2) -> (Either b1 b2 -> b) -> p a1 b1 -> p a2 b2 -> p a b
+  proSum f g p q = dimap f g (p +++ q)
+
+  -- | Sum of two profunctors
   (+++) :: p a b -> p a' b' -> p (Either a a') (Either b b')
+  p +++ q = rmap Left p ||| rmap Right q
+
+  -- | Alternative way to define the sum (pronounced \"fan-in\")
+  (|||) :: p a b -> p a' b -> p (Either a a') b
+  (|||) = proSum id nabla
 
 nabla :: Either a a -> a
 nabla = either id id
 
-(|||) :: (Cocartesian p) => p a b -> p a' b -> p (Either a a') b
-p1 ||| p2 = rmap nabla (p1 +++ p2)
+sumDay :: Cocartesian r => (p :-> r) -> (q :-> r) -> Day Either p q :-> r
+sumDay pr qr (Day p q opA opB) = proSum opA opB (pr p) (qr q)
 
 instance Cocartesian (->) where
   proEmpty = absurd
@@ -115,3 +187,7 @@ instance (Cocartesian p) => Cocartesian (Coyoneda p) where
   proEmpty = proreturn proEmpty
   Coyoneda l1 r1 p +++ Coyoneda l2 r2 q
     = Coyoneda (l1 +++ l2) (r1 +++ r2) (p +++ q)
+
+-- $distributivity
+--
+-- TODO
