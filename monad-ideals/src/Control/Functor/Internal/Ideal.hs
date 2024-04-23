@@ -1,5 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE DeriveTraversable #-}
+{-# LANGUAGE RankNTypes #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Control.Functor.Internal.Ideal
@@ -20,6 +22,10 @@ module Control.Functor.Internal.Ideal
   , Ideal
   , ideal
   , destroyIdeal
+
+  , TwoOrMore(..)
+  , WrapMonad(..)
+
   -- * Coideal Comonads
   , ComonadCoideal(..)
   , Coideal
@@ -32,6 +38,9 @@ module Control.Functor.Internal.Ideal
   , (:*)
   -- * Ideal Monad Coproduct
   , (:+)
+  , inject1
+  , inject2
+  , (||||)
   ) where
 
 import Prelude
@@ -40,6 +49,8 @@ import Control.Monad (ap)
 import Data.Bifunctor
 import Control.Comonad
 import Control.Arrow ((|||), (&&&))
+import Data.Functor.Const
+import Data.Foldable (toList)
 
 newtype Ap t f a = MkAp { runAp :: t a (f a) }
 
@@ -66,6 +77,36 @@ class Functor m => MonadIdeal m where
 
 idealize :: MonadIdeal m => m (Ideal m a) -> m a
 idealize = (`idealBind` id)
+
+-- | @Ideal (Const c) a ~ Either c a@
+instance MonadIdeal (Const c) where
+  idealBind (Const c) _ = Const c
+
+-- | @Ideal ((,) s) ~ (,) (Maybe s)@
+instance Semigroup s => MonadIdeal ((,) s) where
+  idealBind (s1, a) k = case runIdeal (k a) of
+    Left b -> (s1, b)
+    Right (s2, b) -> (s1 <> s2, b)
+
+data TwoOrMore a = TwoOrMore a a [a]
+  deriving (Show, Read, Eq, Ord, Functor, Foldable, Traversable)
+
+idealToList :: Ideal TwoOrMore a -> [a]
+idealToList = either (: []) toList . runIdeal
+
+-- | @Ideal TwoOrMore ~ NonEmpty@
+instance MonadIdeal TwoOrMore where
+  idealBind (TwoOrMore a1 a2 as) k = case (runIdeal (k a1), runIdeal (k a2)) of
+    (Left b1, Left b2) -> TwoOrMore b1 b2 (as >>= idealToList . k)
+    (Left b1, Right (TwoOrMore b2 b3 bs)) -> TwoOrMore b1 b2 (b3 : bs ++ (as >>= idealToList . k))
+    (Right (TwoOrMore b1 b2 bs), rest) -> TwoOrMore b1 b2 (bs ++ either (: []) toList rest ++ (as >>= idealToList . k))
+
+-- | Any 'Monad' can be seen as a 'MonadIdeal'
+newtype WrapMonad m a = WrapMonad { unwrapMonad :: m a }
+  deriving (Show, Read, Eq, Ord, Functor)
+
+instance Monad m => MonadIdeal (WrapMonad m) where
+  idealBind (WrapMonad ma) k = WrapMonad $ ma >>= either pure unwrapMonad . runIdeal . k
 
 instance MonadIdeal m => Applicative (Ideal m) where
   pure = ideal . Left
@@ -129,6 +170,18 @@ bindMutual2 (Mutual mn) k = Mutual $ mn `idealBind` \next ->
       Right (Mutual' (Left nm')) -> pure (Right nm')
       Right (Mutual' (Right mn')) -> ideal . Right $ runMutual mn'
     Right nm -> pure . Right $ bindMutual1 nm k
+
+inject1 :: MonadIdeal m => m a -> (m :+ n) a
+inject1 ma = Mutual' $ Left $ Mutual $ Left <$> ma
+
+inject2 :: MonadIdeal n => n a -> (m :+ n) a
+inject2 na = Mutual' $ Right $ Mutual $ Left <$> na
+
+(||||) :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> (m :+ n) b -> t b
+mt |||| nt = either (foldMutual mt nt) (foldMutual nt mt). runMutual'
+
+foldMutual :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> Mutual Either m n b -> t b
+foldMutual mt nt (Mutual mn) = mt mn `idealBind` (ideal . fmap (foldMutual nt mt))
 
 instance (ComonadCoideal w, ComonadCoideal v) => ComonadCoideal (w :* v) where
   coidealExtend k (Mutual' (wv, vw)) = Mutual' (extendMutual1 k wv, extendMutual2 k vw)
