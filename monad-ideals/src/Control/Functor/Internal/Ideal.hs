@@ -104,12 +104,41 @@ type (m :* n) = Mutual' (,) m n
 instance (Bifunctor p, Functor m, Functor n) => Functor (Mutual p m n) where
   fmap f = Mutual . fmap (bimap f (fmap f)) . runMutual
 
-{-
-instance (MonadIdeal m, MonadIdeal n) => MonadIdeal (m :+ n) where
-  idealize = undefined
--}
+instance (Bifunctor p, Functor m, Functor n) => Functor (Mutual' p m n) where
+  fmap f = Mutual' . bimap (fmap f) (fmap f) . runMutual'
 
-{-
+instance (MonadIdeal m, MonadIdeal n) => MonadIdeal (m :+ n) where
+  idealBind mutual k = Mutual' $ case runMutual' mutual of
+    Left mn -> Left $ bindMutual1 mn k
+    Right nm -> Right $ bindMutual2 nm k
+
+bindMutual1 :: (MonadIdeal m, MonadIdeal n) => Mutual Either m n a -> (a -> Ideal (Mutual' Either m n) b) -> Mutual Either m n b
+bindMutual1 (Mutual mn) k = Mutual $ mn `idealBind` \next ->
+  case next of
+    Left a -> case runIdeal (k a) of
+      Left b -> pure (Left b)
+      Right (Mutual' (Left mn')) -> ideal . Right $ runMutual mn'
+      Right (Mutual' (Right nm')) -> pure (Right nm')
+    Right nm -> pure . Right $ bindMutual2 nm k
+
+bindMutual2 :: (MonadIdeal m, MonadIdeal n) => Mutual Either m n a -> (a -> Ideal (Mutual' Either n m) b) -> Mutual Either m n b
+bindMutual2 (Mutual mn) k = Mutual $ mn `idealBind` \next ->
+  case next of
+    Left a -> case runIdeal (k a) of
+      Left b -> pure (Left b)
+      Right (Mutual' (Left nm')) -> pure (Right nm')
+      Right (Mutual' (Right mn')) -> ideal . Right $ runMutual mn'
+    Right nm -> pure . Right $ bindMutual1 nm k
+
 instance (ComonadCoideal w, ComonadCoideal v) => ComonadCoideal (w :* v) where
-  coidealize = undefined
--}
+  coidealExtend k (Mutual' (wv, vw)) = Mutual' (extendMutual1 k wv, extendMutual2 k vw)
+
+extendMutual1 :: (ComonadCoideal w, ComonadCoideal v)
+  => (Coideal (Mutual' (,) w v) a -> b) -> Mutual (,) w v a -> Mutual (,) w v b
+extendMutual1 k (Mutual wv) =
+  Mutual $ coidealExtend (\ (MkAp ((a, vw), w')) -> (k (coideal (a, Mutual' (Mutual w', vw))), extendMutual2 k vw)) wv
+
+extendMutual2 :: (ComonadCoideal w, ComonadCoideal v)
+  => (Coideal (Mutual' (,) v w) a -> b) -> Mutual (,) w v a -> Mutual (,) w v b
+extendMutual2 k (Mutual wv) =
+  Mutual $ coidealExtend (\ (MkAp ((a, vw), w')) -> (k (coideal (a, Mutual' (vw, Mutual w'))), extendMutual1 k vw)) wv
