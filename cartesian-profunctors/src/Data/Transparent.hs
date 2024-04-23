@@ -2,6 +2,9 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE DerivingVia #-}
 module Data.Transparent(
   Transparent(..),
   describe,
@@ -35,7 +38,7 @@ import Data.Profunctor.Extra
 import Data.Functor.Contravariant.Divisible
 import Data.Profunctor.Counting (Counting(..))
 
-class (Eq x, Ord x) => Transparent x where
+class (Ord x) => Transparent x where
   describeOn :: forall p a b. (Cartesian p, Cocartesian p)
                => (a -> x) -> (x -> b) -> p a b
 
@@ -67,10 +70,10 @@ search cond = case describe of
                in if cond x then Just x else Nothing
 
 instance Transparent Void where
-  describeOn f g = dimap f g proEmpty
+  describeOn f _ = lmap f proEmpty
 
 instance Transparent () where
-  describeOn f g = dimap f g proUnit
+  describeOn _ g = rmap g proUnit
 
 instance (Transparent x, Transparent y) => Transparent (Either x y) where
   describeOn f g = dimap f g (describe +++ describe)
@@ -117,70 +120,23 @@ instance Transparent x => Transparent (Maybe x) where
       l = maybe (Left ()) Right
       r = either (const Nothing) Just
 
-instance Transparent x => Transparent [x] where
-  describeOn f g = dimap f g go
-    where
-      go = dimap l r $ proUnit +++ (describe *** go)
-      
-      l [] = Left ()
-      l (x:xs) = Right (x,xs)
-      
-      r (Left _) = []
-      r (Right (x,xs)) = x:xs
+newtype DescribeFiniteBits a = DescribeFiniteBits a
+   deriving newtype (Eq, Ord, Bits, FiniteBits)
 
-instance Transparent Word8 where
-  describeOn f g = dimap (l8 . f) (g . r8) b8
-    where
-      b1 = dBit @Word8
-      b2 = b1 *** b1
-      b4 = b2 *** b2
-      b8 = b4 *** b4
-      
-      l2 x = (x `shiftR` 1, x)
-      l4 x = (l2 (x `shiftR` 2), l2 x)
-      l8 x = (l4 (x `shiftR` 4), l4 x)
-      
-      r2 (a,b) = a `shiftL` 1 .|. b
-      r4 (a,b) = r2 a `shiftL` 2 .|. r2 b
-      r8 (a,b) = r4 a `shiftL` 4 .|. r4 b
+instance (Ord a, FiniteBits a) => Transparent (DescribeFiniteBits a) where
+  describeOn f g = dimap f g dFiniteBits
 
-instance Transparent Int8 where
-  describeOn f g = describeOn @Word8 (fromIntegral . f) (g . fromIntegral)
+deriving via (DescribeFiniteBits Word8) instance Transparent Word8
+deriving via (DescribeFiniteBits Word16) instance Transparent Word16
+deriving via (DescribeFiniteBits Word32) instance Transparent Word32
+deriving via (DescribeFiniteBits Word64) instance Transparent Word64
+deriving via (DescribeFiniteBits Word) instance Transparent Word
 
-instance Transparent Word16 where
-  describeOn f g = dimap (l . f) (g . r) $ describe @Word8 *** describe @Word8
-    where
-      l x = (fromIntegral (x `shiftR` 8), fromIntegral x)
-      r (a,b) = fromIntegral a `shiftL` 8 .|. fromIntegral b
-
-instance Transparent Int16 where
-  describeOn f g = describeOn @Word16 (fromIntegral . f) (g . fromIntegral)
-
-instance Transparent Word32 where
-  describeOn f g = dimap (l . f) (g . r) $ describe @Word16 *** describe @Word16
-    where
-      l x = (fromIntegral (x `shiftR` 16), fromIntegral x)
-      r (a,b) = fromIntegral a `shiftL` 16 .|. fromIntegral b
-
-instance Transparent Int32 where
-  describeOn f g = describeOn @Word32 (fromIntegral . f) (g . fromIntegral)
-
-instance Transparent Word64 where
-  describeOn f g = dimap (l . f) (g . r) $ describe @Word32 *** describe @Word32
-    where
-      l x = (fromIntegral (x `shiftR` 32), fromIntegral x)
-      r (a,b) = fromIntegral a `shiftL` 32 .|. fromIntegral b
-
-instance Transparent Int64 where
-  describeOn f g = describeOn @Word64 (fromIntegral . f) (g . fromIntegral)
-
--- Irregular bitwidth types
-
-instance Transparent Word where
-  describeOn f g = dimap f g $ dBits (finiteBitSize (0 :: Word))
-
-instance Transparent Int where
-  describeOn f g = dimap f g $ dBits (finiteBitSize (0 :: Int))
+deriving via (DescribeFiniteBits Int8) instance Transparent Int8
+deriving via (DescribeFiniteBits Int16) instance Transparent Int16
+deriving via (DescribeFiniteBits Int32) instance Transparent Int32
+deriving via (DescribeFiniteBits Int64) instance Transparent Int64
+deriving via (DescribeFiniteBits Int) instance Transparent Int
 
 instance Transparent Char where
   describeOn f g = dimap (l . f) (g . r) $ dBits 20 +++ dBits 16
@@ -214,6 +170,9 @@ dBits n
           let l x = (x `shiftR` p, x)
               r (a,b) = a `shiftL` p .|. b
           in dimap l r $ dBits m *** dBitsPow2 p
+
+dFiniteBits :: forall a p. (FiniteBits a, Cartesian p, Cocartesian p) => p a a
+dFiniteBits = dBits (finiteBitSize (zeroBits :: a))
 
 separate :: Int -> (Int, Int)
 -- must be x > 1
