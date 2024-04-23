@@ -15,7 +15,7 @@ module Control.Monad.Ideal
     destroyIdeal,
 
     -- * Mutual recursion for (co)ideal (co)monad (co)products
-    Mutual (..), Mutual',
+    Mutual (..), Mutual'(..),
 
     -- * Ideal Monad Coproduct
     (:+),

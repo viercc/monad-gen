@@ -12,8 +12,11 @@
 ----------------------------------------------------------------------------
 module Control.Functor.Internal.Ideal
   (
+  -- * Common shape of (co)ideal
+    Ap(..)
+
   -- * Ideal Monads
-    MonadIdeal(..)
+  , MonadIdeal(..)
   , Ideal
   , ideal
   , destroyIdeal
@@ -24,7 +27,7 @@ module Control.Functor.Internal.Ideal
   , buildCoideal
   -- * Mutual recursion for (co)ideal (co)monad (co)products
   , Mutual(..)
-  , Mutual'
+  , Mutual'(..)
   -- * Coideal Comonad Product
   , (:*)
   -- * Ideal Monad Coproduct
@@ -35,7 +38,6 @@ import Prelude
 
 import Control.Monad (ap)
 import Data.Bifunctor
-import Data.Bifunctor.Biff
 import Control.Comonad
 import Control.Arrow ((|||), (&&&))
 
@@ -60,30 +62,33 @@ runCoideal :: Coideal f a -> (a, f a)
 runCoideal = runAp
 
 class Functor m => MonadIdeal m where
-  idealize :: m (Either a (m a)) -> m a
+  idealBind :: m a -> (a -> Ideal m b) -> m b
+
+idealize :: MonadIdeal m => m (Ideal m a) -> m a
+idealize = (`idealBind` id)
 
 instance MonadIdeal m => Applicative (Ideal m) where
   pure = ideal . Left
   (<*>) = ap
 
 instance MonadIdeal m => Monad (Ideal m) where
-  m >>= f = ideal . (id ||| Right . idealize) . runIdeal $ fmap (runIdeal . f) m
+  m >>= f = (id ||| ideal . Right . idealize) . runIdeal $ fmap f m
 
 destroyIdeal :: (m a -> a) -> Ideal m a -> a
 destroyIdeal phi = (id ||| phi) . runIdeal
 
 
--- instance MonadIdeal (Fst k) where
---  idealize = mkFst . runFst
-
 class Functor w => ComonadCoideal w where
-  coidealize :: w a -> w (a, w a)
+  coidealExtend :: (Coideal w a -> b) -> w a -> w b
+
+coidealize :: ComonadCoideal w => w a -> w (Coideal w a)
+coidealize = coidealExtend id
 
 instance ComonadCoideal w => Comonad (Coideal w) where
   extract = fst . runCoideal
-  extend f = fmap (f . coideal) . coideal . (id &&& coidealize . snd) . runCoideal
+  extend f = fmap f . coideal . (id &&& coidealize . snd . runCoideal)
 
-buildCoideal :: (a -> m a) -> a -> Coideal m a
+buildCoideal :: (a -> w a) -> a -> Coideal w a
 buildCoideal phi = coideal . (id &&& phi)
 
 -- instance ComonadCoideal (Fst k) where
@@ -92,7 +97,7 @@ buildCoideal phi = coideal . (id &&& phi)
 -- * (Co)ideal (Co)products
 
 newtype Mutual p m n a = Mutual { runMutual :: m (p a (Mutual p n m a)) }
-type Mutual' p m n = Biff p (Mutual p m n) (Mutual p n m)
+newtype Mutual' p m n a = Mutual' { runMutual' :: p (Mutual p m n a) (Mutual p n m a) }
 type (m :+ n) = Mutual' Either m n
 type (m :* n) = Mutual' (,) m n
 

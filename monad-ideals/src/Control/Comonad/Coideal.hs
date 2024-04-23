@@ -15,7 +15,7 @@ module Control.Comonad.Coideal
     buildCoideal,
 
     -- * Mutual recursion for (co)ideal (co)monad (co)products
-    Mutual (..), Mutual',
+    Mutual (..), Mutual'(..),
 
     -- * Coideal Comonad Product
     (:*),
