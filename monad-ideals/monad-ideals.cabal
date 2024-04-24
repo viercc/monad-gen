@@ -29,8 +29,13 @@ library
     -- Modules exported by the library.
     exposed-modules:
         Control.Functor.Internal.Ideal,
+        Control.Functor.Internal.Mutual,
         Control.Monad.Ideal,
-        Control.Comonad.Coideal
+        Control.Monad.Isolate,
+        Control.Comonad.Coideal,
+
+        Data.List.TwoOrMore,
+        Data.List.NotOne,
 
     -- Modules included in this library but not exported.
     -- other-modules:
