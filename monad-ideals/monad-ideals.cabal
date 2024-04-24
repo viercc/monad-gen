@@ -28,7 +28,6 @@ library
 
     -- Modules exported by the library.
     exposed-modules:
-        Control.Functor.Internal.Ideal,
         Control.Functor.Internal.Mutual,
         Control.Monad.Ideal,
         Control.Monad.Isolate,

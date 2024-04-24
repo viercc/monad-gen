@@ -4,7 +4,8 @@ module Data.List.TwoOrMore(TwoOrMore(..), twoOrMore, toNonEmpty) where
 import Data.Foldable (toList)
 import Data.List.NonEmpty (NonEmpty((:|)))
 import Data.Semigroup.Foldable (Foldable1(..))
-import Control.Functor.Internal.Ideal (MonadIdeal(..), runIdeal, Ideal)
+
+import Control.Monad.Ideal (MonadIdeal(..), Ideal(..))
 import Data.Functor.Bind
 
 data TwoOrMore a = TwoOrMore a a [a]

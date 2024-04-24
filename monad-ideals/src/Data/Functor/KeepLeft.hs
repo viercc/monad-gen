@@ -8,9 +8,10 @@ import Data.Bitraversable (Bitraversable (..))
 import Data.Bifoldable (Bifoldable)
 import Data.Bifunctor (Bifunctor)
 
-import Data.Functor.Classes
+import Data.Functor.Classes ( Eq1, Ord1, Eq2, Ord2 )
 import Data.Functor.Bind.Class
-import Control.Functor.Internal.Ideal
+
+import Control.Monad.Ideal ( MonadIdeal(..) )
 import Data.Semigroup.Bifoldable (Bifoldable1)
 import Data.Semigroup.Bitraversable (Bitraversable1)
 import Data.Semigroup.Traversable.Class (Bitraversable1(..))
