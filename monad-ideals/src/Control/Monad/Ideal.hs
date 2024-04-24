@@ -169,9 +169,9 @@ In fact, these implications hold.
 These implications are _strict_ and neither of three classes can be
 replaced with other two.
 
-- 'Data.List.NotOne.NotOne' is both @Bind@ and @MonadIsolate@, but not @MonadIdeal@ thus not @MonadIdeal@.
+- 'Data.List.NotOne.NotOne' is both @Bind@ and @MonadIsolate@, but not @MonadIdeal@.
 
-- @NullBind c@ is @Bind@ but can't be a part of @MonadIsolate@
+- @NullBind c@ is @Bind@ but can't be a part of @MonadIsolate@.
 
 @
 data Nullify a = Null | NonNull a
@@ -181,7 +181,7 @@ instance Bind (NullBind c a) where
   _ >>- _ = NullBind Null
 @
 
-- @OddPart@ is @MonadIsolate@ with @Parity@ monad, but not @Bind@ in a compatible way, thus not @MonadIdeal@.
+- @OddPart@ is @MonadIsolate@ with @Parity@ monad, but not @Bind@ in a compatible way.
 
 @
 data Parity a = Even a | Odd a
