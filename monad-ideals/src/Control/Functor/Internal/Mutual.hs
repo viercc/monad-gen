@@ -13,14 +13,6 @@ instance (Bifunctor p, Functor m, Functor n) => Functor (Mutual p m n) where
 instance (Bifunctor p, Functor m, Functor n) => Functor (Mutual' p m n) where
   fmap f = Mutual' . bimap (fmap f) (fmap f) . runMutual'
 
-type m :+ n = Mutual' Either m n
-
-inject1 :: (Functor m) => m a -> (m :+ n) a
-inject1 = Mutual' . Left . Mutual . fmap Left
-
-inject2 :: (Functor n) => n a -> (m :+ n) a
-inject2 = Mutual' . Right . Mutual . fmap Left
-
 type w :* v = Mutual' (,) w v
 
 project1 :: (Functor w) => (w :* v) a -> w a

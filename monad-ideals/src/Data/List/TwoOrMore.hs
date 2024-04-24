@@ -1,8 +1,11 @@
 {-# LANGUAGE DeriveTraversable #-}
 module Data.List.TwoOrMore(TwoOrMore(..), twoOrMore, toNonEmpty) where
 
+import Data.Foldable (toList)
 import Data.List.NonEmpty (NonEmpty((:|)))
 import Data.Semigroup.Foldable (Foldable1(..))
+import Control.Functor.Internal.Ideal (MonadIdeal(..), runIdeal, Ideal)
+import Data.Functor.Bind
 
 data TwoOrMore a = TwoOrMore a a [a]
   deriving (Show, Read, Eq, Ord, Functor, Foldable, Traversable)
@@ -15,3 +18,23 @@ twoOrMore :: NonEmpty a -> Either a (TwoOrMore a)
 twoOrMore (a1 :| as) = case as of
   [] -> Left a1
   a2 : as' -> Right (TwoOrMore a1 a2 as')
+
+instance Apply TwoOrMore where
+  TwoOrMore x1 x2 xs <.> TwoOrMore y1 y2 ys = TwoOrMore (x1 y1) (x1 y2) (fmap x1 ys ++ (x2 : xs <*> y1 : y2 : ys))
+
+instance Bind TwoOrMore where
+  TwoOrMore a1 a2 as >>- k = case k a1 of
+    TwoOrMore b1 b2 bs -> TwoOrMore b1 b2 $ bs ++ ((a2 : as) >>= toList . k)
+
+-- | @Ideal TwoOrMore ~ NonEmpty@
+instance MonadIdeal TwoOrMore where
+  idealBind as k = bindNonEmpty as (idealToNonEmpty . k)
+
+idealToNonEmpty :: Ideal TwoOrMore a -> NonEmpty a
+idealToNonEmpty = either pure toNonEmpty . runIdeal
+
+bindNonEmpty :: TwoOrMore a -> (a -> NonEmpty b) -> TwoOrMore b
+bindNonEmpty (TwoOrMore a1 a2 as) k = case (k a1, k a2) of
+  (b1 :| [], b2 :| []) -> TwoOrMore b1 b2 $ as >>= toList . k
+  (b1 :| [], b2 :| bs) -> TwoOrMore b1 b2 $ bs ++ (as >>= toList . k)
+  (b1 :| b2 : bs, bs') -> TwoOrMore b1 b2 $ bs ++ toList bs' ++ (as >>= toList . k)

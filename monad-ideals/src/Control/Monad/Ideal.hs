@@ -13,7 +13,6 @@ module Control.Monad.Ideal
     Ideal,
     ideal,
     destroyIdeal,
-    WrapMonad(..),
 
     -- * Mutual recursion for (co)ideal (co)monad (co)products
     Mutual (..), Mutual'(..),
