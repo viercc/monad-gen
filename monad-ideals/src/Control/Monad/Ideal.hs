@@ -24,6 +24,10 @@ module Control.Monad.Ideal
 
     -- * Mutual recursion for Ideal monad coproducts
     Mutual (..),
+
+    -- * Relation between @MonadIdeal@, @Bind@, and @MonadIsolate@
+    -- 
+    -- $relation_to_bind_and_isolate
   )
 where
 
@@ -152,3 +156,46 @@ mt |||| nt = either (foldMutual mt nt) (foldMutual nt mt) . runIdealCoproduct
 
 foldMutual :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> Mutual Either m n b -> t b
 foldMutual mt nt (Mutual mn) = mt mn `idealBind` (Ideal . fmap (foldMutual nt mt))
+
+
+{- $relation_to_bind_and_isolate
+
+@MonadIdeal@ is a requirement stronger than both of 'Bind' and 'Control.Monad.Isolate.MonadIsolate'.
+In fact, these implications hold.
+
+- @MonadIdeal m@ implies @Bind m@
+- @MonadIdeal m@ implies @MonadIsolate m (Ideal m)@
+
+These implications are _strict_ and neither of three classes can be
+replaced with other two.
+
+- 'Data.List.NotOne.NotOne' is both @Bind@ and @MonadIsolate@, but not @MonadIdeal@ thus not @MonadIdeal@.
+
+- @NullBind c@ is @Bind@ but can't be a part of @MonadIsolate@
+
+@
+data Nullify a = Null | NonNull a
+
+newtype NullBind c a = NullBind (Nullify c)
+instance Bind (NullBind c a) where
+  _ >>- _ = NullBind Null
+@
+
+- @OddPart@ is @MonadIsolate@ with @Parity@ monad, but not @Bind@ in a compatible way, thus not @MonadIdeal@.
+
+@
+data Parity a = Even a | Odd a
+
+instance Monad Parity where
+  return = Even
+  Even a >>= k = k a
+  Odd a >>= k = case k a of { Even b -> Odd b; Odd b -> Even b }
+
+newtype OddPart a = OddPart a
+
+instance MonadIsolate OddPart Parity where
+  isolatePure ma = case ma of { Even a -> Left a; Odd a -> Right (OddPart a) }
+  injectImpure (OddPart a) = Odd a
+@
+
+-}

@@ -7,6 +7,7 @@ import Data.Semigroup.Foldable (Foldable1(..))
 
 import Control.Monad.Ideal (MonadIdeal(..), Ideal(..))
 import Data.Functor.Bind
+import Data.Functor.Alt (Alt(..))
 
 data TwoOrMore a = TwoOrMore a a [a]
   deriving (Show, Read, Eq, Ord, Functor, Foldable, Traversable)
@@ -20,9 +21,16 @@ twoOrMore (a1 :| as) = case as of
   [] -> Left a1
   a2 : as' -> Right (TwoOrMore a1 a2 as')
 
+instance Semigroup (TwoOrMore a) where
+  TwoOrMore a1 a2 as <> bs = TwoOrMore a1 a2 (as ++ toList bs)
+
 instance Apply TwoOrMore where
   TwoOrMore x1 x2 xs <.> TwoOrMore y1 y2 ys = TwoOrMore (x1 y1) (x1 y2) (fmap x1 ys ++ (x2 : xs <*> y1 : y2 : ys))
 
+instance Alt TwoOrMore where
+  (<!>) = (<>)
+
+-- | @(>>-) = flip foldMap1@
 instance Bind TwoOrMore where
   TwoOrMore a1 a2 as >>- k = case k a1 of
     TwoOrMore b1 b2 bs -> TwoOrMore b1 b2 $ bs ++ ((a2 : as) >>= toList . k)
