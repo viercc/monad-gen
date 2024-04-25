@@ -152,10 +152,10 @@ bindMutual2 (Mutual mn) k =
         Right nm -> pure . Right $ bindMutual1 nm k
 
 (||||) :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> (m :+ n) b -> t b
-mt |||| nt = either (foldMutual mt nt) (foldMutual nt mt) . runIdealCoproduct
+mt |||| nt = either (foldMutual' mt nt) (foldMutual' nt mt) . runIdealCoproduct
 
-foldMutual :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> Mutual Either m n b -> t b
-foldMutual mt nt (Mutual mn) = mt mn `idealBind` (Ideal . second (foldMutual nt mt))
+foldMutual' :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> Mutual Either m n b -> t b
+foldMutual' = foldMutual (\ta k -> ta `idealBind` Ideal . k)
 
 
 {- $relation_to_bind_and_isolate
