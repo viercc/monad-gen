@@ -49,12 +49,15 @@ runIdeal = runUnite
 hoistIdeal :: (forall a. m a -> n a) -> Ideal m b -> Ideal n b
 hoistIdeal = hoistUnite
 
--- | @m@ is the "ideal part" of ideal monad @ideal m@.
+-- | @m@ is the "ideal part" of an ideal monad.
 --
 -- ==== Laws
 --
--- - (todo) @'ideal' m@ is a lawful monad
--- - (todo) @('>>-') === bindDefault@
+-- Methods inherited from superclasses must be equivalent to the
+-- canocical ones.
+--
+-- - @'(>>-)' === 'bindDefault'@
+-- - @'impureBind' === 'impureBindDefault'@
 class (Bind m, Isolated m) => MonadIdeal m where
   idealBind :: m a -> (a -> Ideal m b) -> m b
 
