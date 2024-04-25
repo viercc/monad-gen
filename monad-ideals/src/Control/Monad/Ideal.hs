@@ -155,7 +155,7 @@ bindMutual2 (Mutual mn) k =
 mt |||| nt = either (foldMutual mt nt) (foldMutual nt mt) . runIdealCoproduct
 
 foldMutual :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> Mutual Either m n b -> t b
-foldMutual mt nt (Mutual mn) = mt mn `idealBind` (Ideal . fmap (foldMutual nt mt))
+foldMutual mt nt (Mutual mn) = mt mn `idealBind` (Ideal . second (foldMutual nt mt))
 
 
 {- $relation_to_bind_and_isolate

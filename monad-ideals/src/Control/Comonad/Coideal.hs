@@ -21,7 +21,8 @@ module Control.Comonad.Coideal
 
     -- * Coideal Comonad Product
     (:*)(..),
-    project1, project2
+    project1, project2,
+    (&&&&)
   )
 where
 
@@ -29,6 +30,7 @@ import Control.Arrow ((&&&))
 import Control.Comonad
 
 import Control.Functor.Internal.Mutual
+import Data.Bifunctor (Bifunctor(..))
 
 newtype Coideal f a = Coideal { runCoideal :: (a, f a) }
   deriving (Functor, Foldable, Traversable)
@@ -75,3 +77,9 @@ extendMutual2 ::
   Mutual (,) w v b
 extendMutual2 k (Mutual wv) =
   Mutual $ coidealExtend (\(Coideal ((a, vw), w')) -> (k (Coideal (a, CoidealProduct (vw, Mutual w'))), extendMutual1 k vw)) wv
+
+(&&&&) :: (ComonadCoideal t) => (forall a. t a -> w a) -> (forall a. t a -> v a) -> t b -> (w :* v) b
+tw &&&& tv = CoidealProduct . (unfoldMutual tw tv &&& unfoldMutual tv tw)
+
+unfoldMutual :: (ComonadCoideal t) => (forall a. t a -> w a) -> (forall a. t a -> v a) -> t b -> Mutual (,) w v b
+unfoldMutual tw tv t = Mutual $ tw $ coidealExtend (second (unfoldMutual tv tw) . runCoideal) t
