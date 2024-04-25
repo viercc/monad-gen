@@ -5,9 +5,11 @@ import Data.Foldable (toList)
 import Data.List.NonEmpty (NonEmpty((:|)))
 import Data.Semigroup.Foldable (Foldable1(..))
 
-import Control.Monad.Ideal (MonadIdeal(..), Ideal(..))
 import Data.Functor.Bind
 import Data.Functor.Alt (Alt(..))
+import Control.Monad.Isolated
+import Control.Monad.Ideal (MonadIdeal(..), impureBindDefault, Ideal, runIdeal)
+
 
 data TwoOrMore a = TwoOrMore a a [a]
   deriving (Show, Read, Eq, Ord, Functor, Foldable, Traversable)
@@ -34,6 +36,9 @@ instance Alt TwoOrMore where
 instance Bind TwoOrMore where
   TwoOrMore a1 a2 as >>- k = case k a1 of
     TwoOrMore b1 b2 bs -> TwoOrMore b1 b2 $ bs ++ ((a2 : as) >>= toList . k)
+
+instance Isolated TwoOrMore where
+  impureBind = impureBindDefault
 
 -- | @Ideal TwoOrMore ~ NonEmpty@
 instance MonadIdeal TwoOrMore where

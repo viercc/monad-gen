@@ -6,6 +6,7 @@ import Data.Foldable (toList)
 
 import Data.Functor.Bind
 import Data.Functor.Plus (Alt(..), Plus(..))
+import Control.Monad.Isolated
 
 import Data.List.TwoOrMore
 
@@ -47,3 +48,6 @@ instance Bind NotOne where
     [] -> Zero
     [bs] -> Multiple bs
     bs1 : bs2 : bss -> Multiple $ join (TwoOrMore bs1 bs2 bss)
+
+instance Isolated NotOne where
+  impureBind as k = Unite . notOne $ toList as >>= toList . k

@@ -30,7 +30,8 @@ library
     exposed-modules:
         Control.Functor.Internal.Mutual,
         Control.Monad.Ideal,
-        Control.Monad.Isolate,
+--        Control.Monad.Isolate,
+        Control.Monad.Isolated,
         Control.Monad.Coproduct,
         Control.Comonad.Coideal,
 

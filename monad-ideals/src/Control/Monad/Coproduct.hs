@@ -1,44 +1,132 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE PatternSynonyms #-}
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Control.Monad.Coproduct
+-- Copyright   :  (C) 2024 Koji Miyazato
+-- License     :  BSD-style (see the file LICENSE)
+--
+-- Maintainer  :  Koji Miyazato <viercc@gmail.com>
+-- Stability   :  experimental
 module Control.Monad.Coproduct(
-  -- * Isolated Monad Coproduct
-  MonadCoproduct(Pure, Impure, Impure1, Impure2),
-  view1, view2, review1, review2,
-
-  inject1, inject2,
-  (||||),
-
   -- * Ideal Monad Coproduct
   (:+)(..),
+  inject1,
+  inject2,
+  (||||),
+  eitherMonad,
 
-  -- * Mutual recursion for Ideal monad coproducts
+  -- * Mutual recursion for ideal monad coproducts
   Mutual (..),
 ) where
 
-import Control.Monad.Isolate
-import Control.Monad.Ideal ((:+)(..))
 import Data.Functor.Bind
-import qualified Control.Monad.Ideal as Ideal
-
+import Control.Monad.Isolated
+import Control.Monad.Ideal
 import Control.Functor.Internal.Mutual (Mutual(..), foldMutual)
 
-data MonadCoproduct m n a =
-    Pure a
-  | Impure ((Impurity m :+ Impurity n) a)
+import Data.Bifunctor (Bifunctor(..))
 
-deriving instance (MonadIsolate m, MonadIsolate n) => Functor (MonadCoproduct m n)
+-- * Coproduct of Monads
 
-pattern Impure1 :: Mutual Either (Impurity m) (Impurity n) a -> MonadCoproduct m n a
-pattern Impure1 mn = Impure (IdealCoproduct (Left mn))
+-- | Coproduct of (impure parts of) two Monads.
+-- 
+-- === As the coproduct of 'Isolated'
+-- 
+-- Given two @'Isolated' m@ and @Isolated n@, the functor @m :+ n@ is @Isolated@ too. In other words,
+-- given two @Monad@s @Unite m@ and @Unite n@, this type constructs new @Monad (Unite (m :+ n))@.
+--
+-- Furthermore, as the name suggests,
+-- @Unite (m :+ n)@ is the coproduct of @Unite m@ and @Unite n@ as a @Monad@.
+--
+-- - @'hoistUnite' 'inject1' :: Unite m ~> Unite (m :+ n)@ is a monad morphism
+-- - @'hoistUnite' 'inject2' :: Unite n ~> Unite (m :+ n)@ is a monad morphism
+-- - @'eitherMonad' mt nt :: (m :+ n) ~> t@ is a impure monad morphism,
+--   given @(mt :: m ~> t)@ and @(nt :: n ~> t)@ are impure monad morphisms.
+-- - Any impure monad morphisms @(m :+ n) ~> t@ can be uniquely rewritten as @(eitherMonad mt nt)@.
+--
+-- Here, a natural transformation @nat :: f ~> g@ is an /impure monad morphism/ means
+-- @f@ is an @Isolated@, @g@ is a @Monad@, and @nat@ becomes a monad morphism when combined with @pure@ as below.
+--
+-- @
+-- either pure nat . runUnite :: Unite f ~> g
+-- @
+--
+-- === As the coproduct of 'MonadIdeal'
+-- 
+-- Given two @'MonadIdeal' m@ and @MonadIdeal n@, the functor @m :+ n@ is @MonadIdeal@ too.
+-- It is the coproduct of @m@ and @n@ as a @MonadIdeal@.
+--
+-- - @inject1 :: m ~> (m :+ n)@ is a @MonadIdeal@ morphism
+-- - @inject2 :: n ~> (m :+ n)@ is a @MonadIdeal@ morphism
+-- - @(mt |||| nt) :: (m :+ n) ~> t@ is a @MonadIdeal@ morphism, given
+--   @mt, nt@ are @MonadIdeal@ morphisms.
+-- - Any @MonadIdeal@ morphism @(m :+ n) ~> t@ can be uniquely rewritten as @(mt |||| nt)@.
+--
+-- Here, a @MonadIdeal@ morphism is a natural transformation @nat@ between @MonadIdeal@ such that
+-- preserves @idealBind@.
+-- 
+-- @
+-- nat (idealBind ma k) = idealBind (nat ma) ('hoistIdeal' nat . k)
+-- @
+-- 
+newtype (:+) m n a = Coproduct { runCoproduct :: Either (Mutual Either m n a) (Mutual Either n m a) }
 
-pattern Impure2 :: Mutual Either (Impurity n) (Impurity m) a -> MonadCoproduct m n a
-pattern Impure2 mn = Impure (IdealCoproduct (Right mn))
+inject1 :: (Functor m) => m a -> (m :+ n) a
+inject1 = Coproduct . Left . Mutual . fmap Left
 
-{-# COMPLETE Pure, Impure1, Impure2 #-}
+inject2 :: (Functor n) => n a -> (m :+ n) a
+inject2 = Coproduct . Right . Mutual . fmap Left
+
+instance (Functor m, Functor n) => Functor (m :+ n) where
+  fmap f = Coproduct . bimap (fmap f) (fmap f) . runCoproduct
+
+instance (MonadIdeal m, MonadIdeal n) => Apply (m :+ n) where
+  (<.>) = apDefault
+
+instance (MonadIdeal m, MonadIdeal n) => Bind (m :+ n) where
+  (>>-) = bindDefault
+
+instance (Isolated m, Isolated n) => Isolated (m :+ n) where
+  impureBind copro k = case runCoproduct copro of
+    Left mn -> imbindMutual1 mn k
+    Right nm -> imbindMutual2 nm k
+
+instance (MonadIdeal m, MonadIdeal n) => MonadIdeal (m :+ n) where
+  idealBind copro k = Coproduct $ case runCoproduct copro of
+    Left mn -> Left $ bindMutual1 mn k
+    Right nm -> Right $ bindMutual2 nm k
+
+bindMutual1 :: (MonadIdeal m, MonadIdeal n) => Mutual Either m n a -> (a -> Ideal (m :+ n) b) -> Mutual Either m n b
+bindMutual1 (Mutual mn) k =
+  Mutual $
+    mn `idealBind` \next ->
+      case next of
+        Left a -> case runIdeal (k a) of
+          Left b -> pure (Left b)
+          Right (Coproduct (Left mn')) -> ideal . Right $ runMutual mn'
+          Right (Coproduct (Right nm')) -> pure (Right nm')
+        Right nm -> pure . Right $ bindMutual2 nm k
+
+bindMutual2 :: (MonadIdeal m, MonadIdeal n) => Mutual Either m n a -> (a -> Ideal (n :+ m) b) -> Mutual Either m n b
+bindMutual2 (Mutual mn) k =
+  Mutual $
+    mn `idealBind` \next ->
+      case next of
+        Left a -> case runIdeal (k a) of
+          Left b -> pure (Left b)
+          Right (Coproduct (Left nm')) -> pure (Right nm')
+          Right (Coproduct (Right mn')) -> ideal . Right $ runMutual mn'
+        Right nm -> pure . Right $ bindMutual1 nm k
+
+(||||) :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> (m :+ n) b -> t b
+mt |||| nt = either (foldMutual' mt nt) (foldMutual' nt mt) . runCoproduct
+
+foldMutual' :: (MonadIdeal t) => (forall a. m a -> t a) -> (forall a. n a -> t a) -> Mutual Either m n b -> t b
+foldMutual' = foldMutual (\ta k -> ta `idealBind` ideal . k)
+
+
 
 {- |
 
@@ -50,84 +138,56 @@ pattern Impure2 mn = Impure (IdealCoproduct (Right mn))
 
 -}
 
-view1 :: (MonadIsolate m, MonadIsolate n, f ~ Impurity m, g ~ Impurity n)
-  => MonadCoproduct m n a -> m (Either a (Mutual Either g f a))
-view1 (Pure a) = pure (Left a)
-view1 (Impure1 fg) = injectImpure (runMutual fg)
-view1 (Impure2 gf) = pure (Right gf)
+imbindMutual1 :: (Isolated m, Isolated n)
+  => Mutual Either m n a
+  -> (a -> Unite (m :+ n) b)
+  -> Unite (m :+ n) b
+imbindMutual1 (Mutual mna) k =
+  review1 $ impureBind mna $ \na -> case na of
+    Left a -> view1 (k a)
+    Right na' -> view1 (imbindMutual2 na' k)
 
-review1 :: (MonadIsolate m, MonadIsolate n, f ~ Impurity m, g ~ Impurity n)
-  => m (Either a (Mutual Either g f a)) -> MonadCoproduct m n a
-review1 mx = case isolatePure mx of
-  Left (Left a) -> Pure a
-  Left (Right gf) -> Impure2 gf
-  Right fx -> Impure1 (Mutual fx)
+imbindMutual2 :: (Isolated m, Isolated n)
+  => Mutual Either n m a
+  -> (a -> Unite (m :+ n) b)
+  -> Unite (m :+ n) b
+imbindMutual2 (Mutual nma) k =
+  review2 $ impureBind nma $ \ma -> case ma of
+    Left a -> view2 (k a)
+    Right ma' -> view2 (imbindMutual1 ma' k)
 
-view2 :: (MonadIsolate m, MonadIsolate n, f ~ Impurity m, g ~ Impurity n)
-  => MonadCoproduct m n a -> n (Either a (Mutual Either f g a))
-view2 (Pure a) = pure (Left a)
-view2 (Impure1 gf) = pure (Right gf)
-view2 (Impure2 fg) = injectImpure (runMutual fg)
+view1 :: Unite (m :+ n) a -> Unite m (Either a (Mutual Either n m a))
+view1 (Unite (Left a)) = Unite (Left (Left a))
+view1 (Unite (Right copro)) = case runCoproduct copro of
+  Left mn -> Unite (Right (runMutual mn))
+  Right nm -> Unite (Left (Right nm))
 
-review2 :: (MonadIsolate m, MonadIsolate n, f ~ Impurity m, g ~ Impurity n)
-  => n (Either a (Mutual Either f g a)) -> MonadCoproduct m n a
-review2 mx = case isolatePure mx of
-  Left (Left a) -> Pure a
-  Left (Right gf) -> Impure1 gf
-  Right fx -> Impure2 (Mutual fx)
+review1 :: Unite m (Either a (Mutual Either n m a)) -> Unite (m :+ n) a 
+review1 (Unite (Left (Left a))) = Unite (Left a)
+review1 (Unite (Left (Right nm))) = Unite (Right (Coproduct (Right nm)))
+review1 (Unite (Right mn)) = Unite (Right (Coproduct (Left (Mutual mn))))
 
-instance (MonadIsolate m, MonadIsolate n) => Apply (MonadCoproduct m n) where
-  (<.>) = apDefault
+view2 :: Unite (m :+ n) a -> Unite n (Either a (Mutual Either m n a))
+view2 (Unite (Left a)) = Unite (Left (Left a))
+view2 (Unite (Right copro)) = case runCoproduct copro of
+  Left mn -> Unite (Left (Right mn))
+  Right nm -> Unite (Right (runMutual nm))
 
-instance (MonadIsolate m, MonadIsolate n) => Applicative (MonadCoproduct m n) where
-  pure = Pure
-  (<*>) = (<.>)
+review2 :: Unite n (Either a (Mutual Either m n a)) -> Unite (m :+ n) a 
+review2 (Unite (Left (Left a))) = Unite (Left a)
+review2 (Unite (Left (Right mn))) = Unite (Right (Coproduct (Left mn)))
+review2 (Unite (Right nm)) = Unite (Right (Coproduct (Right (Mutual nm))))
 
-instance (MonadIsolate m, MonadIsolate n) => Bind (MonadCoproduct m n) where
-  (>>-) = (>>=)
-
-instance (MonadIsolate m, MonadIsolate n) => Monad (MonadCoproduct m n) where
-  Pure a >>= k = k a
-  Impure (IdealCoproduct (Left fg)) >>= k = bindMutual1 fg k
-  Impure (IdealCoproduct (Right gf)) >>= k = bindMutual2 gf k
-
-bindMutual1 :: (MonadIsolate m, f ~ Impurity m, MonadIsolate n, g ~ Impurity n)
-  => Mutual Either f g a
-  -> (a -> MonadCoproduct m n b)
-  -> MonadCoproduct m n b
-bindMutual1 (Mutual fn) k = review1 $ injectImpure fn >>= view1 . either k (`bindMutual2` k)
-
-bindMutual2 :: (MonadIsolate m, f ~ Impurity m, MonadIsolate n, g ~ Impurity n)
-  => Mutual Either g f a
-  -> (a -> MonadCoproduct m n b)
-  -> MonadCoproduct m n b
-bindMutual2 (Mutual fn) k = review2 $ injectImpure fn >>= view2 . either k (`bindMutual1` k)
-
-instance (MonadIsolate m, MonadIsolate n) => MonadIsolate (MonadCoproduct m n) where
-  type Impurity (MonadCoproduct m n) = Impurity m :+ Impurity n
-
-  isolatePure (Pure a) = Left a
-  isolatePure (Impure mn) = Right mn
-
-  injectImpure = Impure
-
-inject1 :: MonadIsolate m => m a -> MonadCoproduct m n a
-inject1 = either Pure (Impure . Ideal.inject1) . isolatePure
-
-inject2 :: MonadIsolate n => n a -> MonadCoproduct m n a
-inject2 = either Pure (Impure . Ideal.inject2) . isolatePure
-
-(||||) :: (MonadIsolate m, MonadIsolate n, Monad t)
+eitherMonad :: (Isolated m, Isolated n, Monad t)
   => (forall a. m a -> t a)
   -> (forall a. n a -> t a)
-  -> MonadCoproduct m n b -> t b
-(mt |||| nt) copro = case copro of
-  Pure b -> pure b
-  Impure1 fg -> foldMutual' mt nt fg
-  Impure2 gf -> foldMutual' nt mt gf
+  -> (m :+ n) b -> t b
+eitherMonad mt nt copro = case runCoproduct copro of
+  Left fg -> foldMutual'' mt nt fg
+  Right gf -> foldMutual'' nt mt gf
 
-foldMutual' :: (MonadIsolate m, MonadIsolate n, Monad t)
+foldMutual'' :: (Monad t)
   => (forall a. m a -> t a)
   -> (forall a. n a -> t a)
-  -> Mutual Either (Impurity m) (Impurity n) b -> t b
-foldMutual' mt nt = foldMutual (\ta k -> ta >>= either pure id . k) (mt . injectImpure) (nt . injectImpure)
+  -> Mutual Either m n b -> t b
+foldMutual'' = foldMutual (\ta k -> ta >>= either pure id . k)
