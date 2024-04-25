@@ -164,7 +164,7 @@ foldMutual mt nt (Mutual mn) = mt mn `idealBind` (Ideal . second (foldMutual nt 
 In fact, these implications hold.
 
 - @MonadIdeal m@ implies @Bind m@
-- @MonadIdeal m@ implies @MonadIsolate m (Ideal m)@
+- @MonadIdeal m@ implies @MonadIsolate (Ideal m), 'Impurity' (Ideal m) ~ m@
 
 These implications are _strict_ and neither of three classes can be
 replaced with other two.

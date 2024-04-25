@@ -1,5 +1,6 @@
-{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Control.Monad.Isolate where
 
 import Data.Foldable (toList)
@@ -13,6 +14,7 @@ import Data.List.NonEmpty (NonEmpty(..))
 import Data.List.NotOne
 
 import Control.Monad.Ideal
+import Data.Kind (Type)
 
 -- | @MonadIsolate f m@ constrains a Monad @m@ to be isomorphic to
 --   the sum of 'Data.Functor.Identity.Identity' and a Functor @f@.
@@ -31,36 +33,50 @@ import Control.Monad.Ideal
 -- either pure injectImpure . isolatePure = id :: m a -> m a
 -- isolatePure . either pure injectImpure = id :: Either a (f a) -> Either a (f a)
 -- @
-class (Monad m, Functor f) => MonadIsolate f m | m -> f where
-  injectImpure :: f a -> m a
-  isolatePure :: m a -> Either a (f a)
+class (Monad m, Functor (Impurity m)) => MonadIsolate m where
+  type Impurity m :: Type -> Type
 
-instance MonadIsolate (Const e) (Either e) where
+  injectImpure :: Impurity m a -> m a
+  isolatePure :: m a -> Either a (Impurity m a)
+
+instance MonadIsolate (Either e) where
+  type Impurity (Either e) = Const e
   injectImpure = Left . getConst
   isolatePure = either (Right . Const) Left
 
-instance MonadIsolate (Const Void) Identity where
+instance MonadIsolate Identity where
+  type Impurity Identity = Const Void
+
   injectImpure = absurd . getConst
   isolatePure = Left . runIdentity
 
-instance MonadIsolate Proxy Maybe where
+instance MonadIsolate Maybe where
+  type Impurity Maybe = Proxy
   injectImpure _ = Nothing
   isolatePure = maybe (Right Proxy) Left
 
-instance Semigroup s => MonadIsolate ((,) s) ((,) (Maybe s)) where
+instance Semigroup s => MonadIsolate ((,) (Maybe s)) where
+  type Impurity ((,) (Maybe s)) = (,) s
+
   injectImpure (s, a) = (Just s, a)
   isolatePure (Nothing, a) = Left a
   isolatePure (Just s, a)  = Right (s, a)
 
-instance MonadIsolate TwoOrMore NonEmpty where
+instance MonadIsolate NonEmpty where
+  type Impurity NonEmpty = TwoOrMore
+
   isolatePure = twoOrMore
   injectImpure = toNonEmpty
 
-instance MonadIsolate NotOne [] where
+instance MonadIsolate [] where
+  type Impurity [] = NotOne
+
   isolatePure = notOne
   injectImpure = toList
 
 -- | @'MonadIdeal' m@ implies @'MonadIsolate' m (Ideal m)@
-instance MonadIdeal m => MonadIsolate m (Ideal m) where
+instance MonadIdeal m => MonadIsolate (Ideal m) where
+  type Impurity (Ideal m) = m
+  
   isolatePure = runIdeal
   injectImpure = Ideal . Right
