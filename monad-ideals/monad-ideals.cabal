@@ -50,8 +50,7 @@ library
       base ^>=4.18.2.0,
       bifunctors,
       comonad,
-      semigroupoids,
-      free
+      semigroupoids
 
     -- Directories containing source files.
     hs-source-dirs:   src
