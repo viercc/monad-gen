@@ -1,4 +1,12 @@
 {-# LANGUAGE DeriveTraversable #-}
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.List.NotOne
+-- Copyright   :  (C) 2024 Koji Miyazato
+-- License     :  BSD-style (see the file LICENSE)
+--
+-- Maintainer  :  Koji Miyazato <viercc@gmail.com>
+-- Stability   :  experimental
 module Data.List.NotOne where
 
 import Data.Maybe (mapMaybe)

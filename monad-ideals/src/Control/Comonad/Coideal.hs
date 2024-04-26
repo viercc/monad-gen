@@ -4,10 +4,10 @@
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  Control.Comonad.Coideal
--- Copyright   :  (C) 2008 Edward Kmett
+-- Copyright   :  (C) 2008 Edward Kmett, (C) 2024 Koji Miyazato
 -- License     :  BSD-style (see the file LICENSE)
 --
--- Maintainer  :  Edward Kmett <ekmett@gmail.com>
+-- Maintainer  :  Koji Miyazato <viercc@gmail.com>
 -- Stability   :  experimental
 -- Portability :  portable
 module Control.Comonad.Coideal

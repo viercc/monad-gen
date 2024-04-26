@@ -1,4 +1,12 @@
 {-# LANGUAGE DeriveTraversable #-}
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Data.List.TwoOrMore
+-- Copyright   :  (C) 2024 Koji Miyazato
+-- License     :  BSD-style (see the file LICENSE)
+--
+-- Maintainer  :  Koji Miyazato <viercc@gmail.com>
+-- Stability   :  experimental
 module Data.List.TwoOrMore(TwoOrMore(..), twoOrMore, toNonEmpty) where
 
 import Data.Foldable (toList)
@@ -11,6 +19,7 @@ import Control.Monad.Isolated
 import Control.Monad.Ideal (MonadIdeal(..), impureBindDefault, Ideal, runIdeal)
 
 
+-- | List of two or more elements
 data TwoOrMore a = TwoOrMore a a [a]
   deriving (Show, Read, Eq, Ord, Functor, Foldable, Traversable)
 

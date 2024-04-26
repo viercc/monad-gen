@@ -2,7 +2,7 @@
 {-# LANGUAGE RankNTypes #-}
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Control.Monad.ideal
+-- Module      :  Control.Monad.Ideal
 -- Copyright   :  (C) 2008 Edward Kmett, (C) 2024 Koji Miyazato
 -- License     :  BSD-style (see the file LICENSE)
 --

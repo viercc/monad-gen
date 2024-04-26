@@ -1,4 +1,13 @@
 {-# LANGUAGE RankNTypes #-}
+-----------------------------------------------------------------------------
+-- |
+-- Module      :  Control.Monad.Isolated
+-- Copyright   :  (C) 2008 Edward Kmett, (C) 2024 Koji Miyazato
+-- License     :  BSD-style (see the file LICENSE)
+--
+-- Maintainer  :  Koji Miyazato <viercc@gmail.com>
+-- Stability   :  experimental
+-- Portability :  portable
 module Control.Monad.Isolated(
   -- * Impure part isolated from a Monad
   Isolated(..),

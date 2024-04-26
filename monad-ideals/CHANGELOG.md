@@ -2,5 +2,8 @@
 
 ## 0.1.0.0 -- 2024-04-23
 
-* Copied from [category-extras-0.53.5](https://hackage.haskell.org/package/category-extras-0.53.5)
-  with trivial updates to work with the current ecosystem
+* Created based on [category-extras-0.53.5](https://hackage.haskell.org/package/category-extras-0.53.5)
+  with updates
+
+  - Changes needed to work with current ecosystem
+  - Implement coproduct of ideal monads (product of coideal comonads)
