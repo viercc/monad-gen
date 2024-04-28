@@ -29,7 +29,7 @@ import Data.Semigroup.Traversable.Class (Bitraversable1(..))
 --   @Const ('First' c)@, which can also (exceptionally) have 'Bind' instance.
 --
 -- The most used constant functor 'Const' lacks the instance of 'Bind', due to incompatibility
--- between 'Bind' and 'Apply' instance.
+-- between 'Bind' and 'Apply'.
 -- 
 -- @
 -- instance (Semigroup c) => 'Apply' ('Const' c)

@@ -34,8 +34,7 @@ satisfying these two properties.
 - `either id (iso . Right . idealize) . iso⁻¹ === join :: m (m a) -> m a`
 
 This package provides `MonadIdeal`, a type class to represent ideal monads in terms of
-its ideal part `m₀`
-(instead of a subclass of `Monad` with associated functor type corresponding to `m₀`.)
+its ideal part `m₀` (, instead of a subclass of `Monad` to represent ideal monad itself.)
 
 ```haskell
 class (Isolated m0, Bind m0) => MonadIdeal m0 where

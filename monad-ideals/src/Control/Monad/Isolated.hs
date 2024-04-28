@@ -45,7 +45,7 @@ instance (Traversable g) => Traversable (Unite g) where
 instance (Traversable1 g) => Traversable1 (Unite g) where
   traverse1 f = fmap Unite . either (fmap Left . f) (fmap Right . traverse1 f) . runUnite
 
--- | @Isolated m@ is a @Functor@ which can be thought of as an impure part of a @Monad@.
+-- | @Isolated m0@ is a @Functor@ which can be thought of as an impure part of a @Monad@.
 -- 
 -- ==== Examples
 -- 
@@ -61,7 +61,7 @@ instance (Traversable1 g) => Traversable1 (Unite g) where
 --
 -- ==== Laws
 -- 
--- 'impureBind' must be implemented so that the @Monad (Unite m)@ instance derived from
+-- 'impureBind' must be implemented so that the @Monad (Unite m0)@ instance derived from
 -- it is lawful.
 -- 
 -- @
@@ -71,7 +71,7 @@ instance (Traversable1 g) => Traversable1 (Unite g) where
 -- Unite (Right ma) >>= k = ma \`impureBind\` k
 -- @
 -- 
--- Translating the @Monad@ laws on @Unite m@ in terms of @impureBind@,
+-- Translating the @Monad@ laws on @Unite m0@ in terms of @impureBind@,
 -- the following equations are the @Isolated@ laws on its own.
 --
 -- - (Right identity)
@@ -85,23 +85,23 @@ instance (Traversable1 g) => Traversable1 (Unite g) where
 --     @
 --     (ma \`impureBind\` f) \`impureBind\` g === ma `impureBind` \a -> either g (\`impureBind\` g) (runUnite fa)
 --     @
-class Functor m => Isolated m where
-  impureBind :: m a -> (a -> Unite m b) -> Unite m b
+class Functor m0 => Isolated m0 where
+  impureBind :: m0 a -> (a -> Unite m0 b) -> Unite m0 b
 
 infixl 1 `impureBind`
 
-instance Isolated m => Apply (Unite m) where
+instance Isolated m0 => Apply (Unite m0) where
   (<.>) = apDefault
 
-instance Isolated m => Applicative (Unite m) where
+instance Isolated m0 => Applicative (Unite m0) where
   pure = Unite . Left
   (<*>) = (<.>)
 
-instance Isolated m => Bind (Unite m) where
+instance Isolated m0 => Bind (Unite m0) where
   Unite (Left a) >>- k = k a
   Unite (Right ma) >>- k = ma `impureBind` k
 
-instance Isolated m => Monad (Unite m) where
+instance Isolated m0 => Monad (Unite m0) where
   (>>=) = (>>-)
 
 instance Isolated Proxy where

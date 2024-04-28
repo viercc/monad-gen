@@ -34,22 +34,22 @@ import Control.Applicative (WrappedMonad (..))
 
 import Control.Monad.Isolated
 
--- | Ideal monad is a special case of @Unite m@
+-- | Ideal monad is a special case of @Unite m0@
 type Ideal = Unite
 
--- | Constructor of @ideal@ = @Unite@ for backward compatibility
-ideal :: Either a (m a) -> Ideal m a
+-- | Constructor of @Ideal@, for backward compatibility
+ideal :: Either a (m0 a) -> Ideal m0 a
 ideal = Unite
 
--- | Deconstructor of @ideal@ = @Unite@ for backward compatibility
-runIdeal :: Ideal m a -> Either a (m a)
+-- | Deconstructor of @Ideal@, for backward compatibility
+runIdeal :: Ideal m0 a -> Either a (m0 a)
 runIdeal = runUnite
 
 -- | Alias of 'hoistUnite' for naming consistently
-hoistIdeal :: (forall a. m a -> n a) -> Ideal m b -> Ideal n b
+hoistIdeal :: (forall a. m0 a -> n a) -> Ideal m0 b -> Ideal n b
 hoistIdeal = hoistUnite
 
--- | @m@ is the "ideal part" of an ideal monad.
+-- | @m0@ is the "ideal part" of an ideal monad.
 --
 -- ==== Laws
 --
@@ -58,33 +58,33 @@ hoistIdeal = hoistUnite
 --
 -- - @'(>>-)' === 'bindDefault'@
 -- - @'impureBind' === 'impureBindDefault'@
-class (Bind m, Isolated m) => MonadIdeal m where
-  idealBind :: m a -> (a -> Ideal m b) -> m b
+class (Bind m0, Isolated m0) => MonadIdeal m0 where
+  idealBind :: m0 a -> (a -> Ideal m0 b) -> m0 b
 
 infixl 1 `idealBind`
 
-idealize :: (MonadIdeal m) => m (Ideal m a) -> m a
+idealize :: (MonadIdeal m0) => m0 (Ideal m0 a) -> m0 a
 idealize = (`idealBind` id)
 
 -- | 'MonadIdeal' implies 'Bind'
-bindDefault :: MonadIdeal m => m a -> (a -> m b) -> m b
+bindDefault :: MonadIdeal m0 => m0 a -> (a -> m0 b) -> m0 b
 bindDefault ma k = ma `idealBind` ideal . Right . k
 
 -- | 'MonadIdeal' implies 'Isolated'
-impureBindDefault :: MonadIdeal m => m a -> (a -> Unite m b) -> Unite m b
+impureBindDefault :: MonadIdeal m0 => m0 a -> (a -> Unite m0 b) -> Unite m0 b
 impureBindDefault ma k = ideal . Right $ ma `idealBind` k
 
--- | @ideal ((,) s) ~ (,) (Maybe s)@
+-- | @Ideal ((,) s) ~ (,) (Maybe s)@
 instance (Semigroup s) => MonadIdeal ((,) s) where
   idealBind (s1, a) k = case runIdeal (k a) of
     Left b -> (s1, b)
     Right (s2, b) -> (s1 <> s2, b)
 
--- | Any @Monad@ can be an ideal of @ideal m@
+-- | Any @Monad m@ can be an ideal of @Ideal m@
 instance (Monad m) => MonadIdeal (WrappedMonad m) where
   idealBind (WrapMonad ma) k = WrapMonad $ ma >>= either pure unwrapMonad . runIdeal . k
 
-destroyIdeal :: (m a -> a) -> Ideal m a -> a
+destroyIdeal :: (m0 a -> a) -> Ideal m0 a -> a
 destroyIdeal phi = (id ||| phi) . runIdeal
 
 {- $relation_to_bind_and_isolate
