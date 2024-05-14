@@ -35,8 +35,8 @@ library
     , profunctors
     , bifunctors
     , kan-extensions
-    , finite-typelits
-    , finitary
+    , finite-typelits >= 0.2.0.0
+    , finitary >= 2.1.3.0
   ghc-options:         -Wall -Werror -Wcompat
   default-language:    Haskell2010
 

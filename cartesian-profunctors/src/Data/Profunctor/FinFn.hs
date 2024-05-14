@@ -23,7 +23,9 @@ import qualified Data.Map as Map
 
 import Data.Proxy
 import GHC.TypeNats
-import Data.Finite.Internal
+
+import Data.Finite (Finite())
+import qualified Data.Finite.Internal.Integral as Internal
 
 data FinFn a b = FinFn !Integer (a -> Integer) (Integer -> b)
 
