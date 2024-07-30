@@ -20,6 +20,7 @@ import Data.List.TwoOrMore
 import Data.List.ZList (ZList(..))
 import qualified Data.List.ZList as ZL
 
+-- | Free left zero double monoid
 data Free a =
     Lit a
   | Zero
