@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveTraversable #-}
 module Data.DoubleMonoid.LDist.Free where
 
 import Control.Monad
@@ -17,12 +18,12 @@ instance Monad Free where
   Free xs >>= k = Free $ xs >>= (getSummands . bindSummand k)
 
 bindSummand :: (a -> Free b) -> SummandF a -> Free b
-bindSummand _ One = One
+bindSummand _ One = Free [One]
 bindSummand k (Prod a x) = k a `prod` (x >>= k)
 
 prod :: Free a -> Free a -> Free a
-prod (Free xs) y = Free $ (`prodSummand` y) <$> xs
+prod (Free xs) y = Free $ xs >>= \x -> prodSummand x y
 
-prodSummand :: SummandF a -> Free a -> Free a
-prodSummand One y = y
-prodSummand (Prod a x) y = Prod a (prod x y)
+prodSummand :: SummandF a -> Free a -> [SummandF a]
+prodSummand One y = getSummands y
+prodSummand (Prod a x) y = [ Prod a (prod x y) ]

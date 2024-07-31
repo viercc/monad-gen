@@ -23,6 +23,7 @@ library
       Data.DoubleMonoid.Free,
       Data.DoubleMonoid.LZ,
       Data.DoubleMonoid.LZ.Free,
+      Data.DoubleMonoid.LDist.Free,
 
       Data.List.ZList,
     build-depends:
