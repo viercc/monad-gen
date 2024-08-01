@@ -19,6 +19,7 @@ import Data.List.TwoOrMore
 
 import Data.List.ZList (ZList(..))
 import qualified Data.List.ZList as ZL
+import Data.DoubleMonoid.LZ
 
 -- | Free left zero double monoid
 data Free a =
@@ -72,13 +73,6 @@ viewProd One = Nend
 viewProd (SumOf xs) = Cons (FactorSum xs) Nend
 viewProd (ProdOf xs) = pToZList xs
 
-mprodZ :: ZList (Free a) -> Free a
-mprodZ xs = case xs >>= viewProd of
-  Nend -> One
-  Zend -> Zero
-  Cons y Nend -> injectFactor y
-  Cons y Zend -> ProdOf (Pxz y)
-  Cons y0 (Cons y1 ys) -> ProdOf (PLong y0 y1 ys)
 
 instance DoubleMonoid (Free a) where
   msum xs = case xs >>= viewSum of
@@ -87,6 +81,14 @@ instance DoubleMonoid (Free a) where
     (x0:x1:rest) -> SumOf (TwoOrMore x0 x1 rest)
   
   mprod = mprodZ . ZL.fromList
+
+instance DMLZ (Free a) where
+  mprodZ xs = case xs >>= viewProd of
+    Nend -> One
+    Zend -> Zero
+    Cons y Nend -> injectFactor y
+    Cons y Zend -> ProdOf (Pxz y)
+    Cons y0 (Cons y1 ys) -> ProdOf (PLong y0 y1 ys)
 
 instance Applicative Free where
   pure = Lit

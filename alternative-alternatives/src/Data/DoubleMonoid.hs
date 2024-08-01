@@ -37,34 +37,35 @@ import Data.Foldable (foldl')
 -- x \/*\/ one === x
 -- @
 -- 
--- **Note that** not even @zero \/*\/ x === zero@ is assumed!
+-- ==== Relation to other known algebraic structures
+-- 
+-- Of course, @DoubleMonoid@ can be seen as @Monoid@ in two ways.
+-- Other than that, near-semiring (TODO:url) is a subclass of DoubleMonoid
+-- which additionally satisfy \"left distribution law\" (which confusingly have
+-- another name \"right distributivity\").
+--
+-- @
+-- -- in near-semiring
+-- zero \/*\/ x  === zero
+-- (x \/+\/ y) \/*\/ z === (x \/*\/ z) \/+\/ (y \/*\/ z)
+-- @
 
 class DoubleMonoid a where
   {-# MINIMAL one, (/*/), zero, (/+/) | mprod, msum | doubleMonoidAlgebra #-}
 
-  -- | 'one' is the unit of @\/*\/@
+  -- | The unit of \"multiplicative\" monoid.
   one :: a
   one = doubleMonoidAlgebra id DM.One
 
-  -- | The operator @('/+/')@ form a monoid with 'zero' as its unit.
-  --
-  -- In other words, these \"monoid laws\" must hold.
-  --
-  -- @
-  -- (x \/+\/ y) \/+\/ z === x \/+\/ (y \/+\/ z)
-  -- zero \/+\/ x === x
-  -- x \/+\/ zero === x
-  -- @
-  --
+  -- | The binary operator of \"multiplicative\" monoid.
   (/*/) :: a -> a -> a
   x /*/ y = doubleMonoidAlgebra id (DM.Lit x DM.:/*/ DM.Lit y)
 
-  -- | 'zero' is the unit of \"additive\" monoid.
+  -- | The unit of \"additive\" monoid.
   zero :: a
   zero = doubleMonoidAlgebra id DM.Zero
 
-  -- | The binary operator @('/+/')@ of \"additive\" monoid.
-  --
+  -- | The binary operator of \"additive\" monoid.
   (/+/) :: a -> a -> a
   x /+/ y = doubleMonoidAlgebra id (DM.Lit x DM.:/+/ DM.Lit y)
   
