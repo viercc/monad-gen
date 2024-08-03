@@ -2,7 +2,7 @@
 {-# LANGUAGE GADTSyntax #-}
 {-# LANGUAGE RankNTypes #-}
 
--- An applicative with left zero @f@ is an 'Applicative'
+-- | An applicative with left zero @f@ is an 'Applicative'
 -- with polymorphic zero action which stops
 -- all actions right to zero.
 --
@@ -11,14 +11,14 @@
 -- zero :: forall a. f a
 -- 
 -- -- Left zero law
--- zero \<*\> x === x
+-- zero \<*\> x === zero
 -- @
 -- 
--- This module provides free object of them
+-- This module provides the free construction of them
 -- in a way similar to the free monad or the free applicative.
 module Control.Applicative.Free.Zero where
 
-import Control.Applicative (Alternative(empty), (<**>))
+import Control.Applicative (Alternative(..), (<**>))
 
 -- | Free (applicative with left zero).
 data Free f a where
@@ -37,6 +37,11 @@ instance Applicative (Free f) where
   liftA2 op (Pure x) y = op x <$> y
   liftA2 _ Zero _ = Zero
   liftA2 op (Ap fa mk) y = Ap fa (liftA2 (\g b a -> op (g a) b) mk y)
+
+-- | /Left zero/ + /Left catch/
+instance Alternative (Free f) where
+  empty = Zero
+  (<|>) = trap
 
 hoistFree :: (forall x. f x -> g x) -> Free f a -> Free g a
 hoistFree _ (Pure a) = Pure a

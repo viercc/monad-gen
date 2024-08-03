@@ -12,7 +12,7 @@
 -- 
 -- - Inherited laws from 'Applicative'
 -- - @('empty', '<|>')@ forms monoid on @f a@ for any type @a@.
--- - /Left zero/ law: @empty '<*>' x === x@ hold.
+-- - /Left zero/ law: @'empty' '<*>' x === 'empty'@.
 -- 
 -- Candidate #1 of the Alternative law have /Left distribution/ law.
 --
