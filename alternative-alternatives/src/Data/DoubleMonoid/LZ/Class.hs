@@ -1,6 +1,6 @@
-module Data.DoubleMonoid.LZ where
+module Data.DoubleMonoid.LZ.Class where
 
-import Data.DoubleMonoid
+import Data.DoubleMonoid.Class
 
 import Data.List.ZList
 
@@ -12,8 +12,8 @@ import Data.List.ZList
 class DoubleMonoid a => DMLZ a where
   {-# MINIMAL #-}
 
-  -- | @('one', '/*/', 'zero')@ is a monoid with one left zero element.
-  --   This can be stated as @a@ is a @ZList@ algebra.
+  -- | @('one', '/*/')@ is a monoid with one right zero element 'zero'.
+  --   This can be stated as @mprodZ@ is a @ZList@ algebra.
   -- 
   -- @
   -- mprodZ . fmap mprodZ === mprodZ . 'Control.Monad.join'

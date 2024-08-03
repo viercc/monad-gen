@@ -2,7 +2,7 @@
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module Data.DoubleMonoid (
+module Data.DoubleMonoid.Class (
   DoubleMonoid(..),
 ) where
 

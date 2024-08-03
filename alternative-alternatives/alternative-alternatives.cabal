@@ -19,12 +19,15 @@ common warnings
 library
     import:           warnings
     exposed-modules:
-      Data.DoubleMonoid,
+      Data.DoubleMonoid.Class,
       Data.DoubleMonoid.Free,
-      Data.DoubleMonoid.LZ,
+      Data.DoubleMonoid.LZ.Class,
       Data.DoubleMonoid.LZ.Free,
+      Data.DoubleMonoid.LZLC.Class,
+      Data.DoubleMonoid.LZLC.Free,
 
       Data.List.ZList,
+      Data.List.ZList.Long,
     build-depends:
       base ^>=4.18,
       monad-ideals >= 0.1.1.0,
