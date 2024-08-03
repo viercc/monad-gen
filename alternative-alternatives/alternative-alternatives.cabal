@@ -28,6 +28,9 @@ library
 
       Data.List.ZList,
       Data.List.ZList.Long,
+
+      Control.Applicative.Free.Zero,
+      Control.Alternative.Free.LZLC,
     build-depends:
       base ^>=4.18,
       monad-ideals >= 0.1.1.0,
