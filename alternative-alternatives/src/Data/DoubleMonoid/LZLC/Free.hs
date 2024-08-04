@@ -3,6 +3,7 @@ module Data.DoubleMonoid.LZLC.Free(
   Free(..),
   SummandF(..), injectSummand,
   FactorF(..), injectFactor,
+  interpret,
 
   viewSum, viewProd, mprodZ,
 
@@ -10,7 +11,7 @@ module Data.DoubleMonoid.LZLC.Free(
   ZList(..), ZList'(..)
 ) where
 
-import Control.Monad (ap, (<=<))
+import Control.Monad (ap)
 
 import Data.List.ZList (ZList(..))
 import Data.List.ZList.Long (ZList'(..))
@@ -87,8 +88,13 @@ instance Applicative Free where
   (<*>) = ap
 
 instance Monad Free where
-  Lit a >>= k = k a
-  Zero >>= _ = Zero
-  One >>= _ = One
-  SumOf mas >>= k = msumZ $ fmap (k <=< injectSummand) (ZL'.toZList mas)
-  ProdOf mas >>= k = mprodZ $ fmap (k <=< injectFactor) (ZL'.toZList mas)
+  x >>= k = interpret k x
+
+interpret :: DMLZLC b => (a -> b) -> Free a -> b
+interpret f = go
+  where
+    go (Lit a) = f a
+    go Zero = zero
+    go One = one
+    go (SumOf xs) = msumZ $ ZL'.toZList (go . injectSummand <$> xs)
+    go (ProdOf xs) = mprodZ $ ZL'.toZList (go . injectFactor <$> xs)

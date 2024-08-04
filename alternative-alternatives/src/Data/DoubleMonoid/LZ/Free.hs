@@ -3,6 +3,7 @@ module Data.DoubleMonoid.LZ.Free(
   Free(..),
   SummandF(..), injectSummand,
   FactorF(..), injectFactor,
+  interpret,
 
   viewSum, viewProd, mprodZ,
 
@@ -11,7 +12,7 @@ module Data.DoubleMonoid.LZ.Free(
 ) where
 
 import Data.Foldable (toList)
-import Control.Monad (ap, (<=<))
+import Control.Monad (ap)
 
 import Data.List.TwoOrMore
 
@@ -84,8 +85,13 @@ instance Applicative Free where
   (<*>) = ap
 
 instance Monad Free where
-  Lit a >>= k = k a
-  Zero >>= _ = Zero
-  One >>= _ = One
-  SumOf mas >>= k = msum $ fmap (k <=< injectSummand) (toList mas)
-  ProdOf mas >>= k = mprodZ $ fmap (k <=< injectFactor) (ZL'.toZList mas)
+  x >>= k = interpret k x
+
+interpret :: DMLZ b => (a -> b) -> Free a -> b
+interpret f = go
+  where
+    go (Lit a) = f a
+    go Zero = zero
+    go One = one
+    go (SumOf xs) = msum $ toList (go . injectSummand <$> xs)
+    go (ProdOf xs) = mprodZ $ ZL'.toZList (go . injectFactor <$> xs)
