@@ -22,6 +22,43 @@ import Data.DoubleMonoid.Class
 import Data.DoubleMonoid.LZ.Class
 import Data.DoubleMonoid.LZLC.Class
 
+{-
+
+Note: Category theory perspective
+
+Free can be thought of the pushout (amalgamated product) of
+two copies of ZList.
+
+* Sum = ZList = the free (monoid + right zero) monad
+* Prod = ZList
+
+from
+
+type Short a = Either Constant a
+data Constant = Zero | One
+
+p1 :: Short ~> Sum
+p1 (Left Zero) = Nend
+p1 (Left One) = Zend
+p1 (Right a) = pure a
+
+p2 :: Short ~> Prod
+p2 (Left Zero) = Zend
+p2 (Left One) = Nend
+p2 (Right a) = pure a
+
+           p1
+ Short ----------> Sum
+   |                |
+   |                |
+   | p2             |
+   |            +-- |
+   v            |   v
+  Prod ----------> Free
+
+-}
+
+-- | The free 'DMLZLC'.
 data Free a =
     Lit a
   | Zero

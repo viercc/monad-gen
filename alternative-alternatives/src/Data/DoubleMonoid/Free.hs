@@ -34,6 +34,25 @@ import Text.Show (showListWith)
 
 import Data.DoubleMonoid.Class
 
+{-
+
+Note: Category theory perspective
+
+Free can be thought of as the coproduct (free product) of
+two copies of List = [], the free monoid monad.
+
+          pure
+  Id  ----------> List
+   |                |
+   |                |
+   | pure           |
+   |            +-- |
+   v            |   v
+  List ----------> Free
+
+-}
+
+-- | The free 'DobuleMonoid'.
 newtype Free a = Free
   { runFree :: Unite (NotOne :+ NotOne) a}
   deriving stock (Eq, Functor, Foldable, Traversable)

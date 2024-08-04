@@ -24,7 +24,37 @@ import qualified Data.List.ZList.Long as ZL'
 import Data.DoubleMonoid.Class
 import Data.DoubleMonoid.LZ.Class
 
--- | Free left zero double monoid
+{-
+
+Note: Category theory perspective
+
+Free can be thought of the pushout (amalgamated product) of
+
+* List = [] = the free monoid monad
+* ZList = the free (monoid + right zero) monad
+
+along
+
+p1 :: Maybe ~> List
+p1 Nothing = []
+p1 (Just a) = pure a
+
+p2 :: Maybe ~> ZList
+p2 Nothing = Zend
+p2 (Just a) = pure a
+
+           p1
+ Maybe ----------> List
+   |                |
+   |                |
+   | p2             |
+   |            +-- |
+   v            |   v
+ ZList ----------> Free
+
+-}
+
+-- | The free 'DMLZ'
 data Free a =
     Lit a
   | Zero
