@@ -8,7 +8,6 @@ module Data.DoubleMonoid.Class (
 
 import Data.Monoid (Dual(..))
 
-import qualified Data.DoubleMonoid.Free as DM
 import Data.Ix (Ix)
 import Data.Foldable (foldl')
 
@@ -51,23 +50,23 @@ import Data.Foldable (foldl')
 -- @
 
 class DoubleMonoid a where
-  {-# MINIMAL one, (/*/), zero, (/+/) | mprod, msum | doubleMonoidAlgebra #-}
+  {-# MINIMAL one, (/*/), zero, (/+/) | mprod, msum #-}
 
   -- | The unit of \"multiplicative\" monoid.
   one :: a
-  one = doubleMonoidAlgebra id DM.One
+  one = mprod []
 
   -- | The binary operator of \"multiplicative\" monoid.
   (/*/) :: a -> a -> a
-  x /*/ y = doubleMonoidAlgebra id (DM.Lit x DM.:/*/ DM.Lit y)
+  x /*/ y = mprod [x,y]
 
   -- | The unit of \"additive\" monoid.
   zero :: a
-  zero = doubleMonoidAlgebra id DM.Zero
+  zero = msum []
 
   -- | The binary operator of \"additive\" monoid.
   (/+/) :: a -> a -> a
-  x /+/ y = doubleMonoidAlgebra id (DM.Lit x DM.:/+/ DM.Lit y)
+  x /+/ y = msum [x,y]
   
   -- | Fold a list using '/*/' monoid.
   mprod :: [a] -> a
@@ -76,19 +75,6 @@ class DoubleMonoid a where
   -- | Fold a list using '/+/' monoid.
   msum :: [a] -> a
   msum = foldr (/+/) zero
-
-  -- | A 'DoubleMonoid' is an algebra of 'DM.Free'
-  -- 
-  -- @
-  -- doubleMonoidAlgebra f . join === doubleMonoidAlgebra (doubleMonoidAlgebra f)
-  -- @
-  doubleMonoidAlgebra :: (b -> a) -> DM.Free b -> a
-  doubleMonoidAlgebra f = go
-    where
-      go (DM.Lit a) = f a
-      go (DM.Sum xs) = case xs of
-        [DM.Prod xs'] -> mprod (go <$> xs')
-        _ -> msum (go <$> xs)
 
 infixr 5 /+/
 
@@ -113,8 +99,3 @@ instance Num a => DoubleMonoid (AsNum a) where
 
   msum = foldl' (+) 0
   mprod = foldl' (*) 1
-
-instance DoubleMonoid (DM.Free a) where
-  mprod = DM.Prod
-  msum = DM.Sum
-  doubleMonoidAlgebra = (=<<)

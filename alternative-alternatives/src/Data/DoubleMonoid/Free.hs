@@ -15,7 +15,8 @@ module Data.DoubleMonoid.Free(
     Lit, Zero, One, (:/+/), (:/*/),
     Sum, Prod
   ),
-  lit, sum, viewSum, prod, viewProd
+  lit, sum, viewSum, prod, viewProd,
+  interpret
 ) where
 
 import Prelude hiding (sum)
@@ -30,6 +31,8 @@ import Control.Monad.Isolated
 import Control.Monad.Coproduct
 import Data.Functor.Classes (Show1 (..), showsUnaryWith, showsPrec1)
 import Text.Show (showListWith)
+
+import Data.DoubleMonoid.Class
 
 newtype Free a = Free
   { runFree :: Unite (NotOne :+ NotOne) a}
@@ -127,3 +130,19 @@ viewSum x = case runUnite (runFree x) of
   Right (Coproduct (Left _))   -> [x] 
   Right (Coproduct (Right xs)) -> Free <$> unwrapMutual2 xs
 
+instance DoubleMonoid (Free a) where
+  mprod = Prod
+  msum = Sum
+
+-- | Every 'DoubleMonoid a' is an algebra of 'Free'
+-- 
+-- @
+-- interpret f . join === interpret (interpret f)
+-- @
+interpret :: DoubleMonoid b => (a -> b) -> Free a -> b
+interpret f = go
+  where
+    go (Lit a) = f a
+    go (Sum xs) = case xs of
+      [Prod xs'] -> mprod (go <$> xs')
+      _ -> msum (go <$> xs)
