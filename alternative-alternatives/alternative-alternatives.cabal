@@ -25,6 +25,8 @@ library
       Data.DoubleMonoid.LZ.Free,
       Data.DoubleMonoid.LZLC.Class,
       Data.DoubleMonoid.LZLC.Free,
+      Data.DoubleMonoid.NearSemiring.Class,
+      Data.DoubleMonoid.NearSemiring.Free,
 
       Data.List.ZList,
       Data.List.ZList.Long,
