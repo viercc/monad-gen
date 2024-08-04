@@ -11,6 +11,8 @@ import Data.List.ZList
 -- one \/+\/ x === one
 -- @
 class DMLZ a => DMLZLC a where
+  {-# MINIMAL #-}
+  
   -- | @('zero', '/+/')@ is a monoid with a right zero element @one@.
   --   This can be stated as @msumZ@ is a @ZList@ algebra.
   -- 
