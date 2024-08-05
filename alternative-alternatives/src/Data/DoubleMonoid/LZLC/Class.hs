@@ -12,7 +12,7 @@ import Data.List.ZList
 -- @
 class DMLZ a => DMLZLC a where
   {-# MINIMAL #-}
-  
+
   -- | @('zero', '/+/')@ is a monoid with a right zero element @one@.
   --   This can be stated as @msumZ@ is a @ZList@ algebra.
   -- 
@@ -35,3 +35,6 @@ class DMLZ a => DMLZLC a where
       go Zend = [one]
       go (Cons a as) = a : go as
 
+instance DMLZLC ()
+instance (DMLZLC a, DMLZLC b) => DMLZLC (a,b)
+instance Monoid a => DMLZLC (Maybe a)

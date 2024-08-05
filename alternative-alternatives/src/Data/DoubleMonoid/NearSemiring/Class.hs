@@ -13,3 +13,8 @@ import Data.DoubleMonoid.LZ.Class (DMLZ)
 -- (x \/+\/ y) \/*\/ z === (x \/*\/ z) \/+\/ (y \/*\/ z)
 -- @
 class DMLZ a => NearSemiring a
+
+instance NearSemiring ()
+instance (NearSemiring a, NearSemiring b) => NearSemiring (a,b)
+instance Monoid a => NearSemiring (Maybe a)
+instance Monoid a => NearSemiring [a]

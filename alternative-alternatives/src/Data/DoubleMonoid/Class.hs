@@ -10,6 +10,7 @@ import Data.Monoid (Dual(..))
 
 import Data.Ix (Ix)
 import Data.Foldable (foldl')
+import Control.Applicative ((<|>))
 
 -- | @DoubleMonoid@ is a type with two independent monoid structures.
 --
@@ -99,3 +100,27 @@ instance Num a => DoubleMonoid (AsNum a) where
 
   msum = foldl' (+) 0
   mprod = foldl' (*) 1
+
+-- | Trivial
+instance DoubleMonoid () where
+  msum _ = ()
+  mprod _ = ()
+
+-- | Product
+instance (DoubleMonoid a, DoubleMonoid b) => DoubleMonoid (a,b) where
+  msum xys = let (xs, ys) = unzip xys in (msum xs, msum ys)
+  mprod xys = let (xs, ys) = unzip xys in (mprod xs, mprod ys)
+
+-- | @('/+/') = ('<|>'); ('/*/') = liftA2 ('<>')@
+instance Monoid a => DoubleMonoid (Maybe a) where
+  zero = Nothing
+  one = Just mempty
+  (/+/) = (<|>)
+  (/*/) = liftA2 (<>)
+
+-- | @('/+/') = ('++'); ('/*/') = liftA2 ('<>')@
+instance Monoid a => DoubleMonoid [a] where
+  zero = []
+  one = [mempty]
+  (/+/) = (<|>)
+  (/*/) = liftA2 (<>)
