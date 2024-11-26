@@ -276,6 +276,7 @@ targets = Map.fromList
 
     target @U Proxy,
     target @V Proxy,
+    target @X Proxy,
     target @W Proxy,
     target @Y Proxy
   ]
