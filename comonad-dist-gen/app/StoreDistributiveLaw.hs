@@ -14,13 +14,27 @@
 {-# LANGUAGE LambdaCase #-}
 module StoreDistributiveLaw(
   C(..),
+  pos, peek,
+  mapPos, mapPort,
+  compF, decompF,
+  assocF, unassocF,
+
   Lens(..),
+  (|>), idLens,
+  toLens, fromLens,
+
   Dist,
   DistLens,
+  distToLens,
+  distFromLens,
 
   A(..), B(..),
   candidateLenses,
-  lawfulDistLenses
+  lawfulDistLenses,
+
+  LensEnc(..),
+  encodeLens,
+  decodeLens,
 ) where
 
 import Control.Comonad
@@ -32,19 +46,16 @@ import Data.Coerce (coerce)
 import Data.Bool (bool)
 import Data.Functor.Classes (showsUnaryWith, showsBinaryWith)
 import Control.Monad (guard)
-
--- * Util
-
-assoc :: (a,(b,c)) -> ((a,b),c)
-assoc (a,(b,c)) = ((a,b),c)
-
-unassoc :: ((a,b),c) -> (a,(b,c)) 
-unassoc ((a,b),c) = (a,(b,c))
+import Data.Vector.Sized (Vector)
+import Data.Finite (Finite)
 
 -- * (Generalized) Store Comonad
 
 data C s p x = C s (p -> x)
   deriving Functor
+
+mapPos :: (s -> s') -> C s p x -> C s' p x
+mapPos g (C s f) = C (g s) f
 
 mapPort :: (p' -> p) -> C s p x -> C s p' x
 mapPort g (C s f) = C s (f . g)
@@ -82,6 +93,9 @@ l1 |> l2 = Lens $ \s ->
     let (s', g) = unLens l1 s
         (s'', h) = unLens l2 s'
     in (s'', g . h)
+
+idLens :: Lens s p s p
+idLens = Lens $ \s -> (s, id)
 
 toLens :: (forall x. C s p x -> C s' p' x) -> Lens s p s' p'
 toLens f = Lens {
@@ -242,3 +256,12 @@ candidateLenses _ = map Lens $ sequenceFn $ \sst -> do
           | s == f' t -> [ (s0, t) ]
           | otherwise -> inhabitants
   pure (C t0 f', putPart)
+
+newtype LensEnc s p s' p' = LensEnc (Vector (Cardinality s) (Finite (Cardinality s'), Finite (Cardinality p ^ Cardinality p')))
+  deriving (Show, Eq, Ord)
+
+encodeLens :: (Finitary s, Finitary p, Finitary s', Finitary p') => Lens s p s' p' -> LensEnc s p s' p'
+encodeLens l = LensEnc $ (\(s', fn) -> (toFinite s', toFinite fn)) <$> fnToVec (lensToFn l)
+
+decodeLens :: (Finitary s, Finitary p, Finitary s', Finitary p') => LensEnc s p s' p' -> Lens s p s' p'
+decodeLens (LensEnc v) = fnToLens $ (\(sCode, fnCode) -> (fromFinite sCode, fromFinite fnCode)) <$> vecToFn v

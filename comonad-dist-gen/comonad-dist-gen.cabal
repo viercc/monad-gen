@@ -23,6 +23,7 @@ executable comonad-dist-gen
       StoreDistributiveLaw
     build-depends:
       base >=4.20.0.0,
+      containers,
       comonad,
       finitary,
       finite-typelits,

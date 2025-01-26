@@ -14,6 +14,7 @@
 -- | Finitary functions
 module Data.Finitary.Extra(
   Fn(..),
+  fnToVec, vecToFn,
   showFn
 ) where
 
