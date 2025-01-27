@@ -4,7 +4,9 @@
 module Main(main) where
 
 import Data.Coerce (coerce)
+import Data.Foldable (for_)
 import Data.Maybe (mapMaybe)
+import Control.Arrow ((&&&))
 import qualified Data.List as List
 import qualified Data.Map as Map
 import qualified Data.Set as Set
@@ -13,14 +15,13 @@ import Data.Finite (finite)
 import qualified Data.Vector.Sized as SV
 
 import StoreDistributiveLaw
-import Data.Foldable (for_)
 import Data.Finitary.Extra (prettyPrintFn2, prettyPrintFn)
 
 main :: IO ()
-main = prettyPrintDistLenses
+main = printHandcraftedDistLens
 
 generateAllDistLaws :: IO ()
-generateAllDistLaws = mapM_ (print . encodeLens) $ lawfulDistLenses (candidateLenses ())
+generateAllDistLaws = mapM_ (print . encodeLens) $ filter checkAllLaws (candidateLenses ())
 
 {- Output (took about 18 min.):
 
@@ -48,6 +49,150 @@ prettyPrintDistLenses = for_ (zip [0 :: Int ..] generatedData) $ \(i, encLens) -
     putStrLn $ "  " ++ pprLine
 
 {- Output:
+
+Dist #0
+  let q (A₀,B₀,B₀) = (B₀,A₀,A₀)
+      q (A₀,B₀,B₁) = (B₀,A₀,A₀)
+      q (A₀,B₁,B₀) = (B₁,A₀,A₀)
+      q (A₀,B₁,B₁) = (B₁,A₀,A₀)
+      q (A₁,B₀,B₀) = (B₀,A₁,A₁)
+      q (A₁,B₀,B₁) = (B₁,A₁,A₁)
+      q (A₁,B₁,B₀) = (B₀,A₁,A₁)
+      q (A₁,B₁,B₁) = (B₁,A₁,A₁)
+      d0_5 (B₀,A₀) = A₀
+      d0_5 (B₀,A₁) = A₁
+      d0_5 (B₁,A₀) = A₀
+      d0_5 (B₁,A₁) = A₁
+      d0 (A₀,B₀,B₀) = d0_5
+      d0 (A₀,B₀,B₁) = d0_5
+      d0 (A₀,B₁,B₀) = d0_5
+      d0 (A₀,B₁,B₁) = d0_5
+      d0 (A₁,B₀,B₀) = d0_5
+      d0 (A₁,B₀,B₁) = d0_5
+      d0 (A₁,B₁,B₀) = d0_5
+      d0 (A₁,B₁,B₁) = d0_5
+      d1_3 (B₀,A₀) = B₀
+      d1_3 (B₀,A₁) = B₀
+      d1_3 (B₁,A₀) = B₁
+      d1_3 (B₁,A₁) = B₁
+      d1_6 (B₀,A₀) = B₀
+      d1_6 (B₀,A₁) = B₁
+      d1_6 (B₁,A₀) = B₁
+      d1_6 (B₁,A₁) = B₀
+      d1_9 (B₀,A₀) = B₁
+      d1_9 (B₀,A₁) = B₀
+      d1_9 (B₁,A₀) = B₀
+      d1_9 (B₁,A₁) = B₁
+      d1 (A₀,B₀,B₀) = d1_3
+      d1 (A₀,B₀,B₁) = d1_6
+      d1 (A₀,B₁,B₀) = d1_6
+      d1 (A₀,B₁,B₁) = d1_3
+      d1 (A₁,B₀,B₀) = d1_3
+      d1 (A₁,B₀,B₁) = d1_9
+      d1 (A₁,B₁,B₀) = d1_9
+      d1 (A₁,B₁,B₁) = d1_3
+  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
+Dist #1
+  let q (A₀,B₀,B₀) = (B₀,A₀,A₀)
+      q (A₀,B₀,B₁) = (B₀,A₀,A₁)
+      q (A₀,B₁,B₀) = (B₁,A₁,A₀)
+      q (A₀,B₁,B₁) = (B₁,A₀,A₀)
+      q (A₁,B₀,B₀) = (B₀,A₁,A₁)
+      q (A₁,B₀,B₁) = (B₁,A₀,A₁)
+      q (A₁,B₁,B₀) = (B₀,A₁,A₀)
+      q (A₁,B₁,B₁) = (B₁,A₁,A₁)
+      d0_5 (B₀,A₀) = A₀
+      d0_5 (B₀,A₁) = A₁
+      d0_5 (B₁,A₀) = A₀
+      d0_5 (B₁,A₁) = A₁
+      d0_6 (B₀,A₀) = A₀
+      d0_6 (B₀,A₁) = A₁
+      d0_6 (B₁,A₀) = A₁
+      d0_6 (B₁,A₁) = A₀
+      d0_9 (B₀,A₀) = A₁
+      d0_9 (B₀,A₁) = A₀
+      d0_9 (B₁,A₀) = A₀
+      d0_9 (B₁,A₁) = A₁
+      d0 (A₀,B₀,B₀) = d0_5
+      d0 (A₀,B₀,B₁) = d0_6
+      d0 (A₀,B₁,B₀) = d0_9
+      d0 (A₀,B₁,B₁) = d0_5
+      d0 (A₁,B₀,B₀) = d0_5
+      d0 (A₁,B₀,B₁) = d0_9
+      d0 (A₁,B₁,B₀) = d0_6
+      d0 (A₁,B₁,B₁) = d0_5
+      d1_3 (B₀,A₀) = B₀
+      d1_3 (B₀,A₁) = B₀
+      d1_3 (B₁,A₀) = B₁
+      d1_3 (B₁,A₁) = B₁
+      d1_5 (B₀,A₀) = B₀
+      d1_5 (B₀,A₁) = B₁
+      d1_5 (B₁,A₀) = B₀
+      d1_5 (B₁,A₁) = B₁
+      d1_10 (B₀,A₀) = B₁
+      d1_10 (B₀,A₁) = B₀
+      d1_10 (B₁,A₀) = B₁
+      d1_10 (B₁,A₁) = B₀
+      d1 (A₀,B₀,B₀) = d1_3
+      d1 (A₀,B₀,B₁) = d1_5
+      d1 (A₀,B₁,B₀) = d1_10
+      d1 (A₀,B₁,B₁) = d1_3
+      d1 (A₁,B₀,B₀) = d1_3
+      d1 (A₁,B₀,B₁) = d1_5
+      d1 (A₁,B₁,B₀) = d1_10
+      d1 (A₁,B₁,B₁) = d1_3
+  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
+Dist #2
+  let q (A₀,B₀,B₀) = (B₀,A₀,A₁)
+      q (A₀,B₀,B₁) = (B₀,A₀,A₀)
+      q (A₀,B₁,B₀) = (B₁,A₀,A₀)
+      q (A₀,B₁,B₁) = (B₁,A₁,A₀)
+      q (A₁,B₀,B₀) = (B₀,A₁,A₀)
+      q (A₁,B₀,B₁) = (B₁,A₁,A₁)
+      q (A₁,B₁,B₀) = (B₀,A₁,A₁)
+      q (A₁,B₁,B₁) = (B₁,A₀,A₁)
+      d0_5 (B₀,A₀) = A₀
+      d0_5 (B₀,A₁) = A₁
+      d0_5 (B₁,A₀) = A₀
+      d0_5 (B₁,A₁) = A₁
+      d0_6 (B₀,A₀) = A₀
+      d0_6 (B₀,A₁) = A₁
+      d0_6 (B₁,A₀) = A₁
+      d0_6 (B₁,A₁) = A₀
+      d0_9 (B₀,A₀) = A₁
+      d0_9 (B₀,A₁) = A₀
+      d0_9 (B₁,A₀) = A₀
+      d0_9 (B₁,A₁) = A₁
+      d0 (A₀,B₀,B₀) = d0_6
+      d0 (A₀,B₀,B₁) = d0_5
+      d0 (A₀,B₁,B₀) = d0_5
+      d0 (A₀,B₁,B₁) = d0_9
+      d0 (A₁,B₀,B₀) = d0_6
+      d0 (A₁,B₀,B₁) = d0_5
+      d0 (A₁,B₁,B₀) = d0_5
+      d0 (A₁,B₁,B₁) = d0_9
+      d1_3 (B₀,A₀) = B₀
+      d1_3 (B₀,A₁) = B₀
+      d1_3 (B₁,A₀) = B₁
+      d1_3 (B₁,A₁) = B₁
+      d1_6 (B₀,A₀) = B₀
+      d1_6 (B₀,A₁) = B₁
+      d1_6 (B₁,A₀) = B₁
+      d1_6 (B₁,A₁) = B₀
+      d1_9 (B₀,A₀) = B₁
+      d1_9 (B₀,A₁) = B₀
+      d1_9 (B₁,A₀) = B₀
+      d1_9 (B₁,A₁) = B₁
+      d1 (A₀,B₀,B₀) = d1_3
+      d1 (A₀,B₀,B₁) = d1_6
+      d1 (A₀,B₁,B₀) = d1_6
+      d1 (A₀,B₁,B₁) = d1_3
+      d1 (A₁,B₀,B₀) = d1_3
+      d1 (A₁,B₀,B₁) = d1_9
+      d1 (A₁,B₁,B₀) = d1_9
+      d1 (A₁,B₁,B₁) = d1_3
+  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
+Dist #3
   let q (A₀,B₀,B₀) = (B₀,A₀,A₁)
       q (A₀,B₀,B₁) = (B₀,A₀,A₁)
       q (A₀,B₁,B₀) = (B₁,A₁,A₀)
@@ -109,6 +254,20 @@ printIsoTable = mapM_ (putStrLn . List.intercalate "|" . map toSymb) isoTable
 
 Interpretation:
   The generated distributed laws are not "isomorphic" each other
+
+-}
+
+printHandcraftedDistLens :: IO ()
+printHandcraftedDistLens = do
+  putStrLn $ "Code:     " ++ show (encodeLens distLens0)
+  putStrLn $ "Validity: " ++ show (checkAllLaws distLens0)
+  putStrLn $ "Is dist0 correct? " ++ show (distToLens dist0 == distLens0)
+
+{-
+
+Code:     LensEnc (Vector [(finite 0,finite 39),(finite 0,finite 54),(finite 4,finite 54),(finite 4,finite 39),(finite 3,finite 39),(finite 7,finite 99),(finite 3,finite 99),(finite 7,finite 39)])
+Validity: True
+Is dist0 correct? True
 
 -}
 
@@ -182,3 +341,21 @@ isoTable = [[ isIso i j | j <- [0..n-1]] | i <- [0 .. n-1]]
         Just j -> pure (i,j)
     isoRelation = Set.fromList isoList
     isIso i j = i == j || (i,j) `Set.member` isoRelation
+
+-- Simplify and Dist #0 as A = B = Bool
+distLens0 :: DistLens Bool Bool
+distLens0 = Lens $ \c -> (q c, d0 c &&& d1 c)
+  where
+    q (C a f) = C (f a) (const a)
+    d0 _ (_,a) = a
+    d1 (C a0 f) (b,a) = b `xor` f a0 `xor` f a
+
+-- dist0 = distFromLens distLens0
+dist0 :: Dist Bool Bool
+dist0 (C a0 k) = C (f a0) $ \b -> C a0 $ \a -> h a (b `xor` f a0 `xor` f a)
+  where
+    f = pos . k
+    h a b = peek (k a) b
+
+xor :: Bool -> Bool -> Bool
+xor = (/=)

@@ -30,7 +30,7 @@ module StoreDistributiveLaw(
 
   A(..), B(..),
   candidateLenses,
-  lawfulDistLenses,
+  checkAllLaws,
 
   LensEnc(..),
   encodeLens,
@@ -41,11 +41,9 @@ import Control.Comonad
 import Data.Finitary
 import Data.Finitary.Extra
 import GHC.TypeNats (type (*), type (^))
-import Data.Bifunctor (Bifunctor(..))
 import Data.Coerce (coerce)
 import Data.Bool (bool)
 import Data.Functor.Classes (showsUnaryWith, showsBinaryWith)
-import Control.Monad (guard)
 import Data.Vector.Sized (Vector)
 import Data.Finite (Finite)
 
@@ -54,17 +52,17 @@ import Data.Finite (Finite)
 data C s p x = C s (p -> x)
   deriving Functor
 
-mapPos :: (s -> s') -> C s p x -> C s' p x
-mapPos g (C s f) = C (g s) f
-
-mapPort :: (p' -> p) -> C s p x -> C s p' x
-mapPort g (C s f) = C s (f . g)
-
 instance (s ~ p) => Comonad (C s p) where
   extract (C s f) = f s
   duplicate (C s f) = C s $ \s' -> C s' f
 
 type Store s = C s s
+
+mapPos :: (s -> s') -> C s p x -> C s' p x
+mapPos g (C s f) = C (g s) f
+
+mapPort :: (p' -> p) -> C s p x -> C s p' x
+mapPort g (C s f) = C s (f . g)
 
 pos :: C s p x -> s
 pos (C s _) = s
@@ -236,15 +234,12 @@ sequenceFn = fmap apply . sequenceA . Fn
 check :: Eq a => Equals a -> Bool
 check (Equals a1 a2) = a1 == a2
 
-lawfulDistLenses :: [DistLens A B] -> [DistLens A B]
-lawfulDistLenses candidates =
-  [ distLens
-    | distLens <- candidates
-    , check (law1Lens distLens)
-    , check (law2Lens distLens)
-    , check (law3Lens distLens)
-    , check (law4Lens distLens)
-  ]
+checkAllLaws :: (Finitary s, Finitary t) => DistLens s t -> Bool
+checkAllLaws l =
+     check (law1Lens l)
+  && check (law2Lens l)
+  && check (law3Lens l)
+  && check (law4Lens l)
 
 candidateLenses :: () -> [DistLens A B]
 candidateLenses _ = map Lens $ sequenceFn $ \sst -> do
