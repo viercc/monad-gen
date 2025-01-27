@@ -13,9 +13,8 @@ import Data.Finite (finite)
 import qualified Data.Vector.Sized as SV
 
 import StoreDistributiveLaw
-import Data.Finitary
-import Data.Functor.Classes (showsUnaryWith, showsBinaryWith)
 import Data.Foldable (for_)
+import Data.Finitary.Extra (prettyPrintFn2, prettyPrintFn)
 
 main :: IO ()
 main = prettyPrintDistLenses
@@ -49,230 +48,6 @@ prettyPrintDistLenses = for_ (zip [0 :: Int ..] generatedData) $ \(i, encLens) -
     putStrLn $ "  " ++ pprLine
 
 {- Output:
-
-Dist #0
-  let q (A₀,B₀,B₀) = (B₀,A₀,A₀)
-      q (A₀,B₀,B₁) = (B₀,A₀,A₀)
-      q (A₀,B₁,B₀) = (B₁,A₀,A₀)
-      q (A₀,B₁,B₁) = (B₁,A₀,A₀)
-      q (A₁,B₀,B₀) = (B₀,A₁,A₁)
-      q (A₁,B₀,B₁) = (B₁,A₁,A₁)
-      q (A₁,B₁,B₀) = (B₀,A₁,A₁)
-      q (A₁,B₁,B₁) = (B₁,A₁,A₁)
-      d0 (A₀,B₀,B₀) (B₀,A₀) = A₀
-      d0 (A₀,B₀,B₀) (B₀,A₁) = A₁
-      d0 (A₀,B₀,B₀) (B₁,A₀) = A₀
-      d0 (A₀,B₀,B₀) (B₁,A₁) = A₁
-      d0 (A₀,B₀,B₁) (B₀,A₀) = A₀
-      d0 (A₀,B₀,B₁) (B₀,A₁) = A₁
-      d0 (A₀,B₀,B₁) (B₁,A₀) = A₀
-      d0 (A₀,B₀,B₁) (B₁,A₁) = A₁
-      d0 (A₀,B₁,B₀) (B₀,A₀) = A₀
-      d0 (A₀,B₁,B₀) (B₀,A₁) = A₁
-      d0 (A₀,B₁,B₀) (B₁,A₀) = A₀
-      d0 (A₀,B₁,B₀) (B₁,A₁) = A₁
-      d0 (A₀,B₁,B₁) (B₀,A₀) = A₀
-      d0 (A₀,B₁,B₁) (B₀,A₁) = A₁
-      d0 (A₀,B₁,B₁) (B₁,A₀) = A₀
-      d0 (A₀,B₁,B₁) (B₁,A₁) = A₁
-      d0 (A₁,B₀,B₀) (B₀,A₀) = A₀
-      d0 (A₁,B₀,B₀) (B₀,A₁) = A₁
-      d0 (A₁,B₀,B₀) (B₁,A₀) = A₀
-      d0 (A₁,B₀,B₀) (B₁,A₁) = A₁
-      d0 (A₁,B₀,B₁) (B₀,A₀) = A₀
-      d0 (A₁,B₀,B₁) (B₀,A₁) = A₁
-      d0 (A₁,B₀,B₁) (B₁,A₀) = A₀
-      d0 (A₁,B₀,B₁) (B₁,A₁) = A₁
-      d0 (A₁,B₁,B₀) (B₀,A₀) = A₀
-      d0 (A₁,B₁,B₀) (B₀,A₁) = A₁
-      d0 (A₁,B₁,B₀) (B₁,A₀) = A₀
-      d0 (A₁,B₁,B₀) (B₁,A₁) = A₁
-      d0 (A₁,B₁,B₁) (B₀,A₀) = A₀
-      d0 (A₁,B₁,B₁) (B₀,A₁) = A₁
-      d0 (A₁,B₁,B₁) (B₁,A₀) = A₀
-      d0 (A₁,B₁,B₁) (B₁,A₁) = A₁
-      d1 (A₀,B₀,B₀) (B₀,A₀) = B₀
-      d1 (A₀,B₀,B₀) (B₀,A₁) = B₀
-      d1 (A₀,B₀,B₀) (B₁,A₀) = B₁
-      d1 (A₀,B₀,B₀) (B₁,A₁) = B₁
-      d1 (A₀,B₀,B₁) (B₀,A₀) = B₀
-      d1 (A₀,B₀,B₁) (B₀,A₁) = B₁
-      d1 (A₀,B₀,B₁) (B₁,A₀) = B₁
-      d1 (A₀,B₀,B₁) (B₁,A₁) = B₀
-      d1 (A₀,B₁,B₀) (B₀,A₀) = B₀
-      d1 (A₀,B₁,B₀) (B₀,A₁) = B₁
-      d1 (A₀,B₁,B₀) (B₁,A₀) = B₁
-      d1 (A₀,B₁,B₀) (B₁,A₁) = B₀
-      d1 (A₀,B₁,B₁) (B₀,A₀) = B₀
-      d1 (A₀,B₁,B₁) (B₀,A₁) = B₀
-      d1 (A₀,B₁,B₁) (B₁,A₀) = B₁
-      d1 (A₀,B₁,B₁) (B₁,A₁) = B₁
-      d1 (A₁,B₀,B₀) (B₀,A₀) = B₀
-      d1 (A₁,B₀,B₀) (B₀,A₁) = B₀
-      d1 (A₁,B₀,B₀) (B₁,A₀) = B₁
-      d1 (A₁,B₀,B₀) (B₁,A₁) = B₁
-      d1 (A₁,B₀,B₁) (B₀,A₀) = B₁
-      d1 (A₁,B₀,B₁) (B₀,A₁) = B₀
-      d1 (A₁,B₀,B₁) (B₁,A₀) = B₀
-      d1 (A₁,B₀,B₁) (B₁,A₁) = B₁
-      d1 (A₁,B₁,B₀) (B₀,A₀) = B₁
-      d1 (A₁,B₁,B₀) (B₀,A₁) = B₀
-      d1 (A₁,B₁,B₀) (B₁,A₀) = B₀
-      d1 (A₁,B₁,B₀) (B₁,A₁) = B₁
-      d1 (A₁,B₁,B₁) (B₀,A₀) = B₀
-      d1 (A₁,B₁,B₁) (B₀,A₁) = B₀
-      d1 (A₁,B₁,B₁) (B₁,A₀) = B₁
-      d1 (A₁,B₁,B₁) (B₁,A₁) = B₁
-  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
-Dist #1
-  let q (A₀,B₀,B₀) = (B₀,A₀,A₀)
-      q (A₀,B₀,B₁) = (B₀,A₀,A₁)
-      q (A₀,B₁,B₀) = (B₁,A₁,A₀)
-      q (A₀,B₁,B₁) = (B₁,A₀,A₀)
-      q (A₁,B₀,B₀) = (B₀,A₁,A₁)
-      q (A₁,B₀,B₁) = (B₁,A₀,A₁)
-      q (A₁,B₁,B₀) = (B₀,A₁,A₀)
-      q (A₁,B₁,B₁) = (B₁,A₁,A₁)
-      d0 (A₀,B₀,B₀) (B₀,A₀) = A₀
-      d0 (A₀,B₀,B₀) (B₀,A₁) = A₁
-      d0 (A₀,B₀,B₀) (B₁,A₀) = A₀
-      d0 (A₀,B₀,B₀) (B₁,A₁) = A₁
-      d0 (A₀,B₀,B₁) (B₀,A₀) = A₀
-      d0 (A₀,B₀,B₁) (B₀,A₁) = A₁
-      d0 (A₀,B₀,B₁) (B₁,A₀) = A₁
-      d0 (A₀,B₀,B₁) (B₁,A₁) = A₀
-      d0 (A₀,B₁,B₀) (B₀,A₀) = A₁
-      d0 (A₀,B₁,B₀) (B₀,A₁) = A₀
-      d0 (A₀,B₁,B₀) (B₁,A₀) = A₀
-      d0 (A₀,B₁,B₀) (B₁,A₁) = A₁
-      d0 (A₀,B₁,B₁) (B₀,A₀) = A₀
-      d0 (A₀,B₁,B₁) (B₀,A₁) = A₁
-      d0 (A₀,B₁,B₁) (B₁,A₀) = A₀
-      d0 (A₀,B₁,B₁) (B₁,A₁) = A₁
-      d0 (A₁,B₀,B₀) (B₀,A₀) = A₀
-      d0 (A₁,B₀,B₀) (B₀,A₁) = A₁
-      d0 (A₁,B₀,B₀) (B₁,A₀) = A₀
-      d0 (A₁,B₀,B₀) (B₁,A₁) = A₁
-      d0 (A₁,B₀,B₁) (B₀,A₀) = A₁
-      d0 (A₁,B₀,B₁) (B₀,A₁) = A₀
-      d0 (A₁,B₀,B₁) (B₁,A₀) = A₀
-      d0 (A₁,B₀,B₁) (B₁,A₁) = A₁
-      d0 (A₁,B₁,B₀) (B₀,A₀) = A₀
-      d0 (A₁,B₁,B₀) (B₀,A₁) = A₁
-      d0 (A₁,B₁,B₀) (B₁,A₀) = A₁
-      d0 (A₁,B₁,B₀) (B₁,A₁) = A₀
-      d0 (A₁,B₁,B₁) (B₀,A₀) = A₀
-      d0 (A₁,B₁,B₁) (B₀,A₁) = A₁
-      d0 (A₁,B₁,B₁) (B₁,A₀) = A₀
-      d0 (A₁,B₁,B₁) (B₁,A₁) = A₁
-      d1 (A₀,B₀,B₀) (B₀,A₀) = B₀
-      d1 (A₀,B₀,B₀) (B₀,A₁) = B₀
-      d1 (A₀,B₀,B₀) (B₁,A₀) = B₁
-      d1 (A₀,B₀,B₀) (B₁,A₁) = B₁
-      d1 (A₀,B₀,B₁) (B₀,A₀) = B₀
-      d1 (A₀,B₀,B₁) (B₀,A₁) = B₁
-      d1 (A₀,B₀,B₁) (B₁,A₀) = B₀
-      d1 (A₀,B₀,B₁) (B₁,A₁) = B₁
-      d1 (A₀,B₁,B₀) (B₀,A₀) = B₁
-      d1 (A₀,B₁,B₀) (B₀,A₁) = B₀
-      d1 (A₀,B₁,B₀) (B₁,A₀) = B₁
-      d1 (A₀,B₁,B₀) (B₁,A₁) = B₀
-      d1 (A₀,B₁,B₁) (B₀,A₀) = B₀
-      d1 (A₀,B₁,B₁) (B₀,A₁) = B₀
-      d1 (A₀,B₁,B₁) (B₁,A₀) = B₁
-      d1 (A₀,B₁,B₁) (B₁,A₁) = B₁
-      d1 (A₁,B₀,B₀) (B₀,A₀) = B₀
-      d1 (A₁,B₀,B₀) (B₀,A₁) = B₀
-      d1 (A₁,B₀,B₀) (B₁,A₀) = B₁
-      d1 (A₁,B₀,B₀) (B₁,A₁) = B₁
-      d1 (A₁,B₀,B₁) (B₀,A₀) = B₀
-      d1 (A₁,B₀,B₁) (B₀,A₁) = B₁
-      d1 (A₁,B₀,B₁) (B₁,A₀) = B₀
-      d1 (A₁,B₀,B₁) (B₁,A₁) = B₁
-      d1 (A₁,B₁,B₀) (B₀,A₀) = B₁
-      d1 (A₁,B₁,B₀) (B₀,A₁) = B₀
-      d1 (A₁,B₁,B₀) (B₁,A₀) = B₁
-      d1 (A₁,B₁,B₀) (B₁,A₁) = B₀
-      d1 (A₁,B₁,B₁) (B₀,A₀) = B₀
-      d1 (A₁,B₁,B₁) (B₀,A₁) = B₀
-      d1 (A₁,B₁,B₁) (B₁,A₀) = B₁
-      d1 (A₁,B₁,B₁) (B₁,A₁) = B₁
-  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
-Dist #2
-  let q (A₀,B₀,B₀) = (B₀,A₀,A₁)
-      q (A₀,B₀,B₁) = (B₀,A₀,A₀)
-      q (A₀,B₁,B₀) = (B₁,A₀,A₀)
-      q (A₀,B₁,B₁) = (B₁,A₁,A₀)
-      q (A₁,B₀,B₀) = (B₀,A₁,A₀)
-      q (A₁,B₀,B₁) = (B₁,A₁,A₁)
-      q (A₁,B₁,B₀) = (B₀,A₁,A₁)
-      q (A₁,B₁,B₁) = (B₁,A₀,A₁)
-      d0 (A₀,B₀,B₀) (B₀,A₀) = A₀
-      d0 (A₀,B₀,B₀) (B₀,A₁) = A₁
-      d0 (A₀,B₀,B₀) (B₁,A₀) = A₁
-      d0 (A₀,B₀,B₀) (B₁,A₁) = A₀
-      d0 (A₀,B₀,B₁) (B₀,A₀) = A₀
-      d0 (A₀,B₀,B₁) (B₀,A₁) = A₁
-      d0 (A₀,B₀,B₁) (B₁,A₀) = A₀
-      d0 (A₀,B₀,B₁) (B₁,A₁) = A₁
-      d0 (A₀,B₁,B₀) (B₀,A₀) = A₀
-      d0 (A₀,B₁,B₀) (B₀,A₁) = A₁
-      d0 (A₀,B₁,B₀) (B₁,A₀) = A₀
-      d0 (A₀,B₁,B₀) (B₁,A₁) = A₁
-      d0 (A₀,B₁,B₁) (B₀,A₀) = A₁
-      d0 (A₀,B₁,B₁) (B₀,A₁) = A₀
-      d0 (A₀,B₁,B₁) (B₁,A₀) = A₀
-      d0 (A₀,B₁,B₁) (B₁,A₁) = A₁
-      d0 (A₁,B₀,B₀) (B₀,A₀) = A₀
-      d0 (A₁,B₀,B₀) (B₀,A₁) = A₁
-      d0 (A₁,B₀,B₀) (B₁,A₀) = A₁
-      d0 (A₁,B₀,B₀) (B₁,A₁) = A₀
-      d0 (A₁,B₀,B₁) (B₀,A₀) = A₀
-      d0 (A₁,B₀,B₁) (B₀,A₁) = A₁
-      d0 (A₁,B₀,B₁) (B₁,A₀) = A₀
-      d0 (A₁,B₀,B₁) (B₁,A₁) = A₁
-      d0 (A₁,B₁,B₀) (B₀,A₀) = A₀
-      d0 (A₁,B₁,B₀) (B₀,A₁) = A₁
-      d0 (A₁,B₁,B₀) (B₁,A₀) = A₀
-      d0 (A₁,B₁,B₀) (B₁,A₁) = A₁
-      d0 (A₁,B₁,B₁) (B₀,A₀) = A₁
-      d0 (A₁,B₁,B₁) (B₀,A₁) = A₀
-      d0 (A₁,B₁,B₁) (B₁,A₀) = A₀
-      d0 (A₁,B₁,B₁) (B₁,A₁) = A₁
-      d1 (A₀,B₀,B₀) (B₀,A₀) = B₀
-      d1 (A₀,B₀,B₀) (B₀,A₁) = B₀
-      d1 (A₀,B₀,B₀) (B₁,A₀) = B₁
-      d1 (A₀,B₀,B₀) (B₁,A₁) = B₁
-      d1 (A₀,B₀,B₁) (B₀,A₀) = B₀
-      d1 (A₀,B₀,B₁) (B₀,A₁) = B₁
-      d1 (A₀,B₀,B₁) (B₁,A₀) = B₁
-      d1 (A₀,B₀,B₁) (B₁,A₁) = B₀
-      d1 (A₀,B₁,B₀) (B₀,A₀) = B₀
-      d1 (A₀,B₁,B₀) (B₀,A₁) = B₁
-      d1 (A₀,B₁,B₀) (B₁,A₀) = B₁
-      d1 (A₀,B₁,B₀) (B₁,A₁) = B₀
-      d1 (A₀,B₁,B₁) (B₀,A₀) = B₀
-      d1 (A₀,B₁,B₁) (B₀,A₁) = B₀
-      d1 (A₀,B₁,B₁) (B₁,A₀) = B₁
-      d1 (A₀,B₁,B₁) (B₁,A₁) = B₁
-      d1 (A₁,B₀,B₀) (B₀,A₀) = B₀
-      d1 (A₁,B₀,B₀) (B₀,A₁) = B₀
-      d1 (A₁,B₀,B₀) (B₁,A₀) = B₁
-      d1 (A₁,B₀,B₀) (B₁,A₁) = B₁
-      d1 (A₁,B₀,B₁) (B₀,A₀) = B₁
-      d1 (A₁,B₀,B₁) (B₀,A₁) = B₀
-      d1 (A₁,B₀,B₁) (B₁,A₀) = B₀
-      d1 (A₁,B₀,B₁) (B₁,A₁) = B₁
-      d1 (A₁,B₁,B₀) (B₀,A₀) = B₁
-      d1 (A₁,B₁,B₀) (B₀,A₁) = B₀
-      d1 (A₁,B₁,B₀) (B₁,A₀) = B₀
-      d1 (A₁,B₁,B₀) (B₁,A₁) = B₁
-      d1 (A₁,B₁,B₁) (B₀,A₀) = B₀
-      d1 (A₁,B₁,B₁) (B₀,A₁) = B₀
-      d1 (A₁,B₁,B₁) (B₁,A₀) = B₁
-      d1 (A₁,B₁,B₁) (B₁,A₁) = B₁
-  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
-Dist #3
   let q (A₀,B₀,B₀) = (B₀,A₀,A₁)
       q (A₀,B₀,B₁) = (B₀,A₀,A₁)
       q (A₀,B₁,B₀) = (B₁,A₁,A₀)
@@ -281,72 +56,43 @@ Dist #3
       q (A₁,B₀,B₁) = (B₁,A₀,A₁)
       q (A₁,B₁,B₀) = (B₀,A₁,A₀)
       q (A₁,B₁,B₁) = (B₁,A₀,A₁)
-      d0 (A₀,B₀,B₀) (B₀,A₀) = A₀
-      d0 (A₀,B₀,B₀) (B₀,A₁) = A₁
-      d0 (A₀,B₀,B₀) (B₁,A₀) = A₁
-      d0 (A₀,B₀,B₀) (B₁,A₁) = A₀
-      d0 (A₀,B₀,B₁) (B₀,A₀) = A₀
-      d0 (A₀,B₀,B₁) (B₀,A₁) = A₁
-      d0 (A₀,B₀,B₁) (B₁,A₀) = A₁
-      d0 (A₀,B₀,B₁) (B₁,A₁) = A₀
-      d0 (A₀,B₁,B₀) (B₀,A₀) = A₁
-      d0 (A₀,B₁,B₀) (B₀,A₁) = A₀
-      d0 (A₀,B₁,B₀) (B₁,A₀) = A₀
-      d0 (A₀,B₁,B₀) (B₁,A₁) = A₁
-      d0 (A₀,B₁,B₁) (B₀,A₀) = A₁
-      d0 (A₀,B₁,B₁) (B₀,A₁) = A₀
-      d0 (A₀,B₁,B₁) (B₁,A₀) = A₀
-      d0 (A₀,B₁,B₁) (B₁,A₁) = A₁
-      d0 (A₁,B₀,B₀) (B₀,A₀) = A₀
-      d0 (A₁,B₀,B₀) (B₀,A₁) = A₁
-      d0 (A₁,B₀,B₀) (B₁,A₀) = A₁
-      d0 (A₁,B₀,B₀) (B₁,A₁) = A₀
-      d0 (A₁,B₀,B₁) (B₀,A₀) = A₁
-      d0 (A₁,B₀,B₁) (B₀,A₁) = A₀
-      d0 (A₁,B₀,B₁) (B₁,A₀) = A₀
-      d0 (A₁,B₀,B₁) (B₁,A₁) = A₁
-      d0 (A₁,B₁,B₀) (B₀,A₀) = A₀
-      d0 (A₁,B₁,B₀) (B₀,A₁) = A₁
-      d0 (A₁,B₁,B₀) (B₁,A₀) = A₁
-      d0 (A₁,B₁,B₀) (B₁,A₁) = A₀
-      d0 (A₁,B₁,B₁) (B₀,A₀) = A₁
-      d0 (A₁,B₁,B₁) (B₀,A₁) = A₀
-      d0 (A₁,B₁,B₁) (B₁,A₀) = A₀
-      d0 (A₁,B₁,B₁) (B₁,A₁) = A₁
-      d1 (A₀,B₀,B₀) (B₀,A₀) = B₀
-      d1 (A₀,B₀,B₀) (B₀,A₁) = B₀
-      d1 (A₀,B₀,B₀) (B₁,A₀) = B₁
-      d1 (A₀,B₀,B₀) (B₁,A₁) = B₁
-      d1 (A₀,B₀,B₁) (B₀,A₀) = B₀
-      d1 (A₀,B₀,B₁) (B₀,A₁) = B₁
-      d1 (A₀,B₀,B₁) (B₁,A₀) = B₀
-      d1 (A₀,B₀,B₁) (B₁,A₁) = B₁
-      d1 (A₀,B₁,B₀) (B₀,A₀) = B₁
-      d1 (A₀,B₁,B₀) (B₀,A₁) = B₀
-      d1 (A₀,B₁,B₀) (B₁,A₀) = B₁
-      d1 (A₀,B₁,B₀) (B₁,A₁) = B₀
-      d1 (A₀,B₁,B₁) (B₀,A₀) = B₀
-      d1 (A₀,B₁,B₁) (B₀,A₁) = B₀
-      d1 (A₀,B₁,B₁) (B₁,A₀) = B₁
-      d1 (A₀,B₁,B₁) (B₁,A₁) = B₁
-      d1 (A₁,B₀,B₀) (B₀,A₀) = B₀
-      d1 (A₁,B₀,B₀) (B₀,A₁) = B₀
-      d1 (A₁,B₀,B₀) (B₁,A₀) = B₁
-      d1 (A₁,B₀,B₀) (B₁,A₁) = B₁
-      d1 (A₁,B₀,B₁) (B₀,A₀) = B₀
-      d1 (A₁,B₀,B₁) (B₀,A₁) = B₁
-      d1 (A₁,B₀,B₁) (B₁,A₀) = B₀
-      d1 (A₁,B₀,B₁) (B₁,A₁) = B₁
-      d1 (A₁,B₁,B₀) (B₀,A₀) = B₁
-      d1 (A₁,B₁,B₀) (B₀,A₁) = B₀
-      d1 (A₁,B₁,B₀) (B₁,A₀) = B₁
-      d1 (A₁,B₁,B₀) (B₁,A₁) = B₀
-      d1 (A₁,B₁,B₁) (B₀,A₀) = B₀
-      d1 (A₁,B₁,B₁) (B₀,A₁) = B₀
-      d1 (A₁,B₁,B₁) (B₁,A₀) = B₁
-      d1 (A₁,B₁,B₁) (B₁,A₁) = B₁
+      d0_6 (B₀,A₀) = A₀
+      d0_6 (B₀,A₁) = A₁
+      d0_6 (B₁,A₀) = A₁
+      d0_6 (B₁,A₁) = A₀
+      d0_9 (B₀,A₀) = A₁
+      d0_9 (B₀,A₁) = A₀
+      d0_9 (B₁,A₀) = A₀
+      d0_9 (B₁,A₁) = A₁
+      d0 (A₀,B₀,B₀) = d0_6
+      d0 (A₀,B₀,B₁) = d0_6
+      d0 (A₀,B₁,B₀) = d0_9
+      d0 (A₀,B₁,B₁) = d0_9
+      d0 (A₁,B₀,B₀) = d0_6
+      d0 (A₁,B₀,B₁) = d0_9
+      d0 (A₁,B₁,B₀) = d0_6
+      d0 (A₁,B₁,B₁) = d0_9
+      d1_3 (B₀,A₀) = B₀
+      d1_3 (B₀,A₁) = B₀
+      d1_3 (B₁,A₀) = B₁
+      d1_3 (B₁,A₁) = B₁
+      d1_5 (B₀,A₀) = B₀
+      d1_5 (B₀,A₁) = B₁
+      d1_5 (B₁,A₀) = B₀
+      d1_5 (B₁,A₁) = B₁
+      d1_10 (B₀,A₀) = B₁
+      d1_10 (B₀,A₁) = B₀
+      d1_10 (B₁,A₀) = B₁
+      d1_10 (B₁,A₁) = B₀
+      d1 (A₀,B₀,B₀) = d1_3
+      d1 (A₀,B₀,B₁) = d1_5
+      d1 (A₀,B₁,B₀) = d1_10
+      d1 (A₀,B₁,B₁) = d1_3
+      d1 (A₁,B₀,B₀) = d1_3
+      d1 (A₁,B₀,B₁) = d1_5
+      d1 (A₁,B₁,B₀) = d1_10
+      d1 (A₁,B₁,B₁) = d1_3
   in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
-
 -}
 
 printIsoTable :: IO ()
@@ -368,7 +114,7 @@ Interpretation:
 
 prettyPrintDistLens :: DistLens A B -> [String]
 prettyPrintDistLens l =
-  pprLetIn (pprFn "q" q ++ pprFn2 "d0" d0 ++ pprFn2 "d1" d1) [ "Lens $ \\c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))" ]
+  pprLetIn (prettyPrintFn "q" q ++ prettyPrintFn2 "d0" d0 ++ prettyPrintFn2 "d1" d1) [ "Lens $ \\c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))" ]
   where
     q :: (A,B,B) -> (B,A,A)
     q = viewShape . coerce . fst . unLens l . coerce . reviewShape 
@@ -387,20 +133,6 @@ prettyPrintDistLens l =
        ++ map indent letLines
        ++ [ "in  " ++ firstBodyLine ]
        ++ map indent inLines
-
-pprFn :: (Finitary a, Show a, Show b) => String -> (a -> b) -> [String]
-pprFn fnName fn =
-  [ showsUnaryWith showsPrec fnName 0 a . equal . showsPrec 0 (fn a) $ "" | a <- inhabitants ]
-  where
-    equal = (" = " ++) 
-
-pprFn2 :: (Finitary a, Show a, Finitary b, Show b, Show c) => String -> (a -> b -> c) -> [String]
-pprFn2 fnName fn = 
-  [ showsBinaryWith showsPrec showsPrec fnName 0 a b . equal . showsPrec 0 (fn a b) $ ""
-    | a <- inhabitants,
-      b <- inhabitants ]
-  where
-    equal = (" = " ++) 
 
 viewShape :: C a Bool b -> (a,b,b)
 viewShape (C a f) = (a, f False, f True)

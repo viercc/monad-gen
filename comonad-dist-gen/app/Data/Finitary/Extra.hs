@@ -15,7 +15,9 @@
 module Data.Finitary.Extra(
   Fn(..),
   fnToVec, vecToFn,
-  showFn
+  showFn,
+  prettyPrintFn,
+  prettyPrintFn2
 ) where
 
 import Data.Foldable (Foldable(..))
@@ -28,6 +30,7 @@ import GHC.TypeNats (natVal', type (^))
 import qualified Data.Vector.Sized as V
 import Data.List (intercalate)
 import Data.Functor.Classes
+import qualified Data.Map.Lazy as Map
 
 newtype Fn a b = Fn { apply :: a -> b }
   deriving stock Functor
@@ -81,3 +84,22 @@ showFn :: (Finitary a, Show a, Show b) => (a -> b) -> String
 showFn f = "\\case {" ++ intercalate ";" [ showCase a (f a) | a <- inhabitants ] ++ "}"
   where
     showCase a b = show a ++ " -> " ++ show b
+
+prettyPrintFn :: (Finitary a, Show a, Show b) => String -> (a -> b) -> [String]
+prettyPrintFn fnName fn =
+  [ showsUnaryWith showsPrec fnName 0 a . equal . showsPrec 0 (fn a) $ "" | a <- inhabitants ]
+  where
+    equal = (" = " ++) 
+
+prettyPrintFn2 :: (Finitary a, Show a, Finitary b, Show b, Finitary c, Show c) => String -> (a -> b -> c) -> [String]
+prettyPrintFn2 fnName fn = usedFnDefs ++ fnBody
+  where
+    equal = (" = " ++)
+    nameSubFn key = fnName ++ "_" ++ show key
+    usedFn = [ (a, fa, toInteger (toFinite (Fn fa))) | a <- inhabitants, let fa = fn a ]
+    fnBody = [ showsUnaryWith showsPrec fnName 0 a . equal . (nameSubFn key ++) $ "" | (a,_,key) <- usedFn ]
+
+    usedFnMap = Map.fromList [ (key, fa) | (_, fa, key) <- usedFn ]
+    usedFnDefs = do
+      (key, fa) <- Map.toList usedFnMap
+      prettyPrintFn (nameSubFn key) fa
