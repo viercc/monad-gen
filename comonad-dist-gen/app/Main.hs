@@ -19,8 +19,9 @@ import StoreDistributiveLaw
 import Data.Finitary.Extra (prettyPrintFn2, prettyPrintFn)
 import Data.Finitary (Finitary)
 
-import Data.ZMod (Bit(..))
+import Data.ZMod (Bit(..), ZMod)
 import Data.Group
+import Data.Finite (Finite)
 
 newtype A = A Bit
   deriving newtype (Show, Read, Eq, Ord, Finitary)
@@ -277,6 +278,12 @@ printHandcraftedDistLens = do
   putStrLn $ "Is dist0 correct? " ++ show (distToLens dist0 == distLens0)
   putStrLn $ "Is distByGroup correct? " ++ show (distToLens distByGroup == distLens0)
 
+  putStrLn "### distByGroup"
+  let distByGroup_2_3 = distToLens (distByGroup @(Finite 2) @(ZMod 3))
+  putStrLn $ "dist := distByGroup @(Finite 2) @(ZMod 3)"
+  putStrLn $ "Code: " ++ show (encodeLens distByGroup_2_3)
+  putStrLn $ "Validity: " ++ show (checkAllLaws distByGroup_2_3)
+
   putStrLn "### Dist1"
   putStrLn $ "Code:     " ++ show (encodeLens distLens1)
   putStrLn $ "Validity: " ++ show (checkAllLaws distLens1)
@@ -416,7 +423,7 @@ distLens1 = Lens $ \c -> (q c, d0 (view c) &&& d1 (view c))
     d1 _ = undefined
 
 -- | Distributive law by group
-distByGroup :: Group g => Dist a g
+distByGroup :: forall a g. Group g => Dist a g
 distByGroup (C a0 k) = C (f a0) $ \g -> C a0 $ \a -> h a (g <> invert (f a0) <> f a)
   where
     f = pos . k
