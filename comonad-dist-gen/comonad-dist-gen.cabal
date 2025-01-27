@@ -20,11 +20,15 @@ executable comonad-dist-gen
     main-is:          Main.hs
     other-modules:
       Data.Finitary.Extra,
+      Data.ZMod,
+      Data.Functor.Store,
+      Util.WrappedIntegral,
       StoreDistributiveLaw
     build-depends:
       base >=4.20.0.0,
       containers,
       comonad,
+      groups,
       finitary,
       finite-typelits,
       vector-sized,

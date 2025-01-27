@@ -13,97 +13,26 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 module StoreDistributiveLaw(
-  C(..),
-  pos, peek,
-  mapPos, mapPort,
-  compF, decompF,
-  assocF, unassocF,
-
-  Lens(..),
-  (|>), idLens,
-  toLens, fromLens,
-
   Dist,
   DistLens,
   distToLens,
   distFromLens,
 
-  A(..), B(..),
-  candidateLenses,
+  Equals(..),
+  law1, law2, law3, law4,
+  law1Lens, law2Lens, law3Lens, law4Lens,
   checkAllLaws,
 
-  LensEnc(..),
-  encodeLens,
-  decodeLens,
+  generateCandidateLenses,
+
+  module Data.Functor.Store,
 ) where
 
 import Control.Comonad
-import Data.Finitary
-import Data.Finitary.Extra
-import GHC.TypeNats (type (*), type (^))
-import Data.Coerce (coerce)
-import Data.Bool (bool)
-import Data.Functor.Classes (showsUnaryWith, showsBinaryWith)
-import Data.Vector.Sized (Vector)
-import Data.Finite (Finite)
+import Data.Finitary ( inhabitants, Finitary )
+import Data.Finitary.Extra ( sequenceFn )
 
--- * (Generalized) Store Comonad
-
-data C s p x = C s (p -> x)
-  deriving Functor
-
-instance (s ~ p) => Comonad (C s p) where
-  extract (C s f) = f s
-  duplicate (C s f) = C s $ \s' -> C s' f
-
-type Store s = C s s
-
-mapPos :: (s -> s') -> C s p x -> C s' p x
-mapPos g (C s f) = C (g s) f
-
-mapPort :: (p' -> p) -> C s p x -> C s p' x
-mapPort g (C s f) = C s (f . g)
-
-pos :: C s p x -> s
-pos (C s _) = s
-
-peek :: C s p x -> p -> x
-peek (C _ f) = f
-
-compF :: forall s p s' p' x. C s p (C s' p' x) -> C (C s p s') (p,p') x
-compF cc = C (C (pos cc) (pos . peek cc)) (\(p,p') -> peek (peek cc p) p')
-
-decompF :: forall s p s' p' x. C (C s p s') (p,p') x -> C s p (C s' p' x)
-decompF c = C (pos (pos c)) $ \p -> C (peek (pos c) p) (\p' -> peek c (p,p'))
-
-assocF :: C (C s p (C s' p' s'')) (p,(p',p'')) x -> C (C (C s p s') (p, p') s'') ((p, p'), p'') x
-assocF = compF . compF . fmap decompF . decompF
-
-unassocF :: C (C (C s p s') (p, p') s'') ((p, p'), p'') x -> C (C s p (C s' p' s'')) (p,(p',p'')) x
-unassocF = compF . fmap compF . decompF . decompF
-
--- * Lens <-> Natural transformation between (C _ _)
-
-newtype Lens s p s' p' = Lens { unLens :: s -> (s', p' -> p) }
-
-(|>) :: Lens s p s' p' -> Lens s' p' s'' p'' -> Lens s p s'' p''
-l1 |> l2 = Lens $ \s ->
-    let (s', g) = unLens l1 s
-        (s'', h) = unLens l2 s'
-    in (s'', g . h)
-
-idLens :: Lens s p s p
-idLens = Lens $ \s -> (s, id)
-
-toLens :: (forall x. C s p x -> C s' p' x) -> Lens s p s' p'
-toLens f = Lens {
-    unLens = \s -> case f (C s id) of
-      C s' g -> (s', g)
-  }
-
-fromLens :: Lens s p s' p' -> C s p x -> C s' p' x
-fromLens lens (C s f) = case unLens lens s of
-  (s', g) -> C s' (f . g)
+import Data.Functor.Store
 
 -- * Distributive law and their laws
 
@@ -170,67 +99,6 @@ law4Lens dLens = Equals lhsLens rhsLens
     lhsLens = toLens (compF . compF . lhs (law4 dist) . decompF)
     rhsLens = toLens (compF . compF . rhs (law4 dist) . decompF)
 
--- * Exhaustive search
-
-instance (Eq s, Finitary p, Eq x) => Eq (C s p x) where
-  C s1 f1 == C s2 f2 = s1 == s2 && Fn f1 == Fn f2
-
-instance (Finitary s, Finitary p, Finitary x) => Finitary (C s p x) where
-  type Cardinality (C s p x) = Cardinality s * (Cardinality x ^ Cardinality p)
-
-  fromFinite k = case fromFinite k of
-    (s, fn) -> C s (apply fn)
-  
-  toFinite (C s f) = toFinite (s, Fn f)
-
-instance (Show s, Finitary p, Show p, Show x) => Show (C s p x) where
-  showsPrec p (C s f) = showsBinaryWith showsPrec (\_ fn -> (showFn fn ++)) "C" p s f
-
-instance (Finitary s, Eq p, Eq s', Finitary p') => Eq (Lens s p s' p') where
-  l1 == l2 = lensToFn l1 == lensToFn l2
-
-lensToFn :: Lens s p s' p' -> Fn s (s', Fn p' p)
-lensToFn = coerce
-
-fnToLens :: Fn s (s', Fn p' p) -> Lens s p s' p'
-fnToLens = coerce
-
-instance (Finitary s, Finitary p, Finitary s', Finitary p') => Finitary (Lens s p s' p') where
-  type Cardinality (Lens s p s' p') = (Cardinality s' * (Cardinality p ^ Cardinality p')) ^ Cardinality s
-
-  fromFinite = fnToLens . fromFinite
-  toFinite = toFinite . lensToFn
-
-instance (Finitary s, Show s, Show p, Show s', Finitary p', Show p')
-  => Show (Lens s p s' p') where
-  showsPrec p l = showsUnaryWith showsPrec "fnToLens" p (lensToFn l)
-
--- * Trying smallest nontrivial case: |s| = |t| = 2
-
-newtype A = A Bool
-  deriving newtype (Eq, Finitary)
-
-instance Show A where
-  show (A b) = 'A' : bool "₀" "₁" b
-
-newtype B = B Bool
-  deriving newtype (Eq, Finitary)
-
-instance Show B where
-  show (B b) = 'B' : bool "₀" "₁" b
-
-{-
-Even for this smallest case, simply enumerating every lenses
-is not possible.
-
-  ghci> :kind! Cardinality (DistLens A B)
-  Cardinality (DistLens A B) :: GHC.Num.Natural.Natural
-  = 309485009821345068724781056
--}
-
-sequenceFn :: (Finitary a, Applicative m) => (a -> m b) -> m (a -> b)
-sequenceFn = fmap apply . sequenceA . Fn
-
 check :: Eq a => Equals a -> Bool
 check (Equals a1 a2) = a1 == a2
 
@@ -241,8 +109,17 @@ checkAllLaws l =
   && check (law3Lens l)
   && check (law4Lens l)
 
-candidateLenses :: () -> [DistLens A B]
-candidateLenses _ = map Lens $ sequenceFn $ \sst -> do
+{-
+Even for this smallest case, simply enumerating every lenses
+is not possible.
+
+  ghci> :kind! Cardinality (DistLens A B)
+  Cardinality (DistLens A B) :: GHC.Num.Natural.Natural
+  = 309485009821345068724781056
+-}
+
+generateCandidateLenses :: (Finitary s, Finitary t) => () -> [DistLens s t]
+generateCandidateLenses _ = map Lens $ sequenceFn $ \sst -> do
   let (C s0 f) = sst
   let t0 = f s0
   f' <- sequenceFn $ \t' -> if t' == t0 then [s0] else inhabitants
@@ -251,12 +128,3 @@ candidateLenses _ = map Lens $ sequenceFn $ \sst -> do
           | s == f' t -> [ (s0, t) ]
           | otherwise -> inhabitants
   pure (C t0 f', putPart)
-
-newtype LensEnc s p s' p' = LensEnc (Vector (Cardinality s) (Finite (Cardinality s'), Finite (Cardinality p ^ Cardinality p')))
-  deriving (Show, Eq, Ord)
-
-encodeLens :: (Finitary s, Finitary p, Finitary s', Finitary p') => Lens s p s' p' -> LensEnc s p s' p'
-encodeLens l = LensEnc $ (\(s', fn) -> (toFinite s', toFinite fn)) <$> fnToVec (lensToFn l)
-
-decodeLens :: (Finitary s, Finitary p, Finitary s', Finitary p') => LensEnc s p s' p' -> Lens s p s' p'
-decodeLens (LensEnc v) = fnToLens $ (\(sCode, fnCode) -> (fromFinite sCode, fromFinite fnCode)) <$> vecToFn v

@@ -14,8 +14,10 @@
 -- | Finitary functions
 module Data.Finitary.Extra(
   Fn(..),
+  sequenceFn,
   fnToVec, vecToFn,
-  showFn,
+  showFn, showsFnWith,
+
   prettyPrintFn,
   prettyPrintFn2
 ) where
@@ -28,7 +30,7 @@ import Data.Vector.Sized (Vector)
 import GHC.Exts (proxy#)
 import GHC.TypeNats (natVal', type (^))
 import qualified Data.Vector.Sized as V
-import Data.List (intercalate)
+import Data.List (intersperse)
 import Data.Functor.Classes
 import qualified Data.Map.Lazy as Map
 
@@ -50,6 +52,9 @@ instance (Finitary a) => Foldable (Fn a) where
 
 instance (Finitary a) => Traversable (Fn a) where
   traverse g fn = vecToFn <$> traverse g (fnToVec fn)
+
+sequenceFn :: (Finitary a, Applicative m) => (a -> m b) -> m (a -> b)
+sequenceFn = fmap apply . sequenceA . Fn
 
 fnToVec :: (Finitary a) => Fn a b -> Vector (Cardinality a) b
 fnToVec fn = V.generate (apply fn . fromFinite)
@@ -80,10 +85,17 @@ instance (Finitary a, Finitary b) => Finitary (Fn a b) where
   fromFinite k = vecToFn (fromFinite k)
   toFinite fn = toFinite (fnToVec fn)
 
-showFn :: (Finitary a, Show a, Show b) => (a -> b) -> String
-showFn f = "\\case {" ++ intercalate ";" [ showCase a (f a) | a <- inhabitants ] ++ "}"
+showsFnWith :: (Finitary a) => (Int -> a -> ShowS) -> (Int -> b -> ShowS) -> Int -> (a -> b) -> ShowS
+showsFnWith showsA showsB p f =
+    showParen (p > 0) $ \nil -> foldr ($) nil $ [ beginFn ] ++ intersperse (";" ++) showCases ++ [ endFn ]
   where
-    showCase a b = show a ++ " -> " ++ show b
+    beginFn = ("\\case{" ++)
+    endFn = ("}" ++)
+    showCase a b = [showsA 0 a, (" -> " ++), showsB 0 b]
+    showCases = inhabitants >>= \a -> showCase a (f a)
+
+showFn :: (Finitary a, Show a, Show b) => (a -> b) -> String
+showFn f = showsFnWith showsPrec showsPrec 0 f ""
 
 prettyPrintFn :: (Finitary a, Show a, Show b) => String -> (a -> b) -> [String]
 prettyPrintFn fnName fn =
