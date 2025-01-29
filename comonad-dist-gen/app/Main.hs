@@ -6,9 +6,15 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeAbstractions #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE DerivingVia #-}
 module Main(main) where
 
-import Data.Coerce (coerce)
+import System.Environment (getArgs)
+import System.IO
+
+import Data.Coerce (coerce, Coercible)
 import Data.Foldable (for_)
 import Control.Arrow ((&&&))
 import qualified Data.List as List
@@ -16,259 +22,114 @@ import qualified Data.Map as Map
 import qualified Data.Set as Set
 
 import StoreDistributiveLaw
-import Data.Finitary.Extra (prettyPrintFn2, prettyPrintFn)
-import Data.Finitary (Finitary)
+import Data.Finitary (Finitary, inhabitants)
+import Data.Finitary.Extra (prettyPrintFn2, prettyPrintFn, sequenceFn)
 
 import Data.ZMod (Bit(..), ZMod)
 import Data.Group
-import Data.Finite (Finite)
+import Control.Comonad (Comonad (..))
+import Data.Torsor ( GroupToTorsor(..), Torsor(..) )
+
+import Text.Read (readMaybe)
+import System.Exit (exitFailure)
 
 newtype A = A Bit
-  deriving newtype (Show, Read, Eq, Ord, Finitary)
+  deriving (Show, Read, Eq, Ord, Finitary) via Bit
 
 newtype B = B Bit
-  deriving newtype (Show, Read, Eq, Finitary)
+  deriving (Show, Read, Eq, Finitary) via Bit
 
 main :: IO ()
-main = printHandcraftedDistLens
+main = getArgs >>= main'
+  where
+    main' args = case args of
+      _ | "--help" `elem` args -> printUsage
+      [] -> generateToFile defaultCacheFileName >>= diagnosis
+      ["--cached"] -> readCache defaultCacheFileName >>= diagnosis
+      ("--cached" : filename : _) -> readCache filename >>= diagnosis
+      _ -> printUsage
 
-generateAllDistLaws :: IO ()
-generateAllDistLaws = mapM_ (print . encodeLens) $ filter checkAllLaws (generateCandidateLenses @A @B ())
+printUsage :: IO ()
+printUsage = putStrLn $ unlines
+  [ "comonad-dist-gen [--help | --cached [FILENAME]]" ]
 
-{- Output (took about 18 min.):
+defaultCacheFileName :: FilePath
+defaultCacheFileName = "comonad-dist-gen.cache"
 
-makeLensEnc' [(0,39),(0,54),(4,54),(4,39),(3,39),(7,99),(3,99),(7,39)]
-makeLensEnc' [(0,39),(1,57),(6,198),(4,39),(3,39),(5,147),(2,108),(7,39)]
-makeLensEnc' [(1,45),(0,54),(4,54),(6,135),(2,45),(7,99),(3,99),(5,135)]
-makeLensEnc' [(1,45),(1,57),(6,198),(6,135),(2,45),(5,147),(2,108),(5,135)]
+generateToFile :: FilePath -> IO [LensCode]
+generateToFile cacheFileName = do
+  putStrLn "# Generating lawful DistLens..."
+  let generatedData = encodeLens <$> generateAll ()
+  mapM_ print generatedData
+  putStrLn $ "Write the generated data to cache file:" ++ show cacheFileName
+  writeFile cacheFileName (show generatedData)
+  pure generatedData
+
+{-
+Even for this smallest case, simply enumerating every lenses
+is not possible.
+
+  ghci> :kind! Cardinality (DistLens A B)
+  Cardinality (DistLens A B) :: GHC.Num.Natural.Natural
+  = 309485009821345068724781056
+
+Few considerations of distributive law laws @law1@ and @law2@
+yields few conditions on @Dist A B@, which reduces the number down to
+"only" 2^24 candidates.
+
+This makeshift optimization isn't effective at all for anything
+larger. While @generateCandidateLenses@ function is written
+in a way independent of chocies of type @A, B@, it it provided
+monomorphic to prevent misusing it on "too hard" case,
+in other words any other nontrivial condition.
 
 -}
 
-generatedData :: [ LensEnc (C A A B) (A,B) (C B B A) (B,A) ]
-generatedData =
-  [
-    makeLensEnc' [(0,39),(0,54),(4,54),(4,39),(3,39),(7,99),(3,99),(7,39)]
-  , makeLensEnc' [(0,39),(1,57),(6,198),(4,39),(3,39),(5,147),(2,108),(7,39)]
-  , makeLensEnc' [(1,45),(0,54),(4,54),(6,135),(2,45),(7,99),(3,99),(5,135)]
-  , makeLensEnc' [(1,45),(1,57),(6,198),(6,135),(2,45),(5,147),(2,108),(5,135)]
-  ]
+generateCandidateLenses :: () -> [DistLens A B]
+generateCandidateLenses _ = map Lens $ sequenceFn $ \sst -> do
+  let (C s0 f) = sst
+  let t0 = f s0
+  f' <- sequenceFn $ \t' -> if t' == t0 then [s0] else inhabitants
+  putPart <- sequenceFn  $ \case
+    (t,s) | t == t0 -> [ (s, f s) ]
+          | s == f' t -> [ (s0, t) ]
+          | otherwise -> inhabitants
+  pure (C t0 f', putPart)
 
-prettyPrintDistLenses :: IO ()
-prettyPrintDistLenses = for_ (zip [0 :: Int ..] generatedData) $ \(i, encLens) -> do
-  let lens = decodeLens encLens
-  putStrLn $ "Dist #" ++ show i
+generateAll :: () -> [DistLens A B]
+generateAll u = filter checkAllLaws (generateCandidateLenses u)
+
+readCache :: FilePath -> IO [LensCode]
+readCache cacheFileName = do
+  putStrLn $ "# Reading cached file:" ++ show cacheFileName
+  cachedDataStr <- readFile' cacheFileName
+  case readMaybe cachedDataStr of
+    Nothing -> hPutStrLn stderr "Cache file couldn't be parsed" >> exitFailure
+    Just generatedData -> pure generatedData
+
+diagnosis :: [LensCode] -> IO ()
+diagnosis generatedData = do
+  putStrLn "# Is the data all valid?"
+  generatedLenses <- case traverse decodeLens generatedData of
+    Nothing -> hPutStrLn stderr "Bad data!" >> exitFailure
+    Just lenses -> pure lenses
+  putStrLn "# Pretty-print the generated lenses:"
+  prettyPrintDistLenses generatedLenses
+  putStrLn "# Are the generated lenses isomorphic each other?"
+  printIsoTable generatedData
+  putStrLn "# Check that handcrafted distributive laws are valid"
+  printHandcraftedDistLens
+
+prettyPrintDistLenses :: [DistLens A B] -> IO ()
+prettyPrintDistLenses generatedData = for_ (zip [0 :: Int ..] generatedData) $ \(i, lens) -> do
+  putStrLn $ "## Dist" ++ show i
   for_ (prettyPrintDistLens lens) $ \pprLine ->
     putStrLn $ "  " ++ pprLine
 
-{- Output:
-
-Dist #0
-  let q (0,0,0) = (0,0,0)
-      q (0,0,1) = (0,0,0)
-      q (0,1,0) = (1,0,0)
-      q (0,1,1) = (1,0,0)
-      q (1,0,0) = (0,1,1)
-      q (1,0,1) = (1,1,1)
-      q (1,1,0) = (0,1,1)
-      q (1,1,1) = (1,1,1)
-      d0_5 (0,0) = 0
-      d0_5 (0,1) = 1
-      d0_5 (1,0) = 0
-      d0_5 (1,1) = 1
-      d0 (0,0,0) = d0_5
-      d0 (0,0,1) = d0_5
-      d0 (0,1,0) = d0_5
-      d0 (0,1,1) = d0_5
-      d0 (1,0,0) = d0_5
-      d0 (1,0,1) = d0_5
-      d0 (1,1,0) = d0_5
-      d0 (1,1,1) = d0_5
-      d1_3 (0,0) = 0
-      d1_3 (0,1) = 0
-      d1_3 (1,0) = 1
-      d1_3 (1,1) = 1
-      d1_6 (0,0) = 0
-      d1_6 (0,1) = 1
-      d1_6 (1,0) = 1
-      d1_6 (1,1) = 0
-      d1_9 (0,0) = 1
-      d1_9 (0,1) = 0
-      d1_9 (1,0) = 0
-      d1_9 (1,1) = 1
-      d1 (0,0,0) = d1_3
-      d1 (0,0,1) = d1_6
-      d1 (0,1,0) = d1_6
-      d1 (0,1,1) = d1_3
-      d1 (1,0,0) = d1_3
-      d1 (1,0,1) = d1_9
-      d1 (1,1,0) = d1_9
-      d1 (1,1,1) = d1_3
-  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
-Dist #1
-  let q (0,0,0) = (0,0,0)
-      q (0,0,1) = (0,0,1)
-      q (0,1,0) = (1,1,0)
-      q (0,1,1) = (1,0,0)
-      q (1,0,0) = (0,1,1)
-      q (1,0,1) = (1,0,1)
-      q (1,1,0) = (0,1,0)
-      q (1,1,1) = (1,1,1)
-      d0_5 (0,0) = 0
-      d0_5 (0,1) = 1
-      d0_5 (1,0) = 0
-      d0_5 (1,1) = 1
-      d0_6 (0,0) = 0
-      d0_6 (0,1) = 1
-      d0_6 (1,0) = 1
-      d0_6 (1,1) = 0
-      d0_9 (0,0) = 1
-      d0_9 (0,1) = 0
-      d0_9 (1,0) = 0
-      d0_9 (1,1) = 1
-      d0 (0,0,0) = d0_5
-      d0 (0,0,1) = d0_6
-      d0 (0,1,0) = d0_9
-      d0 (0,1,1) = d0_5
-      d0 (1,0,0) = d0_5
-      d0 (1,0,1) = d0_9
-      d0 (1,1,0) = d0_6
-      d0 (1,1,1) = d0_5
-      d1_3 (0,0) = 0
-      d1_3 (0,1) = 0
-      d1_3 (1,0) = 1
-      d1_3 (1,1) = 1
-      d1_5 (0,0) = 0
-      d1_5 (0,1) = 1
-      d1_5 (1,0) = 0
-      d1_5 (1,1) = 1
-      d1_10 (0,0) = 1
-      d1_10 (0,1) = 0
-      d1_10 (1,0) = 1
-      d1_10 (1,1) = 0
-      d1 (0,0,0) = d1_3
-      d1 (0,0,1) = d1_5
-      d1 (0,1,0) = d1_10
-      d1 (0,1,1) = d1_3
-      d1 (1,0,0) = d1_3
-      d1 (1,0,1) = d1_5
-      d1 (1,1,0) = d1_10
-      d1 (1,1,1) = d1_3
-  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
-Dist #2
-  let q (0,0,0) = (0,0,1)
-      q (0,0,1) = (0,0,0)
-      q (0,1,0) = (1,0,0)
-      q (0,1,1) = (1,1,0)
-      q (1,0,0) = (0,1,0)
-      q (1,0,1) = (1,1,1)
-      q (1,1,0) = (0,1,1)
-      q (1,1,1) = (1,0,1)
-      d0_5 (0,0) = 0
-      d0_5 (0,1) = 1
-      d0_5 (1,0) = 0
-      d0_5 (1,1) = 1
-      d0_6 (0,0) = 0
-      d0_6 (0,1) = 1
-      d0_6 (1,0) = 1
-      d0_6 (1,1) = 0
-      d0_9 (0,0) = 1
-      d0_9 (0,1) = 0
-      d0_9 (1,0) = 0
-      d0_9 (1,1) = 1
-      d0 (0,0,0) = d0_6
-      d0 (0,0,1) = d0_5
-      d0 (0,1,0) = d0_5
-      d0 (0,1,1) = d0_9
-      d0 (1,0,0) = d0_6
-      d0 (1,0,1) = d0_5
-      d0 (1,1,0) = d0_5
-      d0 (1,1,1) = d0_9
-      d1_3 (0,0) = 0
-      d1_3 (0,1) = 0
-      d1_3 (1,0) = 1
-      d1_3 (1,1) = 1
-      d1_6 (0,0) = 0
-      d1_6 (0,1) = 1
-      d1_6 (1,0) = 1
-      d1_6 (1,1) = 0
-      d1_9 (0,0) = 1
-      d1_9 (0,1) = 0
-      d1_9 (1,0) = 0
-      d1_9 (1,1) = 1
-      d1 (0,0,0) = d1_3
-      d1 (0,0,1) = d1_6
-      d1 (0,1,0) = d1_6
-      d1 (0,1,1) = d1_3
-      d1 (1,0,0) = d1_3
-      d1 (1,0,1) = d1_9
-      d1 (1,1,0) = d1_9
-      d1 (1,1,1) = d1_3
-  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
-Dist #3
-  let q (0,0,0) = (0,0,1)
-      q (0,0,1) = (0,0,1)
-      q (0,1,0) = (1,1,0)
-      q (0,1,1) = (1,1,0)
-      q (1,0,0) = (0,1,0)
-      q (1,0,1) = (1,0,1)
-      q (1,1,0) = (0,1,0)
-      q (1,1,1) = (1,0,1)
-      d0_6 (0,0) = 0
-      d0_6 (0,1) = 1
-      d0_6 (1,0) = 1
-      d0_6 (1,1) = 0
-      d0_9 (0,0) = 1
-      d0_9 (0,1) = 0
-      d0_9 (1,0) = 0
-      d0_9 (1,1) = 1
-      d0 (0,0,0) = d0_6
-      d0 (0,0,1) = d0_6
-      d0 (0,1,0) = d0_9
-      d0 (0,1,1) = d0_9
-      d0 (1,0,0) = d0_6
-      d0 (1,0,1) = d0_9
-      d0 (1,1,0) = d0_6
-      d0 (1,1,1) = d0_9
-      d1_3 (0,0) = 0
-      d1_3 (0,1) = 0
-      d1_3 (1,0) = 1
-      d1_3 (1,1) = 1
-      d1_5 (0,0) = 0
-      d1_5 (0,1) = 1
-      d1_5 (1,0) = 0
-      d1_5 (1,1) = 1
-      d1_10 (0,0) = 1
-      d1_10 (0,1) = 0
-      d1_10 (1,0) = 1
-      d1_10 (1,1) = 0
-      d1 (0,0,0) = d1_3
-      d1 (0,0,1) = d1_5
-      d1 (0,1,0) = d1_10
-      d1 (0,1,1) = d1_3
-      d1 (1,0,0) = d1_3
-      d1 (1,0,1) = d1_5
-      d1 (1,1,0) = d1_10
-      d1 (1,1,1) = d1_3
-  in  Lens $ \c -> ((review . q . view) c, d0 (view c) &&& d1 (view c))
-
--}
-
-printIsoTable :: IO ()
-printIsoTable = mapM_ (putStrLn . List.intercalate "|" . map toSymb) isoTable
+printIsoTable :: [LensCode] -> IO ()
+printIsoTable lenses = mapM_ (putStrLn . List.intercalate "|" . map toSymb) (isoTable lenses)
   where
     toSymb b = if b then "==" else "  "
-
-{- Output:
-
-==|  |  |  
-  |==|  |  
-  |  |==|  
-  |  |  |==
-
-Interpretation:
-  The generated distributed laws are not "isomorphic" each other
-
--}
 
 printHandcraftedDistLens :: IO ()
 printHandcraftedDistLens = do
@@ -279,26 +140,15 @@ printHandcraftedDistLens = do
   putStrLn $ "Is distByGroup correct? " ++ show (distToLens distByGroup == distLens0)
 
   putStrLn "### distByGroup"
-  let distByGroup_2_3 = distToLens (distByGroup @(Finite 2) @(ZMod 3))
-  putStrLn $ "dist := distByGroup @(Finite 2) @(ZMod 3)"
+  let distByGroup_2_3 = distToLens (distByGroup @(Store Bool) @(ZMod 3))
+  putStrLn $ "dist := distByGroup @(Store Bool) @(ZMod 3)"
   putStrLn $ "Code: " ++ show (encodeLens distByGroup_2_3)
   putStrLn $ "Validity: " ++ show (checkAllLaws distByGroup_2_3)
 
   putStrLn "### Dist1"
   putStrLn $ "Code:     " ++ show (encodeLens distLens1)
   putStrLn $ "Validity: " ++ show (checkAllLaws distLens1)
-  -- putStrLn $ "Is dist1 correct? " ++ show (distToLens dist1 == distLens1)
-{-
 
-### Dist0
-Code:     makeLensEnc' [(0,39),(0,54),(4,54),(4,39),(3,39),(7,99),(3,99),(7,39)]
-Validity: True
-Is dist0 correct? True
-### Dist1
-Code:     makeLensEnc' [(0,39),(1,57),(6,198),(4,39),(3,39),(5,147),(2,108),(7,39)]
-Validity: True
-
--}
 
 prettyPrintDistLens :: DistLens A B -> [String]
 prettyPrintDistLens l =
@@ -333,45 +183,41 @@ prettyPrintDistLens l =
 -- Every comonad automorphism of a store comonad @C S S@
 -- come from an automorphism @(σ :: S -> S)@, as
 -- @mapPos σ . mapPort σ⁻¹@
---
--- There's only one automorphism @Bool -> Bool@ that isn't @id@: @notBit@.
-comonadAuto :: forall x. C Bit Bit x -> C Bit Bit x
-comonadAuto = mapPos (1+) . mapPort (1+)
+comonadAuto :: forall a x. (a -> a) -> (a -> a) -> C a a x -> C a a x
+comonadAuto f fInv = mapPos f . mapPort fInv
 
 translate :: DistLens A B -> [DistLens A B]
 translate l =
     [ distToLens (actB gB . fmap (actA gA) . dist . fmap (actB (inv gB)) . actA (inv gA))
-      | (gA, gB) <- actions ]
+      | gA <- [False, True], gB <- [False,True] ]
   where
     dist :: Dist A B
     dist = distFromLens l
-
-    actions = [ (gA, gB) | gA <- [False, True], gB <- [False, True], gA || gB ]
+    
     inv = id
-
+    
     actA :: forall x. Bool -> C A A x -> C A A x
-    actA b = if b then coerce (comonadAuto @x) else id
-
+    actA b = if b then coerce (comonadAuto @Bool @x not not) else id
+     
     actB :: forall x. Bool -> C B B x -> C B B x
     actB = coerce (actA @x)
 
-isoTable :: [[Bool]]
-isoTable = [[ isIso i j | j <- [0..n-1]] | i <- [0 .. n-1]]
+isoTable :: [LensCode] -> [[Bool]]
+isoTable generatedData = [[ (i,j) `Set.member` isoRelation | j <- [0..n-1]] | i <- [0 .. n-1]]
   where
     n = length generatedData
     revMap = Map.fromList (zip generatedData [0..])
     isoList = do
       (encLens, i) <- Map.toList revMap
-      let lens = decodeLens encLens
+      let lens = decodeLens' encLens
       otherLens <- translate lens
       let encOtherLens = encodeLens otherLens
       case Map.lookup encOtherLens revMap of
         Nothing -> error "what!?"
         Just j -> pure (i,j)
     isoRelation = Set.fromList isoList
-    isIso i j = i == j || (i,j) `Set.member` isoRelation
 
--- Simplify and Dist #0 as A = B = Bool
+-- Simplify and Dist #0 as A = B = Bit
 distLens0 :: DistLens Bit Bit
 distLens0 = Lens $ \c -> (q c, d0 c &&& d1 c)
   where
@@ -422,9 +268,15 @@ distLens1 = Lens $ \c -> (q c, d0 (view c) &&& d1 (view c))
     d1 (1,1,1) = d1_3
     d1 _ = undefined
 
--- | Distributive law by group
-distByGroup :: forall a g. Group g => Dist a g
-distByGroup (C a0 k) = C (f a0) $ \g -> C a0 $ \a -> h a (g <> invert (f a0) <> f a)
+-- | Distributive law by torsor
+distByTorsor :: forall w t. (Comonad w, Torsor t) => forall x. w (Store t x) -> Store t (w x)
+distByTorsor wc = C t0 $ \t -> fmap (\(C t1 h) -> h (paral t t0 t1)) wc
   where
-    f = pos . k
-    h a b = peek (k a) b
+    t0 = pos (extract wc)
+
+-- | Distributive law by group
+distByGroup :: forall w g. (Comonad w, Group g) => forall x. w (Store g x) -> Store g (w x)
+distByGroup wc = coerceStore asGroup $ distByTorsor (fmap (coerceStore ToTorsor) wc)
+
+coerceStore :: Coercible a b => p a b -> Store a x -> Store b x
+coerceStore _ = coerce

@@ -23,14 +23,11 @@ module StoreDistributiveLaw(
   law1Lens, law2Lens, law3Lens, law4Lens,
   checkAllLaws,
 
-  generateCandidateLenses,
-
   module Data.Functor.Store,
 ) where
 
 import Control.Comonad
-import Data.Finitary ( inhabitants, Finitary )
-import Data.Finitary.Extra ( sequenceFn )
+import Data.Finitary ( Finitary )
 
 import Data.Functor.Store
 
@@ -108,23 +105,3 @@ checkAllLaws l =
   && check (law2Lens l)
   && check (law3Lens l)
   && check (law4Lens l)
-
-{-
-Even for this smallest case, simply enumerating every lenses
-is not possible.
-
-  ghci> :kind! Cardinality (DistLens A B)
-  Cardinality (DistLens A B) :: GHC.Num.Natural.Natural
-  = 309485009821345068724781056
--}
-
-generateCandidateLenses :: (Finitary s, Finitary t) => () -> [DistLens s t]
-generateCandidateLenses _ = map Lens $ sequenceFn $ \sst -> do
-  let (C s0 f) = sst
-  let t0 = f s0
-  f' <- sequenceFn $ \t' -> if t' == t0 then [s0] else inhabitants
-  putPart <- sequenceFn  $ \case
-    (t,s) | t == t0 -> [ (s, f s) ]
-          | s == f' t -> [ (s0, t) ]
-          | otherwise -> inhabitants
-  pure (C t0 f', putPart)

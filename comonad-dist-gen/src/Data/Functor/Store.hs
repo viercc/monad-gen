@@ -15,22 +15,26 @@
 
 -- | Store functors and Lenses as transformation between store functors
 module Data.Functor.Store(
+  -- * (Indexed) Store Comonad 
   C(..),
+  extract', duplicate',
   type Store,
+
+  -- ** Manipulating Store comonads
   pos, peek,
   mapPos, mapPort,
   compF, decompF,
-  assocF, unassocF,
 
+  -- * Lenses are natural transformations between Store comonads 
   Lens(..),
   (|>), idLens,
   toLens, fromLens,
 
-  LensEnc(..),
+  -- * Encode finitary lenses into numbers
+  LensCode(..),
   encodeLens,
   decodeLens,
-  makeLensEnc,
-  makeLensEnc'
+  decodeLens',
 ) where
 
 import Data.Coerce (coerce)
@@ -46,17 +50,28 @@ import Data.Finite (Finite, getFinite, packFinite)
 import Data.Vector.Sized (Vector)
 import qualified Data.Vector.Sized as SV
 import Data.Functor.Classes ( showsBinaryWith, showsUnaryWith )
+import Data.Foldable (toList)
 
--- * (Generalized) Store Comonad
+-- * Store Comonad
 
+-- | (Indexed) Store Comonad
 data C s p x = C s (p -> x)
   deriving Functor
 
-instance (s ~ p) => Comonad (C s p) where
-  extract (C s f) = f s
-  duplicate (C s f) = C s $ \s' -> C s' f
+extract' :: C s s x -> x
+extract' (C s f) = f s
 
+duplicate' :: C s s'' x -> C s s' (C s' s'' x)
+duplicate' (C s f) = C s $ \s' -> C s' f
+
+
+-- The 'Store' comonad is a special case of @C s p@: when @s ~ p@.
 type Store s = C s s
+
+-- | = @Comonad ('Store' s)@
+instance (s ~ p) => Comonad (C s p) where
+  extract = extract'
+  duplicate = duplicate'
 
 mapPos :: (s -> s') -> C s p x -> C s' p x
 mapPos g (C s f) = C (g s) f
@@ -70,17 +85,12 @@ pos (C s _) = s
 peek :: C s p x -> p -> x
 peek (C _ f) = f
 
+-- | Composition of two @C _ _@ is isomorphic to another @C _ _@
 compF :: forall s p s' p' x. C s p (C s' p' x) -> C (C s p s') (p,p') x
 compF cc = C (C (pos cc) (pos . peek cc)) (\(p,p') -> peek (peek cc p) p')
 
 decompF :: forall s p s' p' x. C (C s p s') (p,p') x -> C s p (C s' p' x)
 decompF c = C (pos (pos c)) $ \p -> C (peek (pos c) p) (\p' -> peek c (p,p'))
-
-assocF :: C (C s p (C s' p' s'')) (p,(p',p'')) x -> C (C (C s p s') (p, p') s'') ((p, p'), p'') x
-assocF = compF . compF . fmap decompF . decompF
-
-unassocF :: C (C (C s p s') (p, p') s'') ((p, p'), p'') x -> C (C s p (C s' p' s'')) (p,(p',p'')) x
-unassocF = compF . fmap compF . decompF . decompF
 
 -- * Lens <-> Natural transformation between (C _ _)
 
@@ -142,26 +152,23 @@ instance (Finitary s, Show s, Show p, Show s', Finitary p', Show p')
   => Show (Lens s p s' p') where
   showsPrec p l = showsUnaryWith showsPrec "fnToLens" p (lensToFn l)
 
-newtype LensEnc s p s' p' = LensEnc (Vector (Cardinality s) (Finite (Cardinality s'), Finite (Cardinality p ^ Cardinality p')))
-  deriving (Eq, Ord)
+-- | 'Lens' for 'Finitary' types, encoded as bunch of 'Integer's.
+newtype LensCode = LensCode [(Integer, Integer)]
+  deriving (Show, Read, Eq, Ord)
 
-instance (Finitary s, Finitary p, Finitary s', Finitary p) => Show (LensEnc s p s' p') where
-  showsPrec p (LensEnc v) = showsUnaryWith showsPrec "makeLensEnc'" p (bimap getFinite getFinite <$> SV.toList v)
+-- | Encode lens as LensCode
+encodeLens :: (Finitary s, Finitary p, Finitary s', Finitary p') => Lens s p s' p' -> LensCode
+encodeLens l = LensCode $ (bimap (getFinite . toFinite) (getFinite . toFinite)) <$> toList (lensToFn l)
 
-encodeLens :: (Finitary s, Finitary p, Finitary s', Finitary p') => Lens s p s' p' -> LensEnc s p s' p'
-encodeLens l = LensEnc $ (\(s', fn) -> (toFinite s', toFinite fn)) <$> fnToVec (lensToFn l)
+-- | (Fallible) construction of Lens from LensCode
+decodeLens :: (Finitary s, Finitary p, Finitary s', Finitary p') => LensCode -> Maybe (Lens s p s' p')
+decodeLens (LensCode input) = do
+  vec <- SV.fromList input
+  vecFinite <- traverse (\(x,y) -> (,) <$> packFinite x <*> packFinite y) vec
+  pure $ fnToLens $ (\(sCode, fnCode) -> (fromFinite sCode, fromFinite fnCode)) <$> vecToFn vecFinite
 
-decodeLens :: (Finitary s, Finitary p, Finitary s', Finitary p') => LensEnc s p s' p' -> Lens s p s' p'
-decodeLens (LensEnc v) = fnToLens $ (\(sCode, fnCode) -> (fromFinite sCode, fromFinite fnCode)) <$> vecToFn v
-
--- | (Fallible) construction of LensEnc from list of 'Integer's.
-makeLensEnc :: (Finitary s, Finitary p, Finitary s', Finitary p') => [(Integer, Integer)] -> Maybe (LensEnc s p s' p')
-makeLensEnc input = do
-  finiteList <- traverse (\(x,y) -> (,) <$> packFinite x <*> packFinite y) input
-  LensEnc <$> SV.fromList finiteList
-
--- | Fail-with-'error' version of 'makeLensEnc'
-makeLensEnc' :: (Finitary s, Finitary p, Finitary s', Finitary p') => [(Integer, Integer)] -> LensEnc s p s' p'
-makeLensEnc' input = case makeLensEnc input of
-  Nothing -> error "makeLensEnc': invalid"
+-- | Fail-with-'error' version of 'decodeLens'
+decodeLens' :: (Finitary s, Finitary p, Finitary s', Finitary p') => LensCode -> Lens s p s' p'
+decodeLens' input = case decodeLens input of
+  Nothing -> error "decodeLens': invalid code"
   Just enc -> enc
