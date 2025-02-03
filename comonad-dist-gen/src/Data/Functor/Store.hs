@@ -45,9 +45,8 @@ import GHC.TypeNats (type (*), type (^))
 import Control.Comonad
 import Data.Finitary
 import Data.Finitary.Extra
-import Data.Finite (Finite, getFinite, packFinite)
+import Data.Finite (getFinite, packFinite)
 
-import Data.Vector.Sized (Vector)
 import qualified Data.Vector.Sized as SV
 import Data.Functor.Classes ( showsBinaryWith, showsUnaryWith )
 import Data.Foldable (toList)

@@ -19,16 +19,17 @@ library
   import: warnings
   exposed-modules:
     Data.Finitary.Extra,
-    Data.Torsor,
     Data.Functor.Store,
     StoreDistributiveLaw,
+    Control.Comonad.Acting
   hs-source-dirs: src
   build-depends:
-    base >=4.20.0.0,
+    base >=4.18.0.0,
     containers,
     comonad,
     data-default,
     groups,
+    monoid-extras,
     finitary,
     finite-typelits,
     vector-sized,
@@ -42,11 +43,12 @@ executable comonad-dist-gen
     Data.ZMod,
     Util.WrappedIntegral,
   build-depends:
-    base >=4.20.0.0,
+    base >=4.18.0.0,
     containers,
     comonad,
     data-default,
     groups,
+    monoid-extras,
     finitary,
     finite-typelits,
     vector-sized,

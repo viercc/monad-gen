@@ -9,6 +9,7 @@
 {-# LANGUAGE TypeAbstractions #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE DerivingVia #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Main(main) where
 
 import System.Environment (getArgs)
@@ -26,12 +27,18 @@ import Data.Finitary (Finitary, inhabitants)
 import Data.Finitary.Extra (prettyPrintFn2, prettyPrintFn, sequenceFn)
 
 import Data.ZMod (Bit(..), ZMod)
-import Data.Group
 import Control.Comonad (Comonad (..))
-import Data.Torsor ( GroupToTorsor(..), Torsor(..) )
+import Data.Group
 
 import Text.Read (readMaybe)
 import System.Exit (exitFailure)
+
+import Control.Comonad.Acting
+import Control.Comonad.Trans.Class (lower)
+import Control.Comonad.Identity (Identity(runIdentity))
+import qualified Control.Comonad.Store as LibComonads
+import qualified Control.Comonad.Acting as Acting
+import Data.Monoid.Action
 
 newtype A = A Bit
   deriving (Show, Read, Eq, Ord, Finitary) via Bit
@@ -268,15 +275,29 @@ distLens1 = Lens $ \c -> (q c, d0 (view c) &&& d1 (view c))
     d1 (1,1,1) = d1_3
     d1 _ = undefined
 
--- | Distributive law by torsor
-distByTorsor :: forall w t. (Comonad w, Torsor t) => forall x. w (Store t x) -> Store t (w x)
-distByTorsor wc = C t0 $ \t -> fmap (\(C t1 h) -> h (paral t t0 t1)) wc
+distActing :: (Comonad w, Monoid s, Action s x) => w (Acting s x a) -> Acting s x (w a)
+distActing = trunc . fmap lower . duplicate . toActingT
   where
-    t0 = pos (extract wc)
+    toActingT = ActingT . fmap (runIdentity . runActingT)
+
+newtype Reg g = Reg { getReg :: g }
+  deriving newtype (Semigroup, Monoid, Group)
+
+instance {-# OVERLAPPING #-} Semigroup g => Action (Reg g) (Reg g) where
+  act (Reg g) (Reg g') = Reg (g <> g')
+
+instance {-# OVERLAPPING #-} Group g => Torsor (Reg g) (Reg g) where
+  difference (Reg g) (Reg g') = Reg (g ~~ g')
 
 -- | Distributive law by group
 distByGroup :: forall w g. (Comonad w, Group g) => forall x. w (Store g x) -> Store g (w x)
-distByGroup wc = coerceStore asGroup $ distByTorsor (fmap (coerceStore ToTorsor) wc)
+distByGroup = coerceStore getReg . toMyStore . Acting.toStore @(Reg g) @(Reg g) . distActing . fmap (Acting.fromStore . fromMyStore . coerceStore Reg)
+
+toMyStore :: LibComonads.Store s a -> Store s a
+toMyStore w = C (LibComonads.pos w) (\s -> LibComonads.peek s w)
+
+fromMyStore :: Store s a -> LibComonads.Store s a
+fromMyStore (C s f) = LibComonads.store f s
 
 coerceStore :: Coercible a b => p a b -> Store a x -> Store b x
 coerceStore _ = coerce
