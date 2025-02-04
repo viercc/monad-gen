@@ -19,9 +19,12 @@ library
   import: warnings
   exposed-modules:
     Data.Finitary.Extra,
-    Data.Functor.Store,
-    StoreDistributiveLaw,
-    Control.Comonad.Acting
+    Control.Comonad.DistributiveLaw,
+    Control.Comonad.Acting,
+
+    C,
+    C.St,
+    C.Act,
   hs-source-dirs: src
   build-depends:
     base >=4.18.0.0,

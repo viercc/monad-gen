@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fplugin GHC.TypeLits.KnownNat.Solver #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -8,22 +9,26 @@
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE NoStarIsType #-}
 {-# LANGUAGE UndecidableInstances #-}
-{-# OPTIONS_GHC -fplugin GHC.TypeLits.KnownNat.Solver #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE DefaultSignatures #-}
 
 -- | Store functors and Lenses as transformation between store functors
-module Data.Functor.Store(
+module C(
   -- * (Indexed) Store Comonad 
   C(..),
-  extract', duplicate',
-  type Store,
 
   -- ** Manipulating Store comonads
   pos, peek,
-  mapPos, mapPort,
+  mapC,
   compF, decompF,
+
+  -- * Functor representatable as C
+  IsC(..),
 
   -- * Lenses are natural transformations between Store comonads 
   Lens(..),
@@ -37,12 +42,11 @@ module Data.Functor.Store(
   decodeLens',
 ) where
 
-import Data.Coerce (coerce)
+import Data.Coerce (coerce, Coercible)
 import Data.Bifunctor (Bifunctor(..))
 
 import GHC.TypeNats (type (*), type (^))
 
-import Control.Comonad
 import Data.Finitary
 import Data.Finitary.Extra
 import Data.Finite (getFinite, packFinite)
@@ -50,6 +54,8 @@ import Data.Finite (getFinite, packFinite)
 import qualified Data.Vector.Sized as SV
 import Data.Functor.Classes ( showsBinaryWith, showsUnaryWith )
 import Data.Foldable (toList)
+import Data.Kind (Type)
+import Data.Functor.Compose
 
 -- * Store Comonad
 
@@ -57,26 +63,8 @@ import Data.Foldable (toList)
 data C s p x = C s (p -> x)
   deriving Functor
 
-extract' :: C s s x -> x
-extract' (C s f) = f s
-
-duplicate' :: C s s'' x -> C s s' (C s' s'' x)
-duplicate' (C s f) = C s $ \s' -> C s' f
-
-
--- The 'Store' comonad is a special case of @C s p@: when @s ~ p@.
-type Store s = C s s
-
--- | = @Comonad ('Store' s)@
-instance (s ~ p) => Comonad (C s p) where
-  extract = extract'
-  duplicate = duplicate'
-
-mapPos :: (s -> s') -> C s p x -> C s' p x
-mapPos g (C s f) = C (g s) f
-
-mapPort :: (p' -> p) -> C s p x -> C s p' x
-mapPort g (C s f) = C s (f . g)
+mapC :: (s -> s') -> (p' -> p) -> C s p x -> C s' p' x
+mapC gs gp (C s f) = C (gs s) (f . gp)
 
 pos :: C s p x -> s
 pos (C s _) = s
@@ -90,6 +78,23 @@ compF cc = C (C (pos cc) (pos . peek cc)) (\(p,p') -> peek (peek cc p) p')
 
 decompF :: forall s p s' p' x. C (C s p s') (p,p') x -> C s p (C s' p' x)
 decompF c = C (pos (pos c)) $ \p -> C (peek (pos c) p) (\p' -> peek c (p,p'))
+
+class Functor f => IsC s p (f :: Type -> Type) | f -> s p where
+  toC :: f x -> C s p x
+  default toC :: Coercible (f x) (C s p x) => f x -> C s p x
+  toC = coerce
+
+  fromC :: C s p x -> f x
+  default fromC :: Coercible (C s p x) (f x) => C s p x -> f x
+  fromC = coerce
+
+instance IsC s p (C s p) where
+  toC = id
+  fromC = id
+
+instance (IsC s p f, IsC s' p' g) => IsC (C s p s') (p,p') (Compose f g) where
+  toC = compF . toC . fmap toC . getCompose
+  fromC = Compose . fmap fromC . fromC . decompF
 
 -- * Lens <-> Natural transformation between (C _ _)
 
