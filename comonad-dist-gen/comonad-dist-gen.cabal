@@ -20,7 +20,6 @@ library
   exposed-modules:
     Data.Finitary.Extra,
     Control.Comonad.DistributiveLaw,
-    Control.Comonad.Acting,
 
     C,
     C.St,
@@ -30,9 +29,7 @@ library
     base >=4.18.0.0,
     containers,
     comonad,
-    data-default,
     groups,
-    monoid-extras,
     finitary,
     finite-typelits,
     vector-sized,
