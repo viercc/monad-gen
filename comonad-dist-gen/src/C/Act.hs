@@ -36,7 +36,7 @@ newtype Act g x = Act { unAct :: C g g x }
     deriving stock (Functor)
     deriving newtype (Eq, Finitary)
 
-instance Group g => Comonad (Act g) where
+instance Monoid g => Comonad (Act g) where
   extract = extract' . unAct
   duplicate = fmap Act . Act . duplicate' . unAct
 
@@ -80,22 +80,22 @@ toLens23 :: (forall x. Act s (Act t x) -> Act u1 (Act u2 (Act u3 x)))
   -> (Lens (C s s t) (s, t) (C (C u1 u1 u2) (u1, u2) u3) ((u1, u2), u3))
 toLens23 f = toLens (toC . Compose . Compose . f . getCompose . fromC)
 
-law1Lens :: forall s t. (Group s, Group t) => DistLens s t -> Equals (Lens (C s s t) (s,t) s s)
+law1Lens :: forall s t. (Monoid s, Monoid t) => DistLens s t -> Equals (Lens (C s s t) (s,t) s s)
 law1Lens dLens = toLens21 <$> law1 (distFromLens dLens)
 
-law2Lens :: forall s t. (Group s, Group t) => DistLens s t -> Equals (Lens (C s s t) (s,t) t t)
+law2Lens :: forall s t. (Monoid s, Monoid t) => DistLens s t -> Equals (Lens (C s s t) (s,t) t t)
 law2Lens dLens = toLens21 <$> law2 (distFromLens dLens)
 
-law3Lens :: forall s t. (Group s, Group t) => DistLens s t -> Equals (Lens (C s s t) (s, t) (C (C t t t) (t, t) s) ((t, t), s))
+law3Lens :: forall s t. (Monoid s, Monoid t) => DistLens s t -> Equals (Lens (C s s t) (s, t) (C (C t t t) (t, t) s) ((t, t), s))
 law3Lens dLens = toLens23 <$> law3 (distFromLens dLens)
 
-law4Lens :: forall s t. (Group s, Group t) => DistLens s t -> Equals  (Lens (C s s t) (s, t) (C (C t t s) (t, s) s) ((t, s), s))
+law4Lens :: forall s t. (Monoid s, Monoid t) => DistLens s t -> Equals  (Lens (C s s t) (s, t) (C (C t t s) (t, s) s) ((t, s), s))
 law4Lens dLens = toLens23 <$> law4 (distFromLens dLens)
 
 check :: Eq a => Equals a -> Bool
 check (Equals a1 a2) = a1 == a2
 
-checkAllLaws :: (Finitary s, Finitary t) => (Group s, Group t) => DistLens s t -> Bool
+checkAllLaws :: (Finitary s, Finitary t) => (Monoid s, Monoid t) => DistLens s t -> Bool
 checkAllLaws l =
      check (law1Lens l)
   && check (law2Lens l)

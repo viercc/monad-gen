@@ -32,12 +32,21 @@ import System.Environment (getArgs)
 import System.Exit (exitFailure)
 import System.IO
 import Text.Read (readMaybe)
+import Data.Monoid (Any(..))
 
 newtype A = A Bit
   deriving (Show, Read, Eq, Finitary, Semigroup, Monoid, Group) via Bit
 
 newtype B = B Bit
   deriving (Show, Read, Eq, Finitary, Semigroup, Monoid, Group) via Bit
+
+newtype A' = A' Bit
+  deriving (Show, Read, Eq, Finitary) via Bit
+  deriving (Semigroup, Monoid) via Any
+
+newtype B' = B' Bit
+  deriving (Show, Read, Eq, Finitary) via Bit
+  deriving (Semigroup, Monoid) via Any
 
 main :: IO ()
 main = getArgs >>= main'
@@ -58,11 +67,14 @@ printUsage =
 defaultCacheFileName :: FilePath
 defaultCacheFileName = "comonad-dist-gen.cache"
 
-generateToFile :: FilePath -> IO [LensCode]
+generateToFile :: FilePath -> IO ([LensCode], [LensCode])
 generateToFile cacheFileName = do
   putStrLn "# Generating lawful DistLens..."
-  let generatedData = encodeLens <$> generateAll ()
-  mapM_ print generatedData
+  let generatedData_st = encodeLens <$> generateAll ()
+      generatedData_act = encodeLens <$> generateAll' ()
+      generatedData = (generatedData_st, generatedData_act)
+  mapM_ print generatedData_st
+  mapM_ print generatedData_act
   putStrLn $ "Write the generated data to cache file:" ++ show cacheFileName
   writeFile cacheFileName (show generatedData)
   pure generatedData
@@ -102,7 +114,22 @@ generateCandidateLenses _ = map Lens $ sequenceFn $ \sst -> do
 generateAll :: () -> [DistLens A B]
 generateAll u = filter checkAllLaws (generateCandidateLenses u)
 
-readCache :: FilePath -> IO [LensCode]
+generateCandidateLenses' :: () -> [Act.DistLens A' B']
+generateCandidateLenses' _ = map Lens $ sequenceFn $ \sst -> do
+  let (C s0 f) = sst
+  let t0 = f mempty
+  f' <- sequenceFn $ \t' -> if t' == mempty then [s0] else inhabitants
+  putPart <- sequenceFn $ \case
+    (t, s)
+      | t == mempty -> [(s, mempty)]
+      | s == mempty -> [(mempty, t)]
+      | otherwise -> inhabitants
+  pure (C t0 f', putPart)
+
+generateAll' :: () -> [Act.DistLens A' B']
+generateAll' u = filter Act.checkAllLaws (generateCandidateLenses' u)
+
+readCache :: FilePath -> IO ([LensCode], [LensCode])
 readCache cacheFileName = do
   putStrLn $ "# Reading cached file:" ++ show cacheFileName
   cachedDataStr <- readFile' cacheFileName
@@ -110,15 +137,19 @@ readCache cacheFileName = do
     Nothing -> hPutStrLn stderr "Cache file couldn't be parsed" >> exitFailure
     Just generatedData -> pure generatedData
 
-diagnosis :: [LensCode] -> IO ()
-diagnosis generatedData = do
+diagnosis :: ([LensCode], [LensCode]) -> IO ()
+diagnosis (generatedData, generatedDataAct) = do
   putStrLn "# Is the data all valid?"
   generatedLenses <- case traverse decodeLens generatedData of
     Nothing -> hPutStrLn stderr "Bad data!" >> exitFailure
     Just lenses -> pure lenses
+  generatedLensesAct <- case traverse decodeLens generatedDataAct of
+    Nothing -> hPutStrLn stderr "Bad data!" >> exitFailure
+    Just lenses -> pure lenses
   putStrLn "# Pretty-print the generated lenses:"
   prettyPrintDistLenses generatedLenses
-  prettyPrintDistLensesAct generatedLenses
+  prettyPrintDistLensesAct (distLensAsActDistLens <$> generatedLenses)
+  prettyPrintDistLensesAct generatedLensesAct
   putStrLn "# Are the generated lenses isomorphic each other?"
   printIsoTable generatedData
   putStrLn "# Check that handcrafted distributive laws are valid"
@@ -130,10 +161,10 @@ prettyPrintDistLenses generatedData = for_ (zip [0 :: Int ..] generatedData) $ \
   for_ (prettyPrintDistLens lens) $ \pprLine ->
     putStrLn $ "  " ++ pprLine
 
-prettyPrintDistLensesAct :: [DistLens A B] -> IO ()
+prettyPrintDistLensesAct :: [Act.DistLens A B] -> IO ()
 prettyPrintDistLensesAct generatedData = for_ (zip [0 :: Int ..] generatedData) $ \(i, lens) -> do
   putStrLn $ "## Dist" ++ show i ++ " (as group action comonad)"
-  for_ (prettyPrintDistLens (distLensAsActDistLens lens)) $ \pprLine ->
+  for_ (prettyPrintDistLens lens) $ \pprLine ->
     putStrLn $ "  " ++ pprLine
 
 printIsoTable :: [LensCode] -> IO ()
