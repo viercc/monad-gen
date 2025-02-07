@@ -16,6 +16,8 @@
 {-# LANGUAGE DeriveFunctor #-}
 
 module ModelFinder.Examples.Monad(
+  M(..), I(..),
+  MonadSig(..), (:->)(..),
   searchMonad
 ) where
 
@@ -155,6 +157,43 @@ monadLaw678 m v w i = (law6, law7, law8)
               wi = Fn $ \j -> w $$ (i1',j)
           index2 vi wi i2'
 
+-- * Model definitions
+
+-- >>> length $ searchMonad ()
+-- 12
+searchMonad :: () -> [Solution MonadSig]
+searchMonad _ = solve 10 initialModel equations >>= constraintToSolution
+  where
+    ms = inhabitants :: [M]
+    is = inhabitants :: [I]
+    vs = allFunctions :: [I :-> M]
+    ws = allFunctions :: [(I,I) :-> M]
+    
+    allMs = Set.fromList ms
+    allIs = Set.fromList is
+    
+    initialModelList =
+      [ Unit :=> Set.singleton M0 ] ++
+      [ mungeSig :=> allMs | mungeSig <- Munge <$> ms <*> vs ] ++
+      [ ix1Sig :=> allIs | ix1Sig <- Index1 <$> ms <*> vs <*> is ] ++
+      [ ix2Sig :=> allIs | ix2Sig <- Index2 <$> ms <*> vs <*> is ]
+    initialModel = ModelConstraint $ DMap.fromList initialModelList
+
+    equations = Map.fromList $ zip [0 :: Int ..] (concat [law1eqs, law2eqs, law3eqs, law4eqs, law5eqs, law678eqs])
+
+    law1eqs = monadLaw1 <$> ms
+    law2eqs = monadLaw2 <$> ms
+    law3eqs = monadLaw3 <$> ms <*> vs <*> ws
+    law4eqs = monadLaw4 <$> ms <*> is
+    law5eqs = monadLaw5 <$> ms <*> is
+    law678eqs = do
+      m <- ms
+      v <- vs
+      w <- ws
+      i <- is
+      let (p6,p7,p8) = monadLaw678 m v w i
+      [p6, p7, p8]
+
 -------------------
 -- Instances
 -------------------
@@ -201,44 +240,6 @@ instance (c I, c M) => Has c MonadSig where
     Munge{} -> body
     Index1{} -> body
     Index2{} -> body
-
--- * Model definitions
-
--- >>> length $ searchMonad ()
--- 12
-searchMonad :: () -> [Solution MonadSig]
-searchMonad _ = solve 10 initialModel equations >>= constraintToSolution
-  where
-    ms = inhabitants :: [M]
-    is = inhabitants :: [I]
-    vs = allFunctions :: [I :-> M]
-    ws = allFunctions :: [(I,I) :-> M]
-    
-    allMs = Set.fromList ms
-    allIs = Set.fromList is
-    
-    initialModelList =
-      [ Unit :=> Set.singleton M0 ] ++
-      [ mungeSig :=> allMs | mungeSig <- Munge <$> ms <*> vs ] ++
-      [ ix1Sig :=> allIs | ix1Sig <- Index1 <$> ms <*> vs <*> is ] ++
-      [ ix2Sig :=> allIs | ix2Sig <- Index2 <$> ms <*> vs <*> is ]
-    initialModel = ModelConstraint $ DMap.fromList initialModelList
-
-    equations = Map.fromList $ zip [0 :: Int ..] (concat [law1eqs, law2eqs, law3eqs, law4eqs, law5eqs, law678eqs])
-
-    law1eqs = monadLaw1 <$> ms
-    law2eqs = monadLaw2 <$> ms
-    law3eqs = monadLaw3 <$> ms <*> vs <*> ws
-    law4eqs = monadLaw4 <$> ms <*> is
-    law5eqs = monadLaw5 <$> ms <*> is
-    law678eqs = do
-      m <- ms
-      v <- vs
-      w <- ws
-      i <- is
-      let (p6,p7,p8) = monadLaw678 m v w i
-      [p6, p7, p8]
-
 
 -----------------------
 -- * Utilities

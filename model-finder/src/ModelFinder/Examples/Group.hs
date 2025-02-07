@@ -36,37 +36,6 @@ data GroupSig a x where
   Inv :: a -> GroupSig a a
   Mul :: a -> a -> GroupSig a a
 
-sigToRefl :: GroupSig a x -> a :~: x
-sigToRefl Ident = Refl
-sigToRefl (Inv _) = Refl
-sigToRefl (Mul _ _) = Refl
-
-deriving instance (Eq a) => Eq (GroupSig a x)
-
-deriving instance (Ord a) => Ord (GroupSig a x)
-
-deriving instance (Show a) => Show (GroupSig a x)
-
-instance (Eq a) => GEq (GroupSig a) where
-  geq sa sb = case (sigToRefl sa, sigToRefl sb) of
-    (Refl, Refl) -> guard (sa == sb) *> Just Refl
-
-instance (Ord a) => GCompare (GroupSig a) where
-  gcompare sa sb = case (sigToRefl sa, sigToRefl sb) of
-    (Refl, Refl) -> genOrdering (compare sa sb)
-
-instance (Show a) => GShow (GroupSig a) where
-  gshowsPrec = showsPrec
-
-genOrdering :: Ordering -> GOrdering t t
-genOrdering cmp = case cmp of
-  LT -> GLT
-  EQ -> GEQ
-  GT -> GGT
-
-instance (c a) => Has c (GroupSig a) where
-  has sig body = case sigToRefl sig of Refl -> body
-
 ----
 
 type GroupExpr a = Expr (GroupSig a) a
@@ -103,7 +72,8 @@ lawInv a = (pure a |*| gInv (pure a) |==| gIdent) `andProp` (gInv (pure a) |*| p
 
 -- |
 --
--- >>> length $ searchGroupOfOrder 4
+-- >>> searchGroupOfOrder 2
+-- [Solution [Ident := 0,Inv 0 := 0,Inv 1 := 1,Mul 0 0 := 0,Mul 0 1 := 1,Mul 1 0 := 1,Mul 1 1 := 0]]
 searchGroupOfOrder :: Int -> [Solution (GroupSig Int)]
 searchGroupOfOrder n = solve 10 initialModel equations >>= constraintToSolution
   where
@@ -142,3 +112,41 @@ prettyPrintSolution n (Solution defs) = do
           case def of
             (Mul x y := z) -> [((x, y), z)]
             _ -> []
+
+----------------
+-- Instances
+----------------
+
+
+sigToRefl :: GroupSig a x -> a :~: x
+sigToRefl Ident = Refl
+sigToRefl (Inv _) = Refl
+sigToRefl (Mul _ _) = Refl
+
+deriving instance (Eq a) => Eq (GroupSig a x)
+
+deriving instance (Ord a) => Ord (GroupSig a x)
+
+deriving instance (Show a) => Show (GroupSig a x)
+
+instance (Eq a) => GEq (GroupSig a) where
+  geq sa sb = case (sigToRefl sa, sigToRefl sb) of
+    (Refl, Refl) -> guard (sa == sb) *> Just Refl
+
+instance (Ord a) => GCompare (GroupSig a) where
+  gcompare sa sb = case (sigToRefl sa, sigToRefl sb) of
+    (Refl, Refl) -> genOrdering (compare sa sb)
+
+instance (Show a) => GShow (GroupSig a) where
+  gshowsPrec = showsPrec
+
+genOrdering :: Ordering -> GOrdering t t
+genOrdering cmp = case cmp of
+  LT -> GLT
+  EQ -> GEQ
+  GT -> GGT
+
+instance (c a) => Has c (GroupSig a) where
+  has sig body = case sigToRefl sig of Refl -> body
+
+----
