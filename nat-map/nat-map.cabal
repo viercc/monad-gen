@@ -55,5 +55,5 @@ test-suite nat-map-test
 
     -- Test dependencies.
     build-depends:
-        base ^>=4.19.0.0,
+        base >=4.19.0.0,
         nat-map
