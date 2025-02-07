@@ -60,7 +60,8 @@ library
 
     -- Modules exported by the library.
     exposed-modules:
-      ModelFinder,
+      ModelFinder.Solver,
+      ModelFinder.Expr,
       ModelFinder.Examples.Group,
       ModelFinder.Examples.Monad
 

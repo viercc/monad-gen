@@ -28,7 +28,9 @@ import Data.GADT.Show (GShow (..))
 import Data.Map qualified as Map
 import Data.Set qualified as Set
 import Data.Type.Equality
-import ModelFinder
+
+import ModelFinder.Expr
+import ModelFinder.Solver
 
 -- | Signature of functions which defines group structure on @a@.
 data GroupSig a x where
@@ -79,12 +81,13 @@ searchGroupOfOrder n = solve 10 initialModel equations >>= constraintToSolution
   where
     as = [0 .. n - 1]
     allValues = Set.fromList as
-    allSigs = [Ident] ++ (Inv <$> as) ++ (Mul <$> as <*> as)
-    initialModel = ModelConstraint $ DMap.fromList [sig :=> allValues | sig <- allSigs]
+    initialModel = ModelConstraint $ DMap.fromList $
+      [Ident :=> Set.singleton 0] ++
+      [ sig :=> allValues | sig <- Inv <$> as] ++
+      [ sig :=> allValues | sig <- Mul <$> as <*> as]
 
-    equations = Map.fromList (eIsZero ++ equationsUnit ++ equationsInv ++ equationsAssoc)
+    equations = Map.fromList (equationsUnit ++ equationsInv ++ equationsAssoc)
 
-    eIsZero = [("eIsZero", (== 0) <$> gIdent)]
     equationsUnit = [(name a, lawUnit a) | a <- as]
       where
         name a = "lawUnit " ++ show a

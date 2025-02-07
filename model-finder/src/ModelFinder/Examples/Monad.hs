@@ -30,12 +30,14 @@ import Data.GADT.Show (GShow (..))
 import Data.Map qualified as Map
 import Data.Set qualified as Set
 import Data.Type.Equality
-import ModelFinder
+import ModelFinder.Solver
 import Data.Finitary
 import GHC.Generics (Generic)
 import GHC.TypeNats (natVal)
 import Data.Functor.Classes (showsUnaryWith)
 import Data.Bifunctor (Bifunctor(..))
+
+import ModelFinder.Expr
 
 data I = I0 | I1
   deriving stock (Show, Eq, Ord, Generic)
