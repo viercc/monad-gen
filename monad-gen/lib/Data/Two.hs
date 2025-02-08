@@ -1,16 +1,17 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
+{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE DataKinds #-}
 module Data.Two where
 
-import Data.Transparent
 import Data.Bits (Bits(..))
 import Text.Read (Read(readPrec))
-import Data.Profunctor.Cartesian
-import Data.Profunctor (Profunctor(..))
+import Data.Finitary.Enum qualified as Fin
 
 newtype Two = Two Bool
   deriving stock (Eq, Ord)
-  deriving newtype (Bits, Transparent)
+  deriving newtype (Bits, Fin.Enum)
 
 instance Num Two where
   fromInteger = Two . odd
@@ -29,14 +30,15 @@ instance Read Two where
 data N3 = N3_0 | N3_1 | N3_2
   deriving stock (Eq, Ord, Enum, Bounded)
 
-instance Transparent N3 where
-  describeOn f g = dimap (to . f) (g . from) (proUnit +++ proUnit +++ proUnit)
+instance Fin.Enum N3 where
+  withEnum k = k @3 to from
     where
-      k = const
-      from = either (either (k N3_0) (k N3_1)) (k N3_2)
-      to N3_0 = Left (Left ())
-      to N3_1 = Left (Right ())
-      to N3_2 = Right ()
+      to N3_0 = 0
+      to N3_1 = 1
+      to N3_2 = 2
+      from 0 = N3_0
+      from 1 = N3_1
+      from _ = N3_2
 
 instance Num N3 where
   fromInteger n = toEnum (fromInteger (n `mod` 3))

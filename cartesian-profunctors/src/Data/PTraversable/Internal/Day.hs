@@ -11,15 +11,14 @@
 
 module Data.PTraversable.Internal.Day (ptraverseDay) where
 
+import Prelude hiding (Enum)
 import Data.Profunctor.Cartesian.Free
 import Data.Void (absurd)
-import Data.Profunctor.Power (ptraverseFunction)
-import Data.Profunctor.FinFn (withFinFn)
 import Data.Function ((&))
 
 import Data.Profunctor
 import Data.Profunctor.Cartesian
-import Data.Transparent
+import Data.Finitary.Enum
 
 import Data.Functor.Day ( Day(..) )
 import Control.Monad.Trans.State.Lazy (State, state, runState)
@@ -33,7 +32,7 @@ type Traversal s t a b = forall p. (Cartesian p, Cocartesian p) => Optic p s t a
 type PT t = forall a b. Traversal (t a) (t b) a b
 
 data SomePower a b s t where
-  SomePower :: (Transparent x) => (s -> (x -> a)) -> ((x -> b) -> t) -> SomePower a b s t
+  SomePower :: (Enum x) => (s -> (x -> a)) -> ((x -> b) -> t) -> SomePower a b s t
 
 instance Profunctor (SomePower a b) where
   dimap f g (SomePower to from) = SomePower (to . f) (g . from)
@@ -76,8 +75,8 @@ ptraverseDay' travT travU p = go (travT idSOP)
         post (Left y) = (opB (Left (mkT x2i)), travU (. i2x) y)
         post (Right (b2,y)) = (opB (Right b2), y)
 
-embeddingToInt :: forall x. Transparent x => (x -> Int, Int -> x)
-embeddingToInt = withFinFn describe (\to from -> (fromIntegral . to, from . fromIntegral))
+embeddingToInt :: forall x. Enum x => (x -> Int, Int -> x)
+embeddingToInt = withEnum (\to from -> (fromIntegral . to, from . fromIntegral))
 
 type Day' t u a = (t Int, u (Int -> a))
 

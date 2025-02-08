@@ -4,6 +4,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE DataKinds #-}
 module Data.Profunctor.Cartesian.FreeBicartesian(
   FreeBicartesian(..),
   liftFreeBicartesian,

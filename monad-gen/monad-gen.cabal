@@ -1,5 +1,5 @@
 name:                monad-gen
-version:             0.1.0.0
+version:             0.2.0.0
 build-type:          Simple
 cabal-version:       2.0
 
@@ -32,7 +32,7 @@ library monad-gen-internal
 
     , mtl
 
-    , cartesian-profunctors
+    , cartesian-profunctors >= 0.2
     , nat-map
   default-language: Haskell2010
   ghc-options:        -Wall -Wcompat

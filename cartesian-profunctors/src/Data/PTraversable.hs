@@ -35,6 +35,7 @@ module Data.PTraversable
   )
 where
 
+import Prelude hiding (Enum)
 import Control.Applicative
 import Data.Bifunctor.Clown
 import Data.Bifunctor.Joker
@@ -49,7 +50,7 @@ import Data.Profunctor
 import Data.Profunctor.Cartesian
 import Data.Profunctor.Counting
 import Data.Profunctor.Unsafe ((#.), (.#))
-import Data.Transparent
+import Data.Finitary.Enum ( Enum(..), describeEnum )
 import GHC.Generics
 import GHC.Generics.Orphans()
 import Data.Orphans()
@@ -57,6 +58,7 @@ import Data.Orphans()
 import Data.Functor.Day (Day)
 import qualified Data.PTraversable.Internal.Day as DayImpl (ptraverseDay)
 import Data.Functor.Classes
+import Data.Profunctor.FinFn (withFinFn)
 
 class (Ord1 t, Traversable t) => PTraversable t where
   {-# MINIMAL ptraverseWith #-}
@@ -157,15 +159,13 @@ deriving via (Generically1 Maybe) instance PTraversable Maybe
 
 deriving via (Generically1 []) instance PTraversable []
 
-deriving via
-  (Generically1 ((,) a))
-  instance
-    (Transparent a) => PTraversable ((,) a)
+deriving
+  via (Generically1 ((,) a))
+  instance (Enum a) => PTraversable ((,) a)
 
-deriving via
-  (Generically1 (Either a))
-  instance
-    (Transparent a) => PTraversable (Either a)
+deriving
+  via (Generically1 (Either a))
+  instance (Enum a) => PTraversable (Either a)
 
 deriving via
   (Generically1 (Sum t u))
@@ -216,12 +216,9 @@ instance (Ord a, PTraversable t) => Ord (WrappedPTraversable t a) where
 instance PTraversable t => Ord1 (WrappedPTraversable t) where
   liftCompare = liftCompareDefault
 
-instance
-  (Transparent a, PTraversable t) =>
-  Transparent (WrappedPTraversable t a)
-  where
-  describeOn f g =
-    ptraverseWith (unwrapPTraversable . f) (g . WrapPTraversable) describe
+instance (Enum a, PTraversable t) => Enum (WrappedPTraversable t a) where
+  enumeration = ptraverseWith unwrapPTraversable WrapPTraversable enumeration
+  withEnum = withFinFn enumeration
 
 instance (PTraversable t) => Functor (WrappedPTraversable t) where
   fmap f = coerce (fmapDefault @t f)
@@ -250,8 +247,8 @@ instance PTraversable Par1 where
   ptraverseWith = coerce (dimap :: (as -> a) -> (b -> bs) -> p a b -> p as bs)
   {-# INLINEABLE ptraverseWith #-}
 
-instance (Transparent c) => PTraversable (K1 i c) where
-  ptraverseWith f g _ = describeOn (unK1 #. f) (g .# K1)
+instance (Enum c) => PTraversable (K1 i c) where
+  ptraverseWith f g _ = dimap (unK1 #. f) (g .# K1) describeEnum
 
 instance (PTraversable f) => PTraversable (M1 i c f) where
   ptraverseWith f g = ptraverseWith (unM1 . f) (g . M1)

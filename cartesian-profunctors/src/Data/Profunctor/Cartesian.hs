@@ -1,5 +1,9 @@
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE TupleSections #-}
 module Data.Profunctor.Cartesian(
   Cartesian(..),
   prodDay,
@@ -12,6 +16,10 @@ module Data.Profunctor.Cartesian(
   proUnitDefault,
   liftA2Default,
   fanoutDefault,
+
+  -- * Utilities
+  describeFinite,
+  describeFiniteBits,
 
   -- * About distributivy laws between 'Cartesian' and 'Cocartesian'
   --
@@ -30,8 +38,13 @@ import Data.Bifunctor.Product
 import Data.Profunctor
 import Data.Profunctor.Monad
 import Data.Profunctor.Yoneda
-import Data.Profunctor.Composition
+import Data.Profunctor.Composition hiding (assoc)
 import Data.Profunctor.Day
+
+import Data.Bits
+import GHC.TypeNats ( KnownNat, Natural, natVal )
+import Data.Finite (Finite, getFinite)
+import Data.Finite.Internal qualified as Unsafe
 
 class Profunctor p => Cartesian p where
   {-# MINIMAL proUnit, (proProduct | (***) | (&&&)) #-}
@@ -58,6 +71,12 @@ class Profunctor p => Cartesian p where
   -- | Alternative way to define the product (pronounced \"fan-out\")
   (&&&) :: p a b -> p a b' -> p a (b, b')
   (&&&) = proProduct delta id
+
+  -- | Function from finite types can be constructed as iterated product.
+  --
+  -- There is a default implementaion, but it can be more efficient implementation.
+  proPower :: KnownNat n => p a b -> p (Finite n -> a) (Finite n -> b)
+  proPower p = runPower describeFinite p
 
 delta :: a -> (a,a)
 delta a = (a,a)
@@ -143,6 +162,12 @@ class Profunctor p => Cocartesian p where
   (|||) :: p a b -> p a' b -> p (Either a a') b
   (|||) = proSum id nabla
 
+  -- | Pairing with finite types can be constructed as iterated sum.
+  --
+  -- There is a default implementaion, but it can be more efficient implementation.
+  proTimes :: KnownNat n => p a b -> p (Finite n, a) (Finite n, b)
+  proTimes p = runCopower describeFinite p
+
 nabla :: Either a a -> a
 nabla = either id id
 
@@ -188,6 +213,99 @@ instance (Cocartesian p) => Cocartesian (Coyoneda p) where
   Coyoneda l1 r1 p +++ Coyoneda l2 r2 q
     = Coyoneda (l1 +++ l2) (r1 +++ r2) (p +++ q)
 
--- $distributivity
 --
--- TODO
+
+newtype Power p a b = Power { runPower :: forall s t. p s t -> p (b -> s) (a -> t) }
+
+instance Profunctor p => Profunctor (Power p) where
+    dimap f g (Power k) = Power (dimap (. g) (. f) . k)
+
+instance Profunctor p => Cartesian (Power p) where
+    proUnit = Power $ dimap ($ ()) const
+    ep *** eq = Power $ \e -> dimap curry uncurry $ runPower ep (runPower eq e)
+
+instance Cartesian p => Cocartesian (Power p) where
+    proEmpty = Power $ \_ -> dimap id (const absurd) proUnit
+    ep +++ eq = Power $ \e -> proProduct (\f -> (f . Left, f . Right)) (uncurry either) (runPower ep e) (runPower eq e)
+
+--
+
+newtype Copower p a b = Copower { runCopower :: forall s t. p s t -> p (a,s) (b,t) }
+
+instance Profunctor p => Profunctor (Copower p) where
+  dimap f g (Copower k) = Copower $ \p -> dimap (first f) (first g) (k p)
+
+instance Profunctor p => Cartesian (Copower p) where
+  proUnit = Copower $ \p -> dimap snd ((),) p
+  cp *** cq = Copower $ \p -> dimap assoc unassoc $ runCopower cp (runCopower cq p)
+    where
+      assoc ((a,b),c) = (a,(b,c))
+      unassoc (a,(b,c)) = ((a,b),c)
+
+instance Cocartesian p => Cocartesian (Copower p) where
+  proEmpty = Copower $ \_ -> dimap fst absurd proEmpty
+  cp +++ cq = Copower $ \p -> proSum distrib undistrib (runCopower cp p) (runCopower cq p)
+    where
+      distrib (ab,c) = bimap (,c) (,c) ab
+      undistrib = either (first Left) (first Right)
+
+--
+
+describeFinite :: forall n p. (KnownNat n, Cartesian p, Cocartesian p) => p (Finite n) (Finite n)
+describeFinite = dimap finiteToNatural unsafeNaturalToFinite (dNatural (natVal @n undefined))
+  where
+    finiteToNatural = fromInteger . getFinite
+    unsafeNaturalToFinite = Unsafe.Finite . toInteger
+
+dNatural :: (Cartesian p, Cocartesian p) => Natural -> p Natural Natural
+dNatural 0 = dimap (error "here no value should come") absurd proEmpty
+dNatural 1 = dimap (const ()) (const 0) proUnit
+dNatural 2 = dBit
+dNatural n = case n `divMod` 2 of
+  (n',0) -> proProduct div2 undiv2 (dNatural n') dBit
+  (n',_) -> proSum unshiftNat shiftNat proUnit (proProduct div2 undiv2 (dNatural n') dBit)
+  where
+    div2 x = x `divMod` 2
+    undiv2 (q,r) = 2 * q + r
+    unshiftNat 0 = Left ()
+    unshiftNat x = Right (pred x)
+    shiftNat = either (const 0) succ
+
+describeFiniteBits :: forall a p. (FiniteBits a, Cartesian p, Cocartesian p) => p a a
+describeFiniteBits = dBits (finiteBitSize (zeroBits :: a))
+
+dBit :: (Bits a, Cartesian p, Cocartesian p) => p a a
+dBit = proSum i2b b2i proUnit proUnit
+  where
+    i2b x = if testBit x 0 then Right () else Left ()
+    b2i (Left _) = zeroBits
+    b2i (Right _)  = bit 0
+
+dBits :: (Bits a, Cartesian p, Cocartesian p) => Int -> p a a
+dBits n
+  | n <= 0 = error "bad!"
+  | n == 1 = dBit
+  | otherwise =
+      case separate n of
+        (0, p) -> dBitsPow2 p
+        (m, p) ->
+          let l x = (x `shiftR` p, x)
+              r (a,b) = a `shiftL` p .|. b
+          in dimap l r $ dBits m *** dBitsPow2 p
+
+separate :: Int -> (Int, Int)
+-- must be x > 1
+separate x = (r, bit p)
+  where
+    p = finiteBitSize (0 :: Int) - countLeadingZeros x - 1
+    r = clearBit x p
+
+dBitsPow2 :: (Bits a, Cartesian p, Cocartesian p) => Int -> p a a
+dBitsPow2 1 = dBit
+dBitsPow2 n =
+  let m = n `div` 2
+      halfBits = dBitsPow2 m
+      l x = (x `shift` (-m), x)
+      r (a,b) = a `shift` m .|. b
+  in dimap l r $ halfBits *** halfBits
+

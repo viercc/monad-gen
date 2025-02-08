@@ -19,9 +19,8 @@ library
     Data.Profunctor.Counting,
     Data.Profunctor.FinFn,
     Data.Profunctor.Exhaust,
-    Data.Profunctor.Power,
     Data.Profunctor.UniconEncoding,
-    Data.Transparent,
+    Data.Finitary.Enum,
     Data.PTraversable
   other-modules:
     Data.PTraversable.Internal.Day,
@@ -36,8 +35,10 @@ library
     , profunctors
     , bifunctors
     , kan-extensions
-    , finite-typelits >= 0.2.0.0
+    , finite-typelits >= 0.2.1.0
     , finitary >= 2.1.3.0
+    , vector-sized
+    , ghc-typelits-knownnat
   ghc-options:         -Wall -Werror -Wcompat
   default-language:    Haskell2010
 

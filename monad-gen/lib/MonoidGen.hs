@@ -30,6 +30,8 @@ module MonoidGen(
   makeEnv, fakeEnv,
 ) where
 
+import Prelude hiding (Enum(..))
+
 import Data.Equivalence.Monad
 import Data.List (sortOn, sort, groupBy, permutations)
 import Data.Maybe (mapMaybe)
@@ -45,7 +47,7 @@ import Data.Array ((!), Array)
 import qualified Data.Array.Extra as Array
 
 import Data.FunctorShape
-import Data.Transparent
+import Data.Finitary.Enum
 
 import EquationSolver
 import Data.Function (on)
@@ -80,10 +82,10 @@ data MonoidData a = MonoidData
     _rawMonoidData :: RawMonoidData
   }
 
-genMonoids :: (Transparent a) => [MonoidData a]
+genMonoids :: (Enum a) => [MonoidData a]
 genMonoids = genMonoidsWithSig (const 1)
 
-genMonoidsWithSig :: (Transparent a) => (a -> Int) -> [MonoidData a]
+genMonoidsWithSig :: (Enum a) => (a -> Int) -> [MonoidData a]
 genMonoidsWithSig f = MonoidData env <$> genRawMonoids sig
   where
     (env, sig) = makeEnv f
@@ -117,7 +119,7 @@ prettyMonoidData monName monoidData =
 prettyElems :: (Show a) => V.Vector a -> [String]
 prettyElems env = [ show i ++ " = " ++ show f_ | (i, f_) <- V.toList (V.indexed env) ]
 
-makeEnv :: (Transparent a) => (a -> Int) -> (V.Vector a, Signature)
+makeEnv :: (Enum a) => (a -> Int) -> (V.Vector a, Signature)
 makeEnv f = (keys, sigs)
   where
     (keys, sigs) = V.unzip $ V.fromList $ sortOn snd [(a, f a) | a <- enum]

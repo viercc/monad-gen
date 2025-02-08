@@ -14,9 +14,10 @@ import qualified Unsafe.Coerce (unsafeCoerce)
 import Data.Functor.Classes (showsUnaryWith)
 
 import Data.PTraversable
-import Data.Transparent
+import Data.Finitary.Enum
 import Data.Profunctor.Cartesian
-import Data.Profunctor (Profunctor(..))
+import Prelude hiding (Enum)
+import Data.Profunctor.FinFn (withFinFn)
 
 newtype Shape f = UnsafeMkShape (f Ignored)
 type role Shape representational
@@ -35,8 +36,9 @@ instance (WeakOrd f) => Ord (Shape f) where
 instance (Show (f Ignored)) => Show (Shape f) where
     showsPrec p (UnsafeMkShape fa) = showsUnaryWith showsPrec "Shape" p fa
 
-instance PTraversable f => Transparent (Shape f) where
-    describeOn f g = ptraverseWith (unShape . f) (g . UnsafeMkShape) (rmap (const Ignored) proUnit)
+instance PTraversable f => Enum (Shape f) where
+    enumeration = ptraverseWith unShape Shape proUnit
+    withEnum = withFinFn enumeration
 
 {-# COMPLETE Shape #-}
 pattern Shape :: f a -> Shape f
