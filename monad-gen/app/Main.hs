@@ -70,7 +70,6 @@ applicativeGen monoids println = do
         pure (monoidName, applicativeData)
   for_ (zip applicativeNames applicatives) $ \(applicativeName, (monoidName, applicativeData)) -> do
     let dict = makeApplicativeDict applicativeData
-    putStrLn $ monoidName ++ " > " ++ applicativeName
     mapM_ println $ prettyApplicativeDict applicativeName monoidName dict
     validateApplicativeDict dict
   pure (zip applicativeNames (snd <$> applicatives))
@@ -146,7 +145,6 @@ monadGen applicatives println = do
         pure (apName, monadData)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadData)) -> do
     let dict = makeMonadDict monadData
-    putStrLn $ apName ++ " > " ++ monadName
     mapM_ println $ prettyMonadDict monadName apName dict
     validateMonadDict dict
 
