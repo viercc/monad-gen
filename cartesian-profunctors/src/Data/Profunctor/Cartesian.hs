@@ -43,7 +43,7 @@ import Data.Profunctor.Day
 
 import Data.Bits
 import GHC.TypeNats ( KnownNat, Natural, natVal )
-import Data.Finite (Finite, getFinite)
+import Data.Finite (Finite, getFinite, finites)
 import Data.Finite.Internal qualified as Unsafe
 
 class Profunctor p => Cartesian p where
@@ -101,10 +101,12 @@ fanoutDefault = liftA2 (,)
 instance Cartesian (->) where
   proUnit = const ()
   p1 *** p2 = bimap p1 p2
+  proPower = (.)
 
 instance (Monoid r) => Cartesian (Forget r) where
   proUnit = Forget (const mempty)
   Forget f *** Forget g = Forget (\(a,b) -> f a <> g b)
+  proPower (Forget f) = Forget (\h -> foldMap (f . h) finites)
 
 instance (Applicative f) => Cartesian (Star f) where
   proUnit = Star (const (pure ()))
@@ -121,11 +123,13 @@ instance (Divisible f) => Cartesian (Clown f) where
 instance (Cartesian p, Cartesian q) => Cartesian (Product p q) where
   proUnit = Pair proUnit proUnit
   Pair p1 q1 *** Pair p2 q2 = Pair (p1 *** p2) (q1 *** q2)
+  proPower (Pair p q) = Pair (proPower p) (proPower q)
 
 instance (Cartesian p, Cartesian q) => Cartesian (Procompose p q) where
   proUnit = Procompose proUnit proUnit
   Procompose p1 q1 *** Procompose p2 q2 =
     Procompose (p1 *** p2) (q1 *** q2)
+  proPower (Procompose p q) = Procompose (proPower p) (proPower q)
 
 instance (Cartesian p) => Cartesian (Yoneda p) where
   proUnit = proreturn proUnit
@@ -177,14 +181,17 @@ sumDay pr qr (Day p q opA opB) = proSum opA opB (pr p) (qr q)
 instance Cocartesian (->) where
   proEmpty = absurd
   p1 +++ p2 = bimap p1 p2
+  proTimes = second
 
 instance Cocartesian (Forget r) where
   proEmpty = Forget absurd
   Forget f +++ Forget g = Forget (either f g)
+  proTimes (Forget f) = Forget (f . snd)
 
 instance (Functor f) => Cocartesian (Star f) where
   proEmpty = Star absurd
   Star p1 +++ Star p2 = Star $ either (fmap Left . p1) (fmap Right . p2)
+  proTimes (Star p) = Star $ \(i,a) -> (i,) <$> p a
 
 instance (Alternative f) => Cocartesian (Joker f) where
   proEmpty = Joker empty
@@ -198,11 +205,13 @@ instance (Cocartesian p, Cocartesian q)
        => Cocartesian (Product p q) where
   proEmpty = Pair proEmpty proEmpty
   Pair p1 q1 +++ Pair p2 q2 = Pair (p1 +++ p2) (q1 +++ q2)
+  proTimes (Pair p q) = Pair (proTimes p) (proTimes q)
 
 instance (Cocartesian p, Cocartesian q)
        => Cocartesian (Procompose p q) where
   proEmpty = Procompose proEmpty proEmpty
   Procompose p1 q1 +++ Procompose p2 q2 = Procompose (p1 +++ p2) (q1 +++ q2)
+  proTimes (Procompose p q) = Procompose (proTimes p) (proTimes q)
 
 instance (Cocartesian p) => Cocartesian (Yoneda p) where
   proEmpty = proreturn proEmpty
@@ -227,6 +236,7 @@ instance Profunctor p => Cartesian (Power p) where
 instance Cartesian p => Cocartesian (Power p) where
     proEmpty = Power $ \_ -> dimap id (const absurd) proUnit
     ep +++ eq = Power $ \e -> proProduct (\f -> (f . Left, f . Right)) (uncurry either) (runPower ep e) (runPower eq e)
+    proTimes p = Power $ \e -> dimap curry uncurry $ proPower (runPower p e)
 
 --
 
@@ -238,16 +248,19 @@ instance Profunctor p => Profunctor (Copower p) where
 instance Profunctor p => Cartesian (Copower p) where
   proUnit = Copower $ \p -> dimap snd ((),) p
   cp *** cq = Copower $ \p -> dimap assoc unassoc $ runCopower cp (runCopower cq p)
-    where
-      assoc ((a,b),c) = (a,(b,c))
-      unassoc (a,(b,c)) = ((a,b),c)
+
+assoc :: ((a1, a2), b) -> (a1, (a2, b))
+assoc ((a,b),c) = (a,(b,c))
+unassoc :: (a, (b1, b2)) -> ((a, b1), b2)
+unassoc (a,(b,c)) = ((a,b),c)
 
 instance Cocartesian p => Cocartesian (Copower p) where
   proEmpty = Copower $ \_ -> dimap fst absurd proEmpty
-  cp +++ cq = Copower $ \p -> proSum distrib undistrib (runCopower cp p) (runCopower cq p)
+  p +++ q = Copower $ \c -> proSum distrib undistrib (runCopower p c) (runCopower q c)
     where
       distrib (ab,c) = bimap (,c) (,c) ab
       undistrib = either (first Left) (first Right)
+  proTimes p = Copower $ \c -> dimap assoc unassoc $ proTimes (runCopower p c)
 
 --
 
