@@ -81,7 +81,7 @@ searchGroupOfOrder n = solve 10 initialModel equations >>= constraintToSolution
   where
     as = [0 .. n - 1]
     allValues = Set.fromList as
-    initialModel = ModelConstraint $ DMap.fromList $
+    initialModel = Model $ DMap.fromList $
       [Ident :=> Set.singleton 0] ++
       [ sig :=> allValues | sig <- Inv <$> as] ++
       [ sig :=> allValues | sig <- Mul <$> as <*> as]

@@ -89,7 +89,6 @@ type Prop = Expr MonadSig Bool
 
 unit :: Expr MonadSig M
 unit = call Unit
-
 munge :: M -> (I :-> M) -> Expr MonadSig M
 munge m v = call (Munge m v)
 
@@ -174,12 +173,11 @@ searchMonad _ = solve 10 initialModel equations >>= constraintToSolution
     allMs = Set.fromList ms
     allIs = Set.fromList is
     
-    initialModelList =
+    initialModel = Model $ DMap.fromList $
       [ Unit :=> Set.singleton M0 ] ++
       [ mungeSig :=> allMs | mungeSig <- Munge <$> ms <*> vs ] ++
       [ ix1Sig :=> allIs | ix1Sig <- Index1 <$> ms <*> vs <*> is ] ++
       [ ix2Sig :=> allIs | ix2Sig <- Index2 <$> ms <*> vs <*> is ]
-    initialModel = ModelConstraint $ DMap.fromList initialModelList
 
     equations = Map.fromList $ zip [0 :: Int ..] (concat [law1eqs, law2eqs, law3eqs, law4eqs, law5eqs, law678eqs])
 
