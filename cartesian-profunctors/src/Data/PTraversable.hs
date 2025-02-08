@@ -52,6 +52,7 @@ import Data.Profunctor.Unsafe ((#.), (.#))
 import Data.Transparent
 import GHC.Generics
 import GHC.Generics.Orphans()
+import Data.Orphans()
 
 import Data.Functor.Day (Day)
 import qualified Data.PTraversable.Internal.Day as DayImpl (ptraverseDay)

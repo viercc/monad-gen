@@ -22,13 +22,14 @@ library
     Data.Profunctor.Power,
     Data.Profunctor.UniconEncoding,
     Data.Transparent,
-    Data.PTraversable,
-    GHC.Generics.Orphans
+    Data.PTraversable
   other-modules:
     Data.PTraversable.Internal.Day,
-    Data.Profunctor.Extra
+    Data.Profunctor.Extra,
+    GHC.Generics.Orphans
   build-depends:
       base >= 4.18 && < 5
+    , base-orphans >= 0.9.3 && < 1
     , transformers
     , containers
     , contravariant
