@@ -85,90 +85,104 @@ data MonadSig x where
 
 -- * Monad Laws in terms of @MonadSig@
 
-type Prop = Expr MonadSig Bool
+type Prop = Property MonadSig
 
 unit :: Expr MonadSig M
 unit = call Unit
-munge :: M -> (I :-> M) -> Expr MonadSig M
-munge m v = call (Munge m v)
 
-index1, index2 :: M -> (I :-> M) -> I -> Expr MonadSig I
-index1 m v i = call (Index1 m v i)
-index2 m v i = call (Index2 m v i)
+munge :: Expr MonadSig M -> Expr MonadSig (I :-> M) -> Expr MonadSig M
+munge = lift2 Munge
+
+index1, index2 :: Expr MonadSig M -> Expr MonadSig (I :-> M) -> Expr MonadSig I -> Expr MonadSig I
+index1 = lift3 Index1
+index2 = lift3 Index2
+
+constFn :: Expr MonadSig M -> Expr MonadSig (I :-> M)
+constFn em = Fn . const <$> em
+
+fn :: (I -> Expr MonadSig a) -> Expr MonadSig (I :-> a)
+fn f = sequenceA (Fn f)
 
 monadLaw1 :: M -> Prop
-monadLaw1 m = unit >>= \e -> (m ==) <$> munge m (Fn $ const e)
+monadLaw1 m = munge (pure m) (constFn unit) `evaluatesTo` m
 
 monadLaw2 :: M -> Prop
-monadLaw2 m = unit >>= \e -> (m ==) <$> munge e (Fn $ const m)
+monadLaw2 m = munge unit (constFn (pure m)) `evaluatesTo` m
 
 monadLaw3 :: M -> (I :-> M) -> ((I, I) :-> M) -> Prop
 monadLaw3 m v w =
-  let uExpr = sequenceA $ Fn $ \i -> munge (v $$ i) (Fn $ \j -> w $$ (i,j))
-      w'Expr = sequenceA $ Fn $ \i -> liftA2 (curry (w $$)) (index1 m v i) (index2 m v i)
-      
-      lhs = liftA2 (,) (munge m v) w'Expr >>= \(m',w') -> munge m' w'
-      rhs = uExpr >>= \u -> munge m u
-  in liftA2 (==) lhs rhs
+  let w' = fmap (w $$) <$> indexBoth m v
+  in munge (munge (pure m) (pure v)) w' === munge (pure m) (mungeInner v w)
 
 monadLaw4 :: M -> I -> Prop
-monadLaw4 m i = unit >>= \e -> (i ==) <$> index1 m (Fn $ const e) i
+monadLaw4 m i = index1 (pure m) (constFn unit) (pure i) `evaluatesTo` i
 
 monadLaw5 :: M -> I -> Prop
-monadLaw5 m i = unit >>= \e -> (i ==) <$> index2 e (Fn $ const m) i
+monadLaw5 m i = index2 unit (constFn (pure m)) (pure i) `evaluatesTo` i
 
 monadLaw678 :: M -> (I :-> M) -> ((I,I) :-> M) -> I -> (Prop, Prop, Prop)
 monadLaw678 m v w i = (law6, law7, law8)
   where
-    uExpr = sequenceA $ Fn $ \i' -> munge (v $$ i') (Fn $ \j' -> w $$ (i',j'))
-    w'Expr = sequenceA $ Fn $ \i' -> liftA2 (curry (w $$)) (index1 m v i') (index2 m v i')
+    u = mungeInner v w
+    w' = fmap (w $$) <$> indexBoth m v
+    vw i' = (v $$ i', Fn $ \j -> w $$ (i',j))
 
-    i1Expr = do
-      (m', w') <- liftA2 (,) (munge m v) w'Expr
-      index1 m' w' i
-    i2Expr = do
-      (m', w') <- liftA2 (,) (munge m v) w'Expr
-      index2 m' w' i
+    i1 = index1 (munge (pure m) (pure v)) w' (pure i)
+    i2 = index2 (munge (pure m) (pure v)) w' (pure i)
     
-    i1'Expr = do
-      u <- uExpr
-      index1 m u i
-    i2'Expr = do
-      u <- uExpr
-      index2 m u i
+    i1' = index1 (pure m) u (pure i)
+    i2' = index2 (pure m) u (pure i)
     
-    law6 = liftA2 (==) lhs rhs
-      where
-        lhs = i1Expr >>= \i1 -> index1 m v i1
-        rhs = i1'Expr
-    law7 = liftA2 (==) lhs rhs
-      where
-        lhs = i1Expr >>= \i1 -> index2 m v i1
-        rhs = do
-          (i1', i2') <- liftA2 (,) i1'Expr i2'Expr
-          let vi = v $$ i1'
-              wi = Fn $ \j -> w $$ (i1',j)
-          index1 vi wi i2'
-    law8 = liftA2 (==) lhs rhs
-      where
-        lhs = i2Expr
-        rhs = do
-          (i1', i2') <- liftA2 (,) i1'Expr i2'Expr
-          let vi = v $$ i1'
-              wi = Fn $ \j -> w $$ (i1',j)
-          index2 vi wi i2'
+    law6 = index1 (pure m) (pure v) i1 === i1'
+    law7 = index2 (pure m) (pure v) i1 === index1' (vw <$> i1') i2'
+    law8 = i2 === index2' (vw <$> i1') i2'
+
+-- Aux functions to write laws
+
+mungeInner :: (I :-> M) -> ((I, I) :-> M) -> Expr MonadSig (I :-> M)
+mungeInner v w = fn $ \i -> munge (pure (v $$ i)) (pure $ Fn $ \j -> w $$ (i,j))
+
+indexBoth :: M -> (I :-> M) -> Expr MonadSig (I :-> (I, I))
+indexBoth m v = fn $ \i -> liftA2 (,) (index1 (pure m) (pure v) (pure i)) (index2 (pure m) (pure v) (pure i))
+
+index1', index2' :: Expr MonadSig (M, I :-> M) -> Expr MonadSig I -> Expr MonadSig I
+index1' = lift2 (\(m,v) i -> Index1 m v i)
+index2' = lift2 (\(m,v) i -> Index2 m v i)
 
 -- * Model definitions
 
 -- >>> length $ searchMonad ()
--- 12
+-- *** Exception: ProgressCancelledException
 searchMonad :: () -> [Solution MonadSig]
-searchMonad _ = solve 10 initialModel equations >>= constraintToSolution
+searchMonad _ = initialMonadModels >>= \model -> solve 10 model equations >>= constraintToSolution
   where
     ms = inhabitants :: [M]
     is = inhabitants :: [I]
     vs = allFunctions :: [I :-> M]
     ws = allFunctions :: [(I,I) :-> M]
+
+    equations = Map.fromList $ zip [0 :: Int ..] (concat [law3eqs, law678eqs])
+
+    law3eqs = monadLaw3 <$> ms <*> vs <*> ws
+    law678eqs = do
+      m <- ms
+      v <- vs
+      w <- ws
+      i <- is
+      let (p6,p7,p8) = monadLaw678 m v w i
+      [p6, p7, p8]
+
+-- | Law1,2,4,5 are "easy" laws, picking one exact value
+--   for unknown functions at specific values.
+--
+-- >>> length initialMonadModels
+-- 1
+initialMonadModels :: [Model MonadSig]
+initialMonadModels = solve 10 initialModel equations
+  where
+    ms = inhabitants :: [M]
+    is = inhabitants :: [I]
+    vs = allFunctions :: [I :-> M]
     
     allMs = Set.fromList ms
     allIs = Set.fromList is
@@ -179,20 +193,12 @@ searchMonad _ = solve 10 initialModel equations >>= constraintToSolution
       [ ix1Sig :=> allIs | ix1Sig <- Index1 <$> ms <*> vs <*> is ] ++
       [ ix2Sig :=> allIs | ix2Sig <- Index2 <$> ms <*> vs <*> is ]
 
-    equations = Map.fromList $ zip [0 :: Int ..] (concat [law1eqs, law2eqs, law3eqs, law4eqs, law5eqs, law678eqs])
+    equations = Map.fromList $ zip [0 :: Int ..] (concat [law1eqs, law2eqs, law4eqs, law5eqs])
 
     law1eqs = monadLaw1 <$> ms
     law2eqs = monadLaw2 <$> ms
-    law3eqs = monadLaw3 <$> ms <*> vs <*> ws
     law4eqs = monadLaw4 <$> ms <*> is
     law5eqs = monadLaw5 <$> ms <*> is
-    law678eqs = do
-      m <- ms
-      v <- vs
-      w <- ws
-      i <- is
-      let (p6,p7,p8) = monadLaw678 m v w i
-      [p6, p7, p8]
 
 -------------------
 -- Instances
@@ -257,13 +263,13 @@ instance (Finitary a, Ord b) => Ord (a :-> b) where
   compare (Fn f) (Fn g) = foldMap (\x -> f x `compare` g x) inhabitants
 
 instance (Finitary a, Show a, Show b) => Show (a :-> b) where
-  showsPrec p fn = showsUnaryWith showsPrec "makeFn" p (graph fn)
+  showsPrec p f = showsUnaryWith showsPrec "makeFn" p (graph f)
 
 instance (Finitary a) => Foldable ((:->) a) where
   foldMap g (Fn f) = foldMap (g . f) inhabitants
 
 instance (Finitary a) => Traversable ((:->) a) where
-  traverse g fn = makeFn <$> traverse (traverse g) (graph fn)
+  traverse g f = makeFn <$> traverse (traverse g) (graph f)
 
 makeFn :: forall a b. (Finitary a) => [(a,b)] -> a :-> b
 makeFn fnData

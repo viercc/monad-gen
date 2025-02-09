@@ -145,8 +145,8 @@ updateBlocker k old new (Blocker bm) = Blocker bm''
 
 -- Refining
 
-refine :: (GCompare f, Has Ord f) => Int -> Model f -> Expr f Bool -> Maybe [DSum f Set.Set]
-refine _ _ (Pure p) = if p then Just [] else Nothing
+refine :: (GCompare f, Has Ord f) => Int -> Model f -> Property f -> Maybe [DSum f Set.Set]
+refine _ model (Pure p) = refineSimple model p
 refine limit model (Call fx) = refine limit model (Demand (Request fx) Pure)
 refine limit model (Demand req cont)
   | candidates `longerThan` limit = Just [] -- Giving up == no new constraints
@@ -154,9 +154,31 @@ refine limit model (Demand req cont)
   | otherwise = Just newConstraints
   where
     candidates = runCached (evaluateReq (cached (guess model)) req) emptyCache
-    succeeds (cache, xs) = anyWithLimit limit snd $ runCached (evaluate (cached (guess model)) (cont xs)) cache
+    succeeds (cache, xs) = anyWithLimit limit snd $ runCached (evaluatePropertyOrd (cached (guess model)) (cont xs)) cache
     admissibleCaches = DMap.map (Set.singleton . runIdentity) . fst <$> filter succeeds candidates
     newConstraints = DMap.toList $ DMap.unionsWithKey (\fx xs1 xs2 -> has @Ord fx (Set.union xs1 xs2)) admissibleCaches
+
+evaluatePropertyOrd :: (Has Ord f, Monad m) => (forall x. f x -> m x) -> Property f -> m Bool
+evaluatePropertyOrd = evaluatePropertyWith (\fx -> has @Ord fx (==))
+
+reducePropertyOrd :: (Has Ord f) => (forall x. f x -> Maybe x) -> Property f -> (IsChanged, Property f)
+reducePropertyOrd = reducePropertyWith (\fx -> has @Ord fx (==))
+
+refineSimple :: (GCompare f, Has Ord f) => Model f -> SimpleProp f -> Maybe [DSum f Set.Set]
+refineSimple model prop = case prop of
+  PropBool False -> Nothing
+  PropBool True  -> Just []
+  PropDef fx x   -> Just [fx :=> Set.singleton x]
+  PropSimpleEq fx fy -> has @Ord fx $
+    let xs = lookupModel fx model
+        ys = lookupModel fy model
+        xys = Set.intersection xs ys
+        changes = [ fx :=> xys | xs /= xys ] ++ [ fy :=> xys | ys /= xys ]
+    in if Set.null xys then Nothing else Just changes
+  PropSimplePred fx cond -> has @Ord fx $
+    let xs = lookupModel fx model
+        xs' = Set.filter cond xs
+    in if Set.null xs' then Nothing else Just [ fx :=> xs' | xs == xs' ]
 
 -- | @as `longerThan` n@ is properly lazy version of @length as > n@
 -- (doesn't stuck on infinite list etc.)
@@ -173,20 +195,20 @@ longerThan = foldr (\_ f n -> n <= 0 || f (n - 1)) (const False)
 anyWithLimit :: Int -> (a -> Bool) -> [a] -> Bool
 anyWithLimit limit p as = or ((p <$> take limit as) ++ [True])
 
-bruteforceSolve :: forall f k. (GCompare f, Has Ord f, Ord k) => Model f -> Map.Map k (Expr f Bool) -> [Model f]
+bruteforceSolve :: forall f k. (GCompare f, Has Ord f, Ord k) => Model f -> Map.Map k (Property f) -> [Model f]
 bruteforceSolve (Model model) exprs = solutionToModel <$> filter validSolution solutions
   where
     solutions = DMap.fromDistinctAscList <$> traverse dsumToList (DMap.toAscList model)
     dsumToList (fx :=> xs) = [ fx :=> Identity x | x <- Set.toList xs ]
     validSolution sol = all (\expr -> reduceBySol sol expr) exprs
-    reduceBySol sol expr = case reduce (\fx -> runIdentity <$> DMap.lookup fx sol) expr of
-      (_, Pure b) -> b
+    reduceBySol sol expr = case reducePropertyOrd (\fx -> runIdentity <$> DMap.lookup fx sol) expr of
+      (_, Pure (PropBool b)) -> b
       _ -> False
     solutionToModel = Model . DMap.map (Set.singleton . runIdentity)
 
-data SolverState f k = SolverState (Model f) (Blocker f k) (Map.Map k (Expr f Bool))
+data SolverState f k = SolverState (Model f) (Blocker f k) (Map.Map k (Property f))
 
-solve :: forall f k. (GCompare f, Has Ord f, Ord k) => Int -> Model f -> Map.Map k (Expr f Bool) -> [Model f]
+solve :: forall f k. (GCompare f, Has Ord f, Ord k) => Int -> Model f -> Map.Map k (Property f) -> [Model f]
 solve limit initialModel exprs0 = toList (visitExprs initialState (Map.keys exprs0)) >>= solveLoop
   where
     initialBlockers = foldl' (<>) mempty (singleBlocker <$> Map.toList exprs0)
@@ -197,54 +219,61 @@ solve limit initialModel exprs0 = toList (visitExprs initialState (Map.keys expr
       Nothing -> [model]
       Just (Some fx) -> do
         x <- guess model fx
-        state' <- toList (enter state fx x)
-        solveLoop state'
-    
-    enter :: forall x. SolverState f k -> f x -> x -> Maybe (SolverState f k)
-    enter state fx x = do
-      (exprsToBeChecked, state') <- tightenState state [fx :=> Set.singleton x]
-      visitExprs state' (Set.toList exprsToBeChecked)
-
-    tightenState :: SolverState f k -> [DSum f Set.Set] -> Maybe (Set.Set k, SolverState f k)
-    tightenState = go Set.empty
-      where
-        go acc state [] = Just (acc, state)
-        go acc state@(SolverState model blocker exprs) ((fx :=> xs) : defs) =
-          case tighten fx xs model of
-            Nothing -> Nothing
-            Just (NoChange, _) | Set.size xs >= 2 -> go acc state defs
-            Just (_, model') ->
-              let notifiedExprs = Map.findWithDefault Set.empty (Some fx) (getBlockerMap blocker)
-                  blocker'
-                    | isJust (lookupKnown fx model') = Blocker $ Map.delete (Some fx) (getBlockerMap blocker)
-                    | otherwise = blocker
-              in go (Set.union notifiedExprs acc) (SolverState model' blocker' exprs) defs
+        (ks, state') <- toList (enter state fx x)
+        state'' <- toList $ visitExprs state' (toList ks)
+        solveLoop state''
     
     visitExprs :: SolverState f k -> [k] -> Maybe (SolverState f k)
     visitExprs state [] = Just state
-    visitExprs state@(SolverState model blocker exprs) (k : exprStack) =
-      case Map.lookup k exprs of
+    visitExprs state (k : exprStack) =
+      case reducePropertyAt state k of
         Nothing -> visitExprs state exprStack
-        Just expr -> do
-          (exprs', blocker', expr') <- reduceEquation model blocker exprs k expr
-          defs <- refine limit model expr'
-          let state' = SolverState model blocker' exprs'
-          (notifiedExprs, state'') <- tightenState state' (sortOn newSetSize defs)
-          visitExprs state'' (Set.toList notifiedExprs ++ exprStack)
-    
-    reduceEquation :: Model f -> Blocker f k -> Map.Map k (Expr f Bool) -> k -> Expr f Bool -> Maybe (Map.Map k (Expr f Bool),Blocker f k,Expr f Bool)
-    reduceEquation model blocker exprs k expr = case reduce (`lookupKnown` model) expr of
-        (_, expr'@(Pure True)) -> Just (Map.delete k exprs, blocker, expr')
-        (_, Pure False) -> Nothing
-        (NoChange, _) -> Just (exprs, blocker, expr)
-        (Changed, expr') ->
-          let exprs' = Map.insert k expr' exprs
-              blocker' = updateBlocker k (getBlockers expr) (getBlockers expr') blocker
-          in Just (exprs', blocker', expr')
-    
+        Just (state', expr) -> do
+          (state'', defs) <- refineState state' k expr
+          (notifiedExprs, state''') <- tightenState state'' (sortOn newSetSize defs)
+          visitExprs state''' (Set.toList notifiedExprs ++ exprStack)
+
+    refineState state@(SolverState model blocker exprs) k p =
+      case p of
+        Pure (PropBool False) -> Nothing
+        Pure (PropBool True) -> Just (SolverState model blocker (Map.delete k exprs), [])
+        _ -> refine limit model p >>= \defs -> Just (state, defs)
+
     newSetSize (_ :=> xs) = Set.size xs
 
-solveNoRefine :: forall f k. (GCompare f, Has Ord f, Ord k) => Model f -> Map.Map k (Expr f Bool) -> [Model f]
+enter :: forall f k x. (GCompare f, Has Ord f, Ord k) => SolverState f k -> f x -> x -> Maybe (Set.Set k, SolverState f k)
+enter (SolverState model blocker exprs) fx x = do
+  (_, model') <- tighten fx (Set.singleton x) model
+  let notifiedExprs = Map.findWithDefault Set.empty (Some fx) (getBlockerMap blocker)
+      blocker' = Blocker $ Map.delete (Some fx) (getBlockerMap blocker)
+  pure (notifiedExprs, SolverState model' blocker' exprs)
+
+tightenState :: (GCompare f, Has Ord f, Ord k) => SolverState f k -> [DSum f Set.Set] -> Maybe (Set.Set k, SolverState f k)
+tightenState = go Set.empty
+  where
+    go acc state [] = Just (acc, state)
+    go acc state@(SolverState model blocker exprs) ((fx :=> xs) : defs) =
+      case tighten fx xs model of
+        Nothing -> Nothing
+        Just (NoChange, _) | Set.size xs >= 2 -> go acc state defs
+        Just (_, model') ->
+          let notifiedExprs = Map.findWithDefault Set.empty (Some fx) (getBlockerMap blocker)
+              blocker'
+                | isJust (lookupKnown fx model') = Blocker $ Map.delete (Some fx) (getBlockerMap blocker)
+                | otherwise = blocker
+          in go (Set.union notifiedExprs acc) (SolverState model' blocker' exprs) defs
+
+reducePropertyAt :: (GCompare f, Has Ord f, Ord k) => SolverState f k -> k -> Maybe (SolverState f k, Property f)
+reducePropertyAt (SolverState model blocker exprs) k = do
+  expr <- Map.lookup k exprs
+  case reducePropertyOrd (`lookupKnown` model) expr of
+    (NoChange, _) -> Nothing
+    (Changed, expr') ->
+      let exprs' = Map.insert k expr' exprs
+          blocker' = updateBlocker k (getBlockers expr) (getBlockers expr') blocker
+      in Just (SolverState model blocker' exprs', expr')
+
+solveNoRefine :: forall f k. (GCompare f, Has Ord f, Ord k) => Model f -> Map.Map k (Property f) -> [Model f]
 solveNoRefine initialModel exprs0 = toList (visitExprs initialState (Map.keys exprs0)) >>= go
   where
     initialBlockers = foldl' (<>) mempty (singleBlocker <$> Map.toList exprs0)
@@ -255,35 +284,24 @@ solveNoRefine initialModel exprs0 = toList (visitExprs initialState (Map.keys ex
       Nothing -> [model]
       Just (Some fx) -> do
         x <- guess model fx
-        case enter state fx x of
-          Nothing -> []
-          Just state' -> go state'
-    
-    enter :: forall x. SolverState f k -> f x -> x -> Maybe (SolverState f k)
-    enter (SolverState model blocker exprs) fx x = do
-      (_, model') <- tighten fx (Set.singleton x) model
-      let notifiedExprs = Map.findWithDefault Set.empty (Some fx) (getBlockerMap blocker)
-          blocker' = Blocker $ Map.delete (Some fx) (getBlockerMap blocker)
-      visitExprs (SolverState model' blocker' exprs) (Set.toList notifiedExprs)
+        (ks, state') <- toList $ enter state fx x
+        state'' <- toList $ visitExprs state' (Set.toList ks)
+        go state''
     
     visitExprs :: SolverState f k -> [k] -> Maybe (SolverState f k)
     visitExprs state [] = Just state
-    visitExprs state@(SolverState model blocker exprs) (k : exprStack) =
-      case Map.lookup k exprs of
+    visitExprs state (k : exprStack) =
+      case reducePropertyAt state k of
         Nothing -> visitExprs state exprStack
-        Just expr -> do
-          (exprs', blocker', _) <- reduceEquation model blocker exprs k expr
-          visitExprs (SolverState model blocker' exprs') exprStack
-    
-    reduceEquation :: Model f -> Blocker f k -> Map.Map k (Expr f Bool) -> k -> Expr f Bool -> Maybe (Map.Map k (Expr f Bool),Blocker f k,Expr f Bool)
-    reduceEquation model blocker exprs k expr = case reduce (`lookupKnown` model) expr of
-        (_, expr'@(Pure True)) -> Just (Map.delete k exprs, blocker, expr')
-        (_, Pure False) -> Nothing
-        (NoChange, _) -> Just (exprs, blocker, expr)
-        (Changed, expr') ->
-          let exprs' = Map.insert k expr' exprs
-              blocker' = updateBlocker k (getBlockers expr) (getBlockers expr') blocker
-          in Just (exprs', blocker', expr')
+        Just (state', expr) -> do
+          state'' <- refineState state' k expr
+          visitExprs state'' exprStack
+
+    refineState state@(SolverState model blocker exprs) k p =
+      case p of
+        Pure (PropBool False) -> Nothing
+        Pure (PropBool True) -> Just (SolverState model blocker (Map.delete k exprs))
+        _ -> Just state
 
 data Def f = forall x. f x := x
 

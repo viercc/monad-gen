@@ -41,34 +41,27 @@ data GroupSig a x where
 ----
 
 type GroupExpr a = Expr (GroupSig a) a
-
-type GroupProp a = Expr (GroupSig a) Bool
+type GroupProp a = Property (GroupSig a)
 
 gIdent :: GroupExpr a
-gIdent = call Ident
+gIdent = lift0 Ident
 
 gInv :: GroupExpr a -> GroupExpr a
-gInv mx = mx >>= \x -> call (Inv x)
+gInv = lift1 Inv
 
 (|*|) :: GroupExpr a -> GroupExpr a -> GroupExpr a
-(|*|) mx my = liftA2 (,) mx my >>= \(x, y) -> call (Mul x y)
+(|*|) = lift2 Mul
 
 infixr 7 |*|
 
-(|==|) :: (Eq a) => GroupExpr a -> GroupExpr a -> GroupProp a
-(|==|) = liftA2 (==)
-
-infix 2 |==|
-
-andProp :: Expr f Bool -> Expr f Bool -> Expr f Bool
-andProp = liftA2 (&&)
-
 lawAssoc :: (Eq a) => a -> a -> a -> GroupProp a
-lawAssoc x y z = (pure x |*| pure y) |*| pure z |==| pure x |*| (pure y |*| pure z)
+lawAssoc x y z = (pure x |*| pure y) |*| pure z === pure x |*| (pure y |*| pure z)
 
-lawUnit, lawInv :: (Eq a) => a -> GroupProp a
-lawUnit a = (pure a |*| gIdent |==| pure a) `andProp` (gIdent |*| pure a |==| pure a)
-lawInv a = (pure a |*| gInv (pure a) |==| gIdent) `andProp` (gInv (pure a) |*| pure a |==| gIdent)
+lawUnit1, lawUnit2, lawInv1, lawInv2 :: (Eq a) => a -> GroupProp a
+lawUnit1 a = pure a |*| gIdent `evaluatesTo` a
+lawUnit2 a = gIdent |*| pure a `evaluatesTo` a
+lawInv1 a = pure a |*| gInv (pure a) === gIdent 
+lawInv2 a = gInv (pure a) |*| pure a === gIdent
 
 ------------
 
@@ -77,7 +70,7 @@ lawInv a = (pure a |*| gInv (pure a) |==| gIdent) `andProp` (gInv (pure a) |*| p
 -- >>> searchGroupOfOrder 2
 -- [Solution [Ident := 0,Inv 0 := 0,Inv 1 := 1,Mul 0 0 := 0,Mul 0 1 := 1,Mul 1 0 := 1,Mul 1 1 := 0]]
 searchGroupOfOrder :: Int -> [Solution (GroupSig Int)]
-searchGroupOfOrder n = solve 10 initialModel equations >>= constraintToSolution
+searchGroupOfOrder n = solve 10 initialModel eqMap >>= constraintToSolution
   where
     as = [0 .. n - 1]
     allValues = Set.fromList as
@@ -86,17 +79,14 @@ searchGroupOfOrder n = solve 10 initialModel equations >>= constraintToSolution
       [ sig :=> allValues | sig <- Inv <$> as] ++
       [ sig :=> allValues | sig <- Mul <$> as <*> as]
 
-    equations = Map.fromList (equationsUnit ++ equationsInv ++ equationsAssoc)
-
-    equationsUnit = [(name a, lawUnit a) | a <- as]
-      where
-        name a = "lawUnit " ++ show a
-    equationsInv = [(name a, lawInv a) | a <- as]
-      where
-        name a = "lawInv " ++ show a
-    equationsAssoc = [(name a b c, lawAssoc a b c) | a <- as, b <- as, c <- as]
-      where
-        name a b c = "lawAssoc " ++ show (a, b, c)
+    equations = concat [
+        lawUnit1 <$> as,
+        lawUnit2 <$> as,
+        lawInv1 <$> as,
+        lawInv2 <$> as,
+        lawAssoc <$> as <*> as <*> as
+      ]
+    eqMap = Map.fromList (zip [0 :: Int ..] equations)
 
 prettyPrintSolution :: Int -> Solution (GroupSig Int) -> IO ()
 prettyPrintSolution n (Solution defs) = do
