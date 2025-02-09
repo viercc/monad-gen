@@ -62,6 +62,7 @@ library
     exposed-modules:
       ModelFinder.Solver,
       ModelFinder.Expr,
+      ModelFinder.Sig.Mono,
       ModelFinder.Examples.Group,
       ModelFinder.Examples.Monad
 

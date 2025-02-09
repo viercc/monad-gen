@@ -13,44 +13,40 @@
 {-# LANGUAGE TypeOperators #-}
 
 module ModelFinder.Examples.Group(
-  GroupSig(..),
+  GroupOp(..), Sig(..),
   searchGroupOfOrder,
   prettyPrintSolution
 ) where
 
-import Control.Monad (guard)
-import Data.Constraint.Extras
 import Data.Dependent.Map qualified as DMap
 import Data.Dependent.Sum (DSum (..))
 import Data.Foldable (for_)
-import Data.GADT.Compare
-import Data.GADT.Show (GShow (..))
+
 import Data.Map qualified as Map
 import Data.Set qualified as Set
-import Data.Type.Equality
 
 import ModelFinder.Expr
 import ModelFinder.Solver
+import ModelFinder.Sig.Mono
 
 -- | Signature of functions which defines group structure on @a@.
-data GroupSig a x where
-  Ident :: GroupSig a a
-  Inv :: a -> GroupSig a a
-  Mul :: a -> a -> GroupSig a a
+data GroupOp a = Ident | Inv a | Mul a a
+  deriving (Show, Eq, Ord)
 
 ----
 
+type GroupSig a = Sig (GroupOp a) a
 type GroupExpr a = Expr (GroupSig a) a
 type GroupProp a = Property (GroupSig a)
 
 gIdent :: GroupExpr a
-gIdent = lift0 Ident
+gIdent = lift0 (Sig Ident)
 
 gInv :: GroupExpr a -> GroupExpr a
-gInv = lift1 Inv
+gInv = lift1 (Sig . Inv)
 
 (|*|) :: GroupExpr a -> GroupExpr a -> GroupExpr a
-(|*|) = lift2 Mul
+(|*|) = lift2 (\x y -> Sig (Mul x y))
 
 infixr 7 |*|
 
@@ -75,9 +71,9 @@ searchGroupOfOrder n = solve 10 initialModel eqMap >>= constraintToSolution
     as = [0 .. n - 1]
     allValues = Set.fromList as
     initialModel = Model $ DMap.fromList $
-      [Ident :=> Set.singleton 0] ++
-      [ sig :=> allValues | sig <- Inv <$> as] ++
-      [ sig :=> allValues | sig <- Mul <$> as <*> as]
+      [ Sig Ident :=> Set.singleton 0] ++
+      [ Sig sig :=> allValues | sig <- Inv <$> as] ++
+      [ Sig sig :=> allValues | sig <- Mul <$> as <*> as]
 
     equations = concat [
         lawUnit1 <$> as,
@@ -103,43 +99,5 @@ prettyPrintSolution n (Solution defs) = do
       Map.fromList $
         defs >>= \def ->
           case def of
-            (Mul x y := z) -> [((x, y), z)]
+            (Sig (Mul x y) := z) -> [((x, y), z)]
             _ -> []
-
-----------------
--- Instances
-----------------
-
-
-sigToRefl :: GroupSig a x -> a :~: x
-sigToRefl Ident = Refl
-sigToRefl (Inv _) = Refl
-sigToRefl (Mul _ _) = Refl
-
-deriving instance (Eq a) => Eq (GroupSig a x)
-
-deriving instance (Ord a) => Ord (GroupSig a x)
-
-deriving instance (Show a) => Show (GroupSig a x)
-
-instance (Eq a) => GEq (GroupSig a) where
-  geq sa sb = case (sigToRefl sa, sigToRefl sb) of
-    (Refl, Refl) -> guard (sa == sb) *> Just Refl
-
-instance (Ord a) => GCompare (GroupSig a) where
-  gcompare sa sb = case (sigToRefl sa, sigToRefl sb) of
-    (Refl, Refl) -> genOrdering (compare sa sb)
-
-instance (Show a) => GShow (GroupSig a) where
-  gshowsPrec = showsPrec
-
-genOrdering :: Ordering -> GOrdering t t
-genOrdering cmp = case cmp of
-  LT -> GLT
-  EQ -> GEQ
-  GT -> GGT
-
-instance (c a) => Has c (GroupSig a) where
-  has sig body = case sigToRefl sig of Refl -> body
-
-----
