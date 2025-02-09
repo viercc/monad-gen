@@ -50,6 +50,7 @@ import Data.GADT.Show (GShow (..))
 import Data.Foldable (toList)
 
 import ModelFinder.Expr
+import Data.Functor (($>))
 
 -- * Cached execution
 
@@ -75,17 +76,6 @@ cached ev fa = Cached $ \cache ->
   case DMap.lookup fa cache of
     Nothing -> ev fa >>= \x -> pure (DMap.insert fa (Identity x) cache, x)
     Just (Identity x) -> pure (cache, x)
-
--- Expr utility
-
-getBlockers :: forall f a. (GCompare f) => Expr f a -> Set.Set (Some f)
-getBlockers (Pure _) = Set.empty
-getBlockers (Call fx) = Set.singleton (Some fx)
-getBlockers (Demand req _) = reqToSet req
-  where
-    reqToSet :: forall v. Requests f v -> Set.Set (Some f)
-    reqToSet (Request fx) = Set.singleton (Some fx)
-    reqToSet (RequestBoth r1 r2) = reqToSet r1 `Set.union` reqToSet r2
 
 -- Types for model search
 
@@ -132,8 +122,11 @@ mostWanted blocker
   where
     bm = getBlockerMap blocker
 
-singleBlocker :: (GCompare f, Ord k) => (k, Expr f a) -> Blocker f k
-singleBlocker (k,expr) = Blocker $ Map.fromSet (const (Set.singleton k)) (getBlockers expr)
+demandSet :: forall f. (GCompare f) => Property f -> Set.Set (Some f)
+demandSet = Set.fromList . getDemandsProperty
+
+singleBlocker :: (GCompare f, Ord k) => (k, Property f) -> Blocker f k
+singleBlocker (k,expr) = Blocker $ Map.fromSet (const (Set.singleton k)) (demandSet expr)
 
 updateBlocker :: (GCompare f, Ord k) => k -> Set.Set (Some f) -> Set.Set (Some f) -> Blocker f k -> Blocker f k
 updateBlocker k old new (Blocker bm) = Blocker bm''
@@ -145,10 +138,8 @@ updateBlocker k old new (Blocker bm) = Blocker bm''
 
 -- Refining
 
-refine :: (GCompare f, Has Ord f) => Int -> Model f -> Property f -> Maybe [DSum f Set.Set]
-refine _ model (Pure p) = refineSimple model p
-refine limit model (Call fx) = refine limit model (Demand (Request fx) Pure)
-refine limit model (Demand req cont)
+refineComplex :: (GCompare f, Has Ord f) => Int -> Model f -> Requests f xs -> (xs -> Property f) -> Maybe [DSum f Set.Set]
+refineComplex limit model req cont
   | candidates `longerThan` limit = Just [] -- Giving up == no new constraints
   | null admissibleCaches = Nothing
   | otherwise = Just newConstraints
@@ -158,27 +149,30 @@ refine limit model (Demand req cont)
     admissibleCaches = DMap.map (Set.singleton . runIdentity) . fst <$> filter succeeds candidates
     newConstraints = DMap.toList $ DMap.unionsWithKey (\fx xs1 xs2 -> has @Ord fx (Set.union xs1 xs2)) admissibleCaches
 
-evaluatePropertyOrd :: (Has Ord f, Monad m) => (forall x. f x -> m x) -> Property f -> m Bool
-evaluatePropertyOrd = evaluatePropertyWith (\fx -> has @Ord fx (==))
-
-reducePropertyOrd :: (Has Ord f) => (forall x. f x -> Maybe x) -> Property f -> (IsChanged, Property f)
-reducePropertyOrd = reducePropertyWith (\fx -> has @Ord fx (==))
-
-refineSimple :: (GCompare f, Has Ord f) => Model f -> SimpleProp f -> Maybe [DSum f Set.Set]
+refineSimple :: (GCompare f, Has Ord f) => Model f -> SimpleProp f -> Maybe (IsDeleted, [DSum f Set.Set])
 refineSimple model prop = case prop of
   PropBool False -> Nothing
-  PropBool True  -> Just []
-  PropDef fx x   -> Just [fx :=> Set.singleton x]
+  PropBool True  -> Just (DeleteIt, [])
+  PropDef fx x   -> has @Ord fx $
+    guard (x `Set.member` lookupModel fx model) $> (DeleteIt, [fx :=> Set.singleton x])
   PropSimpleEq fx fy -> has @Ord fx $
     let xs = lookupModel fx model
         ys = lookupModel fy model
         xys = Set.intersection xs ys
         changes = [ fx :=> xys | xs /= xys ] ++ [ fy :=> xys | ys /= xys ]
-    in if Set.null xys then Nothing else Just changes
+    in guard (not (Set.null xys)) $> (KeepIt, changes)
   PropSimplePred fx cond -> has @Ord fx $
     let xs = lookupModel fx model
         xs' = Set.filter cond xs
-    in if Set.null xs' then Nothing else Just [ fx :=> xs' | xs == xs' ]
+    in guard (not (Set.null xs')) $> (DeleteIt, [ fx :=> xs' | xs == xs' ])
+
+data IsDeleted = DeleteIt | KeepIt
+
+evaluatePropertyOrd :: (Has Ord f, Monad m) => (forall x. f x -> m x) -> Property f -> m Bool
+evaluatePropertyOrd = evaluatePropertyWith (\fx -> has @Ord fx (==))
+
+reducePropertyOrd :: (Has Ord f) => (forall x. f x -> Maybe x) -> Property f -> (IsChanged, Property f)
+reducePropertyOrd = reducePropertyWith (\fx -> has @Ord fx (==))
 
 -- | @as `longerThan` n@ is properly lazy version of @length as > n@
 -- (doesn't stuck on infinite list etc.)
@@ -235,9 +229,15 @@ solve limit initialModel exprs0 = toList (visitExprs initialState (Map.keys expr
 
     refineState state@(SolverState model blocker exprs) k p =
       case p of
-        Pure (PropBool False) -> Nothing
-        Pure (PropBool True) -> Just (SolverState model blocker (Map.delete k exprs), [])
-        _ -> refine limit model p >>= \defs -> Just (state, defs)
+        Pure sprop -> case refineSimple model sprop of
+          Nothing -> Nothing
+          Just (DeleteIt, defs) ->
+            let exprs' = Map.delete k exprs
+                blocker' = updateBlocker k (demandSet p) (Set.empty) blocker
+            in Just (SolverState model blocker' exprs', defs)
+          Just (KeepIt, defs)  -> Just (state, defs)
+        Call fx -> refineComplex limit model (Request fx) Pure >>= \defs -> Just (state, defs)
+        Demand fx kx -> refineComplex limit model fx kx >>= \defs -> Just (state, defs)
 
     newSetSize (_ :=> xs) = Set.size xs
 
@@ -270,7 +270,7 @@ reducePropertyAt (SolverState model blocker exprs) k = do
     (NoChange, _) -> Nothing
     (Changed, expr') ->
       let exprs' = Map.insert k expr' exprs
-          blocker' = updateBlocker k (getBlockers expr) (getBlockers expr') blocker
+          blocker' = updateBlocker k (demandSet expr) (demandSet expr') blocker
       in Just (SolverState model blocker' exprs', expr')
 
 solveNoRefine :: forall f k. (GCompare f, Has Ord f, Ord k) => Model f -> Map.Map k (Property f) -> [Model f]
