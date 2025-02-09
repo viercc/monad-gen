@@ -1014,9 +1014,9 @@ M_68 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 2 1 2 
-    2 | 2 1 2 1 
-    3 | 3 2 1 0 
+    1 | 1 2 2 1 
+    2 | 2 2 2 2 
+    3 | 3 1 2 0 
 }
 M_69 = Monoid{
   Elements:
@@ -1029,9 +1029,9 @@ M_69 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 2 1 2 
-    2 | 2 1 2 1 
-    3 | 3 2 1 2 
+    1 | 1 2 2 1 
+    2 | 2 2 2 2 
+    3 | 3 1 2 3 
 }
 M_70 = Monoid{
   Elements:
@@ -1046,7 +1046,7 @@ M_70 = Monoid{
     0 | 0 1 2 3 
     1 | 1 2 2 1 
     2 | 2 2 2 2 
-    3 | 3 1 2 0 
+    3 | 3 2 2 3 
 }
 M_71 = Monoid{
   Elements:
@@ -1059,7 +1059,7 @@ M_71 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 2 2 1 
+    1 | 1 2 2 2 
     2 | 2 2 2 2 
     3 | 3 1 2 3 
 }
@@ -1074,9 +1074,9 @@ M_72 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 2 2 1 
+    1 | 1 2 2 2 
     2 | 2 2 2 2 
-    3 | 3 2 2 3 
+    3 | 3 2 2 1 
 }
 M_73 = Monoid{
   Elements:
@@ -1091,7 +1091,7 @@ M_73 = Monoid{
     0 | 0 1 2 3 
     1 | 1 2 2 2 
     2 | 2 2 2 2 
-    3 | 3 1 2 3 
+    3 | 3 2 2 2 
 }
 M_74 = Monoid{
   Elements:
@@ -1106,7 +1106,7 @@ M_74 = Monoid{
     0 | 0 1 2 3 
     1 | 1 2 2 2 
     2 | 2 2 2 2 
-    3 | 3 2 2 1 
+    3 | 3 2 2 3 
 }
 M_75 = Monoid{
   Elements:
@@ -1121,39 +1121,9 @@ M_75 = Monoid{
     0 | 0 1 2 3 
     1 | 1 2 2 2 
     2 | 2 2 2 2 
-    3 | 3 2 2 2 
-}
-M_76 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 2 2 2 
-    2 | 2 2 2 2 
-    3 | 3 2 2 3 
-}
-M_77 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 2 2 2 
-    2 | 2 2 2 2 
     3 | 3 3 3 3 
 }
-M_78 = Monoid{
+M_76 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1168,22 +1138,7 @@ M_78 = Monoid{
     2 | 2 2 2 3 
     3 | 3 2 2 3 
 }
-M_79 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 2 3 1 
-    2 | 2 3 1 2 
-    3 | 3 1 2 3 
-}
-M_80 = Monoid{
+M_77 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1198,7 +1153,22 @@ M_80 = Monoid{
     2 | 2 3 0 1 
     3 | 3 0 1 2 
 }
-M_81 = Monoid{
+M_78 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 2 3 1 
+    2 | 2 3 1 2 
+    3 | 3 1 2 3 
+}
+M_79 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1213,7 +1183,7 @@ M_81 = Monoid{
     2 | 2 0 1 3 
     3 | 3 3 3 3 
 }
-M_82 = Monoid{
+M_80 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1228,7 +1198,7 @@ M_82 = Monoid{
     2 | 2 1 2 3 
     3 | 3 3 3 3 
 }
-M_83 = Monoid{
+M_81 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1243,7 +1213,7 @@ M_83 = Monoid{
     2 | 2 3 3 3 
     3 | 3 3 3 3 
 }
-M_84 = Monoid{
+M_82 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1258,7 +1228,7 @@ M_84 = Monoid{
     2 | 2 2 2 3 
     3 | 3 3 3 3 
 }
-M_85 = Monoid{
+M_83 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1272,6 +1242,36 @@ M_85 = Monoid{
     1 | 1 2 2 3 
     2 | 2 2 2 3 
     3 | 3 3 3 2 
+}
+M_84 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 2 1 2 
+    2 | 2 1 2 1 
+    3 | 3 2 1 0 
+}
+M_85 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 2 1 2 
+    2 | 2 1 2 1 
+    3 | 3 2 1 2 
 }
 M_86 = Monoid{
   Elements:
@@ -1539,9 +1539,9 @@ M_103 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 0 0 0 
-    1 | 1 1 1 1 
+    1 | 0 3 1 1 
     2 | 0 1 2 3 
-    3 | 0 0 3 0 
+    3 | 0 1 3 3 
 }
 M_104 = Monoid{
   Elements:
@@ -1556,7 +1556,7 @@ M_104 = Monoid{
     0 | 0 0 0 0 
     1 | 1 1 1 1 
     2 | 0 1 2 3 
-    3 | 0 0 3 3 
+    3 | 0 0 3 0 
 }
 M_105 = Monoid{
   Elements:
@@ -1571,7 +1571,7 @@ M_105 = Monoid{
     0 | 0 0 0 0 
     1 | 1 1 1 1 
     2 | 0 1 2 3 
-    3 | 0 1 3 2 
+    3 | 0 0 3 3 
 }
 M_106 = Monoid{
   Elements:
@@ -1586,7 +1586,7 @@ M_106 = Monoid{
     0 | 0 0 0 0 
     1 | 1 1 1 1 
     2 | 0 1 2 3 
-    3 | 0 1 3 3 
+    3 | 0 1 3 2 
 }
 M_107 = Monoid{
   Elements:
@@ -1601,7 +1601,7 @@ M_107 = Monoid{
     0 | 0 0 0 0 
     1 | 1 1 1 1 
     2 | 0 1 2 3 
-    3 | 1 0 3 2 
+    3 | 0 1 3 3 
 }
 M_108 = Monoid{
   Elements:
@@ -1616,7 +1616,7 @@ M_108 = Monoid{
     0 | 0 0 0 0 
     1 | 1 1 1 1 
     2 | 0 1 2 3 
-    3 | 3 3 3 3 
+    3 | 1 0 3 2 
 }
 M_109 = Monoid{
   Elements:
@@ -1629,7 +1629,7 @@ M_109 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 0 0 0 
-    1 | 3 2 1 0 
+    1 | 1 1 1 1 
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
@@ -1643,10 +1643,10 @@ M_110 = Monoid{
   Multiplication table: 
       | 0 1 2 3 
     --+---------
-    0 | 0 0 0 3 
-    1 | 0 0 1 3 
+    0 | 0 0 0 0 
+    1 | 3 2 1 0 
     2 | 0 1 2 3 
-    3 | 0 0 3 3 
+    3 | 3 3 3 3 
 }
 M_111 = Monoid{
   Elements:
@@ -1661,7 +1661,7 @@ M_111 = Monoid{
     0 | 0 0 0 3 
     1 | 0 0 1 3 
     2 | 0 1 2 3 
-    3 | 3 3 3 0 
+    3 | 0 0 3 3 
 }
 M_112 = Monoid{
   Elements:
@@ -1676,7 +1676,7 @@ M_112 = Monoid{
     0 | 0 0 0 3 
     1 | 0 0 1 3 
     2 | 0 1 2 3 
-    3 | 3 3 3 3 
+    3 | 3 3 3 0 
 }
 M_113 = Monoid{
   Elements:
@@ -1689,9 +1689,9 @@ M_113 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 0 0 3 
-    1 | 0 1 1 3 
+    1 | 0 0 1 3 
     2 | 0 1 2 3 
-    3 | 0 0 3 3 
+    3 | 3 3 3 3 
 }
 M_114 = Monoid{
   Elements:
@@ -1706,7 +1706,7 @@ M_114 = Monoid{
     0 | 0 0 0 3 
     1 | 0 1 1 3 
     2 | 0 1 2 3 
-    3 | 3 3 3 0 
+    3 | 0 0 3 3 
 }
 M_115 = Monoid{
   Elements:
@@ -1721,7 +1721,7 @@ M_115 = Monoid{
     0 | 0 0 0 3 
     1 | 0 1 1 3 
     2 | 0 1 2 3 
-    3 | 3 3 3 3 
+    3 | 3 3 3 0 
 }
 M_116 = Monoid{
   Elements:
@@ -1734,9 +1734,9 @@ M_116 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 0 0 3 
-    1 | 0 2 1 3 
+    1 | 0 1 1 3 
     2 | 0 1 2 3 
-    3 | 3 3 3 0 
+    3 | 3 3 3 3 
 }
 M_117 = Monoid{
   Elements:
@@ -1751,9 +1751,24 @@ M_117 = Monoid{
     0 | 0 0 0 3 
     1 | 0 2 1 3 
     2 | 0 1 2 3 
-    3 | 3 3 3 3 
+    3 | 3 3 3 0 
 }
 M_118 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 3 
+    1 | 0 2 1 3 
+    2 | 0 1 2 3 
+    3 | 3 3 3 3 
+}
+M_119 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1768,7 +1783,7 @@ M_118 = Monoid{
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
-M_119 = Monoid{
+M_120 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1783,7 +1798,7 @@ M_119 = Monoid{
     2 | 0 1 2 3 
     3 | 0 1 3 0 
 }
-M_120 = Monoid{
+M_121 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1797,21 +1812,6 @@ M_120 = Monoid{
     1 | 0 1 1 0 
     2 | 0 1 2 3 
     3 | 0 1 3 3 
-}
-M_121 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 2
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 0 0 
-    1 | 0 1 1 1 
-    2 | 0 1 2 3 
-    3 | 0 1 3 2 
 }
 M_122 = Monoid{
   Elements:
@@ -1826,7 +1826,7 @@ M_122 = Monoid{
     0 | 0 1 0 0 
     1 | 0 1 1 1 
     2 | 0 1 2 3 
-    3 | 0 1 3 3 
+    3 | 0 1 3 2 
 }
 M_123 = Monoid{
   Elements:
@@ -1839,41 +1839,11 @@ M_123 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 0 0 
-    1 | 1 0 1 1 
-    2 | 0 1 2 3 
-    3 | 0 1 3 0 
-}
-M_124 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 2
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 0 0 
-    1 | 1 0 1 1 
-    2 | 0 1 2 3 
-    3 | 0 1 3 2 
-}
-M_125 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 2
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 0 0 
-    1 | 1 0 1 1 
+    1 | 0 1 1 1 
     2 | 0 1 2 3 
     3 | 0 1 3 3 
 }
-M_126 = Monoid{
+M_124 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1888,7 +1858,7 @@ M_126 = Monoid{
     2 | 0 1 2 3 
     3 | 0 3 3 3 
 }
-M_127 = Monoid{
+M_125 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1903,7 +1873,7 @@ M_127 = Monoid{
     2 | 0 1 2 3 
     3 | 0 1 3 2 
 }
-M_128 = Monoid{
+M_126 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1918,7 +1888,7 @@ M_128 = Monoid{
     2 | 0 1 2 3 
     3 | 0 3 3 0 
 }
-M_129 = Monoid{
+M_127 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -1929,6 +1899,36 @@ M_129 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 0 3 
+    1 | 0 1 1 3 
+    2 | 0 1 2 3 
+    3 | 0 1 3 3 
+}
+M_128 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 0 3 
+    1 | 0 1 1 3 
+    2 | 0 1 2 3 
+    3 | 3 3 3 3 
+}
+M_129 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 0 0 0 
     1 | 0 1 1 3 
     2 | 0 1 2 3 
     3 | 0 1 3 3 
@@ -1943,10 +1943,10 @@ M_130 = Monoid{
   Multiplication table: 
       | 0 1 2 3 
     --+---------
-    0 | 0 1 0 3 
+    0 | 0 0 0 0 
     1 | 0 1 1 3 
     2 | 0 1 2 3 
-    3 | 3 3 3 3 
+    3 | 0 3 3 1 
 }
 M_131 = Monoid{
   Elements:
@@ -1961,7 +1961,7 @@ M_131 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 1 3 
     2 | 0 1 2 3 
-    3 | 0 1 3 3 
+    3 | 0 3 3 0 
 }
 M_132 = Monoid{
   Elements:
@@ -1976,7 +1976,7 @@ M_132 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 1 3 
     2 | 0 1 2 3 
-    3 | 0 3 3 1 
+    3 | 0 3 3 3 
 }
 M_133 = Monoid{
   Elements:
@@ -1991,7 +1991,7 @@ M_133 = Monoid{
     0 | 0 0 0 0 
     1 | 0 1 1 3 
     2 | 0 1 2 3 
-    3 | 0 3 3 0 
+    3 | 3 3 3 3 
 }
 M_134 = Monoid{
   Elements:
@@ -2003,7 +2003,7 @@ M_134 = Monoid{
   Multiplication table: 
       | 0 1 2 3 
     --+---------
-    0 | 0 0 0 0 
+    0 | 0 0 0 3 
     1 | 0 1 1 3 
     2 | 0 1 2 3 
     3 | 0 3 3 3 
@@ -2018,42 +2018,12 @@ M_135 = Monoid{
   Multiplication table: 
       | 0 1 2 3 
     --+---------
-    0 | 0 0 0 0 
-    1 | 0 1 1 3 
-    2 | 0 1 2 3 
-    3 | 3 3 3 3 
-}
-M_136 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 2
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 3 
-    1 | 0 1 1 3 
-    2 | 0 1 2 3 
-    3 | 0 3 3 3 
-}
-M_137 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 2
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
     0 | 0 1 0 3 
     1 | 1 3 1 0 
     2 | 0 1 2 3 
     3 | 3 0 3 1 
 }
-M_138 = Monoid{
+M_136 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2068,7 +2038,7 @@ M_138 = Monoid{
     2 | 0 1 2 3 
     3 | 3 1 3 3 
 }
-M_139 = Monoid{
+M_137 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2083,7 +2053,7 @@ M_139 = Monoid{
     2 | 0 1 2 3 
     3 | 3 1 3 3 
 }
-M_140 = Monoid{
+M_138 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2098,7 +2068,7 @@ M_140 = Monoid{
     2 | 0 1 2 3 
     3 | 0 0 3 3 
 }
-M_141 = Monoid{
+M_139 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2113,7 +2083,7 @@ M_141 = Monoid{
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
-M_142 = Monoid{
+M_140 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2128,7 +2098,7 @@ M_142 = Monoid{
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
-M_143 = Monoid{
+M_141 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2143,7 +2113,7 @@ M_143 = Monoid{
     2 | 0 1 2 3 
     3 | 3 0 3 0 
 }
-M_144 = Monoid{
+M_142 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2158,7 +2128,7 @@ M_144 = Monoid{
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
-M_145 = Monoid{
+M_143 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2173,6 +2143,36 @@ M_145 = Monoid{
     2 | 0 1 2 3 
     3 | 3 0 3 0 
 }
+M_144 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 0 0 
+    1 | 1 0 1 1 
+    2 | 0 1 2 3 
+    3 | 0 1 3 0 
+}
+M_145 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 0 0 
+    1 | 1 0 1 1 
+    2 | 0 1 2 3 
+    3 | 0 1 3 2 
+}
 M_146 = Monoid{
   Elements:
     0 = Shape K
@@ -2183,10 +2183,10 @@ M_146 = Monoid{
   Multiplication table: 
       | 0 1 2 3 
     --+---------
-    0 | 0 1 0 1 
-    1 | 1 0 1 0 
+    0 | 0 1 0 0 
+    1 | 1 0 1 1 
     2 | 0 1 2 3 
-    3 | 1 0 3 0 
+    3 | 0 1 3 3 
 }
 M_147 = Monoid{
   Elements:
@@ -2201,9 +2201,24 @@ M_147 = Monoid{
     0 | 0 1 0 1 
     1 | 1 0 1 0 
     2 | 0 1 2 3 
-    3 | 1 0 3 2 
+    3 | 1 0 3 0 
 }
 M_148 = Monoid{
+  Elements:
+    0 = Shape K
+    1 = Shape K'
+    2 = Shape (Ka _)
+    3 = Shape (Kb _)
+  Unit element: 2
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 0 1 
+    1 | 1 0 1 0 
+    2 | 0 1 2 3 
+    3 | 1 0 3 2 
+}
+M_149 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2218,7 +2233,7 @@ M_148 = Monoid{
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
-M_149 = Monoid{
+M_150 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2233,7 +2248,7 @@ M_149 = Monoid{
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
-M_150 = Monoid{
+M_151 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2248,7 +2263,7 @@ M_150 = Monoid{
     2 | 0 1 2 3 
     3 | 0 1 3 3 
 }
-M_151 = Monoid{
+M_152 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2263,7 +2278,7 @@ M_151 = Monoid{
     2 | 0 1 2 3 
     3 | 2 0 3 1 
 }
-M_152 = Monoid{
+M_153 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2278,7 +2293,7 @@ M_152 = Monoid{
     2 | 0 1 2 3 
     3 | 0 3 3 0 
 }
-M_153 = Monoid{
+M_154 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2293,7 +2308,7 @@ M_153 = Monoid{
     2 | 0 1 2 3 
     3 | 0 3 3 3 
 }
-M_154 = Monoid{
+M_155 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2308,7 +2323,7 @@ M_154 = Monoid{
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
-M_155 = Monoid{
+M_156 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2323,7 +2338,7 @@ M_155 = Monoid{
     2 | 0 1 2 3 
     3 | 0 3 3 3 
 }
-M_156 = Monoid{
+M_157 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2338,7 +2353,7 @@ M_156 = Monoid{
     2 | 0 1 2 3 
     3 | 3 1 3 3 
 }
-M_157 = Monoid{
+M_158 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2353,7 +2368,7 @@ M_157 = Monoid{
     2 | 0 1 2 3 
     3 | 1 0 3 2 
 }
-M_158 = Monoid{
+M_159 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2368,7 +2383,7 @@ M_158 = Monoid{
     2 | 0 1 2 3 
     3 | 3 3 3 3 
 }
-M_159 = Monoid{
+M_160 = Monoid{
   Elements:
     0 = Shape K
     1 = Shape K'
@@ -2382,21 +2397,6 @@ M_159 = Monoid{
     1 | 1 3 1 3 
     2 | 0 1 2 3 
     3 | 3 3 3 3 
-}
-M_160 = Monoid{
-  Elements:
-    0 = Shape K
-    1 = Shape K'
-    2 = Shape (Ka _)
-    3 = Shape (Kb _)
-  Unit element: 2
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 0 0 0 
-    1 | 0 3 1 1 
-    2 | 0 1 2 3 
-    3 | 0 1 3 3 
 }
 M_161 = Monoid{
   Elements:

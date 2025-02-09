@@ -39,12 +39,16 @@ import Data.PTraversable
 import Data.PTraversable.Extra (_indices, skolem)
 import Data.Tuple (swap)
 import Data.Vector qualified as V
-import EquationSolver
 import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData, MonoidData (..), stabilizingPermutations, Permutation (..))
 import Data.Equivalence.Monad
 import Control.Exception (assert)
 import Isomorphism
 import Data.List (sort)
+
+import ModelFinder.Sig.Mono
+import ModelFinder.Expr
+import ModelFinder.Solver
+import qualified Data.Set as Set
 
 data ApplicativeDict f = ApplicativeDict
   { _applicativePure :: forall a. a -> f a,
@@ -246,40 +250,61 @@ genRawApplicativeDataFrom sig mon = do
 data Fn a = LeftFactor Int Int a | RightFactor Int Int a
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
-type Expr' = Expr Fn Int
+type Expr' = Expr (Sig (Fn Int) Int) Int
 
-type Equation' = Equation Fn Int
+type Equation' = Property (Sig (Fn Int) Int)
+
+type DefTable f x = Map.Map (f x) x
 
 leftE, rightE :: Int -> Int -> Expr' -> Expr'
-leftE i j e = Node (LeftFactor i j e)
-rightE i j e = Node (RightFactor i j e)
+leftE i j = lift1 (\e-> Sig (LeftFactor i j e))
+rightE i j = lift1 (\e -> Sig (RightFactor i j e))
 
 makeEqUnitL, makeEqUnitR :: RawMonoidData -> Int -> Int -> Equation'
-makeEqUnitL mon i x = leftE i e (Leaf x) `Equals` Leaf x
+makeEqUnitL mon i x = leftE i e (pure x) `evaluatesTo` x
   where
     e = _unitElem mon
-makeEqUnitR mon i x = rightE e i (Leaf x) `Equals` Leaf x
+makeEqUnitR mon i x = rightE e i (pure x) `evaluatesTo` x
   where
     e = _unitElem mon
 
 makeEqAssocLL, makeEqAssocLR, makeEqAssocRR :: RawMonoidData -> (Int, Int, Int) -> Int -> Equation'
-makeEqAssocLL mon (i, j, k) x = leftE i (op j k) (Leaf x) `Equals` leftE i j (leftE (op i j) k (Leaf x))
+makeEqAssocLL mon (i, j, k) x = leftE i (op j k) (pure x) `equals` leftE i j (leftE (op i j) k (pure x))
   where
     op a b = _multTable mon ! (a, b)
-makeEqAssocRR mon (i, j, k) x = rightE (op i j) k (Leaf x) `Equals` rightE j k (rightE i (op j k) (Leaf x))
+makeEqAssocRR mon (i, j, k) x = rightE (op i j) k (pure x) `equals` rightE j k (rightE i (op j k) (pure x))
   where
     op a b = _multTable mon ! (a, b)
 makeEqAssocLR mon (i, j, k) x =
-  leftE j k (rightE i jk (Leaf x))
-    `Equals` rightE i j (leftE ij k (Leaf x))
+  leftE j k (rightE i jk (pure x))
+    `equals` rightE i j (leftE ij k (pure x))
   where
     op a b = _multTable mon ! (a, b)
     ij = op i j
     jk = op j k
 
+genDefTables :: Model (Sig (Fn Int) Int) -> [Equation'] -> [DefTable Fn Int]
+genDefTables model props = solve 10 model propsMap >>= constraintToSolution >>= pure . monoSolutionToMap
+  where
+    propsMap = Map.fromList (zip [0 :: Int ..] props)
+
+makeModel :: Signature -> RawMonoidData -> (Fn Int -> [Int]) -> Model (Sig (Fn Int) Int)
+makeModel sig mon guess = monoMakeModel . Map.fromList $ modelList
+  where
+    n = _monoidSize mon
+    op i j = _multTable mon ! (i, j)
+    modelList = do
+      i <- [0 .. n - 1]
+      j <- [0 .. n - 1]
+      let numK = sig V.! op i j
+      k <- [0 .. numK - 1]
+      let leftF = LeftFactor i j k
+          rightF = RightFactor i j k
+      [ (leftF, Set.fromList (guess leftF)),
+        (rightF, Set.fromList (guess rightF)) ]
 
 gen :: Signature -> RawMonoidData -> [DefTable Fn Int]
-gen sig mon = genDefTables guess equations
+gen sig mon = genDefTables (makeModel sig mon guess) equations
   where
     n = _monoidSize mon
     op i j = _multTable mon ! (i, j)

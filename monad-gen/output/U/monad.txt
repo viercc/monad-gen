@@ -154,7 +154,7 @@ Monad_5 = Monad{
   join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 3
 }
 Monad_6 = Monad{
-  baseApplicative = A_115
+  baseApplicative = A_116
   pure 0 = Ua 0 0
   join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
   join $ Ua (Ua 0 1) (Ub 2 3) = Ub 0 3
@@ -185,7 +185,7 @@ Monad_6 = Monad{
   join $ Uc (Uc 0 1) (Uc 2 3) = Uc 0 2
 }
 Monad_7 = Monad{
-  baseApplicative = A_116
+  baseApplicative = A_117
   pure 0 = Ua 0 0
   join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
   join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 3
@@ -278,7 +278,7 @@ Monad_9 = Monad{
   join $ Uc (Uc 0 1) (Uc 2 3) = Ub 0 3
 }
 Monad_10 = Monad{
-  baseApplicative = A_138
+  baseApplicative = A_139
   pure 0 = Ua 0 0
   join $ Ua (Ua 0 1) (Ua 2 3) = Ua 0 3
   join $ Ua (Ua 0 1) (Ub 2 3) = Ua 0 3

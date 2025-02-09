@@ -370,8 +370,8 @@ M_25 = Monoid{
     --+---------
     0 | 0 1 2 3 
     1 | 1 1 1 1 
-    2 | 2 2 2 2 
-    3 | 3 1 1 1 
+    2 | 2 1 3 2 
+    3 | 3 1 2 3 
 }
 M_26 = Monoid{
   Elements:
@@ -386,7 +386,7 @@ M_26 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 1 
     2 | 2 2 2 2 
-    3 | 3 1 1 3 
+    3 | 3 1 1 1 
 }
 M_27 = Monoid{
   Elements:
@@ -401,7 +401,7 @@ M_27 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 1 
     2 | 2 2 2 2 
-    3 | 3 1 2 0 
+    3 | 3 1 1 3 
 }
 M_28 = Monoid{
   Elements:
@@ -416,7 +416,7 @@ M_28 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 1 
     2 | 2 2 2 2 
-    3 | 3 1 2 3 
+    3 | 3 1 2 0 
 }
 M_29 = Monoid{
   Elements:
@@ -431,7 +431,7 @@ M_29 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 1 
     2 | 2 2 2 2 
-    3 | 3 2 1 0 
+    3 | 3 1 2 3 
 }
 M_30 = Monoid{
   Elements:
@@ -446,7 +446,7 @@ M_30 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 1 
     2 | 2 2 2 2 
-    3 | 3 3 3 3 
+    3 | 3 2 1 0 
 }
 M_31 = Monoid{
   Elements:
@@ -459,7 +459,7 @@ M_31 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 0 3 2 
+    1 | 1 1 1 1 
     2 | 2 2 2 2 
     3 | 3 3 3 3 
 }
@@ -474,9 +474,9 @@ M_32 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 0 2 3 
-    2 | 2 2 2 3 
-    3 | 3 3 3 2 
+    1 | 1 0 3 2 
+    2 | 2 2 2 2 
+    3 | 3 3 3 3 
 }
 M_33 = Monoid{
   Elements:
@@ -491,7 +491,7 @@ M_33 = Monoid{
     0 | 0 1 2 3 
     1 | 1 0 2 3 
     2 | 2 2 2 3 
-    3 | 3 3 3 3 
+    3 | 3 3 3 2 
 }
 M_34 = Monoid{
   Elements:
@@ -504,9 +504,9 @@ M_34 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 1 1 3 
-    2 | 2 1 1 3 
-    3 | 3 1 1 3 
+    1 | 1 0 2 3 
+    2 | 2 2 2 3 
+    3 | 3 3 3 3 
 }
 M_35 = Monoid{
   Elements:
@@ -521,7 +521,7 @@ M_35 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 3 
     2 | 2 1 1 3 
-    3 | 3 3 3 1 
+    3 | 3 1 1 3 
 }
 M_36 = Monoid{
   Elements:
@@ -536,7 +536,7 @@ M_36 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 3 
     2 | 2 1 1 3 
-    3 | 3 3 3 3 
+    3 | 3 3 3 1 
 }
 M_37 = Monoid{
   Elements:
@@ -550,8 +550,8 @@ M_37 = Monoid{
     --+---------
     0 | 0 1 2 3 
     1 | 1 1 1 3 
-    2 | 2 1 2 3 
-    3 | 3 1 1 3 
+    2 | 2 1 1 3 
+    3 | 3 3 3 3 
 }
 M_38 = Monoid{
   Elements:
@@ -566,7 +566,7 @@ M_38 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 3 
     2 | 2 1 2 3 
-    3 | 3 3 3 1 
+    3 | 3 1 1 3 
 }
 M_39 = Monoid{
   Elements:
@@ -581,9 +581,24 @@ M_39 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 3 
     2 | 2 1 2 3 
-    3 | 3 3 3 3 
+    3 | 3 3 3 1 
 }
 M_40 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 3 
+    2 | 2 1 2 3 
+    3 | 3 3 3 3 
+}
+M_41 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -598,7 +613,7 @@ M_40 = Monoid{
     2 | 2 2 2 3 
     3 | 3 3 3 3 
 }
-M_41 = Monoid{
+M_42 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -613,7 +628,7 @@ M_41 = Monoid{
     2 | 2 1 2 1 
     3 | 3 1 2 1 
 }
-M_42 = Monoid{
+M_43 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -627,21 +642,6 @@ M_42 = Monoid{
     1 | 1 1 2 1 
     2 | 2 1 2 1 
     3 | 3 1 2 3 
-}
-M_43 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 1 2 1 
-    2 | 2 1 2 2 
-    3 | 3 1 2 0 
 }
 M_44 = Monoid{
   Elements:
@@ -656,7 +656,7 @@ M_44 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 2 1 
     2 | 2 1 2 2 
-    3 | 3 1 2 3 
+    3 | 3 1 2 0 
 }
 M_45 = Monoid{
   Elements:
@@ -670,40 +670,10 @@ M_45 = Monoid{
     --+---------
     0 | 0 1 2 3 
     1 | 1 1 2 1 
-    2 | 2 2 1 2 
-    3 | 3 1 2 0 
-}
-M_46 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 1 2 1 
-    2 | 2 2 1 2 
-    3 | 3 1 2 1 
-}
-M_47 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 1 2 1 
-    2 | 2 2 1 2 
+    2 | 2 1 2 2 
     3 | 3 1 2 3 
 }
-M_48 = Monoid{
+M_46 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -718,7 +688,7 @@ M_48 = Monoid{
     2 | 2 1 2 2 
     3 | 3 1 3 3 
 }
-M_49 = Monoid{
+M_47 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -733,7 +703,7 @@ M_49 = Monoid{
     2 | 2 1 2 1 
     3 | 3 1 2 0 
 }
-M_50 = Monoid{
+M_48 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -748,7 +718,7 @@ M_50 = Monoid{
     2 | 2 1 2 1 
     3 | 3 1 3 1 
 }
-M_51 = Monoid{
+M_49 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -760,6 +730,36 @@ M_51 = Monoid{
     --+---------
     0 | 0 1 2 3 
     1 | 1 1 2 3 
+    2 | 2 1 2 3 
+    3 | 3 1 2 3 
+}
+M_50 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 3 
+    2 | 2 1 2 3 
+    3 | 3 3 3 3 
+}
+M_51 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 1 1 
     2 | 2 1 2 3 
     3 | 3 1 2 3 
 }
@@ -774,9 +774,9 @@ M_52 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 1 2 3 
+    1 | 1 1 1 1 
     2 | 2 1 2 3 
-    3 | 3 3 3 3 
+    3 | 3 1 3 2 
 }
 M_53 = Monoid{
   Elements:
@@ -791,7 +791,7 @@ M_53 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 1 
     2 | 2 1 2 3 
-    3 | 3 1 2 3 
+    3 | 3 1 3 1 
 }
 M_54 = Monoid{
   Elements:
@@ -806,7 +806,7 @@ M_54 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 1 
     2 | 2 1 2 3 
-    3 | 3 1 3 2 
+    3 | 3 1 3 3 
 }
 M_55 = Monoid{
   Elements:
@@ -821,39 +821,9 @@ M_55 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 1 1 
     2 | 2 1 2 3 
-    3 | 3 1 3 1 
-}
-M_56 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 1 1 1 
-    2 | 2 1 2 3 
-    3 | 3 1 3 3 
-}
-M_57 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 1 1 1 
-    2 | 2 1 2 3 
     3 | 3 3 3 3 
 }
-M_58 = Monoid{
+M_56 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -868,7 +838,7 @@ M_58 = Monoid{
     2 | 2 1 2 3 
     3 | 3 1 3 3 
 }
-M_59 = Monoid{
+M_57 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -883,7 +853,7 @@ M_59 = Monoid{
     2 | 2 2 3 1 
     3 | 3 3 1 2 
 }
-M_60 = Monoid{
+M_58 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -898,7 +868,7 @@ M_60 = Monoid{
     2 | 2 2 3 2 
     3 | 3 3 2 3 
 }
-M_61 = Monoid{
+M_59 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -913,7 +883,7 @@ M_61 = Monoid{
     2 | 2 3 2 3 
     3 | 3 3 2 3 
 }
-M_62 = Monoid{
+M_60 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -928,7 +898,7 @@ M_62 = Monoid{
     2 | 2 3 2 3 
     3 | 3 2 2 3 
 }
-M_63 = Monoid{
+M_61 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -943,7 +913,7 @@ M_63 = Monoid{
     2 | 2 3 2 3 
     3 | 3 3 3 3 
 }
-M_64 = Monoid{
+M_62 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -958,7 +928,7 @@ M_64 = Monoid{
     2 | 2 2 3 3 
     3 | 3 3 3 3 
 }
-M_65 = Monoid{
+M_63 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -973,7 +943,7 @@ M_65 = Monoid{
     2 | 2 3 2 3 
     3 | 3 2 3 2 
 }
-M_66 = Monoid{
+M_64 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -988,7 +958,7 @@ M_66 = Monoid{
     2 | 2 3 1 1 
     3 | 3 3 1 1 
 }
-M_67 = Monoid{
+M_65 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -1003,7 +973,7 @@ M_67 = Monoid{
     2 | 2 3 2 3 
     3 | 3 3 3 3 
 }
-M_68 = Monoid{
+M_66 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -1018,6 +988,36 @@ M_68 = Monoid{
     2 | 2 0 1 3 
     3 | 3 3 3 3 
 }
+M_67 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 3 1 2 0 
+}
+M_68 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 3 1 2 1 
+}
 M_69 = Monoid{
   Elements:
     0 = Shape V
@@ -1029,9 +1029,9 @@ M_69 = Monoid{
       | 0 1 2 3 
     --+---------
     0 | 0 1 2 3 
-    1 | 1 1 2 2 
-    2 | 2 2 1 1 
-    3 | 3 2 1 0 
+    1 | 1 1 2 1 
+    2 | 2 2 1 2 
+    3 | 3 1 2 3 
 }
 M_70 = Monoid{
   Elements:
@@ -1046,9 +1046,24 @@ M_70 = Monoid{
     0 | 0 1 2 3 
     1 | 1 1 2 2 
     2 | 2 2 1 1 
-    3 | 3 2 1 1 
+    3 | 3 2 1 0 
 }
 M_71 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 0
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 0 1 2 3 
+    1 | 1 1 2 2 
+    2 | 2 2 1 1 
+    3 | 3 2 1 1 
+}
+M_72 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -1063,7 +1078,7 @@ M_71 = Monoid{
     2 | 2 2 1 3 
     3 | 3 3 3 3 
 }
-M_72 = Monoid{
+M_73 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -1078,7 +1093,7 @@ M_72 = Monoid{
     2 | 2 3 1 2 
     3 | 3 1 2 3 
 }
-M_73 = Monoid{
+M_74 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -1093,7 +1108,7 @@ M_73 = Monoid{
     2 | 2 0 3 1 
     3 | 3 2 1 0 
 }
-M_74 = Monoid{
+M_75 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -1108,7 +1123,7 @@ M_74 = Monoid{
     2 | 2 2 3 3 
     3 | 3 3 3 3 
 }
-M_75 = Monoid{
+M_76 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -1122,21 +1137,6 @@ M_75 = Monoid{
     1 | 1 1 2 3 
     2 | 2 2 3 3 
     3 | 3 3 3 3 
-}
-M_76 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 0
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 0 1 2 3 
-    1 | 1 1 1 1 
-    2 | 2 1 3 2 
-    3 | 3 1 2 3 
 }
 M_77 = Monoid{
   Elements:
@@ -4493,42 +4493,12 @@ M_300 = Monoid{
   Multiplication table: 
       | 0 1 2 3 
     --+---------
-    0 | 1 0 1 0 
-    1 | 0 1 0 1 
-    2 | 1 0 1 2 
-    3 | 0 1 2 3 
-}
-M_301 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 3
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 1 0 1 0 
-    1 | 0 1 0 1 
-    2 | 1 0 3 2 
-    3 | 0 1 2 3 
-}
-M_302 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 3
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
     0 | 1 1 0 0 
     1 | 1 1 1 1 
     2 | 0 1 2 2 
     3 | 0 1 2 3 
 }
-M_303 = Monoid{
+M_301 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4543,7 +4513,7 @@ M_303 = Monoid{
     2 | 0 1 3 2 
     3 | 0 1 2 3 
 }
-M_304 = Monoid{
+M_302 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4558,7 +4528,7 @@ M_304 = Monoid{
     2 | 1 1 2 2 
     3 | 0 1 2 3 
 }
-M_305 = Monoid{
+M_303 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4573,7 +4543,7 @@ M_305 = Monoid{
     2 | 0 1 2 2 
     3 | 0 1 2 3 
 }
-M_306 = Monoid{
+M_304 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4588,7 +4558,7 @@ M_306 = Monoid{
     2 | 1 1 0 2 
     3 | 0 1 2 3 
 }
-M_307 = Monoid{
+M_305 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4603,7 +4573,7 @@ M_307 = Monoid{
     2 | 1 1 1 2 
     3 | 0 1 2 3 
 }
-M_308 = Monoid{
+M_306 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4618,7 +4588,7 @@ M_308 = Monoid{
     2 | 1 1 2 2 
     3 | 0 1 2 3 
 }
-M_309 = Monoid{
+M_307 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4633,7 +4603,7 @@ M_309 = Monoid{
     2 | 2 2 2 2 
     3 | 0 1 2 3 
 }
-M_310 = Monoid{
+M_308 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4648,7 +4618,7 @@ M_310 = Monoid{
     2 | 1 1 2 2 
     3 | 0 1 2 3 
 }
-M_311 = Monoid{
+M_309 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4663,22 +4633,7 @@ M_311 = Monoid{
     2 | 0 1 2 2 
     3 | 0 1 2 3 
 }
-M_312 = Monoid{
-  Elements:
-    0 = Shape V
-    1 = Shape (Va _)
-    2 = Shape (Vb _)
-    3 = Shape (Vc _ _)
-  Unit element: 3
-  Multiplication table: 
-      | 0 1 2 3 
-    --+---------
-    0 | 1 2 3 0 
-    1 | 2 3 0 1 
-    2 | 3 0 1 2 
-    3 | 0 1 2 3 
-}
-M_313 = Monoid{
+M_310 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4693,7 +4648,7 @@ M_313 = Monoid{
     2 | 2 2 2 2 
     3 | 0 1 2 3 
 }
-M_314 = Monoid{
+M_311 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4708,7 +4663,7 @@ M_314 = Monoid{
     2 | 2 2 2 2 
     3 | 0 1 2 3 
 }
-M_315 = Monoid{
+M_312 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4723,7 +4678,7 @@ M_315 = Monoid{
     2 | 2 2 2 2 
     3 | 0 1 2 3 
 }
-M_316 = Monoid{
+M_313 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4738,7 +4693,7 @@ M_316 = Monoid{
     2 | 2 2 1 2 
     3 | 0 1 2 3 
 }
-M_317 = Monoid{
+M_314 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4753,7 +4708,37 @@ M_317 = Monoid{
     2 | 2 2 2 2 
     3 | 0 1 2 3 
 }
-M_318 = Monoid{
+M_315 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 1 0 
+    1 | 0 1 0 1 
+    2 | 1 0 1 2 
+    3 | 0 1 2 3 
+}
+M_316 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 0 1 0 
+    1 | 0 1 0 1 
+    2 | 1 0 3 2 
+    3 | 0 1 2 3 
+}
+M_317 = Monoid{
   Elements:
     0 = Shape V
     1 = Shape (Va _)
@@ -4766,6 +4751,21 @@ M_318 = Monoid{
     0 | 1 2 1 0 
     1 | 2 1 2 1 
     2 | 1 2 1 2 
+    3 | 0 1 2 3 
+}
+M_318 = Monoid{
+  Elements:
+    0 = Shape V
+    1 = Shape (Va _)
+    2 = Shape (Vb _)
+    3 = Shape (Vc _ _)
+  Unit element: 3
+  Multiplication table: 
+      | 0 1 2 3 
+    --+---------
+    0 | 1 2 3 0 
+    1 | 2 3 0 1 
+    2 | 3 0 1 2 
     3 | 0 1 2 3 
 }
 M_319 = Monoid{

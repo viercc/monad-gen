@@ -49,8 +49,13 @@ import qualified Data.Array.Extra as Array
 import Data.FunctorShape
 import Data.Finitary.Enum
 
-import EquationSolver
+--import EquationSolver
 import Data.Function (on)
+
+import ModelFinder.Expr
+import ModelFinder.Sig.Mono
+import ModelFinder.Solver
+import qualified Data.Set as Set
 
 -- * MonoidDict
 
@@ -198,53 +203,62 @@ multMapToArray n multMap = Array.genArrayM ((0,0), (n - 1, n - 1)) (\(i,j) -> Ma
 
 data M a = M !a !a
     deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
-type E = Expr M Int
+type E = Expr (Sig (M Int) Int) Int
+type Prop = Property (Sig (M Int) Int)
 type MultTable = Map (M Int) Int
 
 (|*|) :: E -> E -> E
-x |*| y = Node (M x y)
+(|*|) = lift2 (\x y -> Sig (M x y))
 
-assocLaw :: Expr M Int -> Expr M Int -> Expr M Int -> Equation M Int
-assocLaw x y z = Equals (x |*| (y |*| z)) ((x |*| y) |*| z)
+assocLaw :: E -> E -> E -> Prop
+assocLaw x y z = x |*| (y |*| z) `equals` (x |*| y) |*| z
+
+genDefTables :: Int -> (M Int -> [Int]) -> [Prop] -> [MultTable]
+genDefTables n guess props = solve 10 model propsMap >>= constraintToSolution >>= pure . monoSolutionToMap
+  where
+    xs = [0 .. n - 1]
+    model = monoMakeModel $ Map.fromList
+      [ (f, Set.fromList (guess f)) | f <- M <$> xs <*> xs ]
+    propsMap = Map.fromList (zip [0 :: Int ..] props)
 
 gen :: Int -> Int -> [MultTable]
-gen n eInt = genDefTables guess equations
+gen n eInt = genDefTables n guess equations
   where
     xs = [0 .. n - 1]
-    e = Leaf eInt
-    nonUnits = Leaf <$> filter (/= eInt) xs
-    equations =
-        [ e |*| x `Equals` x | x <- Leaf <$> xs]
-     ++ [ x |*| e `Equals` x | x <- Leaf <$> xs]
+    e = pure eInt
+    nonUnits = pure <$> filter (/= eInt) xs
+    equations = 
+        [ e |*| x `equals` x | x <- pure <$> xs]
+     ++ [ x |*| e `equals` x | x <- pure <$> xs]
      ++ [ assocLaw x y z | x <- nonUnits, y <- nonUnits, z <- nonUnits ]
-    guess (M _ _) = xs
+    guess _ = xs
 
 genForApplicative :: Int -> Int -> Int -> [MultTable]
-genForApplicative n numZeroes eInt = genDefTables guess equations
+genForApplicative n numZeroes eInt = genDefTables n guess equations
   where
-    e = Leaf eInt
     xs = [0 .. n - 1]
+    e = pure eInt
     zeroes = [0 .. numZeroes - 1]
-    nonUnits = Leaf <$> filter (/= eInt) xs
+    nonUnits = pure <$> filter (/= eInt) xs
     equations =
-        [ e |*| x `Equals` x | x <- Leaf <$> xs]
-     ++ [ x |*| e `Equals` x | x <- Leaf <$> xs]
+        [ e |*| x `equals` x | x <- pure <$> xs]
+     ++ [ x |*| e `equals` x | x <- pure <$> xs]
      ++ [ assocLaw x y z | x <- nonUnits, y <- nonUnits, z <- nonUnits ]
     guess (M x y)
       | x < numZeroes || y < numZeroes = zeroes
       | otherwise = xs
 
 genForMonad :: Int -> Int -> Int -> [MultTable]
-genForMonad n numZeroes eInt = genDefTables guess equations
+genForMonad n numZeroes eInt = genDefTables n guess equations
   where
-    e = Leaf eInt
+    e = pure eInt
     xs = [0 .. n - 1]
     zeroes = [0 .. numZeroes - 1]
-    nonUnits = Leaf <$> filter (/= eInt) xs
+    nonUnits = pure <$> filter (/= eInt) xs
     equations =
-        [ e |*| x `Equals` x | x <- Leaf <$> xs]
-     ++ [ x |*| e `Equals` x | x <- Leaf <$> xs]
-     ++ [ z |*| y `Equals` z | z <- Leaf <$> zeroes, y <- Leaf <$> xs ]
+        [ e |*| x `equals` x | x <- pure <$> xs]
+     ++ [ x |*| e `equals` x | x <- pure <$> xs]
+     ++ [ z |*| y `equals` z | z <- pure <$> zeroes, y <- pure <$> xs ]
      ++ [ assocLaw x y z | x <- nonUnits, y <- nonUnits, z <- nonUnits ]
 
     guess (M _ y) = if y < numZeroes then zeroes else xs
