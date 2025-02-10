@@ -6,6 +6,10 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module MonadGen
   (
@@ -28,6 +32,11 @@ module MonadGen
     debugPrint,
     Join,
     Blockade,
+
+    -- * Raw
+    RawMonadData(..),
+    Mop(..),
+    genRaw
   )
 where
 
@@ -45,13 +54,28 @@ import GHC.Generics ((:.:) (..))
 import Data.FunctorShape
 import qualified Data.NatMap as NM
 
--- import MonoidGen (MonoidDict(..), genMonoidsForMonad, makeMonoidDict)
+import MonoidGen (RawMonoidData(..))
 import ApplicativeGen
 import Isomorphism (Iso (..))
 import Data.Equivalence.Monad
 
 import MonadLaws
 import qualified Data.Vector as V
+import ModelFinder.Expr
+import ModelFinder.Sig.Mono
+import ModelFinder.Solver
+import qualified Data.Array as Array
+
+import Debug.Trace
+import qualified Data.Vector.Unboxed as UV
+
+import Data.Dependent.Sum (DSum(..))
+import Data.Dependent.Map qualified as DMap
+import Control.Monad.Trans.Maybe (MaybeT(..))
+import Data.GADT.Show (GShow (..))
+import Data.GADT.Compare
+import Data.Type.Equality ((:~:)(..))
+import Data.Constraint.Extras
 
 -- Monad dictionary
 
@@ -146,8 +170,7 @@ debugPrint st = do
   putStrLn "-----------------"
   case NM.toTotal (_join st) of
     Just join' ->
-      let join'' = NM.unwrapNT join' . Comp1
-          assoc = flip all skolem3 $ checkAssoc join''
+      let assoc = flip all skolem3 $ checkAssoc (NM.unwrapNT join' . Comp1)
        in unless assoc (fail "!?!?")
     Nothing -> putStrLn "incomplete"
 
@@ -302,3 +325,165 @@ mostRelated m
   | otherwise = Just kTop
   where
     (kTop, _) = maximumBy (comparing (Set.size . snd)) $ Map.toList m
+
+-- Generate RawMonadData
+
+data RawMonadData = RawMonadData {
+    _baseRawApplicative :: RawApplicativeData
+  , _mopTable :: Solution Mop
+  }
+  deriving (Show)
+
+data Mop x where
+  JShape :: !Int -> !(V.Vector Int) -> Mop Int
+  JPos :: !Int -> !(V.Vector Int) -> Mop (V.Vector Int)
+
+deriving instance Show (Mop x)
+deriving instance Eq (Mop x)
+deriving instance Ord (Mop x)
+
+instance GShow Mop where gshowsPrec = showsPrec
+instance GEq Mop where
+  geq m1@JShape{} m2@JShape{} = guard (m1 == m2) *> Just Refl
+  geq m1@JPos{} m2@JPos{} = guard (m1 == m2) *> Just Refl
+  geq _ _ = Nothing
+
+instance GCompare Mop where
+  gcompare m1@JShape{} m2@JShape{} = genOrdering (compare m1 m2)
+  gcompare m1@JPos{} m2@JPos{} = genOrdering (compare m1 m2)
+  gcompare JShape{} JPos{} = GLT
+  gcompare JPos{} JShape{} = GGT
+
+instance (c Int, c (V.Vector Int)) => Has c Mop where
+  has JShape{} body = body
+  has JPos{} body = body
+
+type Expr' = Expr Mop
+type Model' = Model Mop
+type Prop = Property Mop
+
+jshape :: Expr' Int -> Expr' (V.Vector Int) -> Expr' Int
+jshape = lift2 JShape
+
+jpos :: Expr' Int -> Expr' (V.Vector Int) -> Expr' (V.Vector Int)
+jpos = lift2 JPos
+
+genRaw :: RawApplicativeData -> [RawMonadData]
+genRaw rawAp = do
+  let (model, props) = monadModel rawAp
+  model' <- solve 10 model (Map.fromList (zip [0 :: Int ..] props))
+  sol <- constraintToSolution model'
+  pure $ RawMonadData{ _baseRawApplicative = rawAp, _mopTable = sol }
+
+sumOf :: Foldable t => (a -> Int) -> t a -> Int
+sumOf f = foldl' (\n a -> n + f a) 0
+
+monadModel :: RawApplicativeData -> (Model', [Prop])
+monadModel rawAp = (model, props)
+  where
+    sig = _signature rawAp
+    len = (sig V.!)
+    mon = _baseMonoid rawAp
+    n = _monoidSize mon
+    op x y = _multTable mon Array.! (x,y)
+    leftTable = _leftFactorTable rawAp
+    rightTable = _rightFactorTable rawAp
+
+    ms = [0 .. n - 1]
+    possibleLengths = Set.toList . Set.fromList . V.toList $ sig
+    
+    jshapeList = do
+      x <- ms
+      ys <- V.generateM (len x) (const ms)
+      pure (JShape x ys :=> Set.fromList ms) 
+    jposList = do
+      x <- ms
+      ys <- V.generateM (len x) (const ms)
+      let ks = [0 .. sumOf len ys - 1]
+          indicesList = do
+            returnLen <- possibleLengths
+            V.generateM returnLen (const ks)
+      pure (JPos x ys :=> Set.fromList indicesList)
+    
+    model = Model $ DMap.fromList $ jshapeList ++ jposList
+    
+    props = knownFacts ++ posLenCondition ++ monadLawProps
+
+    posLenCondition = do
+      x <- ms
+      ys <- V.generateM (len x) (const ms)
+      pure $ do
+        xy <- jshape (pure x) (pure ys)
+        jpos (pure x) (pure ys) `satisfies` \indexVec -> V.length indexVec == len xy
+
+    knownFacts = do
+      x <- ms
+      if len x > 0
+        then ms >>= nonNullCase x
+        else nullCase x
+      where
+        nullCase x = [knownShape, knownPos]
+          where
+            knownShape = jshape (pure x) (pure V.empty) `evaluatesTo` x
+            knownPos = jpos (pure x) (pure V.empty) `evaluatesTo` V.empty
+        nonNullCase x y = [knownShape, knownPos]
+          where
+            ys = V.replicate (len x) y
+            knownShape = jshape (pure x) (pure ys) `evaluatesTo` op x y
+            
+            leftTab = leftTable Array.! (x,y)
+            rightTab = rightTable Array.! (x,y)
+            ixTable = V.zipWith (\i j -> i * len y + j) leftTab rightTab
+            knownPos = jpos (pure x) (pure ys) `evaluatesTo` ixTable
+
+    join' :: Int -> V.Vector Int -> V.Vector a -> Expr Mop (Maybe (Int, V.Vector a))
+    join' x ys as = do
+      (xy, pos) <- liftA2 (,) (jshape (pure x) (pure ys)) (jpos (pure x) (pure ys))
+      pure $
+        if len xy == V.length pos
+          then Just (xy, V.backpermute as ( pos))
+          else Nothing
+
+    monadLawProps = do
+      x <- ms
+      ys <- V.generateM (len x) (const ms)
+      zss <- V.mapM (\y -> V.generateM (len y) (const ms)) ( ys)
+      assocLawProp x ys zss
+
+    assocLawProp :: Int -> V.Vector Int -> V.Vector (V.Vector Int) -> [Property Mop]
+    assocLawProp x ys zss = [shapeLaw, posLaw]
+      where
+        xyzPos :: V.Vector (V.Vector (V.Vector Int))
+        xyzPos = indices3 . V.map (V.map (\z -> V.replicate (len z) ())) $ zss
+
+        yzShapeExpr = V.imapM (\i zs -> jshape (pure (ys V.! i)) (pure zs)) zss
+        zFlat = joinV zss
+
+        shapeLaw =
+          defined (join' x ys zFlat) $ \(xy, z') ->
+             jshape (pure xy) (pure z') `equals` jshape (pure x) yzShapeExpr
+
+        posLawLHS cont = do
+          let zFlat' = V.zip zFlat (joinV xyzPos)
+          defined (join' x ys zFlat') $ \(xy, zs') -> do
+            let (zs, posZs) = V.unzip zs'
+            defined (join' xy zs (joinV posZs)) $ \(_, pos_xy_z) ->
+              cont pos_xy_z
+
+        posLawRHS cont = do
+          mInnerJoins <- runMaybeT . traverse MaybeT $
+            V.zipWith3 join' ys zss (V.map joinV xyzPos)
+          defined (pure mInnerJoins) $ \innerJoins -> do
+            let (yzs, posYzs) = V.unzip innerJoins
+            defined (join' x yzs (joinV posYzs)) $ \(_, pos_x_yz) ->
+              cont pos_x_yz
+        posLaw = posLawLHS $ \lhs -> posLawRHS $ \rhs -> pure $ PropBool (lhs == rhs)
+
+joinV :: V.Vector (V.Vector a) -> V.Vector a
+joinV = join
+
+indices3 :: Traversable t => t (t (t a)) -> t (t (t Int))
+indices3 = unComp1 . unComp1 . _indices . Comp1 . Comp1
+
+defined :: Expr f (Maybe a) -> (a -> Property f) -> Property f
+defined ma k = ma >>= maybe (pure $ PropBool False) k
