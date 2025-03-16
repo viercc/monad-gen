@@ -40,7 +40,7 @@ import Data.Dependent.Sum (DSum (..))
 import Data.Functor.Compose (Compose (..))
 import Data.Functor.Identity
 import Data.GADT.Compare
-import Data.List (maximumBy, sortOn)
+import Data.List (foldl', maximumBy, sortOn)
 import Data.Map qualified as Map
 import Data.Ord (comparing)
 import Data.Set qualified as Set
@@ -133,8 +133,8 @@ updateBlocker k old new (Blocker bm) = Blocker bm''
   where
     deletion = old Set.\\ new
     addition = new Set.\\ old
-    bm' = foldl' (\m f -> Map.adjust (Set.delete k) f m) bm (Set.toList deletion)
-    bm'' = foldl' (\m f -> Map.adjust (Set.insert k) f m) bm' (Set.toList addition)
+    bm' = Set.foldl' (\m f -> Map.adjust (Set.delete k) f m) bm deletion
+    bm'' = Set.foldl' (\m f -> Map.adjust (Set.insert k) f m) bm' addition
 
 -- Refining
 
@@ -205,7 +205,7 @@ data SolverState f k = SolverState (Model f) (Blocker f k) (Map.Map k (Property 
 solve :: forall f k. (GCompare f, Has Ord f, Ord k) => Int -> Model f -> Map.Map k (Property f) -> [Model f]
 solve limit initialModel exprs0 = toList (visitExprs initialState (Map.keys exprs0)) >>= solveLoop
   where
-    initialBlockers = foldl' (<>) mempty (singleBlocker <$> Map.toList exprs0)
+    initialBlockers = Data.List.foldl' (<>) mempty (singleBlocker <$> Map.toList exprs0)
     initialState = SolverState initialModel initialBlockers exprs0
 
     solveLoop :: SolverState f k -> [Model f]
@@ -276,7 +276,7 @@ reducePropertyAt (SolverState model blocker exprs) k = do
 solveNoRefine :: forall f k. (GCompare f, Has Ord f, Ord k) => Model f -> Map.Map k (Property f) -> [Model f]
 solveNoRefine initialModel exprs0 = toList (visitExprs initialState (Map.keys exprs0)) >>= go
   where
-    initialBlockers = foldl' (<>) mempty (singleBlocker <$> Map.toList exprs0)
+    initialBlockers = Data.List.foldl' (<>) mempty (singleBlocker <$> Map.toList exprs0)
     initialState = SolverState initialModel initialBlockers exprs0
 
     go :: SolverState f k -> [Model f]
