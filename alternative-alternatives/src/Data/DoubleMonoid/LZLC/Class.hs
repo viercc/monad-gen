@@ -4,17 +4,18 @@ import Data.DoubleMonoid.Class
 import Data.DoubleMonoid.LZ.Class
 import Data.List.ZList
 
--- | 'DoubleMonoid' with left zero ('DMLZ') and left catch
+-- | 'DoubleMonoid' with /left zero/ ('DMLZ') and
+--   additional /left catch/ property: 'one' is right-absorbing element
+--   for additive monoid.
 --
 -- @
 -- -- left catch
--- one \/+\/ x === one
+-- one \<+\> x === one
 -- @
 class DMLZ a => DMLZLC a where
   {-# MINIMAL #-}
 
-  -- | @('zero', '/+/')@ is a monoid with a right zero element @one@.
-  --   This can be stated as @msumZ@ is a @ZList@ algebra.
+  -- | @msumZ@ is a @ZList@ algebra.
   -- 
   -- @
   -- msumZ . fmap msumZ === msumZ . 'Control.Monad.join'
@@ -26,7 +27,7 @@ class DMLZ a => DMLZLC a where
   -- @
   -- msumZ 'Nend' === 'zero'
   -- msumZ 'Zend' === 'one'
-  -- mprodZ ('Cons' a 'Nend') === a
+  -- msumZ (pure a) = msumZ ('Cons' a 'Nend') === a
   -- @
   msumZ :: ZList a -> a
   msumZ = msum . go

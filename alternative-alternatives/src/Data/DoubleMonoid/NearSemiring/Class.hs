@@ -10,7 +10,7 @@ import Data.DoubleMonoid.LZ.Class (DMLZ)
 -- @
 -- -- Left distribution
 -- -- (it is called "right distributivity" more commonly)
--- (x \/+\/ y) \/*\/ z === (x \/*\/ z) \/+\/ (y \/*\/ z)
+-- (x <+> y) <> z === (x <> z) <+> (y <> z)
 -- @
 class DMLZ a => NearSemiring a
 

@@ -23,6 +23,7 @@ import qualified Data.List.ZList.Long as ZL'
 
 import Data.DoubleMonoid.Class
 import Data.DoubleMonoid.LZ.Class
+import Data.Semigroup (Semigroup(..))
 
 {-
 
@@ -94,13 +95,17 @@ viewProd One = Nend
 viewProd (SumOf xs) = Cons (FactorSum xs) Nend
 viewProd (ProdOf xs) = ZL'.toZList xs
 
+instance Semigroup (Free a) where
+  sconcat = mprodZ . ZL.fromList . toList
+
+instance Monoid (Free a) where
+  mempty = One
+
 instance DoubleMonoid (Free a) where
   msum xs = case xs >>= viewSum of
     [] -> Zero
     [x] -> injectSummand x
     (x0:x1:rest) -> SumOf (TwoOrMore x0 x1 rest)
-  
-  mprod = mprodZ . ZL.fromList
 
 instance DMLZ (Free a) where
   mprodZ xs = case xs >>= viewProd of

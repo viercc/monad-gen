@@ -7,18 +7,15 @@ import Data.DoubleMonoid.Class
 import Data.DoubleMonoid.LZ.Class
 import Data.DoubleMonoid.NearSemiring.Class
 
--- | The free 'NearSemiring'
+-- | The free 'NearSemiring'.
 newtype Forest a = SumOf [Tree a]
    deriving (Show, Eq, Ord, Functor)
 
 data Tree a = One | a :/*/ Forest a
    deriving (Show, Eq, Ord, Functor)
 
-instance DoubleMonoid (Forest a) where
-  zero = SumOf []
-  one = SumOf [One]
-  SumOf xs /+/ SumOf ys = SumOf (xs ++ ys)
-  (/*/) = multFF
+instance Semigroup (Forest a) where
+  (<>) = multFF
     where
       multFF :: Forest a -> Forest a -> Forest a
       multFF (SumOf xs) y = SumOf $ xs >>= (`multTF` y)
@@ -26,6 +23,13 @@ instance DoubleMonoid (Forest a) where
       multTF :: Tree a -> Forest a -> [Tree a]
       multTF One (SumOf ys) = ys
       multTF (a :/*/ x) y = [ a :/*/ multFF x y ]
+
+instance Monoid (Forest a) where
+  mempty = SumOf [One]
+
+instance DoubleMonoid (Forest a) where
+  zero = SumOf []
+  SumOf xs <+> SumOf ys = SumOf (xs ++ ys)
 
 instance DMLZ (Forest a)
 instance NearSemiring (Forest a)
@@ -35,7 +39,7 @@ interpret f = go
   where
     go (SumOf xs) = msum (go' <$> xs)
     go' One = one
-    go' (a :/*/ x) = f a /*/ go x
+    go' (a :/*/ x) = f a <> go x
 
 instance Applicative Forest where
   pure a = SumOf [a :/*/ one]

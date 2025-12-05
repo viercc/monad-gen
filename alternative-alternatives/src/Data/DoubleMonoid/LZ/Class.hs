@@ -2,18 +2,18 @@ module Data.DoubleMonoid.LZ.Class where
 
 import Data.DoubleMonoid.Class
 
-import Data.List.ZList
+import Data.List.ZList ( ZList(..) )
 
--- | Double monoid with left zero property
+-- | Double monoid with additional property (/left zero/):
+--   'zero' is a right-absorbing element.
 --
 -- @
--- zero /*/ x = zero
+-- zero <> x = zero
 -- @
 class DoubleMonoid a => DMLZ a where
   {-# MINIMAL #-}
 
-  -- | @('one', '/*/')@ is a monoid with one right zero element 'zero'.
-  --   This can be stated as @mprodZ@ is a @ZList@ algebra.
+  -- | @mprodZ@ is a @ZList@ algebra.
   -- 
   -- @
   -- mprodZ . fmap mprodZ === mprodZ . 'Control.Monad.join'
@@ -25,7 +25,7 @@ class DoubleMonoid a => DMLZ a where
   -- @
   -- mprodZ 'Nend' === 'one'
   -- mprodZ 'Zend' === 'zero'
-  -- mprodZ ('Cons' a 'Nend') === a
+  -- mprodZ (pure a) = mprodZ ('Cons' a 'Nend') === a
   -- @
   mprodZ :: ZList a -> a
   mprodZ = mprod . go

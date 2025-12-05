@@ -33,6 +33,7 @@ import Data.Functor.Classes (Show1 (..), showsUnaryWith, showsPrec1)
 import Text.Show (showListWith)
 
 import Data.DoubleMonoid.Class
+import Data.Semigroup (Semigroup(..))
 
 {-
 
@@ -149,8 +150,14 @@ viewSum x = case runUnite (runFree x) of
   Right (Coproduct (Left _))   -> [x] 
   Right (Coproduct (Right xs)) -> Free <$> unwrapMutual2 xs
 
+instance Semigroup (Free a) where
+  x <> y = prod [x,y]
+  sconcat = prod . toList
+
+instance Monoid (Free a) where
+  mempty = One
+
 instance DoubleMonoid (Free a) where
-  mprod = Prod
   msum = Sum
 
 -- | Every 'DoubleMonoid a' is an algebra of 'Free'

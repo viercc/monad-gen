@@ -2,125 +2,142 @@
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE RoleAnnotations #-}
+{-# LANGUAGE TypeApplications #-}
 module Data.DoubleMonoid.Class (
   DoubleMonoid(..),
+  one, mprod, mpow
 ) where
 
-import Data.Monoid (Dual(..))
-
 import Data.Ix (Ix)
-import Data.Foldable (foldl')
 import Control.Applicative ((<|>))
+import Numeric.Natural (Natural)
+import Data.Semigroup
+import Data.Coerce (Coercible, coerce)
 
--- | @DoubleMonoid@ is a type with two independent monoid structures.
+-- | @DoubleMonoid@ is a @Monoid@ with another additional monoid structure.
 --
--- The two monoids are named \"additive\" @(zero, \/+\/)@ and
--- \"multiplicative\" @(one, \/*\/)@ respectively. But unlike 'Num' or
--- (semi)ring structures, @DoubleMonoid@ assume no relation between the two
--- monoids like distributivity.
+-- The additional monoid is called the \"additive\" monoid and operators are named additively @('zero', '\<+\>')@.
+-- The original monoid is referred as \"multiplicative\" monoid.
+-- 
+-- Contrary to what the names suggest,
+-- @DoubleMonoid@ do not impose laws about relation between the two
+-- monoids like distributivity (like @Num@ do.)
 -- 
 -- ==== Laws
 --
 -- Monoid laws of \"additive\" set of operators:
 --
 -- @
--- (x \/+\/ y) \/+\/ z === x \/+\/ (y \/+\/ z)
--- zero \/+\/ x === x
--- x \/+\/ zero === x
--- @
---
--- Monoid laws of \"multiplicative\" set of operators:
---
--- @
--- (x \/*\/ y) \/*\/ z === x \/*\/ (y \/*\/ z)
--- one \/*\/ x === x
--- x \/*\/ one === x
+-- (x \<+\> y) \<+\> z === x \<+\> (y \<+\> z)
+-- zero \<+\> x === x
+-- x \<+\> zero === x
 -- @
 -- 
 -- ==== Relation to other known algebraic structures
 -- 
--- Of course, @DoubleMonoid@ can be seen as @Monoid@ in two ways.
--- Other than that, near-semiring (TODO:url) is a subclass of DoubleMonoid
+-- Near-semiring is a subclass of DoubleMonoid
 -- which additionally satisfy \"left distribution law\" (which confusingly have
 -- another name \"right distributivity\").
 --
 -- @
 -- -- in near-semiring
--- zero \/*\/ x  === zero
--- (x \/+\/ y) \/*\/ z === (x \/*\/ z) \/+\/ (y \/*\/ z)
+-- zero <> x  === zero
+-- (x \<+\> y) <> z === (x <> z) \<+\> (y <> z)
 -- @
 
-class DoubleMonoid a where
-  {-# MINIMAL one, (/*/), zero, (/+/) | mprod, msum #-}
-
-  -- | The unit of \"multiplicative\" monoid.
-  one :: a
-  one = mprod []
-
-  -- | The binary operator of \"multiplicative\" monoid.
-  (/*/) :: a -> a -> a
-  x /*/ y = mprod [x,y]
+class Monoid a => DoubleMonoid a where
+  {-# MINIMAL zero, (<+>) | msum #-}
 
   -- | The unit of \"additive\" monoid.
   zero :: a
   zero = msum []
 
   -- | The binary operator of \"additive\" monoid.
-  (/+/) :: a -> a -> a
-  x /+/ y = msum [x,y]
+  (<+>) :: a -> a -> a
+  x <+> y = msum [x,y]
   
-  -- | Fold a list using '/*/' monoid.
-  mprod :: [a] -> a
-  mprod = foldr (/*/) one
-  
-  -- | Fold a list using '/+/' monoid.
+  -- | Fold a list using '<+>' monoid.
   msum :: [a] -> a
-  msum = foldr (/+/) zero
+  msum = foldr (<+>) zero
 
-infixr 5 /+/
+  -- | @n@-fold repeated addition.
+  --
+  -- Beware that 'stimes' from @Data.Semigroup@ module is for
+  -- the \"multiplicative\" monoid and different to 'mtimes'.
+  mtimes :: Natural -> a -> a
+  mtimes n = getAdditive . stimesMonoid n . Additive
 
-infixr 6 /*/
+infixr 5 <+>
+
+-- | Synonym of 'mempty' but renamed to emphasize it is for \"multiplicative\" monoid.
+one :: DoubleMonoid a => a
+one = mempty
+
+-- | Synonym of 'mconcat' but renamed to emphasize it is for \"multiplicative\" monoid.
+mprod :: DoubleMonoid a => [a] -> a
+mprod = mconcat
+
+-- | Type-restricted synonym of 'mtimesDefault' but renamed to emphasize it is for \"multiplicative\" monoid.
+mpow :: (DoubleMonoid a) => Natural -> a -> a
+mpow = mtimesDefault
 
 deriving newtype instance DoubleMonoid a => DoubleMonoid (Dual a)
 
--- | Use the usual '(+)' and '(*)' operators of 'Num' class
---   as DoubleMonoid 
+-- | Make a @DoubleMonoid@ by specifying two monoid
+--   sharing the same runtime representation ('Coercible').
+--
+--   The first and the second arguments specify \"multiplicative\" and \"additive\"
+--   monoids in this order.
+newtype DoubleMonoidVia m a = DoubleMonoidVia m
+  deriving newtype (Semigroup, Monoid)
+
+instance (Monoid m, Coercible m a, Monoid a) => DoubleMonoid (DoubleMonoidVia m a) where
+  zero = coerce (mempty @a)
+  (<+>) = coerce (mappend @a)
+  mtimes n = coerce (mtimesDefault @Natural @a n)
+
+-- | Turn a @DoubleMonoid@ to the usual @Monoid@ of the additive monoid,
+--   forgetting multiplicative one.
+--
+--   (Note: you don't need @Multiplicative@ newtype wrapper, as
+--   the @DoubleMonoid@ class inherits its multiplication from its superclass @Monoid@.)
+newtype Additive m = Additive { getAdditive :: m }
+
+instance (DoubleMonoid m) => Semigroup (Additive m) where
+  (<>) = coerce ((<+>) @m)
+  stimes n
+    | n < 0 = error "negative exponent"
+    | otherwise = coerce (mtimes @m (fromIntegral n)) 
+
+instance (DoubleMonoid m) => Monoid (Additive m) where
+  mempty = coerce (zero @m)
+
+-- | @AsNum a ≅ DoubleMonoidVia (Product a) (Sum a)@
 newtype AsNum a = AsNum a
   deriving stock (Eq, Ord)
   deriving newtype
     (Show, Read,
      Enum, Bounded, Ix,
      Num, Real, Integral)
-
-instance Num a => DoubleMonoid (AsNum a) where
-  zero = 0
-  (/+/) = (+)
-  one = 1
-  (/*/) = (*)
-
-  msum = foldl' (+) 0
-  mprod = foldl' (*) 1
+  deriving (Semigroup, Monoid, DoubleMonoid) via (DoubleMonoidVia (Product a) (Sum a))
 
 -- | Trivial
 instance DoubleMonoid () where
   msum _ = ()
-  mprod _ = ()
+  mtimes _ _ = ()
 
--- | Product
+-- | Direct product
 instance (DoubleMonoid a, DoubleMonoid b) => DoubleMonoid (a,b) where
   msum xys = let (xs, ys) = unzip xys in (msum xs, msum ys)
-  mprod xys = let (xs, ys) = unzip xys in (mprod xs, mprod ys)
+  mtimes n (x,y) = (mtimes n x, mtimes n y)
 
--- | @('/+/') = ('<|>'); ('/*/') = liftA2 ('<>')@
+-- | @('<+>') = ('<|>')@
 instance Monoid a => DoubleMonoid (Maybe a) where
   zero = Nothing
-  one = Just mempty
-  (/+/) = (<|>)
-  (/*/) = liftA2 (<>)
+  (<+>) = (<|>)
 
--- | @('/+/') = ('++'); ('/*/') = liftA2 ('<>')@
+-- | @('<+>') = ('++')@
 instance Monoid a => DoubleMonoid [a] where
   zero = []
-  one = [mempty]
-  (/+/) = (<|>)
-  (/*/) = liftA2 (<>)
+  (<+>) = (<|>)

@@ -21,6 +21,8 @@ import qualified Data.List.ZList.Long as ZL'
 import Data.DoubleMonoid.Class
 import Data.DoubleMonoid.LZ.Class
 import Data.DoubleMonoid.LZLC.Class
+import Data.Semigroup (Semigroup(..))
+import Data.Foldable (Foldable(toList))
 
 {-
 
@@ -99,10 +101,14 @@ viewProd One = Nend
 viewProd (SumOf xs) = pure (FactorSum xs)
 viewProd (ProdOf xs) = ZL'.toZList xs
 
+instance Semigroup (Free a) where
+  sconcat = mprodZ . ZL.fromList . toList
+
+instance Monoid (Free a) where
+  mempty = One
 
 instance DoubleMonoid (Free a) where
   msum = msumZ . ZL.fromList
-  mprod = mprodZ . ZL.fromList
 
 instance DMLZ (Free a) where
   mprodZ xs = case xs >>= viewProd of
