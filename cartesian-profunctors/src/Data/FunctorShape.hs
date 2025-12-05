@@ -5,22 +5,27 @@
 {-# LANGUAGE RoleAnnotations #-}
 {-# LANGUAGE ConstraintKinds #-}
 module Data.FunctorShape(
-    Shape(), pattern Shape,
-    mapShape, unShape,
-    Ignored(..), WeakEq, WeakOrd
+    Shape(Shape),
+    mapShape,
+    lengthShape, nullShape,
+
+    Ignored(), ignoredValue, WeakEq, WeakOrd
 ) where
 
 import qualified Unsafe.Coerce (unsafeCoerce)
 import Data.Functor.Classes (showsUnaryWith)
 
-import Data.PTraversable
-import Data.Finitary.Enum
-import Data.Profunctor.Cartesian
+import Data.PTraversable ( PTraversable(..) )
+import Data.Finitary.Enum ( Enum(..) )
+import Data.Profunctor.Cartesian ( Cartesian(proUnit) )
 import Prelude hiding (Enum)
 import Data.Profunctor.FinFn (withFinFn)
 
-newtype Shape f = UnsafeMkShape (f Ignored)
+newtype Shape f = UnsafeMkShape { unsafeUnwrapShape :: f Ignored }
 type role Shape representational
+
+unsafeForget :: f a -> f Ignored
+unsafeForget = Unsafe.Coerce.unsafeCoerce
 
 type WeakEq f = Eq (f Ignored)
 
@@ -37,24 +42,35 @@ instance (Show (f Ignored)) => Show (Shape f) where
     showsPrec p (UnsafeMkShape fa) = showsUnaryWith showsPrec "Shape" p fa
 
 instance PTraversable f => Enum (Shape f) where
-    enumeration = ptraverseWith unShape Shape proUnit
+    enumeration = ptraverseWith unsafeUnwrapShape Shape proUnit
     withEnum = withFinFn enumeration
+
+instance Applicative f => Semigroup (Shape f) where
+    UnsafeMkShape fa <> UnsafeMkShape fb = UnsafeMkShape (fa *> fb)
+
+instance Applicative f => Monoid (Shape f) where
+    mempty = UnsafeMkShape (pure ignoredValue)
 
 {-# COMPLETE Shape #-}
 pattern Shape :: f a -> Shape f
 pattern Shape x <- UnsafeMkShape x
-  where Shape x = UnsafeMkShape (forget x)
+  where Shape x = UnsafeMkShape (unsafeForget x)
 
 mapShape :: (forall a. f a -> g a) -> Shape f -> Shape g
 mapShape fg (Shape f) = Shape (fg f)
 
-unShape :: Shape f -> f Ignored
-unShape (UnsafeMkShape f) = f
+lengthShape :: Foldable f => Shape f -> Int
+lengthShape = length . unsafeUnwrapShape
+
+nullShape :: Foldable f => Shape f -> Bool
+nullShape = null . unsafeUnwrapShape
+
+-- * Type for ignored values
 
 data Ignored = Ignored
 
-forget :: f a -> f Ignored
-forget = Unsafe.Coerce.unsafeCoerce
+ignoredValue :: Ignored
+ignoredValue = Ignored
 
 instance Eq Ignored where
     _ == _ = True

@@ -93,13 +93,13 @@ data ApplicativeData f = ApplicativeData
 genApplicativeData :: PTraversable f => [ApplicativeData f]
 genApplicativeData = ApplicativeData env <$> genRawApplicativeData sig
   where
-    (env, sig) = makeEnv (length . unShape)
+    (env, sig) = makeEnv lengthShape
 
 genApplicativeDataFrom :: (Foldable f) => MonoidData (Shape f) -> [ApplicativeData f]
 genApplicativeDataFrom monData = ApplicativeData env <$> genRawApplicativeDataFrom sig mon
   where
     env = _elemTable monData
-    sig = length . unShape <$> env
+    sig = lengthShape <$> env
     mon = _rawMonoidData monData
 
 -- * Raw applicatives
