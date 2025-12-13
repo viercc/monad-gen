@@ -16,5 +16,3 @@ class DMLZ a => NearSemiring a
 
 instance NearSemiring ()
 instance (NearSemiring a, NearSemiring b) => NearSemiring (a,b)
-instance Monoid a => NearSemiring (Maybe a)
-instance Monoid a => NearSemiring [a]

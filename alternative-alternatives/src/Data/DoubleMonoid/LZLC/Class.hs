@@ -38,4 +38,3 @@ class DMLZ a => DMLZLC a where
 
 instance DMLZLC ()
 instance (DMLZLC a, DMLZLC b) => DMLZLC (a,b)
-instance Monoid a => DMLZLC (Maybe a)

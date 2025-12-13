@@ -36,5 +36,3 @@ class DoubleMonoid a => DMLZ a where
 
 instance DMLZ ()
 instance (DMLZ a, DMLZ b) => DMLZ (a,b)
-instance Monoid a => DMLZ (Maybe a)
-instance Monoid a => DMLZ [a]

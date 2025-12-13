@@ -10,10 +10,11 @@ module Data.DoubleMonoid.Class (
 ) where
 
 import Data.Ix (Ix)
-import Control.Applicative ((<|>))
+import Control.Applicative ((<|>), Alternative (..))
 import Numeric.Natural (Natural)
 import Data.Semigroup
 import Data.Coerce (Coercible, coerce)
+import Data.Monoid (Ap)
 
 -- | @DoubleMonoid@ is a @Monoid@ with another additional monoid structure.
 --
@@ -132,12 +133,7 @@ instance (DoubleMonoid a, DoubleMonoid b) => DoubleMonoid (a,b) where
   msum xys = let (xs, ys) = unzip xys in (msum xs, msum ys)
   mtimes n (x,y) = (mtimes n x, mtimes n y)
 
--- | @('<+>') = ('<|>')@
-instance Monoid a => DoubleMonoid (Maybe a) where
-  zero = Nothing
-  (<+>) = (<|>)
-
--- | @('<+>') = ('++')@
-instance Monoid a => DoubleMonoid [a] where
-  zero = []
+-- | > one = pure mempty; (<>) = liftA2 (<>); zero = empty; ('<+>') = ('<|>')
+instance (Alternative f, Monoid a) => DoubleMonoid (Ap f a) where
+  zero = empty
   (<+>) = (<|>)
