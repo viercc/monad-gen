@@ -2,7 +2,7 @@
 
 The other free `Alternative`.
 
-There are the implementation of the free `Alternative` in "free" package.
+There is the implementation of the free `Alternative` in "free" package.
 
 - [Control.Alternative.Free](https://hackage.haskell.org/package/free-5.2/docs/Control-Alternative-Free.html)
 
