@@ -1,7 +1,7 @@
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE GADTSyntax #-}
 {-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE DeriveFunctor #-}
 
 -- | Free alternative (with /left zero/ + /left catch/).
 --
@@ -9,18 +9,18 @@
 -- but there are two major ones.
 --
 -- For an instance of @(Alternative f)@, both laws have these in common.
--- 
+--
 -- - Inherited laws from 'Applicative'
 -- - @('empty', '<|>')@ forms monoid on @f a@ for any type @a@.
 -- - /Left zero/ law: @'empty' '<*>' x === 'empty'@.
--- 
+--
 -- Candidate #1 of the Alternative law have /Left distribution/ law.
 --
 -- @
 -- -- Left distribution
 -- (x '<|>' y) '<*>' z === (x \<*\> z) \<|\> (y \<*\> z)
 -- @
--- 
+--
 -- Another candidate #2 have /Left catch/ law instead.
 --
 -- @
@@ -40,8 +40,7 @@
 -- This module provides the free alternative #2.
 module Control.Alternative.Free.LZLC where
 
-import Control.Applicative (Alternative(..))
-
+import Control.Applicative (Alternative (..))
 import qualified Control.Applicative.Free.Zero as AZ
 
 type Az = AZ.Free
@@ -51,33 +50,32 @@ data Free f a where
   Zero :: Free f a
   Lift :: f a -> Free f a
   SumOf :: Sz' (SummandF f) a -> Free f a
-  ApOf  :: Az' (FactorF f) a -> Free f a
-
-  deriving Functor
+  ApOf :: Az' (FactorF f) a -> Free f a
+  deriving (Functor)
 
 data SummandF f a where
   SummandLift :: f a -> SummandF f a
   SummandAp :: Az' (FactorF f) a -> SummandF f a
-  deriving Functor
+  deriving (Functor)
 
 data FactorF f a where
   FactorLift :: f a -> FactorF f a
   FactorSum :: Sz' (SummandF f) a -> FactorF f a
-  deriving Functor
+  deriving (Functor)
 
-data Sz f a = Nend | Zend a | Cons (f a) (Sz f a)
-    deriving Functor
+data Sz f a = Nil | Zee a | Cons (f a) (Sz f a)
+  deriving (Functor)
 
 instance Semigroup (Sz f a) where
-  Nend <> y = y
-  Zend a <> _ = Zend a
+  Nil <> y = y
+  Zee a <> _ = Zee a
   Cons x xs <> y = Cons x (xs <> y)
 
 instance Monoid (Sz f a) where
-  mempty = Nend
+  mempty = Nil
 
 data Sz' f a = SzFz (f a) a | SzLong (f a) (f a) (Sz f a)
-    deriving Functor
+  deriving (Functor)
 
 data Az' f a where
   AzFz :: f a -> Az' f b
@@ -96,13 +94,13 @@ injectFactor (FactorLift fa) = Lift fa
 injectFactor (FactorSum fas) = SumOf fas
 
 viewSum :: Free f a -> Sz (SummandF f) a
-viewSum (Pure a) = Zend a
-viewSum Zero = Nend
-viewSum (Lift fa) = Cons (SummandLift fa) Nend
+viewSum (Pure a) = Zee a
+viewSum Zero = Nil
+viewSum (Lift fa) = Cons (SummandLift fa) Nil
 viewSum (SumOf fas) = case fas of
-  SzFz fa a -> Cons fa (Zend a)
+  SzFz fa a -> Cons fa (Zee a)
   SzLong f1 f2 rest -> Cons f1 (Cons f2 rest)
-viewSum (ApOf fas) = Cons (SummandAp fas) Nend
+viewSum (ApOf fas) = Cons (SummandAp fas) Nil
 
 viewAp :: Free f a -> Az (FactorF f) a
 viewAp (Pure a) = AZ.Pure a
@@ -113,7 +111,7 @@ viewAp (ApOf fas) = case fas of
   AzFz fa -> AZ.Ap fa AZ.Zero
   AzLong fa fb mk -> AZ.Ap fa (AZ.Ap fb mk)
 
-instance Functor f => Applicative (Free f) where
+instance (Functor f) => Applicative (Free f) where
   pure = Pure
   x <*> y = case viewAp x <*> viewAp y of
     AZ.Pure b -> Pure b
@@ -122,11 +120,11 @@ instance Functor f => Applicative (Free f) where
     AZ.Ap z AZ.Zero -> ApOf $ AzFz z
     AZ.Ap z1 (AZ.Ap z2 r) -> ApOf $ AzLong z1 z2 r
 
-instance Functor f => Alternative (Free f) where
+instance (Functor f) => Alternative (Free f) where
   empty = Zero
   x <|> y = case viewSum x <> viewSum y of
-    Nend -> Zero
-    Zend b -> Pure b
-    Cons z Nend -> injectSummand z
-    Cons z (Zend b) -> SumOf $ SzFz z b
+    Nil -> Zero
+    Zee b -> Pure b
+    Cons z Nil -> injectSummand z
+    Cons z (Zee b) -> SumOf $ SzFz z b
     Cons z1 (Cons z2 r) -> SumOf $ SzLong z1 z2 r

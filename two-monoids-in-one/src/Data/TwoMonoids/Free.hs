@@ -1,39 +1,46 @@
+{-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE PatternSynonyms #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE ViewPatterns #-}
 
 -- | Always import this module qualified!
-module Data.DoubleMonoid.Free(
-  Free(
-    Free,
-    runFree,
-    Lit, Zero, One, (:/+/), (:/*/),
-    Sum, Prod
-  ),
-  lit, sum, viewSum, prod, viewProd,
-  interpret
-) where
+module Data.TwoMonoids.Free
+  ( Free
+      ( Free,
+        runFree,
+        Lit,
+        Zero,
+        One,
+        (:/+/),
+        (:/*/),
+        Sum,
+        Prod
+      ),
+    lit,
+    sum,
+    viewSum,
+    prod,
+    viewProd,
+    interpret,
+  )
+where
 
-import Prelude hiding (sum)
-import Data.Foldable (toList)
-import Data.Bifunctor (Bifunctor(..))
 import Control.Monad (join)
-
-import qualified Data.List.NotOne as NotOne
-import Data.List.NotOne (NotOne(), notOne)
-
-import Control.Monad.Isolated
 import Control.Monad.Coproduct
-import Data.Functor.Classes (Show1 (..), showsUnaryWith, showsPrec1)
+import Control.Monad.Isolated
+import Data.Bifunctor (Bifunctor (..))
+import Data.Foldable (toList)
+import Data.Functor.Classes (Show1 (..), showsPrec1, showsUnaryWith)
+import Data.List.NotOne (NotOne (), notOne)
+import qualified Data.List.NotOne as NotOne
+import Data.Semigroup (Semigroup (..))
+import Data.TwoMonoids.Class
 import Text.Show (showListWith)
-
-import Data.DoubleMonoid.Class
-import Data.Semigroup (Semigroup(..))
+import Prelude hiding (sum)
 
 {-
 
@@ -55,17 +62,17 @@ two copies of List = [], the free monoid monad.
 
 -- | The free 'DobuleMonoid'.
 newtype Free a = Free
-  { runFree :: Unite (NotOne :+ NotOne) a}
+  {runFree :: Unite (NotOne :+ NotOne) a}
   deriving stock (Eq, Functor, Foldable, Traversable)
   deriving newtype (Applicative, Monad)
 
-unwrapMutual1 :: Foldable f => Mutual Either f g a -> [Unite (f :+ g) a]
+unwrapMutual1 :: (Foldable f) => Mutual Either f g a -> [Unite (f :+ g) a]
 unwrapMutual1 = map (Unite . second (Coproduct . Right)) . toList . runMutual
 
-unwrapMutual2 :: Foldable g => Mutual Either g f a -> [Unite (f :+ g) a]
+unwrapMutual2 :: (Foldable g) => Mutual Either g f a -> [Unite (f :+ g) a]
 unwrapMutual2 = map (Unite . second (Coproduct . Left)) . toList . runMutual
 
-instance Show a => Show (Free a) where
+instance (Show a) => Show (Free a) where
   showsPrec = showsPrec1
 
 instance Show1 Free where
@@ -78,7 +85,7 @@ instance Show1 Free where
           [] -> ("One" ++)
           _ -> showsUnaryWith goList "Prod" p xs'
         _ -> showsUnaryWith goList "Sum" p xs
-      
+
       goList _ = showListWith (go 0)
 
 pattern Lit :: a -> Free a
@@ -91,8 +98,9 @@ pattern One :: Free a
 pattern One = Free (Unite (Right (Coproduct (Left (Mutual NotOne.Zero)))))
 
 pattern (:/+/) :: Free a -> Free a -> Free a
-pattern x :/+/ y <- (viewSum2 -> Just (x,y)) where
-  x :/+/ y = sum [x,y]
+pattern x :/+/ y <- (viewSum2 -> Just (x, y))
+  where
+    x :/+/ y = sum [x, y]
 
 viewSum2 :: Free a -> Maybe (Free a, Free a)
 viewSum2 x = case viewSum x of
@@ -100,12 +108,14 @@ viewSum2 x = case viewSum x of
   _ -> Nothing
 
 pattern Prod :: [Free a] -> Free a
-pattern Prod xs <- (viewProd -> xs) where
-  Prod xs = prod xs
+pattern Prod xs <- (viewProd -> xs)
+  where
+    Prod xs = prod xs
 
 pattern (:/*/) :: Free a -> Free a -> Free a
-pattern x :/*/ y <- (viewProd2 -> Just (x,y)) where
-  x :/*/ y = prod [x,y]
+pattern x :/*/ y <- (viewProd2 -> Just (x, y))
+  where
+    x :/*/ y = prod [x, y]
 
 viewProd2 :: Free a -> Maybe (Free a, Free a)
 viewProd2 x = case viewProd x of
@@ -113,11 +123,14 @@ viewProd2 x = case viewProd x of
   _ -> Nothing
 
 pattern Sum :: [Free a] -> Free a
-pattern Sum xs <- (viewSum -> xs) where
-  Sum xs = sum xs
+pattern Sum xs <- (viewSum -> xs)
+  where
+    Sum xs = sum xs
 
 {-# COMPLETE Prod #-}
+
 {-# COMPLETE Sum #-}
+
 {-# COMPLETE Lit, Zero, One, (:/+/), (:/*/) #-}
 
 -- | Literal
@@ -147,25 +160,25 @@ viewProd x = case runUnite (runFree x) of
 viewSum :: Free a -> [Free a]
 viewSum x = case runUnite (runFree x) of
   Left a -> [pure a]
-  Right (Coproduct (Left _))   -> [x] 
+  Right (Coproduct (Left _)) -> [x]
   Right (Coproduct (Right xs)) -> Free <$> unwrapMutual2 xs
 
 instance Semigroup (Free a) where
-  x <> y = prod [x,y]
+  x <> y = prod [x, y]
   sconcat = prod . toList
 
 instance Monoid (Free a) where
   mempty = One
 
-instance DoubleMonoid (Free a) where
+instance TwoMonoids (Free a) where
   msum = Sum
 
--- | Every 'DoubleMonoid a' is an algebra of 'Free'
--- 
+-- | Every 'TwoMonoids a' is an algebra of 'Free'
+--
 -- @
 -- interpret f . join === interpret (interpret f)
 -- @
-interpret :: DoubleMonoid b => (a -> b) -> Free a -> b
+interpret :: (TwoMonoids b) => (a -> b) -> Free a -> b
 interpret f = go
   where
     go (Lit a) = f a

@@ -1,18 +1,19 @@
-module Data.DoubleMonoid.NearSemiring.Class where
+module Data.TwoMonoids.NearSemiring.Class where
 
-import Data.DoubleMonoid.LZ.Class (DMLZ)
+import Data.TwoMonoids.LZ.Class (DMLZ)
 
 -- | 'NearSemiring' is law-only subclass of
---   'Data.DoubleMonoid.Class.DoubleMonoid'
+--   'Data.TwoMonoids.Class.TwoMonoids'
 --   with additional /left zero/ law (hence 'DMLZ') and
 --   /left distribution/ law.
--- 
+--
 -- @
 -- -- Left distribution
 -- -- (it is called "right distributivity" more commonly)
 -- (x <+> y) <> z === (x <> z) <+> (y <> z)
 -- @
-class DMLZ a => NearSemiring a
+class (DMLZ a) => NearSemiring a
 
 instance NearSemiring ()
-instance (NearSemiring a, NearSemiring b) => NearSemiring (a,b)
+
+instance (NearSemiring a, NearSemiring b) => NearSemiring (a, b)

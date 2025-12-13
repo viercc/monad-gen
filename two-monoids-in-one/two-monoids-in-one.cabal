@@ -1,5 +1,5 @@
 cabal-version:      3.0
-name:               alternative-alternatives
+name:               two-monoids-in-one
 version:            0.1.0.0
 -- synopsis:
 -- description:
@@ -19,10 +19,20 @@ common warnings
 library
     import:           warnings
     exposed-modules:
-      Control.Applicative.Free.Zero,
-      Control.Alternative.Free.LZLC,
+      Data.TwoMonoids.Class,
+      Data.TwoMonoids.Free,
+      Data.TwoMonoids.LZ.Class,
+      Data.TwoMonoids.LZ.Free,
+      Data.TwoMonoids.LZLC.Class,
+      Data.TwoMonoids.LZLC.Free,
+      Data.TwoMonoids.NearSemiring.Class,
+      Data.TwoMonoids.NearSemiring.Free,
+
+      Data.List.ZList,
+      Data.List.ZList.Long
     build-depends:
-      base >=4.18
+      base >=4.18,
+      monad-ideals >= 0.1.1.0,
     hs-source-dirs:   src
     default-language: Haskell2010
 

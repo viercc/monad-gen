@@ -1,18 +1,18 @@
 {-# LANGUAGE DeriveFunctor #-}
-module Data.DoubleMonoid.NearSemiring.Free where
+
+module Data.TwoMonoids.NearSemiring.Free where
 
 import Control.Monad (ap)
-
-import Data.DoubleMonoid.Class
-import Data.DoubleMonoid.LZ.Class
-import Data.DoubleMonoid.NearSemiring.Class
+import Data.TwoMonoids.Class
+import Data.TwoMonoids.LZ.Class
+import Data.TwoMonoids.NearSemiring.Class
 
 -- | The free 'NearSemiring'.
 newtype Forest a = SumOf [Tree a]
-   deriving (Show, Eq, Ord, Functor)
+  deriving (Show, Eq, Ord, Functor)
 
 data Tree a = One | a :/*/ Forest a
-   deriving (Show, Eq, Ord, Functor)
+  deriving (Show, Eq, Ord, Functor)
 
 instance Semigroup (Forest a) where
   (<>) = multFF
@@ -22,19 +22,20 @@ instance Semigroup (Forest a) where
 
       multTF :: Tree a -> Forest a -> [Tree a]
       multTF One (SumOf ys) = ys
-      multTF (a :/*/ x) y = [ a :/*/ multFF x y ]
+      multTF (a :/*/ x) y = [a :/*/ multFF x y]
 
 instance Monoid (Forest a) where
   mempty = SumOf [One]
 
-instance DoubleMonoid (Forest a) where
+instance TwoMonoids (Forest a) where
   zero = SumOf []
   SumOf xs <+> SumOf ys = SumOf (xs ++ ys)
 
 instance DMLZ (Forest a)
+
 instance NearSemiring (Forest a)
 
-interpret :: NearSemiring b => (a -> b) -> Forest a -> b
+interpret :: (NearSemiring b) => (a -> b) -> Forest a -> b
 interpret f = go
   where
     go (SumOf xs) = msum (go' <$> xs)
