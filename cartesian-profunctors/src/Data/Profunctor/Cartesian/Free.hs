@@ -20,7 +20,15 @@ module Data.Profunctor.Cartesian.Free(
     foldFreeCocartesian,
 
     ForgetCartesian(..),
-    ForgetCocartesian(..)
+    ForgetCocartesian(..),
+
+    -- * Utility functions handling product @(,)@ and coproduct @Either@ of
+    --   Haskell types
+
+    assocTup, unassocTup,
+    assocEither, unassocEither,
+    distL, undistL,
+    distR, undistR
 ) where
 
 import Data.Void (Void, absurd)
