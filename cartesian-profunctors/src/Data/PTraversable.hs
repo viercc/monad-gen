@@ -133,7 +133,7 @@ compare1Default = liftCompare' compare
 liftCompareDefault :: (PTraversable t) => (a -> b -> Ordering) -> t a -> t b -> Ordering
 liftCompareDefault cmp ta tb = cmpEithers (Left <$> ta) (Right <$> tb)
   where
-    cmpEithers = getComparison . coenum1 $ Comparison cmp'
+    cmpEithers = liftCompare' cmp'
     cmp' (Left _) (Left _) = error "liftCompareDefault: should be unreachable here"
     cmp' (Right _) (Right _) = error "liftCompareDefault: should be unreachable here"
     cmp' (Left a) (Right b) = cmp a b

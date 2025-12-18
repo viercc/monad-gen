@@ -39,6 +39,23 @@ import Data.Functor.Contravariant (Contravariant(..))
 import Data.Profunctor (Profunctor(..))
 
 -- | @Enum x@ is @Finitary x@ but you can't get @Cardinality n@ at type level.
+--
+-- ==== Laws
+-- 
+-- The two functions @f :: x -> Finite n@ and @g :: Finite n -> x@
+-- obtained by 'withEnum' must be isomorphism.
+-- 
+-- > withEnum body = body f g
+-- > g . f = id :: x -> x
+-- > f . g = id :: Finite n -> Finite n
+-- 
+-- Additionally, two methods 'enumeration' and 'withEnum' must be
+-- equivalent to the ones defined in terms of the other.
+--
+-- > enumeration = withEnum makeFinFn
+-- > withEnum body = withFinFn enumeration body
+-- 
+-- From these laws, @applyFinFn enumeration = id@ must follow.
 class (Ord x) => Enum x where
   enumeration :: FinFn x x
   enumeration = withEnum makeFinFn
@@ -57,7 +74,7 @@ enum :: (Enum x, Alternative f) => f x
 enum = withEnum (\_ from -> asum (pure . from <$> finites))
 
 coenum :: (Enum x, Decidable f, Divisible f) => f x
-coenum = withEnum (\to _ -> contramap to $ runClown (describeFinite))
+coenum = withEnum (\to _ -> contramap to $ runClown describeFinite)
 
 cardinality :: forall x proxy. (Enum x) => proxy x -> Int
 cardinality _ = withEnum @x getN

@@ -170,7 +170,7 @@ class Profunctor p => Cocartesian p where
   --
   -- There is a default implementaion, but it can be more efficient implementation.
   proTimes :: KnownNat n => p a b -> p (Finite n, a) (Finite n, b)
-  proTimes p = runCopower describeFinite p
+  proTimes = runCopower describeFinite
 
 nabla :: Either a a -> a
 nabla = either id id

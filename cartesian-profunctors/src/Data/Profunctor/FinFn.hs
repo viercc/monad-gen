@@ -27,9 +27,10 @@ import GHC.TypeNats
 import Data.Finite (Finite())
 import qualified Data.Finite.Internal.Integral as Internal
 
+-- | Function @a -> b@ with finite range.
 data FinFn a b = FinFn !Integer (a -> Integer) (Integer -> b)
 
--- | Safe construction
+-- | Safe construction.
 makeFinFn :: forall n a b.
              KnownNat n
           => (a -> Finite n) -> (Finite n -> b) -> FinFn a b
@@ -49,14 +50,14 @@ withFinFn (FinFn n l r) user =
     downcast :: Proxy n -> Finite n -> Integer
     downcast _ = coerce
 
--- | How I would say... 'applyFinFn' is nice, functor-ish.
---   It commutes with 'Profunctor', 'Cartesian', 'Cocartesian',
---   and composition '(>>>>)'.
+-- | @FinFn a b@ can be considered as a subtype of @a -> b@.
+--
+-- > applyFinFn fn >>> applyFinFn fn' === applyFinFn (fn >>>> fn')
 applyFinFn :: FinFn a b -> a -> b
 applyFinFn (FinFn _ l r) = l >>> r
 
--- | 'FinFn' composes like 'Control.Category.Category', but can't be a Category since
---   it does not have 'Control.Cateogory.id'.
+-- | 'FinFn' is a semigroupoid. In other words, it composes like 'Control.Category.Category',
+--   but it does not have 'Control.Category.id'.
 (>>>>) :: FinFn a b -> FinFn b c -> FinFn a c
 (>>>>) (FinFn n l r) (FinFn m s t)
   | n <= m    = FinFn n l (r >>> s >>> t)
