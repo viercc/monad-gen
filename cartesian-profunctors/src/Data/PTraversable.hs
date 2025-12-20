@@ -157,8 +157,6 @@ deriving via (Generically1 Identity) instance PTraversable Identity
 
 deriving via (Generically1 Maybe) instance PTraversable Maybe
 
-deriving via (Generically1 []) instance PTraversable []
-
 deriving
   via (Generically1 ((,) a))
   instance (Enum a) => PTraversable ((,) a)

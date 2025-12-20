@@ -15,7 +15,7 @@ library
     Data.Profunctor.Day,
     Data.Profunctor.Cartesian,
     Data.Profunctor.Cartesian.Free,
-    Data.Profunctor.Cartesian.FreeBicartesian,
+    Data.Profunctor.Cocartesian.Free,
     Data.Profunctor.Counting,
     Data.Profunctor.FinFn,
     Data.Profunctor.Exhaust,

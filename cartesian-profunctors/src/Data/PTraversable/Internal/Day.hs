@@ -1,5 +1,3 @@
-{-# LANGUAGE CPP #-}
-
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -9,7 +7,7 @@
 module Data.PTraversable.Internal.Day (ptraverseDay) where
 
 import Prelude hiding (Enum)
-import Data.Profunctor.Cartesian.Free
+import Data.Profunctor.Cocartesian.Free
 
 import Data.Profunctor
 import Data.Profunctor.Cartesian
@@ -65,7 +63,7 @@ instance Cartesian Mono where
 type Poly = FreeCocartesian Mono
 
 idPoly :: Poly () ()
-idPoly = liftFreeCocartesian (M () 1)
+idPoly = liftF (M () 1)
 
 -- Adds context @s,t@ to a @Cocartesian p@.
 newtype ContextT s t p a b = ContextT {
@@ -81,20 +79,7 @@ instance Cocartesian p => Cocartesian (ContextT s t p) where
 
 -----------
 
-interpretMono :: forall u p a b s' t'.
-  (Cartesian p, Cocartesian p)
-  => PT u -> p a b -> Mono s' t' -> ContextT (u (V.Vector a)) (u (V.Vector b)) p s' t'
-interpretMono travU p (M t' n) = ContextT $ dimap snd (t', ) (travU powVector)
-  where
-    powVector :: p (V.Vector a) (V.Vector b)
-    powVector = case someNatVal n of
-      SomeNat sn -> dimap indexFinite (generateFinite sn) (proPower p)
-
-    indexFinite :: V.Vector x -> Finite n -> x
-    indexFinite xs i = xs V.! fromInteger (getFinite i)
-
-    generateFinite :: forall proxy n x. KnownNat n => proxy n -> (Finite n -> x) -> V.Vector x
-    generateFinite sn f = V.generate (fromIntegral (natVal sn)) (f . finite . toInteger)
+type Day' t u x = ((t (), u ()), Int -> Int -> x)
 
 ptraverseDay :: forall t u p a b.
      (Cartesian p, Cocartesian p)
@@ -105,14 +90,43 @@ ptraverseDay travT travU p = dimap pre post travDay'
     tShapes :: Poly (t ()) (t ())
     tShapes = travT idPoly
 
-    travDay' :: p (t (), u (V.Vector a)) (t (), u (V.Vector b))
-    travDay' = unContextT (foldFreeCocartesian (interpretMono travU p) tShapes)
+    uShapes :: Poly (u ()) (u ())
+    uShapes = travU idPoly
 
-    pre :: Day t u a -> (t (), u (V.Vector a))
-    pre (Day tb uc op) = (t1, fmapWith travU (\c -> fmap (`op` c) bs) uc)
+    travDay' :: p (Day' t u a) (Day' t u b)
+    travDay' = unContextT $ foldFree id (multF (interpretMonos p) tShapes uShapes)
+
+    pre :: Day t u a -> Day' t u a
+    pre (Day tb uc op) = ((t1, u1), op')
       where
         t1 = fmapWith travT (const ()) tb
         bs = V.fromList (toListWith travT tb)
+        u1 = fmapWith travU (const ()) uc
+        cs = V.fromList (toListWith travU uc)
+        op' i j = op (bs V.! i) (cs V.! j)
 
-    post :: (t (), u (V.Vector b)) -> Day t u b
-    post (t1, ubs) = Day (indices travT t1) ubs (flip (V.!))
+    post :: Day' t u b -> Day t u b
+    post ((t1, u1), op) = Day (indices travT t1) (indices travU u1) op
+
+interpretMonos ::
+  forall p a b s0 t0 s1 t1.
+     (Cartesian p)
+  => p a b
+  -> Mono s0 t0 -> Mono s1 t1 -> ContextT (Int -> Int -> a) (Int -> Int -> b) p (s0, s1) (t0, t1)
+interpretMonos p (M t0 m) (M t1 n)
+  | m == 0 || n == 0 = ContextT $ rmap (const ((t0,t1), \_ _ -> error "should not reach here")) proUnit
+  | otherwise = ContextT $ dimap pre post $ powPowerPartial p (m * n)
+    where
+      pre :: ((s0, s1), Int -> Int -> a) -> Natural -> a
+      pre (_, op) i = case quotRem (fromIntegral i) (fromIntegral m) of
+        (j,k) -> op j k
+      
+      post :: (Natural -> b) -> ((t0, t1), Int -> Int -> b)
+      post f = ((t0, t1), \j k -> f (fromIntegral j * m + fromIntegral k))
+
+powPowerPartial :: Cartesian p => p a b -> Natural -> p (Natural -> a) (Natural -> b)
+powPowerPartial p n = case someNatVal n of
+  SomeNat sn -> dimap (. fromInteger . getFinite) (. toFinite' sn) (proPower p)
+  where
+    toFinite' :: forall proxy n. KnownNat n => proxy n -> Natural -> Finite n
+    toFinite' _ = finite . toInteger
