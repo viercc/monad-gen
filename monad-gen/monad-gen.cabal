@@ -9,6 +9,7 @@ library monad-gen-internal
     Data.PTraversable.Extra,
     Data.Array.Extra,
     
+    ModelFinder.Model.GuessMaskModel,
     MonadLaws,
     MonadTerm,
     MonadGen,

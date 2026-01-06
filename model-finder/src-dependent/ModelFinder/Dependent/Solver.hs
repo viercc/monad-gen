@@ -10,7 +10,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE DeriveFunctor #-}
 
-module ModelFinder.Solver(
+module ModelFinder.Dependent.Solver(
   -- * Model
   Model(..),
   lookupModel,
@@ -49,7 +49,7 @@ import Data.Maybe (isJust)
 import Data.GADT.Show (GShow (..))
 import Data.Foldable (toList)
 
-import ModelFinder.Expr
+import ModelFinder.Dependent.Expr
 import Data.Functor (($>))
 
 -- * Cached execution
@@ -79,7 +79,7 @@ cached ev fa = Cached $ \cache ->
 
 -- Types for model search
 
-data Model f = Model (DMap.DMap f Set.Set)
+newtype Model f = Model (DMap.DMap f Set.Set)
 
 deriving instance (GShow f, Has' Show f Set.Set) => Show (Model f)
 

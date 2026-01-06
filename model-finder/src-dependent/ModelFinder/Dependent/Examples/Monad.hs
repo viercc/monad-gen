@@ -15,7 +15,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
 
-module ModelFinder.Examples.Monad(
+module ModelFinder.Dependent.Examples.Monad(
   M(..), I(..),
   MonadSig(..), (:->)(..),
   searchMonad
@@ -30,14 +30,15 @@ import Data.GADT.Show (GShow (..))
 import Data.Map qualified as Map
 import Data.Set qualified as Set
 import Data.Type.Equality
-import ModelFinder.Solver
+
 import Data.Finitary
 import GHC.Generics (Generic)
 import GHC.TypeNats (natVal)
 import Data.Functor.Classes (showsUnaryWith)
 import Data.Bifunctor (Bifunctor(..))
 
-import ModelFinder.Expr
+import ModelFinder.Dependent.Solver
+import ModelFinder.Dependent.Expr
 
 data I = I0 | I1
   deriving stock (Show, Eq, Ord, Generic)

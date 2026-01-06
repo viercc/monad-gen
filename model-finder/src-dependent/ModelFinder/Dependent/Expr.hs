@@ -10,7 +10,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE DeriveFunctor #-}
 
-module ModelFinder.Expr(
+module ModelFinder.Dependent.Expr(
   -- * Expression type
   Expr(..),
   Requests(..),
