@@ -25,6 +25,10 @@ data I a = Ia a | Ib a a a
   deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
   deriving (Eq1, Ord1, PTraversable) via (Generically1 I)
 
+data I' a = Iz | I1 a | I3 a a a
+  deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
+  deriving (Eq1, Ord1, PTraversable) via (Generically1 I')
+
 data J a = Ja a | Jb a | Jc a a
   deriving stock (Show, Eq, Ord, Functor, Foldable, Traversable, Generic1)
   deriving (Eq1, Ord1, PTraversable) via (Generically1 J)

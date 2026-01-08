@@ -6,6 +6,7 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TypeApplications #-}
 
 module MonadGen
   (
@@ -20,6 +21,10 @@ module MonadGen
     genFromApplicative,
     genFromApplicativeModuloIso,
     genFromApplicativeIsoGroups,
+
+    -- * Read/Write
+    serializeMonadDataList,
+    deserializeMonadDataList,
 
     -- * Debug
     GenState (..),
@@ -52,6 +57,9 @@ import Data.Equivalence.Monad
 
 import MonadLaws
 import qualified Data.Vector as V
+import Data.Maybe (fromMaybe)
+import Data.Proxy (Proxy(..))
+import Text.Read (readMaybe)
 
 -- Monad dictionary
 
@@ -59,6 +67,66 @@ data MonadData f = MonadData (Shape f) (NM.NatMap (f :.: f) f)
 
 deriving instance (WeakEq f, Eq (f (f Ignored)), Eq (f NM.Var)) => Eq (MonadData f)
 deriving instance (WeakOrd f, Ord (f (f Ignored)), Ord (f NM.Var)) => Ord (MonadData f)
+
+signatureOf :: forall f proxy. PTraversable f => proxy f -> [Int]
+signatureOf _ = length <$> (shapes :: [f ()])
+
+serializeMonadDataList :: forall f. PTraversable f => [MonadData f] -> [String]
+serializeMonadDataList monadData =
+  show (signatureOf @f Proxy) : map (show . encodeMonadData) monadData
+
+deserializeMonadDataList :: forall f. PTraversable f => [String] -> Either String [MonadData f]
+deserializeMonadDataList [] = Left "No signature"
+deserializeMonadDataList (sigStr : records) =
+  do readSig
+     traverse parseMonadData (zip [2..] records)
+  where
+    readSig :: Either String ()
+    readSig = case readMaybe sigStr of
+      Nothing -> Left "parse error at signature"
+      Just sig
+        | sig == expectedSig -> Right ()
+        | otherwise -> Left "signature mismatch"
+
+    expectedSig :: [Int]
+    expectedSig = signatureOf (Proxy :: Proxy f)
+
+    parseMonadData :: (Int, String) -> Either String (MonadData f)
+    parseMonadData (lineNo, str) = case readMaybe str of
+      Nothing -> Left $ "parse error at line " ++ show lineNo
+      Just monadDataRaw -> case decodeMonadData monadDataRaw of
+        Nothing -> Left $ "non well-formed MonadData at line " ++ show lineNo
+        Just md -> Right md
+
+encodeMonadData :: forall f. PTraversable f => MonadData f -> (Int, [(Int, [Int])])
+encodeMonadData (MonadData pureShape joinNM) = (reindex pureShape, encodeEntry <$> joinEntries)
+  where
+    fIndex :: Set.Set (Shape f)
+    fIndex = Set.fromList (Shape <$> shapes)
+
+    reindex sh = fromMaybe (-1) $ Set.lookupIndex sh fIndex
+
+    joinEntries = [ res | Shape ff1 <- NM.keys joinNM, Just res <- [ NM.lookup (_indices ff1) joinNM ] ]
+    encodeEntry fn = (reindex (Shape fn), toList fn)
+
+decodeMonadData :: forall f. PTraversable f => (Int, [(Int, [Int])]) -> Maybe (MonadData f)
+decodeMonadData (pureIdx, joinData) = MonadData <$> mpureShape <*> mjoinNM
+  where
+    f1 :: V.Vector (f Int)
+    f1 = skolem
+    f2 :: V.Vector (f (f Int))
+    f2 = skolem2
+
+    mpureShape = Shape <$> (f1 V.!? pureIdx)
+    mkEntry (ffn, (rhsIndex, rhsVars)) = 
+      do rhsSkolem <- f1 V.!? rhsIndex
+         guard (length rhsSkolem == length rhsVars)
+         let rhs = fmap (rhsVars !!) rhsSkolem
+         NM.makeEntry (Comp1 ffn) rhs
+    mjoinNM = do
+      joinNM <- NM.fromEntries <$> traverse mkEntry (zip (V.toList f2) joinData)
+      guard (NM.size joinNM == V.length f2)
+      pure joinNM
 
 data MonadDict f =
   MonadDict {
