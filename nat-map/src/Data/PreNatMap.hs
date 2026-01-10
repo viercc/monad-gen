@@ -114,30 +114,26 @@ data PosData g = PosData
   !(UV.Vector Int)
     -- ^ Vector @v@ representing LHS pattern variables.
     --
-    -- Invariant: this vector @v@ must satisfy the following condition.
-    -- 
-    -- If a value @x :: Int@ occurs in the vector first time at index @i@,
-    -- @x@ equals to the number of unique elements occured before @i@.
-    -- 
-    -- In other words, for all @i@ such that satisfy 
-    -- (for all @0 <= j < i@, @v ! j /= v ! i@), @v ! i@ equals to
-    -- the number of unique elements occured before @i@.
-    -- 
-    -- It follows that
+    -- Invariant (canonical reindexing):
+    -- scanning @v@ left-to-right, when a value appears for the first time,
+    -- it must be exactly the next fresh id (0,1,2,...).
     --
-    -- * Any nonempty @v@ starts with @v ! 0 = 0@.
-    -- * All elements of @v@ are distinct each other if and only if
-    --   (*) @v@ is empty or (**) @v = fromList [0, 1, ..., n-1]@.
-    --   The latter condition is equivalent to @v ! (n - 1) = (n - 1)@
-    --   where @n@ is the length of @v@.
-    --   (See 'isCompleteLHS' function)
+    -- More formally: let @firstOcc x@ be the least index @i@ with @v!i = x@.
+    -- Then @v!(firstOcc x) == #{ y | firstOcc y < firstOcc x }@.
+    --
+    -- Consequences (under this invariant):
+    --
+    -- * If @v@ is nonempty then @v!0 == 0@.
+    -- * For all indices @i@, @0 <= v!i <= i@.
+    -- * If @v@ has @k@ distinct values then @maximum v == k-1@.
+    -- * All elements of @v@ are pairwise distinct iff @v == [0..n-1]@
+    --   (where @n = length v@). Equivalently, @n==0 || v!(n-1) == n-1@;
+    --   see 'isCompleteLHS'.
 
   !(g Int)
-    -- ^ RHS variable substitution @gx@.
+    -- ^ RHS variable expression @gx@.
     --
-    -- Invariant: all the @Int@ values in this @gx :: g Int@
-    -- value must also occur in the first field @v@.
-    -- In other words, @all (\x -> x `elem` v) gx@.
+    -- Invariant: every variable occurring in @gx@ must also occur in @v@.
 
 deriving instance (Eq (g Int)) => Eq (PosData g)
 deriving instance (Ord (g Int)) => Ord (PosData g)
@@ -252,7 +248,9 @@ lookup fa (PreNatMap pnm) = do
 
 -- | Looks up only the shape.
 --
--- > lookupShape (Shape f) p === Shape <$> lookup ('Data.Functor.void' f) p
+-- @
+-- lookupShape (Shape f) p === Shape '<$>' lookup ('Data.Functor.void' f) p
+-- @
 lookupShape :: Ord (f Ignored) => Shape f -> PreNatMap f g -> Maybe (Shape g)
 lookupShape f (PreNatMap pnm) = case Map.lookup f pnm of
   Nothing -> Nothing
