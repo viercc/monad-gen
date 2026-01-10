@@ -53,7 +53,7 @@ module Data.NatMap (
     (:~>)(..), wrapNT, unwrapNT,
 
     -- * Utility
-    Var(), indices,
+    Var(), makeVars, indices,
 ) where
 
 import Prelude hiding (lookup)
@@ -65,7 +65,6 @@ import Data.Maybe (fromMaybe)
 import Data.Functor.Compose (Compose (..))
 
 import Data.Foldable(toList)
-import Data.Traversable (mapAccumL)
 import Data.Coerce (coerce)
 
 import qualified Data.Map.Lazy as Map
@@ -77,6 +76,8 @@ import Data.PTraversable
 import Data.FunctorShape
 
 import Control.Natural
+
+import qualified TraversableUtil
 
 -- | Data structure which represents partial natural transformations,
 --   like usual 'Map' which represents partial functions.
@@ -177,7 +178,7 @@ lookup_ f1 (Mk m) = Map.lookup f1 m
 keys :: NatMap f g -> [Shape f]
 keys (Mk m) = Map.keys m
 
-toEntries :: Traversable f => NatMap f g -> [Entry f g]
+toEntries :: NatMap f g -> [Entry f g]
 toEntries (Mk m) = [ Entry f1 gx | (f1, gx) <- Map.toAscList m ]
 
 -- keysSet :: NatMap f g -> ShapeSet f
@@ -288,8 +289,11 @@ toTotal nm
 
 -- * Utility
 
+makeVars :: Int -> [Var]
+makeVars n = Var <$> [0 .. n - 1]
+
 indices :: Traversable f => Shape f -> f Var
-indices (Shape fk) = snd . mapAccumL (\n _ -> (succ n, Var n)) 0 $ fk
+indices (Shape fk) = Var <$> TraversableUtil.indices fk
 
 -- | An opaque type representing syntactic variable.
 newtype Var = Var { unVar :: Int }
