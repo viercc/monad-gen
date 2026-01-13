@@ -13,6 +13,7 @@ library monad-gen-internal
     MonadLaws,
     MonadTerm,
     MonadGen,
+    MonadGen.BinaryJoin,
     Isomorphism,
     MonoidGen,
     ApplicativeGen,

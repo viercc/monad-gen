@@ -60,6 +60,7 @@ import qualified Data.Vector as V
 import Data.Maybe (fromMaybe)
 import Data.Proxy (Proxy(..))
 import Text.Read (readMaybe)
+import qualified Data.PreNatMap as PNM
 
 -- Monad dictionary
 
@@ -193,9 +194,12 @@ data Env f = Env
     _f3 :: V.Vector (f (f (f Int)))
   }
 
-type Join f = NM.NatMap (f :.: f) f
+type Join f = PNM.PreNatMap (f :.: f) f
 
-type Blockade f = Rel (Shape (f :.: f)) Int
+data BlockReason = UnknownShape | UnknownPos
+  deriving (Eq, Ord, Show)
+type BlockerKey f = (BlockReason, Shape (f :.: f))
+type Blockade f = Rel (BlockerKey f) Int
 
 data GenState f = GenState
   { _join :: Join f,
@@ -208,40 +212,99 @@ debugPrint ::
   IO ()
 debugPrint st = do
   putStrLn "----- join ------"
-  mapM_ print $ NM.toEntries (_join st)
+  mapM_ print $ PNM.toEntries (_join st)
   putStrLn "----- blockade --"
   putStrLn $ "#blockade = " ++ show (Map.size (_blockade st))
   putStrLn "-----------------"
-  case NM.toTotal (_join st) of
+  case NM.toTotal (PNM.toNatMap (_join st)) of
     Just join' ->
       let join'' = NM.unwrapNT join' . Comp1
           assoc = flip all skolem3 $ checkAssoc join''
        in unless assoc (fail "!?!?")
     Nothing -> putStrLn "incomplete"
 
--- (>>=) on Validation
-validatedThen :: Validation e a -> (a -> Validation e b) -> Validation e b
-validatedThen ea k = case ea of
-  Failure e -> Failure e
-  Success a -> k a
+applyFull :: (PTraversable f) => Join f -> f (f a) -> Validation [BlockerKey f] (f a)
+applyFull m ffa = maybe (Failure [(reason,k)]) Success $ PNM.fullMatch (Comp1 ffa) m
+  where
+    k = Shape (Comp1 ffa)
+    reason = case PNM.lookupShape k m of
+      Nothing -> UnknownShape
+      Just _  -> UnknownPos
 
-applyB :: (PTraversable f) => Join f -> f (f a) -> Validation [Shape (f :.: f)] (f a)
-applyB m ffa = maybe (Failure [k]) Success $ NM.lookup (Comp1 ffa) m
+apply :: (PTraversable f, Eq a) => Join f -> f (f a) -> Validation [BlockerKey f] (f a)
+apply m ffa = maybe (Failure [(reason,k)]) Success $ PNM.match (Comp1 ffa) m
+  where
+    k = Shape (Comp1 ffa)
+    reason = case PNM.lookupShape k m of
+      Nothing -> UnknownShape
+      Just _  -> UnknownPos
+
+applyShape :: (PTraversable f) => Join f -> f (f a) -> Validation [BlockerKey f] (Shape f)
+applyShape m ffa = maybe (Failure [(UnknownShape,k)]) Success $ PNM.lookupShape k m
   where
     k = Shape (Comp1 ffa)
 
-leftAssocB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [Shape (f :.: f)] (f a)
-leftAssocB m fffa = applyB m fffa `validatedThen` \ffa -> applyB m ffa
+leftAssocShapeB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [BlockerKey f] (Either (Shape (f :.: f)) (Shape f))
+leftAssocShapeB m fffa = secondStep <$> firstStep
+  where
+    firstStep = apply m (fmap (fmap Shape) fffa)
+    secondStep ff = case applyShape m key of
+      Failure _ -> Left (Shape (Comp1 key))
+      Success f -> Right f
+      where key = fmap (\(Shape f) -> void f) ff
 
-rightAssocB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [Shape (f :.: f)] (f a)
-rightAssocB m fffa =
-  traverse (applyB m) fffa `validatedThen` \ffa -> applyB m ffa
+rightAssocShapeB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [BlockerKey f] (Either (Shape (f :.: f)) (Shape f))
+rightAssocShapeB m fffa = secondStep <$> firstStep
+  where
+    firstStep = traverse (applyShape m) fffa
+    secondStep ff = case applyShape m key of
+      Failure _ -> Left (Shape (Comp1 key))
+      Success f -> Right f
+      where key = fmap (\(Shape f) -> void f) ff
 
-associativity :: (PTraversable f) => Join f -> f (f (f Int)) -> Maybe [Shape (f :.: f)]
+leftAssocB :: (PTraversable f, Eq a) => Join f -> f (f (f a)) -> Validation [BlockerKey f] (Either (BlockReason, (f :.: f) a) (f a))
+leftAssocB m fffa = secondStep <$> firstStep
+  where
+    firstStep = applyFull m fffa
+    secondStep ffa = case apply m ffa of
+      Failure [] -> error "impossible (the error should be nonempty)"
+      Failure ((reason,_) : _) -> Left (reason, Comp1 ffa)
+      Success f -> Right f
+
+rightAssocB :: (PTraversable f, Eq a) => Join f -> f (f (f a)) -> Validation [BlockerKey f] (Either (BlockReason, (f :.: f) a) (f a))
+rightAssocB m fffa = secondStep <$> firstStep
+  where
+    firstStep = traverse (applyFull m) fffa
+    secondStep ffa = case apply m ffa of
+      Failure [] -> error "impossible (the error should be nonempty)"
+      Failure ((reason,_) : _) -> Left (reason, Comp1 ffa)
+      Success f -> Right f
+
+type Def f a = ((f :.: f) a, f a)
+type TestResult f a = ([BlockerKey f], [Def f a])
+
+shapeToDummy :: Functor g => Shape g -> g Int
+shapeToDummy (Shape g) = 0 <$ g
+
+associativityShape :: (PTraversable f) => Join f -> f (f (f any)) -> Maybe (TestResult f Int)
+associativityShape m fff_ =
+  case (,) <$> leftAssocShapeB m fff_ <*> rightAssocShapeB m fff_ of
+    Success (leftResult, rightResult) -> case (leftResult, rightResult) of
+      (Right f1, Right f2) -> if f1 == f2 then Just ([], []) else Nothing
+      (Right f, Left ff) -> Just ([], [(shapeToDummy ff, shapeToDummy f)])
+      (Left  ff, Right f) -> Just ([], [(shapeToDummy ff, shapeToDummy f)])
+      (Left  ff1, Left ff2) -> Just ([(UnknownShape, ff1), (UnknownShape, ff2)], [])
+    Failure blockades -> Just (blockades, [])
+
+associativity :: (PTraversable f) => Join f -> f (f (f Int)) -> Maybe (TestResult f Int)
 associativity m fffa =
   case (,) <$> leftAssocB m fffa <*> rightAssocB m fffa of
-    Success (leftFa, rightFa) -> if leftFa == rightFa then Just [] else Nothing
-    Failure blockades -> Just blockades
+    Success (leftResult, rightResult) -> case (leftResult, rightResult) of
+      (Right fa1, Right fa2) -> if fa1 == fa2 then Just ([], []) else Nothing
+      (Right fa, Left (_, ffa)) -> Just ([], [(ffa, fa)])
+      (Left  (_,ffa), Right fa) -> Just ([], [(ffa, fa)])
+      (Left  (reason1, ffa1), Left (reason2, ffa2)) -> Just ([(reason1, Shape ffa1), (reason2, Shape ffa2)], [])
+    Failure blockades -> Just (blockades, [])
 
 choose :: (Foldable t) => t a -> Gen f a
 choose = lift . lift . toList
@@ -265,47 +328,69 @@ runGen apDict mr = runStateT (runReaderT mr env) state0
 
     f3 = _f3 env
 
-    join0 = NM.empty
-    blockade = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse newConstraint (V.indexed f3)
-    newConstraint (k, fa) = foldMap (\blockKey -> singletonRel blockKey k) <$> associativity join0 fa
+    join0 = PNM.empty
+    -- From the empty join, no equation would successfully updates it.
+    -- Thus there is no merit of keeping the "updated" joins in.
+    --   TestResult f = ([BlockerKey f], Join f)
+    -- getInitialBlockers throws away @Join f@ by @fst@.
+    getInitialBlockersShape (k, fa) = foldMap (\blockKey -> singletonRel blockKey k) . fst <$> associativityShape join0 fa
+    getInitialBlockers (k, fa) = foldMap (\blockKey -> singletonRel blockKey k) . fst <$> associativity join0 fa
+    blockade1 = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse getInitialBlockersShape (V.indexed f3)
+    blockade2 = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse getInitialBlockers (V.indexed f3)
 
     state0 :: GenState f
     state0 =
       GenState
         { _join = join0,
-          _blockade = blockade
+          _blockade = unionRel blockade1 blockade2
         }
+
+repair :: PTraversable f => BlockerKey f -> Gen f [Def f Int]
+repair (reason, key) = do
+  join1 <- gets _join
+  blockade <- gets _blockade
+  f3 <- asks _f3
+
+  let (blockedEqs, blockade') = popRel (reason, key) blockade
+      toResult k (newBlockers, newDefs) = (foldMap (\blocker -> singletonRel blocker k) newBlockers, newDefs)
+      test k = toResult k <$> associativity join1 (f3 V.! k)
+  (blockade'', newDefs) <- case traverse test (Set.toList blockedEqs) of
+    Nothing -> mzero
+    Just results ->
+      let blockade'' = foldl' unionRel blockade' (fst <$> results)
+          newDefs = concatMap snd results
+      in pure (blockade'', newDefs)
+  
+  modify $ \s -> s{ _blockade = blockade'' }
+  pure newDefs
 
 entry ::
   forall f b.
+  Ord b =>
   (forall a. (Show a) => Show (f a), PTraversable f) =>
-  (Ord b) =>
-  (f :.: f) b ->
-  f b ->
-  Gen f ()
-entry lhs rhs =
+  Def f b -> Gen f [Def f Int]
+entry (lhs, rhs) =
   do
     join1 <- gets _join
-    case NM.lookup lhs join1 of
-      Nothing -> return ()
-      Just rhs' -> guard (rhs == rhs')
-    let join2 = NM.insert (NM.unsafeMakeEntry lhs rhs) join1
+    -- fail on Nothing case
+    join2 <- choose $ PNM.refine lhs rhs join1
 
-    f3 <- asks _f3
-    blockade <- gets _blockade
+    modify $ \s -> s { _join = join2 }
+    
+    -- update assoc
+    newShapeDefs <- repair (UnknownShape, Shape lhs)
+    newDefs <- repair (UnknownPos, Shape lhs)
+    
+    pure (newShapeDefs ++ newDefs)
 
-    -- update assocL
-    let (blockedAssocs, blockade') = popRel (Shape lhs) blockade
-        newConstraint k = foldMap (\nextLhsKey -> singletonRel nextLhsKey k) <$> associativity join2 (f3 V.! k)
-    blockade'' <- case traverse newConstraint (Set.toList blockedAssocs) of
-      Nothing -> mzero
-      Just newBlockades -> pure $ foldl' unionRel blockade' newBlockades
-
-    modify $ \s ->
-      s
-        { _join = join2,
-          _blockade = blockade''
-        }
+entryLoop :: 
+  forall f.
+  (forall a. (Show a) => Show (f a), PTraversable f) =>
+  [Def f Int] -> Gen f ()
+entryLoop [] = pure ()
+entryLoop (def : defs) = do
+  newDefs <- entry def
+  entryLoop (newDefs ++ defs)
 
 entryApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
 entryApplicative = do
@@ -315,13 +400,24 @@ entryApplicative = do
     for_ f1 $ \fj ->
       let ffij = fmap (\i -> fmap ((,) i) fj) fi
           fk = _applicativeLiftA2 (_baseApplicative env) (,) fi fj
-      in entry (Comp1 ffij) fk
+      in entry (Comp1 ffij, fk) >>= entryLoop
 
-guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Shape (f :.: f) -> Gen f ()
-guess lhsKey = do
+guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => BlockerKey f -> Gen f ()
+guess (UnknownShape, lhsKey) = do
+  -- Make a shape-only guess
+  let lhs = shapeToDummy lhsKey
+  rhs <- choose (enum1 [0])
+  entryLoop [(lhs, rhs)]
+guess (UnknownPos, lhsKey) = do
+  -- Make a shape-only guess
+  join1 <- gets _join
   let lhs = keyIndices lhsKey
-  rhs <- choose (enum1 (toList lhs))
-  entry lhs rhs
+  rhs <- case PNM.lookup (Set.singleton <$> lhs) join1 of
+    -- expect this not to happen, as (UnknownPos, key) should not be generated
+    -- if (UnknonShape, key) is already resolved
+    Nothing -> error "impossible?"
+    Just rhsSet -> choose (traverse Set.toList rhsSet)
+  entryLoop [(lhs, rhs)]
 
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicative apDict = postproc . snd <$> runGen apDict (entryApplicative >> loop)
@@ -332,7 +428,7 @@ genFromApplicative apDict = postproc . snd <$> runGen apDict (entryApplicative >
       case mostRelated blockade of
         Nothing -> pure ()
         Just lhsKey -> guess lhsKey >> loop
-    postproc finalState = MonadData (Shape (apPure ())) (_join finalState)
+    postproc finalState = MonadData (Shape (apPure ())) (PNM.toNatMap (_join finalState))
 
 genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicativeModuloIso apDict = uniqueByIso isoGenerators $ genFromApplicative apDict

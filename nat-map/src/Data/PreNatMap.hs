@@ -14,6 +14,7 @@ module Data.PreNatMap(
   empty,
   
   -- * query
+  isFull,
   fullMatch, match, lookup,
   lookupShape,
 
@@ -230,6 +231,9 @@ fullMatch fa (PreNatMap pnm) = do
   if isCompleteLHS pd
     then pure $ makeRHS (toList fa) pd
     else Nothing
+
+isFull :: (Ord (f Ignored), Foldable f, Functor g) => Shape f -> PreNatMap f g -> Bool
+isFull f (PreNatMap pnm) = maybe False isCompleteLHS $ Map.lookup f pnm
 
 -- | Query the output of natural transformation for given input @fa :: f a@.
 --   Succeeds if the shape of the output corresponding to the input
