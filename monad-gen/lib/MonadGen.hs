@@ -7,6 +7,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TupleSections #-}
 
 module MonadGen
   (
@@ -254,27 +255,45 @@ buildInitialEnv apDict = Env {
     _f3 = skolem3
   }
 
-_pure :: PTraversable f => Env f -> a -> f a
+_pure :: Env f -> a -> f a
 _pure env = _applicativePure (_baseApplicative env)
 
+_liftA2 :: Env f -> (a -> b -> c) -> f a -> f b -> f c
+_liftA2 env = _applicativeLiftA2 (_baseApplicative env)
+
+applicativeToJoin :: (PTraversable f) => Env f -> Maybe (Join f)
+applicativeToJoin env = guard isFeasible *> joinMap
+  where
+    f1 = _f1 env
+    isFeasible = length f1 == 1 || not (null (_pure env ()))
+    joinMap = NM.fromEntries <$> sequenceA entries
+    entries = do
+      fi <- V.toList f1
+      fj <- V.toList f1
+      let lhs = Comp1 $ fmap (\i -> (i,) <$> fj) fi
+          rhs = _liftA2 env (,) fi fj
+      pure $ NM.makeEntry lhs rhs
+
+testAssociativity :: PTraversable f => Join f -> k -> f (f (f Int)) -> Maybe (Rel (Shape (f :.: f)) k)
+testAssociativity join0 k fa = foldMap (\blockKey -> singletonRel blockKey k) <$> associativity join0 fa
+
 runGen :: forall f r. (PTraversable f) => ApplicativeDict f -> Gen f r -> [(r, GenState f)]
-runGen apDict mr = runStateT (runReaderT mr env) state0
+runGen apDict mr = do
+  join0 <- toList $ applicativeToJoin env
+  let t = uncurry (testAssociativity join0)
+  blockadeList <- toList $ traverse t (V.indexed f3)
+  let blockade = foldl' unionRel Map.empty blockadeList
+      state0 =
+        GenState
+          { _join = join0,
+            _blockade = blockade
+          }
+  runStateT (runReaderT mr env) state0
   where
     env :: Env f
     env = buildInitialEnv apDict
 
     f3 = _f3 env
-
-    join0 = NM.empty
-    blockade = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse newConstraint (V.indexed f3)
-    newConstraint (k, fa) = foldMap (\blockKey -> singletonRel blockKey k) <$> associativity join0 fa
-
-    state0 :: GenState f
-    state0 =
-      GenState
-        { _join = join0,
-          _blockade = blockade
-        }
 
 entry ::
   forall f b.
@@ -296,8 +315,8 @@ entry lhs rhs =
 
     -- update assocL
     let (blockedAssocs, blockade') = popRel (Shape lhs) blockade
-        newConstraint k = foldMap (\nextLhsKey -> singletonRel nextLhsKey k) <$> associativity join2 (f3 V.! k)
-    blockade'' <- case traverse newConstraint (Set.toList blockedAssocs) of
+        t k = testAssociativity join2 k (f3 V.! k)
+    blockade'' <- case traverse t (Set.toList blockedAssocs) of
       Nothing -> mzero
       Just newBlockades -> pure $ foldl' unionRel blockade' newBlockades
 
@@ -307,16 +326,6 @@ entry lhs rhs =
           _blockade = blockade''
         }
 
-entryApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
-entryApplicative = do
-  env <- ask
-  let f1 = _f1 env
-  for_ f1 $ \fi ->
-    for_ f1 $ \fj ->
-      let ffij = fmap (\i -> fmap ((,) i) fj) fi
-          fk = _applicativeLiftA2 (_baseApplicative env) (,) fi fj
-      in entry (Comp1 ffij) fk
-
 guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Shape (f :.: f) -> Gen f ()
 guess lhsKey = do
   let lhs = keyIndices lhsKey
@@ -324,7 +333,7 @@ guess lhsKey = do
   entry lhs rhs
 
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicative apDict = postproc . snd <$> runGen apDict (entryApplicative >> loop)
+genFromApplicative apDict = postproc . snd <$> runGen apDict loop
   where
     apPure = _applicativePure apDict
     loop = do
