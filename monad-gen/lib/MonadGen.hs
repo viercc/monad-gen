@@ -7,6 +7,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TupleSections #-}
 
 module MonadGen
   (
@@ -61,6 +62,7 @@ import Data.Maybe (fromMaybe)
 import Data.Proxy (Proxy(..))
 import Text.Read (readMaybe)
 import qualified Data.PreNatMap as PNM
+import Data.Bifunctor (Bifunctor(..))
 
 -- Monad dictionary
 
@@ -317,33 +319,56 @@ buildInitialEnv apDict = Env {
     _f3 = skolem3
   }
 
-_pure :: PTraversable f => Env f -> a -> f a
+_pure :: Env f -> a -> f a
 _pure env = _applicativePure (_baseApplicative env)
 
+_liftA2 :: Env f -> (a -> b -> c) -> f a -> f b -> f c
+_liftA2 env = _applicativeLiftA2 (_baseApplicative env)
+
+applicativeToJoin :: (PTraversable f) => Env f -> Maybe (NM.NatMap (f :.: f) f)
+applicativeToJoin env = guard isFeasible *> joinMap
+  where
+    f1 = _f1 env
+    isFeasible = length f1 == 1 || not (null (_pure env ()))
+    joinMap = NM.fromEntries <$> sequenceA entries
+    entries = do
+      fi <- V.toList f1
+      fj <- V.toList f1
+      let lhs = Comp1 $ fmap (\i -> (i,) <$> fj) fi
+          rhs = _liftA2 env (,) fi fj
+      pure $ NM.makeEntry lhs rhs
+
+testAssociativityShape :: PTraversable f => Join f -> k -> f (f (f Int)) -> Maybe (Rel (BlockerKey f) k, [Def f Int])
+testAssociativityShape join0 k fa = first toRel <$> associativityShape join0 fa
+  where
+    toRel = foldMap (\blockKey -> singletonRel blockKey k)
+
+testAssociativity :: PTraversable f => Join f -> k -> f (f (f Int)) -> Maybe (Rel (BlockerKey f) k, [Def f Int])
+testAssociativity join0 k fa = first toRel <$> associativity join0 fa
+  where
+    toRel = foldMap (\blockKey -> singletonRel blockKey k)
+
 runGen :: forall f r. (PTraversable f) => ApplicativeDict f -> Gen f r -> [(r, GenState f)]
-runGen apDict mr = runStateT (runReaderT mr env) state0
+runGen apDict mr = do
+  join0 <- toList $ PNM.fromNatMap <$> applicativeToJoin env
+  let t1 = uncurry (testAssociativityShape join0)
+      t2 = uncurry (testAssociativity join0)
+  initialResults1 <- toList $ traverse t1 (V.indexed f3)
+  initialResults2 <- toList $ traverse t2 (V.indexed f3)
+  let initialResults = V.toList initialResults1 ++ V.toList initialResults2
+      blockade = foldl' unionRel Map.empty (fst <$> initialResults)
+      defs = initialResults >>= snd
+      state0 =
+        GenState
+          { _join = join0,
+            _blockade = blockade
+          }
+  runStateT (runReaderT (entryLoop defs >> mr) env) state0
   where
     env :: Env f
     env = buildInitialEnv apDict
 
     f3 = _f3 env
-
-    join0 = PNM.empty
-    -- From the empty join, no equation would successfully updates it.
-    -- Thus there is no merit of keeping the "updated" joins in.
-    --   TestResult f = ([BlockerKey f], Join f)
-    -- getInitialBlockers throws away @Join f@ by @fst@.
-    getInitialBlockersShape (k, fa) = foldMap (\blockKey -> singletonRel blockKey k) . fst <$> associativityShape join0 fa
-    getInitialBlockers (k, fa) = foldMap (\blockKey -> singletonRel blockKey k) . fst <$> associativity join0 fa
-    blockade1 = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse getInitialBlockersShape (V.indexed f3)
-    blockade2 = maybe (error "should never happen?") (foldl' unionRel Map.empty) $ traverse getInitialBlockers (V.indexed f3)
-
-    state0 :: GenState f
-    state0 =
-      GenState
-        { _join = join0,
-          _blockade = unionRel blockade1 blockade2
-        }
 
 repair :: PTraversable f => BlockerKey f -> Gen f [Def f Int]
 repair (reason, key) = do
@@ -366,8 +391,7 @@ repair (reason, key) = do
 
 entry ::
   forall f b.
-  Ord b =>
-  (forall a. (Show a) => Show (f a), PTraversable f) =>
+  Ord b => (PTraversable f) =>
   Def f b -> Gen f [Def f Int]
 entry (lhs, rhs) =
   do
@@ -384,23 +408,12 @@ entry (lhs, rhs) =
     pure (newShapeDefs ++ newDefs)
 
 entryLoop :: 
-  forall f.
-  (forall a. (Show a) => Show (f a), PTraversable f) =>
+  forall f. (PTraversable f) =>
   [Def f Int] -> Gen f ()
 entryLoop [] = pure ()
 entryLoop (def : defs) = do
   newDefs <- entry def
   entryLoop (newDefs ++ defs)
-
-entryApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Gen f ()
-entryApplicative = do
-  env <- ask
-  let f1 = _f1 env
-  for_ f1 $ \fi ->
-    for_ f1 $ \fj ->
-      let ffij = fmap (\i -> fmap ((,) i) fj) fi
-          fk = _applicativeLiftA2 (_baseApplicative env) (,) fi fj
-      in entry (Comp1 ffij, fk) >>= entryLoop
 
 guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => BlockerKey f -> Gen f ()
 guess (UnknownShape, lhsKey) = do
@@ -420,7 +433,7 @@ guess (UnknownPos, lhsKey) = do
   entryLoop [(lhs, rhs)]
 
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicative apDict = postproc . snd <$> runGen apDict (entryApplicative >> loop)
+genFromApplicative apDict = postproc . snd <$> runGen apDict loop
   where
     apPure = _applicativePure apDict
     loop = do
