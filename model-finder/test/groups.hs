@@ -1,7 +1,13 @@
 module Main (main) where
 
 import ModelFinder.Examples.Group
-    ( searchGroupOfOrder, prettyPrintSolution )
+    ( searchGroupOfOrder, prettyPrintSolution, searchGroupOfOrder' )
+
+countGroups :: Int -> IO ()
+countGroups n = putStrLn $ "count " ++ show n ++ " = " ++ show (length (searchGroupOfOrder n))
+
+countGroups' :: Int -> IO ()
+countGroups' n = putStrLn $ "count " ++ show n ++ " = " ++ show (length (searchGroupOfOrder' n))
 
 main :: IO ()
 main = do
@@ -9,5 +15,8 @@ main = do
   putStrLn "Every group of order 4, unit = 0"
   mapM_ (prettyPrintSolution 4) $ searchGroupOfOrder 4
   putStrLn "### Run Group examples (length only)"
-  let n = 5
-  putStrLn $ "count " ++ show n ++ " = " ++ show (length (searchGroupOfOrder n))
+  countGroups 5
+  putStrLn "### Run Group examples (length only) (custom Model)"
+  countGroups' 5
+  countGroups' 6
+  countGroups' 7

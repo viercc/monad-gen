@@ -13,23 +13,19 @@ module ModelFinder.Model(
 ) where
 
 import Data.Kind (Type)
-import Data.Set (Set)
 import Data.Map.Strict (Map)
-import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
 import Control.Monad (guard)
 import Data.Either (partitionEithers)
+import qualified Data.List as List
 
 -- | @model@ represents possible assignments of @a@ to @f a@.
 
 class Model f a model | model -> f a where
-  -- | Set of all possible values.
-  universe :: model -> Set a
-
   -- | Get the current possible assignments.
   -- Returning singleton means the value of @f a@ is already settled.
   -- It can be empty if the model has gotten inconsistent.
-  guess :: f a -> model -> Set a
+  guess :: f a -> model -> [a]
 
   -- | Update the model accoring to newly added definitive equality @(x1 :: f a) = (x2 :: f a) = ... = (y :: a)@.
   -- Returns the updated model and newly discovered definitive equalities.
@@ -43,15 +39,14 @@ class Model f a model | model -> f a where
 
 -- | @DumbModel@ remember nothing and just returns
 --   anything possible as @guess@.
-newtype DumbModel (f :: Type -> Type) a = DumbModel { dumbUniverse :: Set a }
+newtype DumbModel (f :: Type -> Type) a = DumbModel { dumbUniverse :: [a] }
   deriving (Show, Eq)
 
-newDumbModel :: Set a -> DumbModel f a
+newDumbModel :: [a] -> DumbModel f a
 newDumbModel = DumbModel
 
 instance Model f a (DumbModel f a) where
-  universe = dumbUniverse
-  guess _ = universe
+  guess _ = dumbUniverse 
   enterDef _ _ m = Just (m, [])
   enterEqs _ m = Just (m, [])
 
@@ -59,19 +54,17 @@ instance Model f a (DumbModel f a) where
 --   The @guess@ returns set of arbitrary @a@ unless
 --   the requested @f a@ value is remembered.  
 data SimpleModel f a = SimpleModel {
-    simpleUniverse :: !(Set a),
+    simpleUniverse :: [a],
     simpleGuesses :: !(Map (f a) a)
   }
   deriving (Show, Eq)
 
-newSimpleModel :: Set a -> SimpleModel f a
+newSimpleModel :: [a] -> SimpleModel f a
 newSimpleModel univ = SimpleModel univ Map.empty
 
 instance (Ord (f a), Ord a) => Model f a (SimpleModel f a) where
-  universe = simpleUniverse
-
   guess fa SimpleModel{ .. }
-    = maybe simpleUniverse Set.singleton $ Map.lookup fa simpleGuesses
+    = maybe simpleUniverse List.singleton $ Map.lookup fa simpleGuesses
 
   enterDef :: [f a] -> a -> SimpleModel f a -> Maybe (SimpleModel f a, [(f a, a)])
   enterDef fas a m = do

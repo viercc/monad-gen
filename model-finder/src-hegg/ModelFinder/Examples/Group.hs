@@ -96,9 +96,10 @@ prettyPrintSolution n defs = do
 -- >>> length $ searchGroupOfOrder 5
 -- 6
 searchGroupOfOrder :: Int -> [Solution Int]
-searchGroupOfOrder n = map simpleGuesses $ solve groupEquations initialDef model0
+searchGroupOfOrder n = map simpleGuesses $ solve univ groupEquations initialDef model0
   where
-    model0 = newSimpleModel (Set.fromList [1..n])
+    univ = [1..n]
+    model0 = newSimpleModel univ
     initialDef = Map.fromList [ (Ident, 1) ]
 
 -- * Model with more knowledge
@@ -169,17 +170,17 @@ groupModelToSolution m = Map.fromList $ identDef ++ invDefs ++ mulDefs
       (x, bij) <- Map.toList (groupMulGuess m),
       (y,a) <- Map.toList (knownBij bij) ]
 
-instance Ord a => Model GroupSig a (GroupModel a) where
-  universe :: GroupModel a -> Set a
-  universe = groupUniverse
+guessGroup :: Ord a => GroupSig a -> GroupModel a -> Set a
+guessGroup sig m = case sig of
+  Ident -> maybe (groupUniverse m) Set.singleton $ groupIdentGuess m
+  Inv a -> guessBij a (groupInvGuess m)
+  Mul a b -> case Map.lookup a (groupMulGuess m) of
+    Nothing -> groupUniverse m
+    Just bij -> guessBij b bij
 
-  guess :: GroupSig a -> GroupModel a -> Set a
-  guess sig m = case sig of
-    Ident -> maybe (universe m) Set.singleton $ groupIdentGuess m
-    Inv a -> guessBij a (groupInvGuess m)
-    Mul a b -> case Map.lookup a (groupMulGuess m) of
-      Nothing -> universe m
-      Just bij -> guessBij b bij
+instance Ord a => Model GroupSig a (GroupModel a) where
+  guess :: GroupSig a -> GroupModel a -> [a]
+  guess sig m = Set.toList $ guessGroup sig m
   
   enterDef :: [GroupSig a] -> a -> GroupModel a -> Maybe (GroupModel a, [(GroupSig a, a)])
   enterDef sigs a m0 = loop m0 [] sigs
@@ -196,7 +197,7 @@ instance Ord a => Model GroupSig a (GroupModel a) where
           in loop m' (newDefs ++ acc) rest
         Mul x y -> case Map.lookup x (groupMulGuess m) of
           Nothing -> do
-            newBij <- insertBij y a $ emptyBij (universe m)
+            newBij <- insertBij y a $ emptyBij (groupUniverse m)
             let mulGuess' = Map.insert x newBij (groupMulGuess m)
                 m' = m{ groupMulGuess = mulGuess' }
             loop m' acc rest
@@ -214,7 +215,7 @@ instance Ord a => Model GroupSig a (GroupModel a) where
     [a] -> Just (m, [ (s,a) | s <- sigs ])
     _   -> Just (m, [])
     where
-      commonGuess = foldl' Set.intersection (guess sig m) [ guess s m | s <- rest ] 
+      commonGuess = foldl' Set.intersection (guessGroup sig m) [ guessGroup s m | s <- rest ] 
 
 unifyMaybe :: Eq a => Maybe a -> Maybe a -> Maybe (Maybe a)
 unifyMaybe Nothing y = Just y
@@ -232,7 +233,8 @@ unifyMaybe (Just x) (Just y) = Just x <$ guard (x == y)
 -- >>> length $ searchGroupOfOrder' 7
 -- 120
 searchGroupOfOrder' :: Int -> [Solution Int]
-searchGroupOfOrder' n = map groupModelToSolution $ solve groupEquations initialDef model0
+searchGroupOfOrder' n = map groupModelToSolution $ solve univ groupEquations initialDef model0
   where
-    model0 = newGroupModel (Set.fromList [1..n])
+    univ = [1..n]
+    model0 = newGroupModel (Set.fromList univ)
     initialDef = Map.fromList [ (Ident, 1) ]

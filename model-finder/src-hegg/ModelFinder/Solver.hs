@@ -123,13 +123,14 @@ instance (Ord a, Ord (f a), Traversable f) => AnalysisM SearchM (ModelInfo f a) 
 -- * Model search algorithm
 
 solve :: (Ord a, Language f, Model f a model)
-  => [Property f]
+  => [a]
+  -> [Property f]
   -> Map (f a) a
   -> model
   -> [model]
-solve props knownDefs model0 = runSearchM (solveBody eqs knownDefs model0)
+solve univ props knownDefs model0 = runSearchM (solveBody eqs knownDefs model0)
   where
-    eqs = props >>= runProperty (Set.toList (universe model0))
+    eqs = props >>= runProperty univ
 
 solveEqs :: (Ord a, Language f, Model f a model)
   => [(Term f a, Term f a)]
@@ -154,7 +155,7 @@ solveBody eqs knownDefs model0 = do
     loop eg m = case whatToGuess eg of
       [] -> pure m
       (fa : _) -> do
-        a <- choose $ Set.toList (guess fa m)
+        a <- choose $ guess fa m
         (eg', m') <- syncLoop eg m [defToEq (fa, a)] 
         loop eg' m'
 
