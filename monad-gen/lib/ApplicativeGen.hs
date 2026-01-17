@@ -49,7 +49,6 @@ import ModelFinder.Model
 import ModelFinder.Term
 import ModelFinder.Solver
 import ModelFinder.Model.GuessMaskModel
-import qualified Data.Set as Set
 
 data ApplicativeDict f = ApplicativeDict
   { _applicativePure :: forall a. a -> f a,
