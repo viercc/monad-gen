@@ -290,17 +290,19 @@ makeEqAssocLR mon (i, j, k) x =
     ij = op i j
     jk = op j k
 
-genDefTables :: GuessMaskModel Fn Int -> [Eqn] -> [Defn] -> [DefTable Fn Int]
+type ModelImpl = GuessMaskModel Fn Int (SimpleModel Fn Int)
+
+genDefTables :: ModelImpl -> [Eqn] -> [Defn] -> [DefTable Fn Int]
 genDefTables pmodel props defs = modelToDefTable <$> solveEqs props (Map.fromList defs) pmodel
 
-modelToDefTable :: GuessMaskModel Fn Int -> DefTable Fn Int
-modelToDefTable = simpleGuesses . simpleModel
+modelToDefTable :: ModelImpl -> DefTable Fn Int
+modelToDefTable = simpleGuesses . rawModel
 
-makeModel :: Signature -> RawMonoidData -> GuessMaskModel Fn Int
+makeModel :: Signature -> RawMonoidData -> ModelImpl
 makeModel sig _ = GuessMaskModel guessFilter (newSimpleModel univ)
   where
     maxNumX = maximum (0 : V.toList sig)
-    univ = Set.fromList [0 .. maxNumX - 1]
+    univ = [0 .. maxNumX - 1]
 
     guessFilter (LeftFactor i _ _) y = y < sig V.! i
     guessFilter (RightFactor _ j _) y = y < sig V.! j

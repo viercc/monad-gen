@@ -47,7 +47,6 @@ import Data.PTraversable
 import qualified Data.Vector as V
 import Data.Array ((!), Array)
 import qualified Data.Array.Extra as Array
-import qualified Data.Set as Set
 
 import Data.FunctorShape
 import Data.Finitary.Enum
@@ -218,16 +217,18 @@ assocLaw = Property $
       ForAll $ \z ->
         Equals ((con x |*| con y) |*| con z) (con x |*| (con y |*| con z))
 
+type ModelImpl = GuessMaskModel M Int (SimpleModel M Int)
+
 genDefTables :: Int -> (M Int -> Int -> Bool) -> Map (M Int) Int -> [MultTable]
-genDefTables n guessFilter defs = modelToSolution <$> solve [assocLaw] defs model 
+genDefTables n guessFilter defs = modelToSolution <$> solve xs [assocLaw] defs model 
   where
-    xs = Set.fromList [0 .. n - 1]
+    xs = [0 .. n - 1]
     model = GuessMaskModel {
       guessMask = guessFilter,
-      simpleModel = newSimpleModel xs }
+      rawModel = newSimpleModel xs }
 
-modelToSolution :: GuessMaskModel M Int -> MultTable
-modelToSolution = simpleGuesses . simpleModel
+modelToSolution :: ModelImpl -> MultTable
+modelToSolution = simpleGuesses . rawModel
 
 gen :: Int -> Int -> [MultTable]
 gen n e = genDefTables n guessFilter (Map.fromList knownDefs)
