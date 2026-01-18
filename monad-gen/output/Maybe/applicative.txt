@@ -1,8 +1,0 @@
-A_1 = Applicative{
-  baseMonoid = M_3
-  pure 0 = Just 0
-  liftA2 (,) (Nothing) (Nothing) = Nothing
-  liftA2 (,) (Nothing) (Just 0)  = Nothing
-  liftA2 (,) (Just 0) (Nothing)  = Nothing
-  liftA2 (,) (Just 0) (Just 0)   = Just (0,0)
-}

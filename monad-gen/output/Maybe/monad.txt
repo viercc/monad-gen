@@ -1,7 +1,0 @@
-Monad_1 = Monad{
-  baseApplicative = A_1
-  pure 0 = Just 0
-  join $ Nothing       = Nothing
-  join $ Just Nothing  = Nothing
-  join $ Just (Just 0) = Just 0
-}

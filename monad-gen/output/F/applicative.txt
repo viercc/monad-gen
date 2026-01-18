@@ -1,8 +1,0 @@
-A_1 = Applicative{
-  baseMonoid = M_3
-  pure 0 = Fa 0 0
-  liftA2 (,) (F) (F)           = F
-  liftA2 (,) (F) (Fa 0 1)      = F
-  liftA2 (,) (Fa 0 1) (F)      = F
-  liftA2 (,) (Fa 0 1) (Fa 0 1) = Fa (0,0) (1,1)
-}

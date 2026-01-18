@@ -1,4 +1,8 @@
 *.prof
+output/*/monoid.txt
+output/*/applicative.txt
+output/*/monad.txt
+output/*/monad_group.txt
 output/L
 output/W
 output/X
