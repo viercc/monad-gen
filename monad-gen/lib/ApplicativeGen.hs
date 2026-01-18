@@ -2,6 +2,9 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module ApplicativeGen(
   -- * Dict
@@ -12,6 +15,10 @@ module ApplicativeGen(
   ApplicativeData(..),
   genApplicativeData,
   genApplicativeDataFrom,
+
+  -- ** Serialize
+  serializeApplicativeDataList,
+  deserializeApplicativeDataList,
 
   -- * Raw
   RawApplicativeData(..),
@@ -39,7 +46,7 @@ import Data.PTraversable
 import Data.PTraversable.Extra (_indices, skolem)
 import Data.Tuple (swap)
 import Data.Vector qualified as V
-import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData, MonoidData (..), stabilizingPermutations, Permutation (..))
+import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData, MonoidData (..), stabilizingPermutations, Permutation (..), encodeRawMonoidData, decodeRawMonoidData)
 import Data.Equivalence.Monad
 import Control.Exception (assert)
 import Isomorphism
@@ -49,6 +56,10 @@ import ModelFinder.Model
 import ModelFinder.Term
 import ModelFinder.Solver
 import ModelFinder.Model.GuessMaskModel
+import Data.Proxy (Proxy (..))
+import Control.Monad (guard)
+import Text.Read (readMaybe)
+import Data.Finitary.Enum (enum)
 
 data ApplicativeDict f = ApplicativeDict
   { _applicativePure :: forall a. a -> f a,
@@ -90,6 +101,9 @@ data ApplicativeData f = ApplicativeData
     _rawApplicative :: RawApplicativeData
   }
 
+deriving instance Eq (f Ignored) => Eq (ApplicativeData f)
+deriving instance Ord (f Ignored) => Ord (ApplicativeData f)
+
 genApplicativeData :: PTraversable f => [ApplicativeData f]
 genApplicativeData = ApplicativeData env <$> genRawApplicativeData sig
   where
@@ -102,6 +116,93 @@ genApplicativeDataFrom monData = ApplicativeData env <$> genRawApplicativeDataFr
     sig = lengthShape <$> env
     mon = _rawMonoidData monData
 
+-- ** Serialize/deserialize
+
+signatureOf :: forall f proxy. PTraversable f => proxy f -> [Int]
+signatureOf _ = lengthShape <$> (enum :: [Shape f])
+
+serializeApplicativeDataList :: forall f. PTraversable f => [ApplicativeData f] -> [String]
+serializeApplicativeDataList apData =
+  show (signatureOf @f Proxy) : map (show . encodeApplicativeData) (sort apData)
+
+deserializeApplicativeDataList :: forall f. PTraversable f => [String] -> Either String [ApplicativeData f]
+deserializeApplicativeDataList [] = Left "No signature"
+deserializeApplicativeDataList (sigStr : records) =
+  do readSig
+     traverse parseMonadData (zip [2..] records)
+  where
+    readSig :: Either String ()
+    readSig = case readMaybe sigStr of
+      Nothing -> Left "parse error at signature"
+      Just sig
+        | sig == expectedSig -> Right ()
+        | otherwise -> Left "signature mismatch"
+
+    expectedSig :: [Int]
+    expectedSig = signatureOf (Proxy :: Proxy f)
+
+    parseMonadData :: (Int, String) -> Either String (ApplicativeData f)
+    parseMonadData (lineNo, str) = case readMaybe str of
+      Nothing -> Left $ "parse error at line " ++ show lineNo
+      Just code -> case decodeApplicativeData code of
+        Nothing -> Left $ "non well-formed ApplicativeData at line " ++ show lineNo
+        Just md -> Right md
+
+type ApplicativeCode = (Int, [Int], [[Int]], [[Int]])
+
+encodeApplicativeData :: ApplicativeData f -> ApplicativeCode
+encodeApplicativeData (ApplicativeData _ raw) = (unitElem, multTable, leftFactor, rightFactor)
+  where
+    (unitElem, multTable) = encodeRawMonoidData (_baseMonoid raw)
+    leftFactor = V.toList <$> Array.elems (_leftFactorTable raw)
+    rightFactor = V.toList <$> Array.elems (_rightFactorTable raw)
+
+decodeApplicativeData :: forall f. PTraversable f => ApplicativeCode -> Maybe (ApplicativeData f)
+decodeApplicativeData (unitElem, multTable, leftFactor, rightFactor) = do
+  rawMonoid <- decodeRawMonoidData n (unitElem, multTable)
+  let factorLens = Array.assocs (factorLenTable rawMonoid)
+  guard validLength
+  leftFactor' <- Array.listArray ((0,0),(n-1,n-1)) <$>
+    sequenceA (zipWith makeLeftFactor factorLens leftFactor)
+  rightFactor' <- Array.listArray ((0,0),(n-1,n-1)) <$>
+    sequenceA (zipWith makeRightFactor factorLens rightFactor)
+  let rawApplicative = RawApplicativeData {
+        _signature = sig,
+        _baseMonoid = rawMonoid,
+        _leftFactorTable = leftFactor',
+        _rightFactorTable = rightFactor'
+      }
+  pure ApplicativeData{
+      _applicativeShapeTable = env,
+      _rawApplicative = rawApplicative
+    }
+  where
+    (env, sig) = makeEnv lengthShape
+    n = length sig
+    tableRange = ((0,0),(n-1,n-1))
+
+    factorLenTable rawMonoid = Array.genArray tableRange $
+      \ij -> sig V.! (_multTable rawMonoid Array.! ij)
+    
+    makeLeftFactor ((i,_), m) ks
+      | valid = Just (V.fromListN m ks)
+      | otherwise = Nothing
+      where
+        targetLen = sig V.! i
+        checkRange k = 0 <= k && k < targetLen
+        valid = length ks == m && all checkRange ks
+    makeRightFactor ((_,j), m) ks
+      | valid = Just (V.fromListN m ks)
+      | otherwise = Nothing
+      where
+        targetLen = sig V.! j
+        checkRange k = 0 <= k && k < targetLen
+        valid = length ks == m && all checkRange ks
+    
+    validLength =
+      length leftFactor == n * n &&
+      length rightFactor == n * n
+
 -- * Raw applicatives
 
 data RawApplicativeData = RawApplicativeData
@@ -110,7 +211,7 @@ data RawApplicativeData = RawApplicativeData
     _leftFactorTable :: FactorTable,
     _rightFactorTable :: FactorTable
   }
-  deriving Show
+  deriving (Eq, Ord, Show)
 
 type FactorTable = Array (Int, Int) (V.Vector Int)
 

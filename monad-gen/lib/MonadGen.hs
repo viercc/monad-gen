@@ -107,7 +107,9 @@ deserializeMonadDataList (sigStr : records) =
         Nothing -> Left $ "non well-formed MonadData at line " ++ show lineNo
         Just md -> Right md
 
-encodeMonadData :: forall f. PTraversable f => MonadData f -> (Int, [(Int, [Int])])
+type MonadCode = (Int, [(Int, [Int])])
+
+encodeMonadData :: forall f. PTraversable f => MonadData f -> MonadCode
 encodeMonadData (MonadData pureShape joinNM) = (reindex pureShape, encodeEntry <$> joinEntries)
   where
     fIndex :: Set.Set (Shape f)
@@ -118,7 +120,7 @@ encodeMonadData (MonadData pureShape joinNM) = (reindex pureShape, encodeEntry <
     joinEntries = [ res | Shape ff1 <- NM.keys joinNM, Just res <- [ NM.lookup (_indices ff1) joinNM ] ]
     encodeEntry fn = (reindex (Shape fn), toList fn)
 
-decodeMonadData :: forall f. PTraversable f => (Int, [(Int, [Int])]) -> Maybe (MonadData f)
+decodeMonadData :: forall f. PTraversable f => MonadCode -> Maybe (MonadData f)
 decodeMonadData (pureIdx, joinData) = MonadData <$> mpureShape <*> mjoinNM
   where
     f1 :: V.Vector (f Int)

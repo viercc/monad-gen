@@ -14,6 +14,14 @@ module MonoidGen(
   genMonoidsForMonad,
   prettyMonoidData,
 
+  -- ** Serialization
+  serializeMonoidDataList,
+  deserializeMonoidDataList,
+
+  MonoidCode,
+  encodeRawMonoidData,
+  decodeRawMonoidData,
+
   -- * Raw monoids
   RawMonoidData(..),
   prettyRawMonoidData,
@@ -58,6 +66,7 @@ import ModelFinder.Term
 import ModelFinder.Model
 import ModelFinder.Model.GuessMaskModel
 import ModelFinder.Solver
+import Text.Read (readMaybe)
 
 -- * MonoidDict
 
@@ -88,6 +97,65 @@ data MonoidData a = MonoidData
     _elemTable :: V.Vector a,
     _rawMonoidData :: RawMonoidData
   }
+
+serializeMonoidDataList :: (a -> Int) -> [MonoidData a] -> [String]
+serializeMonoidDataList _ [] = []
+serializeMonoidDataList sig mds@(d : _) =
+  show (V.toList (V.map sig (_elemTable d)))
+    : map (show . encodeRawMonoidData . _rawMonoidData) mds
+
+deserializeMonoidDataList :: V.Vector a -> [String] -> Either String (V.Vector (a, Int), [MonoidData a])
+deserializeMonoidDataList _ [] = Left "No signature"
+deserializeMonoidDataList elemTable (sigStr : records) =
+  do sig <- readSig
+     let sigtab = V.zip elemTable sig
+     rawMonoids <- traverse parseRawMonoidData (zip [2..] records)
+     pure (sigtab, map (MonoidData elemTable) rawMonoids)
+  where
+    n :: Int
+    n = V.length elemTable
+
+    readSig :: Either String (V.Vector Int)
+    readSig = case readMaybe sigStr of
+      Nothing -> Left "parse error at signature"
+      Just sig
+        | n `lengthEq` sig -> Right $ V.fromListN n sig
+        | otherwise -> Left "wrong length for the signarue"
+
+    parseRawMonoidData :: (Int, String) -> Either String RawMonoidData
+    parseRawMonoidData (lineNo, str) = case readMaybe str of
+      Nothing -> Left $ "parse error at line " ++ show lineNo
+      Just code -> case decodeRawMonoidData n code of
+        Nothing -> Left $ "non well-formed MonadData at line " ++ show lineNo
+        Just md -> Right md
+
+type MonoidCode = (Int, [Int])
+
+encodeRawMonoidData :: RawMonoidData -> MonoidCode
+encodeRawMonoidData rmd = (_unitElem rmd, Array.elems (_multTable rmd))
+
+decodeRawMonoidData :: Int -> MonoidCode -> Maybe RawMonoidData
+decodeRawMonoidData n (unitElem, multTableList)
+  | valid = Just result
+  | otherwise = Nothing
+  where
+    multTable = Array.listArray ((0,0),(n-1,n-1)) multTableList
+    result = RawMonoidData n unitElem multTable
+    rangeCheck x = 0 <= x && x < n
+    valid = rangeCheck unitElem
+      && all rangeCheck multTableList
+      && (n * n) `lengthEq` multTableList
+
+-- Correctly lazy @n == length as@
+lengthEq :: Int -> [a] -> Bool
+lengthEq n as
+  | n < 0 = False
+  | n == 0 = null as
+  | otherwise = case drop (n - 1) as of
+      [_] -> True
+      _ -> False
+
+-- * Generation
 
 genMonoids :: (Enum a) => [MonoidData a]
 genMonoids = genMonoidsWithSig (const 1)
@@ -141,7 +209,7 @@ data RawMonoidData = RawMonoidData {
   _unitElem :: Int,
   _multTable :: Array (Int,Int) Int
   }
-  deriving Show
+  deriving (Eq, Ord, Show)
 
 prettyRawMonoidData :: String -> RawMonoidData -> [String]
 prettyRawMonoidData monName raw =
