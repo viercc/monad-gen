@@ -332,13 +332,25 @@ applicativeToJoin apDict = guard isFeasible *> joinMap
     env = buildInitialEnv
     f1 = _f1 env
     isFeasible = length f1 == 1 || not (null (_applicativePure apDict ()))
-    joinMap = NM.fromEntries <$> sequenceA entries
-    entries = do
+    joinMap = do
+      apDefsMap <- mapFromListUnique apDefs
+      entries <- traverse (uncurry NM.makeEntry) (Map.toList apDefsMap)
+      pure $ NM.fromEntries entries
+    apDefs = do
       fi <- V.toList f1
       fj <- V.toList f1
       let lhs = Comp1 $ fmap (\i -> (i,) <$> fj) fi
           rhs = _applicativeLiftA2 apDict (,) fi fj
-      pure $ NM.makeEntry lhs rhs
+      [(lhs, rhs)]
+
+-- Map.fromList but the values for the repeated keys must be unique
+mapFromListUnique :: (Ord k, Eq v) => [(k,v)] -> Maybe (Map.Map k v)
+mapFromListUnique = foldlM step Map.empty
+  where
+    step m (k,v) = Map.alterF (checkedInsert v) k m
+    checkedInsert newV old = case old of
+      Nothing -> Just (Just newV)
+      Just oldV -> old <$ guard (newV == oldV)
 
 testAssociativityShape :: PTraversable f => Join f -> k -> f (f (f Int)) -> Maybe (Rel (BlockerKey f) k, [Def f Int])
 testAssociativityShape join0 k fa = first toRel <$> associativityShape join0 fa
