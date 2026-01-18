@@ -134,14 +134,19 @@ monadGen
   :: forall f.
     ( forall a. (Show a) => Show (f a), PTraversable f)
   => [ (String, ApplicativeData f) ]
+  -> Bool
   -> (String -> IO ())
   -> IO [(String, MonadData f)]
-monadGen applicatives println = do
+monadGen applicatives useBJ println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
+      generator
+        | useBJ     = \apDict -> moduloIso apDict (genFromApplicativeViaBinaryJoin apDict)
+        | otherwise = genFromApplicativeModuloIso 
+      
       monads :: [ (String, MonadData f) ]
       monads = do
         (apName, apData) <- applicatives
-        monadData <- genFromApplicativeModuloIso (makeApplicativeDict apData)
+        monadData <- generator (makeApplicativeDict apData)
         pure (apName, monadData)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadData)) -> do
     let dict = makeMonadDict monadData
@@ -231,7 +236,17 @@ generateAllToDir name outDir = do
   createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
   monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
   applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
-  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives
+  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives False
+  writeFile (outDir ++ "/monad_data") $ unlines $ serializeMonadDataList (snd <$> monads)
+
+generateAllToDir_BJ
+  :: (PTraversable f, forall a. Show a => Show (f a))
+  => Proxy f -> FilePath -> IO ()
+generateAllToDir_BJ name outDir = do
+  createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
+  monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
+  applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
+  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives True
   writeFile (outDir ++ "/monad_data") $ unlines $ serializeMonadDataList (snd <$> monads)
 
 generateAllAndGroupsToDir
@@ -241,13 +256,19 @@ generateAllAndGroupsToDir name outDir = do
   createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
   monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
   applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
-  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives
+  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives False
   writeFile (outDir ++ "/monad_data") $ unlines $ serializeMonadDataList (snd <$> monads)
   writeFile' (outDir ++ "/monad_group.txt") $ monadGenGroup applicatives
 
 target :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
   => Proxy f -> (String, IO ())
 target name = (nameStr, generateAllToDir name ("output/" ++ nameStr))
+  where
+    nameStr = show (someTypeRep name)
+
+targetBJ :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
+  => Proxy f -> (String, IO ())
+targetBJ name = (nameStr ++ "-bj", generateAllToDir_BJ name ("output/" ++ nameStr))
   where
     nameStr = show (someTypeRep name)
 
@@ -269,6 +290,13 @@ targets = Map.fromList
     target @H Proxy,
     target @I Proxy,
     target @I' Proxy,
+
+    targetBJ @F Proxy,
+    targetBJ @G Proxy,
+    targetBJ @H Proxy,
+    targetBJ @I Proxy,
+    targetBJ @I' Proxy,
+
     target @J Proxy,
     target @K Proxy,
     target @L Proxy,

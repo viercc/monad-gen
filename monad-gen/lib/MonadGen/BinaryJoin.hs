@@ -39,7 +39,7 @@ import ModelFinder.Model ( Model(..) )
 import ModelFinder.Term
 import ModelFinder.Solver ( solveEqs )
 
-import Data.PTraversable.Extra (_indices, _zipMatchWith, shapes)
+import Data.PTraversable.Extra (_indices, _zipMatchWith, shapes, skolem)
 
 import qualified Data.BoolSet as BoolSet
 import GHC.Generics ((:.:) (..))
@@ -56,52 +56,75 @@ j :: Term J x -> Term J x -> Term J x -> Term J x
 j x y0 y1 = fun (J x y0 y1)
 
 -- Associativity of j
-jAssoc :: ((x,x,x), x, x) -> (Term J x, Term J x)
-jAssoc ((x, y0, y1), z0, z1) = (lhs, rhs)
+assocEqs :: PTraversable f => [(Term J (f Bool), Term J (f Bool))]
+assocEqs = assocEq <$> f2 <*> f2 <*> f2 <*> f2 <*> f2
   where
-    lhs = j (j x' y0' y1') z0' z1'
-    rhs = j x' (j y0' z0' z1') (j y1' z0' z1')
-
-    x' = con x
-    y0' = con y0
-    y1' = con y1
-    z0' = con z0
-    z1' = con z1
+    f2 = con <$> enum1 [False, True]
+    assocEq x y0 y1 z0 z1 = (lhs, rhs)
+      where
+        lhs = j (j x y0 y1) z0 z1
+        rhs = j x (j y0 z0 z1) (j y1 z0 z1)
 
 -- naturality w.r.t. not
-jNot :: Functor f => (f Bool, f Bool, f Bool) -> (Term J (f Bool), Term J (f Bool))
-jNot (x, y0, y1) = (lhs, rhs)
+notEqs :: PTraversable f => [(Term J (f Bool), Term J (f Bool))]
+notEqs = do
+  x <- f2
+  let x' = not <$> x
+  guard (x <= x')
+  notEq (con x) (con x') <$> (con <$> f2) <*> (con <$> f2)
   where
-    lhs = j (con x) (con y0) (con y1)
-    rhs = j (con (not <$> x)) (con y1) (con y0)
+    f2 = enum1 [False, True]
+    notEq x x' y0 y1 = (j x y0 y1, j x' y1 y0)
 
 -- naturality w.r.t. constant join
-jConst :: Functor f => Shape f -> f Bool -> f Bool -> (Term J (f Bool), Term J (f Bool))
-jConst (Shape x_) y0 y1 = (lhs, rhs)
+constEqs :: PTraversable f => [(Term J (f Bool), Term J (f Bool))]
+constEqs = constEq <$> f1 <*> f2 <*> f2
   where
-    x' = con (False <$ x_)
-    lhs = j x' (con y0) (con y1)
-    rhs = j x' (con y0) (con y0)
+    f1 = con <$> enum1 [False]
+    f2 = con <$> enum1 [False, True]
+    constEq x y0 y1 = (j x y0 y1, j x y0 y0)
 
 -- left unit law
-jUnitLeft :: Functor f => Shape f -> f Bool -> f Bool -> (J (f Bool), f Bool)
-jUnitLeft (Shape u_) y0 y1 = (lhs, rhs)
+unitLeftDefs :: (PTraversable f) => Shape f -> Map.Map (J (f Bool)) (f Bool)
+unitLeftDefs (Shape u_) = Map.fromList $ unitLeftDef <$> f2 <*> f2
   where
-    lhs = J (False <$ u_) y0 y1
-    rhs = y0
+    u = False <$ u_
+    f2 = enum1 [False, True]
+    unitLeftDef y0 y1 = (J u y0 y1, y0)
 
 -- right unit law
-jUnitRight :: Functor f => Shape f -> f Bool -> (J (f Bool), f Bool)
-jUnitRight (Shape u_) x = (lhs, rhs)
+unitRightDefs :: (PTraversable f) => Shape f -> Map.Map (J (f Bool)) (f Bool)
+unitRightDefs (Shape u_) = Map.fromList $ unitRightDef <$> f2
   where
-    lhs = J x (False <$ u_) (True <$ u_)
-    rhs = x
+    u0 = False <$ u_
+    u1 = True <$ u_
+    f2 = enum1 [False, True]
+    unitRightDef x = (J x u0 u1, x)
 
 -- Special case for an empty value
-jZero :: (Traversable f) => Shape f -> [f Bool -> f Bool -> (J (f Bool), f Bool)]
-jZero (Shape z_) = case traverse (const Nothing) z_ of
-  Nothing -> []
-  Just z  -> [\y0 y1 -> (J z y0 y1, z)]
+zeroDefs :: (PTraversable f) => Map.Map (J (f Bool)) (f Bool)
+zeroDefs = Map.fromList $ zeroDef <$> f0 <*> f2 <*> f2
+  where
+    f0 = enum1 []
+    f2 = enum1 [False, True]
+    zeroDef z y0 y1 = (J z y0 y1, z)
+
+apDefs :: forall f. (PTraversable f) => ApplicativeDict f -> Map.Map (J (f Bool)) (f Bool)
+apDefs apDict = Map.fromList $ concat $ jAp <$> f2 <*> fi
+  where
+    f2 = enum1 [False, True]
+    fi = toList skolem
+    
+    _liftA2 :: forall a b c. (a -> b -> c) -> f a -> f b -> f c
+    _liftA2 = _applicativeLiftA2 apDict 
+
+    jAp x y = do
+      (bitmap0, y0) <- boolTable y
+      (bitmap1, y1) <- boolTable y
+      let op b = testBit (bool bitmap0 bitmap1 b)
+          lhs = J x y0 y1
+          rhs = _liftA2 op x y
+      [(lhs, rhs)]
 
 -- Known definitions from Applicative
 
@@ -180,37 +203,23 @@ instance (Traversable f, (forall a. Ord a => Ord (f a))) => Model J (f Bool) (Bi
       unifyAllGuesses g (g' : rest) = do
         g'' <- _zipMatchWith (\x y -> nonEmptyAmb $ BoolSet.intersection x y) g g'
         unifyAllGuesses g'' rest
-      nonEmptyAmb x = x <$ guard (x == BoolSet.empty)
+      nonEmptyAmb x = x <$ guard (x /= BoolSet.empty)
 
 makeBinaryJoinDefs :: Traversable f => (Shape (BinaryJoin f), f Int) -> [(J (f Bool), f Bool)]
-makeBinaryJoinDefs (Shape (BJ x y0 y1), rhs) =
-  do (bitmap0, yBool0) <- boolTable y0
-     (bitmap1, yBool1) <- boolTable y1
-     let bitmap = bitmap0 .|. shiftL bitmap1 (length y0)
-         rhsBool = testBit bitmap <$> rhs
-     pure (J x yBool0 yBool1, rhsBool)
+makeBinaryJoinDefs (Shape bj, rhs) =
+  do (bitmap, BJ x y0 y1) <- boolTable bj
+     let rhsBool = testBit bitmap <$> rhs
+     pure (J x y0 y1, rhsBool)
 
 -- * Generation logic
 
 genFromPure :: forall f. PTraversable f => Shape f -> [PreNatMap (BinaryJoin f) f]
 genFromPure pureShape = joinPreNatMap <$> solveEqs allEqs allDefs model0
   where
-    f1 = shapes
-    f2 = enum1 [False, True]
-
-    fShapes = Shape <$> f1
-    f2triple = (,,) <$> f2 <*> f2 <*> f2
+    fShapes = Shape <$> shapes
     model0 = BinaryJoinModel { allShapes = Set.fromList fShapes, joinPreNatMap = PNM.empty }
     allEqs = constEqs ++ notEqs ++ assocEqs
-    allDefs = Map.unions [unitLeftDefs, unitRightDefs, zeroDefs]
-
-    constEqs = jConst <$> fShapes <*> f2 <*> f2
-    notEqs = jNot <$> f2triple
-    assocEqs = jAssoc <$> ((,,) <$> f2triple <*> f2 <*> f2)
-
-    unitLeftDefs = Map.fromList $ jUnitLeft pureShape <$> f2 <*> f2
-    unitRightDefs = Map.fromList $ jUnitRight pureShape <$> f2    
-    zeroDefs = Map.fromList $ (fShapes >>= jZero) <*> f2 <*> f2
+    allDefs = Map.unions [unitLeftDefs pureShape, unitRightDefs pureShape, zeroDefs]
 
 gen :: forall f. (PTraversable f) => [PreNatMap (BinaryJoin f) f]
 gen = shapes >>= genFromPure . Shape
@@ -218,32 +227,10 @@ gen = shapes >>= genFromPure . Shape
 genFromApplicative :: forall f. (PTraversable f) => ApplicativeDict f -> [PreNatMap (BinaryJoin f) f]
 genFromApplicative apDict = joinPreNatMap <$> solveEqs allEqs allDefs model0
   where
-    f1 = shapes
-    fShapes = Shape <$> f1
-    f2 = enum1 [False, True]
-    f2triple = (,,) <$> f2 <*> f2 <*> f2
+    fShapes = Shape <$> shapes
     model0 = BinaryJoinModel { allShapes = Set.fromList fShapes, joinPreNatMap = PNM.empty }
     allEqs = constEqs ++ notEqs ++ assocEqs
-    allDefs = Map.unions [apDefs, zeroDefs]
-
-    constEqs = jConst <$> fShapes <*> f2 <*> f2
-    notEqs = jNot <$> f2triple
-    assocEqs = jAssoc <$> ((,,) <$> f2triple <*> f2 <*> f2)
-
-    _liftA2 :: forall a b c. (a -> b -> c) -> f a -> f b -> f c
-    _liftA2 = _applicativeLiftA2 apDict 
-
-    apDefs = Map.fromList
-      [ def | x <- f2, y <- f1, def <- jAp x y ]
-    jAp x y = do
-      (bitmap0, y0) <- boolTable y
-      (bitmap1, y1) <- boolTable y
-      let op b = testBit (bool bitmap0 bitmap1 b)
-          lhs = J x y0 y1
-          rhs = _liftA2 op x (_indices y)
-      [(lhs, rhs)]
-    
-    zeroDefs = Map.fromList $ (fShapes >>= jZero) <*> f2 <*> f2
+    allDefs = Map.unions [apDefs apDict, zeroDefs]
 
 binaryJoinToJoin :: (Traversable f, (forall a. Ord a => Ord (f a))) => PreNatMap (BinaryJoin f) f -> PreNatMap (f :.: f) f
 binaryJoinToJoin binaryJoinData = PNM.make (buildEntry <$> PNM.toEntries binaryJoinData)

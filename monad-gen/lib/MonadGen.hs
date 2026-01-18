@@ -20,6 +20,9 @@ module MonadGen
     genMonadsIsoGroups,
   
     genFromApplicative,
+    genFromApplicativeViaBinaryJoin,
+
+    moduloIso,
     genFromApplicativeModuloIso,
     genFromApplicativeIsoGroups,
 
@@ -63,6 +66,9 @@ import Data.Proxy (Proxy(..))
 import Text.Read (readMaybe)
 import qualified Data.PreNatMap as PNM
 import Data.Bifunctor (Bifunctor(..))
+import qualified MonadGen.BinaryJoin as BJ
+import Data.List (sort)
+import Debug.Trace (traceM)
 
 -- Monad dictionary
 
@@ -76,7 +82,7 @@ signatureOf _ = length <$> (shapes :: [f ()])
 
 serializeMonadDataList :: forall f. PTraversable f => [MonadData f] -> [String]
 serializeMonadDataList monadData =
-  show (signatureOf @f Proxy) : map (show . encodeMonadData) monadData
+  show (signatureOf @f Proxy) : map (show . encodeMonadData) (sort monadData)
 
 deserializeMonadDataList :: forall f. PTraversable f => [String] -> Either String [MonadData f]
 deserializeMonadDataList [] = Left "No signature"
@@ -190,8 +196,7 @@ makeMonadDict (MonadData (Shape u) joinMap) =
 type Gen f = ReaderT (Env f) (StateT (GenState f) [])
 
 data Env f = Env
-  { _baseApplicative :: ApplicativeDict f,
-    _f1 :: V.Vector (f Int),
+  { _f1 :: V.Vector (f Int),
     _f2 :: V.Vector (f (f Int)),
     _f3 :: V.Vector (f (f (f Int)))
   }
@@ -204,7 +209,8 @@ type BlockerKey f = (BlockReason, Shape (f :.: f))
 type Blockade f = Rel (BlockerKey f) Int
 
 data GenState f = GenState
-  { _join :: Join f,
+  { _pureShape :: Shape f,
+    _join :: Join f,
     _blockade :: Blockade f
   }
 
@@ -311,31 +317,25 @@ associativity m fffa =
 choose :: (Foldable t) => t a -> Gen f a
 choose = lift . lift . toList
 
-buildInitialEnv :: forall f. PTraversable f => ApplicativeDict f -> Env f
-buildInitialEnv apDict = Env {
-    _baseApplicative = apDict,
+buildInitialEnv :: forall f. PTraversable f => Env f
+buildInitialEnv = Env {
     _f1 = skolem,
     _f2 = skolem2,
     _f3 = skolem3
   }
 
-_pure :: Env f -> a -> f a
-_pure env = _applicativePure (_baseApplicative env)
-
-_liftA2 :: Env f -> (a -> b -> c) -> f a -> f b -> f c
-_liftA2 env = _applicativeLiftA2 (_baseApplicative env)
-
-applicativeToJoin :: (PTraversable f) => Env f -> Maybe (NM.NatMap (f :.: f) f)
-applicativeToJoin env = guard isFeasible *> joinMap
+applicativeToJoin :: (PTraversable f) => ApplicativeDict f -> Maybe (NM.NatMap (f :.: f) f)
+applicativeToJoin apDict = guard isFeasible *> joinMap
   where
+    env = buildInitialEnv
     f1 = _f1 env
-    isFeasible = length f1 == 1 || not (null (_pure env ()))
+    isFeasible = length f1 == 1 || not (null (_applicativePure apDict ()))
     joinMap = NM.fromEntries <$> sequenceA entries
     entries = do
       fi <- V.toList f1
       fj <- V.toList f1
       let lhs = Comp1 $ fmap (\i -> (i,) <$> fj) fi
-          rhs = _liftA2 env (,) fi fj
+          rhs = _applicativeLiftA2 apDict (,) fi fj
       pure $ NM.makeEntry lhs rhs
 
 testAssociativityShape :: PTraversable f => Join f -> k -> f (f (f Int)) -> Maybe (Rel (BlockerKey f) k, [Def f Int])
@@ -348,27 +348,32 @@ testAssociativity join0 k fa = first toRel <$> associativity join0 fa
   where
     toRel = foldMap (\blockKey -> singletonRel blockKey k)
 
-runGen :: forall f r. (PTraversable f) => ApplicativeDict f -> Gen f r -> [(r, GenState f)]
-runGen apDict mr = do
-  join0 <- toList $ PNM.fromNatMap <$> applicativeToJoin env
-  let t1 = uncurry (testAssociativityShape join0)
-      t2 = uncurry (testAssociativity join0)
-  initialResults1 <- toList $ traverse t1 (V.indexed f3)
-  initialResults2 <- toList $ traverse t2 (V.indexed f3)
+firstScan :: (PTraversable f) => Env f -> Join f -> Maybe ([Def f Int], Blockade f)
+firstScan env join0 = do
+  initialResults1 <- traverse t1 (V.indexed f3)
+  initialResults2 <- traverse t2 (V.indexed f3)
   let initialResults = V.toList initialResults1 ++ V.toList initialResults2
       blockade = foldl' unionRel Map.empty (fst <$> initialResults)
       defs = initialResults >>= snd
-      state0 =
+  Just (defs, blockade)
+  where
+    f3 = _f3 env
+    t1 = uncurry (testAssociativityShape join0)
+    t2 = uncurry (testAssociativity join0)
+
+runGen :: forall f r. (PTraversable f) => Shape f -> Join f -> Gen f r -> [(r, GenState f)]
+runGen pureShape join0 mr = do
+  (defs, blockade) <- toList $ firstScan env join0
+  let state0 =
         GenState
-          { _join = join0,
+          { _pureShape = pureShape,
+            _join = join0,
             _blockade = blockade
           }
   runStateT (runReaderT (entryLoop defs >> mr) env) state0
   where
     env :: Env f
-    env = buildInitialEnv apDict
-
-    f3 = _f3 env
+    env = buildInitialEnv
 
 repair :: PTraversable f => BlockerKey f -> Gen f [Def f Int]
 repair (reason, key) = do
@@ -433,20 +438,40 @@ guess (UnknownPos, lhsKey) = do
   entryLoop [(lhs, rhs)]
 
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicative apDict = postproc . snd <$> runGen apDict loop
+genFromApplicative apDict = do
+  apJoin <- toList $ applicativeToJoin apDict
+  postproc . snd <$> runGen pureShape (PNM.fromNatMap apJoin) loop
   where
-    apPure = _applicativePure apDict
+    pureShape = Shape (_applicativePure apDict ())
     loop = do
       blockade <- gets _blockade
       case mostRelated blockade of
         Nothing -> pure ()
         Just lhsKey -> guess lhsKey >> loop
-    postproc finalState = MonadData (Shape (apPure ())) (PNM.toNatMap (_join finalState))
+    postproc finalState = MonadData (_pureShape finalState) (PNM.toNatMap (_join finalState))
 
-genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicativeModuloIso apDict = uniqueByIso isoGenerators $ genFromApplicative apDict
+genFromApplicativeViaBinaryJoin :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
+genFromApplicativeViaBinaryJoin apDict = do
+  let allBinaryJoins = BJ.genFromApplicative apDict
+  traceM $ "#binaryJoin = " ++ show (length allBinaryJoins)
+  binaryJoin <- allBinaryJoins
+  postproc . snd <$> runGen pureShape (BJ.binaryJoinToJoin binaryJoin) loop
+  where
+    pureShape = Shape (_applicativePure apDict ())
+    loop = do
+      blockade <- gets _blockade
+      case mostRelated blockade of
+        Nothing -> pure ()
+        Just lhsKey -> guess lhsKey >> loop
+    postproc finalState = MonadData (_pureShape finalState) (PNM.toNatMap (_join finalState))
+
+moduloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [MonadData f]
+moduloIso apDict = uniqueByIso isoGenerators
   where
     isoGenerators = stabilizingIsomorphisms apDict
+
+genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
+genFromApplicativeModuloIso apDict = moduloIso apDict $ genFromApplicative apDict
 
 genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
 genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict

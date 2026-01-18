@@ -4,7 +4,7 @@
 module ModelFinder.Term(
   -- * Term
   Term, L(..),
-  con, fun, liftFun,
+  con, mapCon, fun, liftFun,
 
   -- * Property
   Property(..),
@@ -30,6 +30,12 @@ type Term f a = Fix (L f a)
 
 con :: a -> Term f a
 con = Fix . Con
+
+mapCon :: Functor f => (a -> b) -> Term f a -> Term f b
+mapCon h = go
+  where
+    go (Fix (Con a)) = Fix (Con (h a))
+    go (Fix (Fun fr)) = Fix (Fun (go <$> fr))    
 
 fun :: f (Term f a) -> Term f a
 fun = Fix . Fun

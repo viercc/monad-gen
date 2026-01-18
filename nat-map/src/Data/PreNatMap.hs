@@ -15,8 +15,8 @@ module Data.PreNatMap(
   
   -- * query
   isFull,
-  fullMatch, match, lookup,
-  lookupShape,
+  fullMatch, match,
+  lookup, lookupWith, lookupShape,
 
   -- * update
   refine, refineShape,
@@ -243,12 +243,20 @@ isFull f (PreNatMap pnm) = maybe False isCompleteLHS $ Map.lookup f pnm
 --   If there are multiple contents of inputs for a content of the output,
 --   'lookup' merges all of the candidate contents using 'Semigroup' operation.
 lookup :: (Semigroup a, Ord (f Ignored), Foldable f, Functor g) => f a -> PreNatMap f g -> Maybe (g a)
-lookup fa (PreNatMap pnm) = do
+lookup = lookupWith id
+
+-- | Query the output of natural transformation for given input @fa :: f a@,
+--   while mapping its contents to another type @b@ with a @Semigroup@ instance.
+--
+-- > lookupWith h fa === lookup (h <$> fa)
+lookupWith :: (Semigroup b, Ord (f Ignored), Foldable f, Functor g) => (a -> b) -> f a -> PreNatMap f g -> Maybe (g b)
+lookupWith h fa (PreNatMap pnm) = do
   pd@(PosData lhs rhs) <- Map.lookup (Shape fa) pnm
-  let funLhs = IntMap.fromListWith (<>) (zip (UV.toList lhs) (toList fa))
-      ga | isCompleteLHS pd = makeRHS (toList fa) pd
+  let bs = h <$> toList fa
+      funLhs = IntMap.fromListWith (<>) (zip (UV.toList lhs) bs)
+      gb | isCompleteLHS pd = makeRHS bs pd
          | otherwise = (funLhs IntMap.!) <$> rhs
-  pure ga
+  pure gb
 
 -- | Looks up only the shape.
 --
