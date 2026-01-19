@@ -21,13 +21,10 @@ module MonadGen.BinaryJoin(
 import Control.Monad (guard)
 import Data.Foldable (Foldable(toList))
 
-import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified Data.Map.Strict as Map
-import qualified Data.Foldable as F
 import Data.Bool (bool)
 import Data.Bits
-import Data.Maybe (mapMaybe)
 
 import qualified Data.PreNatMap as PNM
 import Data.PreNatMap (PreNatMap)
@@ -37,12 +34,13 @@ import ModelFinder.Model ( Model(..) )
 import ModelFinder.Term
 import ModelFinder.Solver ( solveEqs )
 
-import Data.PTraversable.Extra (_indices, _zipMatchWith, shapes, skolem)
+import Data.PTraversable.Extra (_indices, shapes, skolem)
 
-import qualified Data.BoolSet as BoolSet
 import GHC.Generics ((:.:) (..))
 import ApplicativeGen (ApplicativeDict(..))
 import Data.PTraversable (PTraversable, enum1)
+import ModelFinder.Model.PreNatMapModel
+import Data.Bifunctor (Bifunctor(..))
 
 -- * BinaryJoin operation
 
@@ -133,89 +131,54 @@ deriving instance (Show (f Bool), Show (f x)) => Show (BinaryJoin f x)
 deriving instance (Eq (f Bool), Eq (f x)) => Eq (BinaryJoin f x)
 deriving instance (Ord (f Bool), Ord (f x)) => Ord (BinaryJoin f x)
 
-fromJ :: J (f Bool) -> BinaryJoin f Bool
-fromJ (J x y0 y1) = BJ x y0 y1
+b2i :: Bool -> Int
+b2i = bool 0 1
+
+i2b :: Int -> Bool
+i2b = (/= 0)
+
+fromJ :: Functor f => J (f Bool) -> BinaryJoin f Int
+fromJ (J x y0 y1) = b2i <$> BJ x y0 y1
 
 -- * Model for BinaryJoin
 
-data BinaryJoinModel f = BinaryJoinModel
+newtype BinaryJoinModel f = BinaryJoinModel
   {
-    allShapes :: Set (Shape f),
-    joinPreNatMap :: PreNatMap (BinaryJoin f) f
+    joinPreNatMapModel :: PreNatMapModel (BinaryJoin f) f
   }
 
 deriving instance (forall x. Show x => Show (f x), Traversable f) => Show (BinaryJoinModel f)
 
 instance (Traversable f, (forall a. Ord a => Ord (f a))) => Model (J (f Bool)) (f Bool) (BinaryJoinModel f) where
-  guess query m = case PNM.lookup ff (joinPreNatMap m) of
-      Nothing -> [ fa | Shape f <- Set.toList (allShapes m), fa <- traverse (const content) f ]
-      Just fa -> traverse BoolSet.toList fa
-    where
-      ff = BoolSet.singleton <$> fromJ query
-      content = BoolSet.toList . BoolSet.unions $ F.toList ff
-  
-  enterDef js rhs m = do
-    let pnm = joinPreNatMap m
-    (pnm', newFullShapes) <- loop pnm Set.empty js
-    let newDefs = do
-          Shape ff <- Set.toList newFullShapes
-          let lhsInt = _indices ff
-          rhsInt <- toList $ PNM.fullMatch lhsInt pnm'
-          pure (Shape lhsInt, rhsInt)
-    pure (m{ joinPreNatMap = pnm' }, newDefs >>= makeBinaryJoinDefs)
-    where
-      loop pnm newFull [] = pure (pnm, newFull)
-      loop pnm newFull (query : rest) = case PNM.match ff pnm of
-        -- Do nothing for known result
-        Just y -> guard (rhs == y) *> loop pnm newFull rest
-        -- Refine for unknown result
-        Nothing -> do
-          pnm' <- PNM.refine ff rhs pnm
-          let -- If the refine made a "fully known" shape, record it
-              newFull'
-                | PNM.isFull (Shape ff) pnm' = Set.insert (Shape ff) newFull
-                | otherwise = newFull
-          loop pnm' newFull' rest
-        where
-          ff = fromJ query
+  guess query (BinaryJoinModel m) = fmap i2b <$> guess (fromJ query) m
 
-  enterEqs ::
-    [J (f Bool)]
-    -> BinaryJoinModel f
-    -> Maybe (BinaryJoinModel f, [(J (f Bool), f Bool)])
-  enterEqs js m = case guesses of
-    -- No guess is made for js
-    [] -> Just (m, [])
-    (guess0 : guesses') -> do
-        -- Try to unify all guesses
-        commonGuess <- unifyAllGuesses guess0 guesses'
-        case traverse BoolSet.uniqueBool commonGuess of
-          Nothing -> Just (m, [])
-          -- if the guess determines a unique answer,
-          -- 'enterDef'.
-          Just rhs -> enterDef js rhs m
+  enterDef js rhs (BinaryJoinModel m) = postproc <$> enterDef js' rhs' m
     where
-      guessMaybe query = PNM.lookup (BoolSet.singleton <$> fromJ query) (joinPreNatMap m)
-      guesses = mapMaybe guessMaybe js
-      unifyAllGuesses g [] = pure g
-      unifyAllGuesses g (g' : rest) = do
-        g'' <- _zipMatchWith (\x y -> nonEmptyAmb $ BoolSet.intersection x y) g g'
-        unifyAllGuesses g'' rest
-      nonEmptyAmb x = x <$ guard (x /= BoolSet.empty)
+      js' = fromJ <$> js
+      rhs' = b2i <$> rhs
+      postproc = bimap BinaryJoinModel (>>= makeBinaryJoinDefs)
 
-makeBinaryJoinDefs :: Traversable f => (Shape (BinaryJoin f), f Int) -> [(J (f Bool), f Bool)]
-makeBinaryJoinDefs (Shape bj, rhs) =
+  enterEqs js (BinaryJoinModel m) = postproc <$> enterEqs js' m
+    where
+      js' = fromJ <$> js
+      postproc = bimap BinaryJoinModel (>>= makeBinaryJoinDefs)
+
+makeBinaryJoinDefs :: Traversable f => (BinaryJoin f any, f Int) -> [(J (f Bool), f Bool)]
+makeBinaryJoinDefs (bj, rhs) =
   do (bitmap, BJ x y0 y1) <- boolTable bj
      let rhsBool = testBit bitmap <$> rhs
      pure (J x y0 y1, rhsBool)
 
 -- * Generation logic
 
+-- >>> genFromPure (Shape (Just ()))
+-- [make [PreEntry (BJ Nothing Nothing Nothing) Nothing,PreEntry (BJ Nothing Nothing (Just 0)) Nothing,PreEntry (BJ Nothing (Just 0) Nothing) Nothing,PreEntry (BJ Nothing (Just 0) (Just 1)) Nothing,PreEntry (BJ (Just False) Nothing Nothing) Nothing,PreEntry (BJ (Just False) Nothing (Just 0)) Nothing,PreEntry (BJ (Just False) (Just 0) Nothing) (Just 0),PreEntry (BJ (Just False) (Just 0) (Just 1)) (Just 0),PreEntry (BJ (Just True) Nothing Nothing) Nothing,PreEntry (BJ (Just True) Nothing (Just 0)) (Just 0),PreEntry (BJ (Just True) (Just 0) Nothing) Nothing,PreEntry (BJ (Just True) (Just 0) (Just 1)) (Just 1)]]
+
 genFromPure :: forall f. PTraversable f => Shape f -> [PreNatMap (BinaryJoin f) f]
-genFromPure pureShape = joinPreNatMap <$> solveEqs allEqs allDefs model0
+genFromPure pureShape = pnmGuesses . joinPreNatMapModel <$> solveEqs allEqs allDefs model0
   where
     fShapes = Shape <$> shapes
-    model0 = BinaryJoinModel { allShapes = Set.fromList fShapes, joinPreNatMap = PNM.empty }
+    model0 = BinaryJoinModel $ PreNatMapModel { allShapes = Set.fromList fShapes, pnmGuesses = PNM.empty }
     allEqs = constEqs ++ notEqs ++ assocEqs
     allDefs = Map.unions [unitLeftDefs pureShape, unitRightDefs pureShape, zeroDefs]
 
@@ -223,10 +186,10 @@ gen :: forall f. (PTraversable f) => [PreNatMap (BinaryJoin f) f]
 gen = shapes >>= genFromPure . Shape
 
 genFromApplicative :: forall f. (PTraversable f) => ApplicativeDict f -> [PreNatMap (BinaryJoin f) f]
-genFromApplicative apDict = joinPreNatMap <$> solveEqs allEqs allDefs model0
+genFromApplicative apDict = pnmGuesses . joinPreNatMapModel <$> solveEqs allEqs allDefs model0
   where
     fShapes = Shape <$> shapes
-    model0 = BinaryJoinModel { allShapes = Set.fromList fShapes, joinPreNatMap = PNM.empty }
+    model0 = BinaryJoinModel $ PreNatMapModel { allShapes = Set.fromList fShapes, pnmGuesses = PNM.empty }
     allEqs = constEqs ++ notEqs ++ assocEqs
     allDefs = Map.unions [apDefs apDict, zeroDefs]
 

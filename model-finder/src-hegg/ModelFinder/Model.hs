@@ -18,13 +18,14 @@ import Control.Monad (guard)
 import Data.Either (partitionEithers)
 import qualified Data.List as List
 
--- | @model@ represents possible assignments @φ : k -> a@.
+-- | @model@ represents possible assignments @φ :: k -> a@.
 -- 
--- * A model can represent partial assignments
--- * A model can represent existing knowledge about the assignments
+-- * An assignment can be partial
+-- * A model can represent /a priori/ knowledge about the assignments
+--   (e.g. injectivity / "type" restriction / naturality / etc.)
 class Model k a model | model -> k a where
   -- | Get the current possible assignments.
-  -- Returning singleton means the value of @f a@ is already settled.
+  -- Returning singleton means the value of @k@ is already settled.
   -- It can be empty if the model has gotten inconsistent.
   guess :: k -> model -> [a]
 

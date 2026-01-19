@@ -9,8 +9,10 @@ library monad-gen-internal
     Data.PTraversable.Extra,
     Data.Array.Extra,
     Data.BoolSet,
+    Data.Bitmap,
     
     ModelFinder.Model.GuessMaskModel,
+    ModelFinder.Model.PreNatMapModel,
     MonadLaws,
     MonadTerm,
     MonadGen,
