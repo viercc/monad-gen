@@ -82,14 +82,14 @@ choose = SearchM . lift
 maybeToSearch :: Maybe x -> SearchM f a model x
 maybeToSearch = maybe mzero pure
 
-enterDefsM :: Model f a model => [f a] -> a -> SearchM f a model ()
+enterDefsM :: Model (f a) a model => [f a] -> a -> SearchM f a model ()
 enterDefsM fas a = do
   m <- getsModel
   (m', newDefs) <- maybeToSearch $ enterDef fas a m
   putModel m'
   pushWaitingDefs newDefs
 
-enterEqsM :: Model f a model => [f a] -> SearchM f a model ()
+enterEqsM :: Model (f a) a model => [f a] -> SearchM f a model ()
 enterEqsM fas = do
   m <- getsModel
   (m', newDefs) <- maybeToSearch $ enterEqs fas m
@@ -111,7 +111,7 @@ takeAllWaitingDefs :: SearchM f a model [(f a, a)]
 takeAllWaitingDefs = SearchM $ State.state $ \ss ->
   (waitingDefs ss, ss{ waitingDefs = [] })
 
-instance (Ord a, Ord (f a), Traversable f, Model f a model) => AnalysisM (SearchM f a model) (ModelInfo f a) (L f a) where
+instance (Ord a, Ord (f a), Traversable f, Model (f a) a model) => AnalysisM (SearchM f a model) (ModelInfo f a) (L f a) where
   makeA :: L f a (ModelInfo f a) -> SearchM f a model (ModelInfo f a)
   makeA (Con a) = pure $ ModelInfo (Just a) Set.empty
   makeA (Fun fm) = pure $ ModelInfo Nothing fnSet
@@ -151,7 +151,7 @@ instance (Ord a, Ord (f a), Traversable f, Model f a model) => AnalysisM (Search
 
 -- * Model search algorithm
 
-solve :: (Ord a, Language f, Model f a model)
+solve :: (Ord a, Language f, Model (f a) a model)
   => [a]
   -> [Property f]
   -> Map (f a) a
@@ -161,7 +161,7 @@ solve univ props = solveEqs eqs
   where
     eqs = props >>= runProperty univ
 
-solveEqs :: (Ord a, Language f, Model f a model)
+solveEqs :: (Ord a, Language f, Model (f a) a model)
   => [(Term f a, Term f a)]
   -> Map (f a) a
   -> model
@@ -171,7 +171,7 @@ solveEqs eqs knownDefs model0 = snd <$> runSearchM model0 (solveBody eqs knownDe
 -- Shorthand
 type EG f a = EGraph (ModelInfo f a) (L f a)
 
-solveBody :: forall a f model. (Ord a, Language f, Model f a model)
+solveBody :: forall a f model. (Ord a, Language f, Model (f a) a model)
   => [(Term f a, Term f a)]
   -> Map (f a) a
   -> SearchM f a model ()
@@ -188,7 +188,7 @@ solveBody eqs knownDefs = do
         eg' <- syncLoop eg [defToEq (fa, a)] 
         loop eg'
 
-initialize :: (Ord a, Language f, Model f a model)
+initialize :: (Ord a, Language f, Model (f a) a model)
   => [(Term f a, Term f a)]
   -> Map (f a) a
   -> SearchM f a model (EG f a)
@@ -203,7 +203,7 @@ initialize eqs knownDefs = do
     transposedDefs = transposeMap knownDefs
     knownEntries = (\(a, fas) -> (fas, Just a)) <$> Map.toList transposedDefs
 
-updateModelDefs :: (Ord a, Language f, Model f a model)
+updateModelDefs :: (Ord a, Language f, Model (f a) a model)
   => model -> [(Set (f a), Maybe a)] -> Maybe (Map (f a) a, model)
 updateModelDefs m0 entries = loopKnown m0 [] entries
   where
@@ -222,7 +222,7 @@ updateModelDefs m0 entries = loopKnown m0 [] entries
       (m', newDefs) <- enterDef [fa] a m
       loop m' ((fa, a) : acc) (newDefs ++ rest)
 
-syncLoop :: (Ord a, Language f, Model f a model)
+syncLoop :: (Ord a, Language f, Model (f a) a model)
   => EG f a -> [(Term f a, Term f a)] -> SearchM f a model (EG f a)
 syncLoop eg [] = pure eg
 syncLoop eg eqs = do
@@ -246,11 +246,11 @@ whatToGuess = concatMap getConstFunList . sortOn (Down . getParentCount) . filte
 defToEq :: Functor f => (f a, a) -> (Term f a, Term f a)
 defToEq = bimap liftFun con
 
-equateDefs :: (Ord a, Language f, Model f a model)
+equateDefs :: (Ord a, Language f, Model (f a) a model)
   => [(f a, a)] -> EG f a -> SearchM f a model (EG f a)
 equateDefs defs = equateTerms (defToEq <$> defs)
 
-equateTerms :: (Ord a, Language f, Model f a model)
+equateTerms :: (Ord a, Language f, Model (f a) a model)
   => [(Term f a, Term f a)] -> EG f a -> SearchM f a model (EG f a)
 equateTerms [] eg = pure eg
 equateTerms ((lhs, rhs) : rest) eg = do

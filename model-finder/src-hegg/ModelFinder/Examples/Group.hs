@@ -178,7 +178,7 @@ guessGroup sig m = case sig of
     Nothing -> groupUniverse m
     Just bij -> guessBij b bij
 
-instance Ord a => Model GroupSig a (GroupModel a) where
+instance Ord a => Model (GroupSig a) a (GroupModel a) where
   guess :: GroupSig a -> GroupModel a -> [a]
   guess sig m = Set.toList $ guessGroup sig m
   

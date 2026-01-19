@@ -6,8 +6,6 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -148,7 +146,7 @@ data BinaryJoinModel f = BinaryJoinModel
 
 deriving instance (forall x. Show x => Show (f x), Traversable f) => Show (BinaryJoinModel f)
 
-instance (Traversable f, (forall a. Ord a => Ord (f a))) => Model J (f Bool) (BinaryJoinModel f) where
+instance (Traversable f, (forall a. Ord a => Ord (f a))) => Model (J (f Bool)) (f Bool) (BinaryJoinModel f) where
   guess query m = case PNM.lookup ff (joinPreNatMap m) of
       Nothing -> [ fa | Shape f <- Set.toList (allShapes m), fa <- traverse (const content) f ]
       Just fa -> traverse BoolSet.toList fa

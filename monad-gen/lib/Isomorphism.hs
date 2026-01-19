@@ -8,7 +8,7 @@ module Isomorphism(
     makeShapeIsoFactors
 ) where
 
-import Data.List (foldl', permutations)
+import Data.List (permutations)
 import Data.Functor (void)
 import Data.Maybe (mapMaybe)
 import Data.Foldable (toList)

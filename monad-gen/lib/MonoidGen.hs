@@ -285,7 +285,7 @@ assocLaw = Property $
       ForAll $ \z ->
         Equals ((con x |*| con y) |*| con z) (con x |*| (con y |*| con z))
 
-type ModelImpl = GuessMaskModel M Int (SimpleModel M Int)
+type ModelImpl = GuessMaskModel' (M Int) Int
 
 genDefTables :: Int -> (M Int -> Int -> Bool) -> Map (M Int) Int -> [MultTable]
 genDefTables n guessFilter defs = modelToSolution <$> solve xs [assocLaw] defs model 

@@ -390,7 +390,7 @@ makeEqAssocLR mon (i, j, k) x =
     ij = op i j
     jk = op j k
 
-type ModelImpl = GuessMaskModel Fn Int (SimpleModel Fn Int)
+type ModelImpl = GuessMaskModel' (Fn Int) Int
 
 genDefTables :: ModelImpl -> [Eqn] -> [Defn] -> [DefTable Fn Int]
 genDefTables pmodel props defs = modelToDefTable <$> solveEqs props (Map.fromList defs) pmodel
