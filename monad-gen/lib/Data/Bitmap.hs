@@ -37,14 +37,14 @@ union = (.|.)
 intersection :: Bitmap -> Bitmap -> Bitmap
 intersection = (.&.)
 
--- | Unlike @IntSet@ from containers, @(<>) = intersection@.
+-- | Like @IntSet@ from containers, @(<>) = union@.
 instance Semigroup Bitmap where
-  (<>) = intersection
+  (<>) = union
   stimes = stimesIdempotent
 
--- | Unlike @IntSet@ from containers, @(<>) = intersection@.
+-- | Like @IntSet@ from containers, @(<>) = union@.
 instance Monoid Bitmap where
-  mempty = full
+  mempty = empty
 
 -- | Singleton set. Negative arguments are silently ignored.
 singleton :: Int -> Bitmap

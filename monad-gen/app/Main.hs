@@ -25,6 +25,7 @@ import qualified ApplicativeLaws as Ap
 import MonadLaws
 import MonoidGen
 import MonadGen
+import qualified MonadGen2
 
 import Data.Two
 import Targets
@@ -137,10 +138,10 @@ monadGen
   -> Bool
   -> (String -> IO ())
   -> IO [(String, MonadData f)]
-monadGen applicatives useBJ println = do
+monadGen applicatives use2 println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
       generator
-        | useBJ     = \apDict -> moduloIso apDict (genFromApplicativeViaBinaryJoin apDict)
+        | use2      = MonadGen2.genFromApplicativeModuloIso
         | otherwise = genFromApplicativeModuloIso 
       
       monads :: [ (String, MonadData f) ]
@@ -166,7 +167,7 @@ monadGenGroup applicatives println = do
       monads = do
         (apName, apData) <- applicatives
         monadDataGroup <- genFromApplicativeIsoGroups (makeApplicativeDict apData)
-        pure (apName, toList monadDataGroup)
+        pure (apName, monadDataGroup)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadDataGroup)) -> do
     let dicts = makeMonadDict <$> monadDataGroup
         indent = ("  " <>)
@@ -231,8 +232,8 @@ prettyMonadDict = docResult
 
 generateAllToDir
   :: (PTraversable f, forall a. Show a => Show (f a))
-  => Proxy f -> FilePath -> IO ()
-generateAllToDir name outDir = do
+  => Proxy f -> Bool -> FilePath -> IO ()
+generateAllToDir name use2 outDir = do
   createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
   
   monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
@@ -241,7 +242,7 @@ generateAllToDir name outDir = do
   applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
   writeFile (outDir ++ "/applicative_data") $ unlines $ serializeApplicativeDataList (snd <$> applicatives)
   
-  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives False
+  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives use2
   writeFile (outDir ++ "/monad_data") $ unlines $ serializeMonadDataList (snd <$> monads)
 
 generateAllAndGroupsToDir
@@ -263,7 +264,13 @@ generateAllAndGroupsToDir name outDir = do
 
 target :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
   => Proxy f -> (String, IO ())
-target name = (nameStr, generateAllToDir name ("output/" ++ nameStr))
+target name = (nameStr, generateAllToDir name False ("output/" ++ nameStr))
+  where
+    nameStr = show (someTypeRep name)
+
+target2 :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
+  => Proxy f -> (String, IO ())
+target2 name = (nameStr ++ "(2)", generateAllToDir name True ("output/" ++ nameStr))
   where
     nameStr = show (someTypeRep name)
 
@@ -285,6 +292,12 @@ targets = Map.fromList
     target @H Proxy,
     target @I Proxy,
     target @I' Proxy,
+
+    target2 @F Proxy,
+    target2 @G Proxy,
+    target2 @H Proxy,
+    target2 @I Proxy,
+    target2 @I' Proxy,
 
     target @J Proxy,
     target @K Proxy,

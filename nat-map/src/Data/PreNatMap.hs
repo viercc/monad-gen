@@ -8,7 +8,7 @@
 {-# LANGUAGE BangPatterns #-}
 
 module Data.PreNatMap(
-  PreNatMap(), PreEntry(..),
+  PreNatMap(),
 
   -- * initialize
   empty,
@@ -43,6 +43,7 @@ import Data.NatMap (NatMap)
 import qualified Data.NatMap as NM
 
 import TraversableUtil (indices, zipMatch)
+import qualified Data.Set as Set
 
 -- | @PreNatMap f g@ represents a partially known
 --   natural transformation @f ~> g@.
@@ -58,7 +59,7 @@ import TraversableUtil (indices, zipMatch)
 -- 
 -- >>> p1 = refine "foo" "oof" empty
 -- >>> p1
--- Just (make [PreEntry [0,1,1] [1,1,0]])
+-- Just (make [([0,1,1],[1,1,0])])
 --
 -- You can add another example to strengthen the knowledge.
 -- (The monadic bind @'>>='@ is used here because 'refine'
@@ -66,11 +67,11 @@ import TraversableUtil (indices, zipMatch)
 --
 -- >>> p2 = p1 >>= refine "dad" "dad"
 -- >>> p2
--- Just (make [PreEntry [0,1,2] [2,1,0]])
+-- Just (make [([0,1,2],[2,1,0])])
 --
 -- >>> p3 = p2 >>= refine "aabb" "bbaa"
 -- >>> p3
--- Just (make [PreEntry [0,1,2] [2,1,0],PreEntry [0,0,1,1] [1,1,0,0]])
+-- Just (make [([0,1,2],[2,1,0]),([0,0,1,1],[1,1,0,0])])
 --
 -- If you add an example contradicting to existing examples,
 -- 'refine' can fail with @Nothing@.
@@ -138,38 +139,31 @@ data PosData g = PosData
 
 deriving instance (Eq (g Int)) => Eq (PosData g)
 deriving instance (Ord (g Int)) => Ord (PosData g)
+deriving instance (Show (g Int)) => Show (PosData g)
 
 -- * Entry
-
--- | Pair of @f@ and @g@ values representing a part of
---   the learned natural transformation in 'PreNatMap'.
-data PreEntry f g = PreEntry (f Int) (g Int)
-
-deriving instance (Show (f Int), Show (g Int)) => Show (PreEntry f g)
-deriving instance (Eq (f Int), Eq (g Int)) => Eq (PreEntry f g)
-deriving instance (Ord (f Int), Ord (g Int)) => Ord (PreEntry f g)
 
 -- | Empty 'PreNatMap' with no knowledge.
 empty :: PreNatMap f g
 empty = PreNatMap Map.empty
 
--- | Extract @PreNatMap@ as a list of @PreEntry@.
-toEntries :: (Traversable f, Functor g) => PreNatMap f g -> [PreEntry f g]
+-- | Extract @PreNatMap@ as a list of examples.
+toEntries :: (Traversable f, Functor g) => PreNatMap f g -> [(f Int, g Int)]
 toEntries (PreNatMap pnm) = preEntry <$> Map.toList pnm
   where
-    preEntry (Shape f, PosData lhs rhs) = PreEntry fn rhs
+    preEntry (Shape f, PosData lhs rhs) = (fn, rhs)
       where
         fi = indices f
         fn = (lhs UV.!) <$> fi
 
--- | Rebuild from a list of @PreEntry@
-fromEntries :: (Ord (f Ignored), Eq (g Ignored), Foldable f, Traversable g)
-  => [PreEntry f g] -> Maybe (PreNatMap f g)
-fromEntries = foldl' (\mm (PreEntry fn gn) -> mm >>= \ !m -> refine fn gn m) (Just empty)
+-- | Rebuild from a list of examples
+fromEntries :: (Ord (f Ignored), Eq (g Ignored), Foldable f, Traversable g, Ord a)
+  => [(f a, g a)] -> Maybe (PreNatMap f g)
+fromEntries = foldl' (\mm (fa, ga) -> mm >>= \ !m -> refine fa ga m) (Just empty)
 
 -- | 'fromEntries' but raises 'error' on 'Nothing' case.
-make :: (Ord (f Ignored), Eq (g Ignored), Foldable f, Traversable g)
-  => [PreEntry f g] -> PreNatMap f g
+make :: (Ord (f Ignored), Eq (g Ignored), Foldable f, Traversable g, Ord a)
+  => [(f a, g a)] -> PreNatMap f g
 make = fromMaybe (error "make: inconsistent entries") . fromEntries
 
 -- | Convert to 'NatMap' by discarding non-full entries
@@ -318,17 +312,12 @@ makeRHS as (PosData _ gi) =
 functionalRelI :: (Eq a) => [(Int, a)] -> Maybe (IntMap.IntMap a)
 functionalRelI = loop IntMap.empty
   where
-    loop m [] = pure m
-    loop m ((k,v) : rest) = case IntMap.lookup k m of
+    loop !m [] = pure m
+    loop !m ((k,v) : rest) = case IntMap.lookup k m of
       Nothing -> loop (IntMap.insert k v m) rest
       Just v'
         | v == v' -> loop m rest
         | otherwise -> Nothing
-
-makePosData :: (Ord a, Traversable g) => [a] -> g a -> Maybe (PosData g)
-makePosData as ga = do
-  (lhs, rhs) <- toRel as ga
-  pure $ PosData lhs rhs
 
 makeShapePosData :: (Foldable f, Traversable g)
   => Shape f -> Shape g -> Maybe (PosData g)
@@ -339,27 +328,36 @@ makeShapePosData (Shape f) (Shape g)
     lhs = UV.replicate (length f) 0
     rhs = 0 <$ g
 
-refinePosData :: (Ord a, Eq (g Ignored), Traversable g) => PosData g -> [a] -> g a -> Maybe (PosData g)
-refinePosData (PosData lhs rhs) as ga = do
-  ga' <- zipMatch rhs ga
-  (lhs', rhs') <- toRel (zip (UV.toList lhs) as) ga'
-  guard $ UV.length lhs == UV.length lhs'
-  pure $ PosData lhs' rhs'
-
-toRel :: (Ord a, Traversable g) => [a] -> g a -> Maybe (UV.Vector Int, g Int)
-toRel as ga = (,) lhs <$> rhs
+-- >>> makePosData "foo" "bar"
+-- Nothing
+-- >>> makePosData "banana" "anba"
+-- Just (PosData [0,1,2,1,2,1] [1,2,0,1])
+-- >>> makePosData "banana" (Just 'b')
+-- Just (PosData [0,1,2,3,4,5] (Just 0))
+makePosData :: (Ord a, Traversable g) => [a] -> g a -> Maybe (PosData g)
+makePosData as ga = PosData lhs <$> rhs
   where
-    (lhsList, revmap) = reindex as
+    rhsSet = Set.fromList (toList ga)
+    (lhsList, revmap) = reindex (`Set.member` rhsSet) as
     lhs = UV.fromList lhsList
     rhs = traverse (`Map.lookup` revmap) ga
 
-reindex :: (Ord a) => [a] -> ([Int], Map a Int)
-reindex = loop [] Map.empty
+refinePosData :: (Ord a, Eq (g Ignored), Traversable g) => PosData g -> [a] -> g a -> Maybe (PosData g)
+refinePosData (PosData lhs rhs) as ga = do
+  ga' <- zipMatch rhs ga
+  pd@(PosData lhs' _) <- makePosData (zip (UV.toList lhs) as) ga'
+  guard $ UV.length lhs == UV.length lhs'
+  pure pd
+
+reindex :: (Ord a) => (a -> Bool) -> [a] -> ([Int], Map a Int)
+reindex mask = loop 0 Map.empty
   where
-    loop ixAccum rev [] = (reverse ixAccum, rev)
-    loop ixAccum rev (a : rest) = case Map.lookup a rev of
-      Nothing ->
-        let n = Map.size rev
-            rev' = Map.insert a n rev
-        in loop (n : ixAccum) rev' rest
-      Just n -> loop (n : ixAccum) rev rest
+    loop _ rev [] = ([], rev)
+    loop !n !rev (a : rest)
+      | mask a = case Map.lookup a rev of
+          Nothing -> case loop (n + 1) (Map.insert a n rev) rest of
+            ~(ks,rev') -> (n : ks, rev')
+          Just k  -> case loop n rev rest of
+            ~(ks,rev') -> (k : ks, rev')
+      | otherwise = case loop (n + 1) rev rest of
+            ~(ks,rev') -> (n : ks, rev')

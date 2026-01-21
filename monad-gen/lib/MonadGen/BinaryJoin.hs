@@ -34,7 +34,8 @@ import ModelFinder.Model ( Model(..) )
 import ModelFinder.Term
 import ModelFinder.Solver ( solveEqs )
 
-import Data.PTraversable.Extra (_indices, shapes, skolem)
+import Data.Traversable.Extra (indices)
+import Data.PTraversable.Extra (shapes, skolem)
 
 import GHC.Generics ((:.:) (..))
 import ApplicativeGen (ApplicativeDict(..))
@@ -196,7 +197,7 @@ genFromApplicative apDict = pnmGuesses . joinPreNatMapModel <$> solveEqs allEqs 
 binaryJoinToJoin :: (Traversable f, (forall a. Ord a => Ord (f a))) => PreNatMap (BinaryJoin f) f -> PreNatMap (f :.: f) f
 binaryJoinToJoin binaryJoinData = PNM.make (buildEntry <$> PNM.toEntries binaryJoinData)
   where
-    buildEntry (PNM.PreEntry (BJ x y0 y1) rhs) = PNM.PreEntry (Comp1 (bool y0 y1 <$> x)) rhs
+    buildEntry (BJ x y0 y1, rhs) = (Comp1 (bool y0 y1 <$> x), rhs)
 
 -- Utilities
 
@@ -209,5 +210,5 @@ boolTable f
   where
     lenMax = finiteBitSize (0 :: Word) `div` 2
     n = length f
-    fi = _indices f
+    fi = indices f
     mk bitmap = (bitmap, testBit bitmap <$> fi)

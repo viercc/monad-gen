@@ -16,7 +16,9 @@ import Data.Foldable (toList)
 import qualified Data.Vector as V
 import qualified Data.Map as Map
 import Data.PTraversable
-import Data.PTraversable.Extra
+
+import Data.PTraversable.Extra (shapes)
+import Data.Traversable.Extra
 
 import Data.NatMap (NatMap)
 import qualified Data.NatMap as NatMap
@@ -43,7 +45,7 @@ makePositionIso = result
 positionShufflesOf :: PTraversable f => f () -> [Iso f]
 positionShufflesOf f_ = do
     let n = length f_
-        fk = _indices f_
+        fk = indices f_
     perm <- V.fromListN n <$> permutations [0 .. n - 1]
     let perm' = V.backpermute (V.generate n id) perm
         fs = (perm V.!) <$> fk
@@ -56,7 +58,7 @@ makePositionIsoFactors = filter (not . null) $ positionTranspositionsOf <$> shap
 positionTranspositionsOf :: PTraversable f => f () -> [Iso f]
 positionTranspositionsOf f_ = do
     let n = length f_
-        fk = _indices f_
+        fk = indices f_
     k <- [0 .. n - 2]
     let fk' = fmap (tp k) fk
         iso = shuffleNatAt fk'
@@ -105,6 +107,6 @@ adjacents :: [b] -> [(b,b)]
 adjacents bs = zip bs (drop 1 bs)
 
 insertSym :: (PTraversable f) => f () -> f () -> NatMap f f -> NatMap f f
-insertSym fKey fVal = case NatMap.makeEntry (_indices fKey) (_indices fVal) of
+insertSym fKey fVal = case NatMap.makeEntry (indices fKey) (indices fVal) of
     Nothing -> id
     Just e -> NatMap.insert e

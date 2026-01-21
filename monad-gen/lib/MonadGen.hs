@@ -3,18 +3,14 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TupleSections #-}
 
 module MonadGen
   (
-    MonadDict(..),
-    makeMonadDict,
+    module MonadData,
 
-    MonadData(..),
     genMonads,
     genMonadsModuloIso,
     genMonadsIsoGroups,
@@ -26,10 +22,6 @@ module MonadGen
     genFromApplicativeModuloIso,
     genFromApplicativeIsoGroups,
 
-    -- * Read/Write
-    serializeMonadDataList,
-    deserializeMonadDataList,
-
     -- * Debug
     GenState (..),
     Gen,
@@ -40,125 +32,42 @@ module MonadGen
   )
 where
 
-import Control.Monad
-import Control.Monad.Reader
-import Control.Monad.State
-import Data.Either.Validation
-import Data.Foldable
+import Data.Either.Validation ( Validation(..) )
+import qualified Data.Foldable as F
 import qualified Data.Map.Lazy as Map
 import qualified Data.Set as Set
+import qualified Data.Vector as V
+import qualified Data.PreNatMap as PNM
+import Data.Bifunctor (Bifunctor(..))
 import Data.Ord (comparing)
+import GHC.Generics ((:.:) (..))
+
+import Control.Monad
+
+import Control.Monad.Reader
+import Control.Monad.State
+
 import Data.PTraversable
 import Data.PTraversable.Extra
-import GHC.Generics ((:.:) (..))
 import Data.FunctorShape
 import qualified Data.NatMap as NM
 
 -- import MonoidGen (MonoidDict(..), genMonoidsForMonad, makeMonoidDict)
 import ApplicativeGen
-import Isomorphism (Iso (..))
-import Data.Equivalence.Monad
 
-import MonadLaws
-import qualified Data.Vector as V
-import Data.Maybe (fromMaybe)
-import Data.Proxy (Proxy(..))
-import Text.Read (readMaybe)
-import qualified Data.PreNatMap as PNM
-import Data.Bifunctor (Bifunctor(..))
-import qualified MonadGen.BinaryJoin as BJ
-import Data.List (sort)
 import Debug.Trace (traceM)
 
+import MonadData
+import MonadLaws
+import qualified MonadGen.BinaryJoin as BJ
+import Data.Traversable.Extra (indices)
+
 -- Monad dictionary
-
-data MonadData f = MonadData (Shape f) (NM.NatMap (f :.: f) f)
-
-deriving instance (WeakEq f, Eq (f (f Ignored)), Eq (f NM.Var)) => Eq (MonadData f)
-deriving instance (WeakOrd f, Ord (f (f Ignored)), Ord (f NM.Var)) => Ord (MonadData f)
-
-signatureOf :: forall f proxy. PTraversable f => proxy f -> [Int]
-signatureOf _ = length <$> (shapes :: [f ()])
-
-serializeMonadDataList :: forall f. PTraversable f => [MonadData f] -> [String]
-serializeMonadDataList monadData =
-  show (signatureOf @f Proxy) : map (show . encodeMonadData) (sort monadData)
-
-deserializeMonadDataList :: forall f. PTraversable f => [String] -> Either String [MonadData f]
-deserializeMonadDataList [] = Left "No signature"
-deserializeMonadDataList (sigStr : records) =
-  do readSig
-     traverse parseMonadData (zip [2..] records)
-  where
-    readSig :: Either String ()
-    readSig = case readMaybe sigStr of
-      Nothing -> Left "parse error at signature"
-      Just sig
-        | sig == expectedSig -> Right ()
-        | otherwise -> Left "signature mismatch"
-
-    expectedSig :: [Int]
-    expectedSig = signatureOf (Proxy :: Proxy f)
-
-    parseMonadData :: (Int, String) -> Either String (MonadData f)
-    parseMonadData (lineNo, str) = case readMaybe str of
-      Nothing -> Left $ "parse error at line " ++ show lineNo
-      Just monadDataRaw -> case decodeMonadData monadDataRaw of
-        Nothing -> Left $ "non well-formed MonadData at line " ++ show lineNo
-        Just md -> Right md
-
-type MonadCode = (Int, [(Int, [Int])])
-
-encodeMonadData :: forall f. PTraversable f => MonadData f -> MonadCode
-encodeMonadData (MonadData pureShape joinNM) = (reindex pureShape, encodeEntry <$> joinEntries)
-  where
-    fIndex :: Set.Set (Shape f)
-    fIndex = Set.fromList (Shape <$> shapes)
-
-    reindex sh = fromMaybe (-1) $ Set.lookupIndex sh fIndex
-
-    joinEntries = [ res | Shape ff1 <- NM.keys joinNM, Just res <- [ NM.lookup (_indices ff1) joinNM ] ]
-    encodeEntry fn = (reindex (Shape fn), toList fn)
-
-decodeMonadData :: forall f. PTraversable f => MonadCode -> Maybe (MonadData f)
-decodeMonadData (pureIdx, joinData) = MonadData <$> mpureShape <*> mjoinNM
-  where
-    f1 :: V.Vector (f Int)
-    f1 = skolem
-    f2 :: V.Vector (f (f Int))
-    f2 = skolem2
-
-    mpureShape = Shape <$> (f1 V.!? pureIdx)
-    mkEntry (ffn, (rhsIndex, rhsVars)) = 
-      do rhsSkolem <- f1 V.!? rhsIndex
-         guard (length rhsSkolem == length rhsVars)
-         let rhs = fmap (rhsVars !!) rhsSkolem
-         NM.makeEntry (Comp1 ffn) rhs
-    mjoinNM = do
-      joinNM <- NM.fromEntries <$> traverse mkEntry (zip (V.toList f2) joinData)
-      guard (NM.size joinNM == V.length f2)
-      pure joinNM
-
-data MonadDict f =
-  MonadDict {
-    _monadPure :: forall a. a -> f a,
-    _monadJoin :: forall a. f (f a) -> f a
-  }
 
 genMonads :: (PTraversable f, forall a. (Show a) => Show (f a)) => [MonadData f]
 genMonads =
   do apDict <- makeApplicativeDict <$> genApplicativeData
      genFromApplicative apDict
-
-applyIso :: PTraversable f => Iso f -> MonadData f -> MonadData f
-applyIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM' 
-  where
-    joinNM' =
-      NM.fromEntries $ do
-        (ff1, fx) <- NM.getKeyValue <$> NM.toEntries joinNM
-        let ffx = NM.indices ff1
-        Just e' <- [ NM.makeEntry (Comp1 . g . fmap g . unComp1 $ ffx) (g fx) ]
-        pure e'
 
 genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
 genMonadsModuloIso = do
@@ -168,30 +77,7 @@ genMonadsModuloIso = do
 genMonadsIsoGroups :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [[MonadData f]]
 genMonadsIsoGroups = 
   do apDict <- makeApplicativeDict <$> genApplicativeData
-     isoGroup <- genFromApplicativeIsoGroups apDict
-     pure (Set.toList isoGroup)
-
-uniqueByIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a))
-  => [Iso f] -> [MonadData f] -> [MonadData f]
-uniqueByIso isoGenerators allMonadData = runEquivM id min $ do
-    for_ allMonadData $ \mm -> equate mm mm
-    for_ allMonadData $ \mm ->
-      equateAll (mm : [ applyIso iso mm | iso <- isoGenerators ])
-    classes >>= traverse desc
-
-groupByIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a))
-  => [Iso f] -> [MonadData f] -> [Set.Set (MonadData f)]
-groupByIso isoGenerators allMonadData = runEquivM Set.singleton Set.union $ do
-    for_ allMonadData $ \mm -> equate mm mm
-    for_ allMonadData $ \mm ->
-      equateAll (mm : [ applyIso iso mm | iso <- isoGenerators ])
-    classes >>= traverse desc
-
-makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f
-makeMonadDict (MonadData (Shape u) joinMap) = 
-    case NM.toTotal joinMap of
-      Nothing -> error "well..."
-      Just theJoin -> MonadDict (<$ u) (NM.unwrapNT theJoin . Comp1)
+     genFromApplicativeIsoGroups apDict
 
 -- Generation
 
@@ -317,7 +203,7 @@ associativity m fffa =
     Failure blockades -> Just (blockades, [])
 
 choose :: (Foldable t) => t a -> Gen f a
-choose = lift . lift . toList
+choose = lift . lift . F.toList
 
 buildInitialEnv :: forall f. PTraversable f => Env f
 buildInitialEnv = Env {
@@ -345,7 +231,7 @@ applicativeToJoin apDict = guard isFeasible *> joinMap
 
 -- Map.fromList but the values for the repeated keys must be unique
 mapFromListUnique :: (Ord k, Eq v) => [(k,v)] -> Maybe (Map.Map k v)
-mapFromListUnique = foldlM step Map.empty
+mapFromListUnique = F.foldlM step Map.empty
   where
     step m (k,v) = Map.alterF (checkedInsert v) k m
     checkedInsert newV old = case old of
@@ -377,7 +263,7 @@ firstScan env join0 = do
 
 runGen :: forall f r. (PTraversable f) => Shape f -> Join f -> Gen f r -> [(r, GenState f)]
 runGen pureShape join0 mr = do
-  (defs, blockade) <- toList $ firstScan env join0
+  (defs, blockade) <- F.toList $ firstScan env join0
   let state0 =
         GenState
           { _pureShape = pureShape,
@@ -453,7 +339,7 @@ guess (UnknownPos, lhsKey) = do
 
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicative apDict = do
-  apJoin <- toList $ applicativeToJoin apDict
+  apJoin <- F.toList $ applicativeToJoin apDict
   postproc . snd <$> runGen pureShape (PNM.fromNatMap apJoin) loop
   where
     pureShape = Shape (_applicativePure apDict ())
@@ -487,7 +373,7 @@ moduloIso apDict = uniqueByIso isoGenerators
 genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicativeModuloIso apDict = moduloIso apDict $ genFromApplicative apDict
 
-genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
+genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [[MonadData f]]
 genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict
   where
     isoGenerators = stabilizingIsomorphisms apDict
@@ -495,7 +381,7 @@ genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicati
 -- * Utilities
 
 keyIndices :: Traversable f => Shape f -> f Int
-keyIndices (Shape f1) = _indices f1
+keyIndices (Shape f1) = indices f1
 
 -- Relation data structure
 
@@ -517,4 +403,4 @@ mostRelated m
   | Map.null m = Nothing
   | otherwise = Just kTop
   where
-    (kTop, _) = maximumBy (comparing (Set.size . snd)) $ Map.toList m
+    (kTop, _) = F.maximumBy (comparing (Set.size . snd)) $ Map.toList m

@@ -6,16 +6,19 @@ cabal-version:       2.0
 library monad-gen-internal
   hs-source-dirs: lib
   exposed-modules:
+    Data.Traversable.Extra,
     Data.PTraversable.Extra,
     Data.Array.Extra,
     Data.BoolSet,
     Data.Bitmap,
+    EquivalenceUtil,
     
     ModelFinder.Model.GuessMaskModel,
     ModelFinder.Model.PreNatMapModel,
     MonadLaws,
-    MonadTerm,
+    MonadData,
     MonadGen,
+    MonadGen2,
     MonadGen.BinaryJoin,
     Isomorphism,
     MonoidGen,
@@ -28,6 +31,7 @@ library monad-gen-internal
       base >= 4.18 && < 5
     , contravariant >= 1.5
     , array >= 0.5.5
+    , hashable
     , profunctors
     , vector
     , containers

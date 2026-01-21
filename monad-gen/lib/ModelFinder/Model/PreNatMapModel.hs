@@ -28,7 +28,7 @@ import Data.PreNatMap (PreNatMap)
 import Data.FunctorShape ( Shape(..), Ignored )
 import ModelFinder.Model ( Model(..) )
 
-import Data.PTraversable.Extra (_indices, _zipMatchWith)
+import Data.Traversable.Extra (indices, zipMatchWith)
 
 -- * BinaryJoin operation
 
@@ -59,7 +59,7 @@ instance
     (pnm', newFullShapes) <- loop pnm Set.empty fas
     let newDefs = do
           Shape f <- Set.toList newFullShapes
-          let lhsInt = _indices f
+          let lhsInt = indices f
           rhsInt <- toList $ PNM.fullMatch lhsInt pnm'
           pure (lhsInt, rhsInt)
     pure (m{ pnmGuesses = pnm' }, newDefs)
@@ -95,6 +95,6 @@ instance
       guesses = mapMaybe guessMaybe fas
       unifyAllGuesses g [] = pure g
       unifyAllGuesses g (g' : rest) = do
-        g'' <- _zipMatchWith (\x y -> nonEmpty $ Bitmap.intersection x y) g g'
+        g'' <- zipMatchWith (\x y -> nonEmpty $ Bitmap.intersection x y) g g'
         unifyAllGuesses g'' rest
       nonEmpty x = x <$ guard (not (Bitmap.null x))

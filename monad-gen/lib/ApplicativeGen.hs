@@ -43,7 +43,8 @@ import Data.Foldable (toList, for_)
 import Data.FunctorShape
 import Data.Map.Strict qualified as Map
 import Data.PTraversable
-import Data.PTraversable.Extra (_indices, skolem)
+import Data.Traversable.Extra (indices)
+import Data.PTraversable.Extra (skolem)
 import Data.Tuple (swap)
 import Data.Vector qualified as V
 import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, prettyRawMonoidData, MonoidData (..), stabilizingPermutations, Permutation (..), encodeRawMonoidData, decodeRawMonoidData)
@@ -89,7 +90,7 @@ makeApplicativeDict (ApplicativeData table raw) =
         my = reverseTable Map.! Shape y
         mz = op mx my
         zi = case table V.! mz of
-          Shape z1 -> _indices z1
+          Shape z1 -> indices z1
         cs i =
           let j = leftFactor mx my i
               k = rightFactor mx my i
