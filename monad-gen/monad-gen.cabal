@@ -55,6 +55,7 @@ executable monad-gen
   build-depends:
       base >= 4.18 && < 5
     , ansi-terminal
+    , optparse-applicative
     , directory
     , containers
     , cartesian-profunctors

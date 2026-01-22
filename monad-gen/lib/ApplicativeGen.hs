@@ -449,7 +449,7 @@ upToIso sig mon tabs = runEquivM id min $ do
     equate mm mm
   for_ tabs $ \mm -> do
     for_ (stabilizingPermutations sig mon) $ \perms ->
-      equateAll (applyShapePermutation <$> perms <*> [mm])
+      equateAll (mm : (applyShapePermutation <$> perms <*> [mm]))
     equateAll (mm : (applyTransposition op <$> isoGenerators sig <*> [mm]))
   classes >>= traverse desc
   where

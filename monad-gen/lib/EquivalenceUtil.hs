@@ -6,6 +6,7 @@ import Data.Foldable (for_)
 import Data.Equivalence.Monad
 
 import qualified Data.Set as Set
+import Data.Set (Set)
 
 {-|
 Given a list of functions @fs = [f, g, ...]@ and a list of values @as = [a1, a2, ...]@,
@@ -31,8 +32,8 @@ uniqueUpTo isoGenerators as = runEquivM id min $ do
   for_ as $ \a -> equateAll (a : map ($ a) isoGenerators)
   classes >>= traverse desc
 
-groupUpTo :: Ord a => [a -> a] -> [a] -> [[a]]
-groupUpTo isoGenerators as = fmap Set.toList $ runEquivM Set.singleton Set.union $ do
+groupUpTo :: Ord a => [a -> a] -> [a] -> [Set a]
+groupUpTo isoGenerators as = runEquivM Set.singleton Set.union $ do
   for_ as $ \a -> equateAll (a : map ($ a) isoGenerators)
   classes >>= traverse desc
 
@@ -62,7 +63,7 @@ uniqueUpToH isoGenerators as = unhashed <$> uniqueUpTo isoGenerators' as'
     isoGenerators' = (\f -> hashed . f . unhashed) <$> isoGenerators
 
 groupUpToH :: (Hashable a, Ord a) => [a -> a] -> [a] -> [[a]]
-groupUpToH isoGenerators as = fmap unhashed <$> groupUpTo isoGenerators' as'
+groupUpToH isoGenerators as = fmap unhashed . Set.toList <$> groupUpTo isoGenerators' as'
   where
     as' = hashed <$> as
     isoGenerators' = (\f -> hashed . f . unhashed) <$> isoGenerators

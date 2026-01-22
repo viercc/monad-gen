@@ -134,7 +134,7 @@ uniqueByIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), fora
 uniqueByIso isoGenerators = uniqueUpTo (actIso <$> isoGenerators)
 
 groupByIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a))
-  => [Iso f] -> [MonadData f] -> [[MonadData f]]
+  => [Iso f] -> [MonadData f] -> [Set.Set (MonadData f)]
 groupByIso isoGenerators = groupUpTo (actIso <$> isoGenerators)
 
 makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f

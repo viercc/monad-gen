@@ -11,8 +11,9 @@ module Main (main) where
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import System.Directory (createDirectoryIfMissing)
-import Data.Either (partitionEithers)
 
+import Control.Monad (guard)
+import Data.Bifunctor (Bifunctor(..))
 import Data.Foldable
 import Data.PTraversable
 import Data.PTraversable.Extra
@@ -36,7 +37,9 @@ import ApplicativeGen (
   makeApplicativeDict,
   ApplicativeData,
   genApplicativeDataFrom, serializeApplicativeDataList)
-import System.Environment (getArgs)
+
+import Options.Applicative
+import Data.List (intercalate)
 
 ------------------------
 -- Tests
@@ -135,19 +138,20 @@ monadGen
   :: forall f.
     ( forall a. (Show a) => Show (f a), PTraversable f)
   => [ (String, ApplicativeData f) ]
-  -> Bool
+  -> MonadGenType
   -> (String -> IO ())
   -> IO [(String, MonadData f)]
-monadGen applicatives use2 println = do
+monadGen applicatives genType println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
-      generator
-        | use2      = MonadGen2.genFromApplicativeModuloIso
-        | otherwise = genFromApplicativeModuloIso 
+      
+      gen = case genType of
+        MonadGenV1 -> genFromApplicativeModuloIso
+        MonadGenV2 -> MonadGen2.genFromApplicativeModuloIso
       
       monads :: [ (String, MonadData f) ]
       monads = do
         (apName, apData) <- applicatives
-        monadData <- generator (makeApplicativeDict apData)
+        monadData <- gen (makeApplicativeDict apData)
         pure (apName, monadData)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadData)) -> do
     let dict = makeMonadDict monadData
@@ -159,23 +163,28 @@ monadGenGroup
   :: forall f.
     ( forall a. (Show a) => Show (f a), PTraversable f)
   => [ (String, ApplicativeData f) ]
+  -> MonadGenType
   -> (String -> IO ())
-  -> IO ()
-monadGenGroup applicatives println = do
+  -> IO [(String, Set.Set (MonadData f))]
+monadGenGroup applicatives genType println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
-      monads :: [ (String, [MonadData f]) ]
+      gen = case genType of
+        MonadGenV1 -> genFromApplicativeIsoGroups
+        MonadGenV2 -> MonadGen2.genFromApplicativeIsoGroups
+      monads :: [ (String, Set.Set (MonadData f)) ]
       monads = do
         (apName, apData) <- applicatives
-        monadDataGroup <- genFromApplicativeIsoGroups (makeApplicativeDict apData)
+        monadDataGroup <- gen (makeApplicativeDict apData)
         pure (apName, monadDataGroup)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadDataGroup)) -> do
-    let dicts = makeMonadDict <$> monadDataGroup
+    let dicts = makeMonadDict <$> Set.toList monadDataGroup
         indent = ("  " <>)
     println "IsomorphismClass {"
     for_ dicts $ \dict -> do
       mapM_ (println . indent) $ prettyMonadDict monadName apName dict
       validateMonadDict dict
     println "}"
+  pure monads
 
 validateMonadDict :: forall f.
      (PTraversable f, forall a. Show a => Show (f a))
@@ -230,10 +239,10 @@ prettyMonadDict = docResult
         ) ++
         ["}"]
 
-generateAllToDir
+generateAll
   :: (PTraversable f, forall a. Show a => Show (f a))
-  => Proxy f -> Bool -> FilePath -> IO ()
-generateAllToDir name use2 outDir = do
+  => String -> Proxy f -> Option -> IO ()
+generateAll displayName name opt = do
   createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
   
   monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
@@ -242,73 +251,42 @@ generateAllToDir name use2 outDir = do
   applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
   writeFile (outDir ++ "/applicative_data") $ unlines $ serializeApplicativeDataList (snd <$> applicatives)
   
-  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives use2
+  monads <-
+    if monadGroups
+      then do monad_groups <- writeFile' (outDir ++ "/monad_group.txt") $ monadGenGroup applicatives monadGenMethod
+              pure (second Set.findMin <$> monad_groups)
+      else writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives monadGenMethod
   writeFile (outDir ++ "/monad_data") $ unlines $ serializeMonadDataList (snd <$> monads)
 
-generateAllAndGroupsToDir
-  :: (PTraversable f, forall a. Show a => Show (f a))
-  => Proxy f -> FilePath -> IO ()
-generateAllAndGroupsToDir name outDir = do
-  createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
+  where
+    outDir = optOutputDirectoryRoot opt ++ "/" ++ displayName
+    monadGenMethod = optMonadGen opt
+    monadGroups = optMonadGroups opt
 
-  monoids <- writeFile' (outDir ++ "/monoid.txt") $ monoidGen name
-  writeFile (outDir ++ "/monoid_data") $ unlines $ serializeMonoidDataList lengthShape (snd <$> monoids)
-  
-  applicatives <- writeFile' (outDir ++ "/applicative.txt") $ applicativeGen monoids
-  writeFile (outDir ++ "/applicative_data") $ unlines $ serializeApplicativeDataList (snd <$> applicatives)
-
-  monads <- writeFile' (outDir ++ "/monad.txt") $ monadGen applicatives False
-  writeFile (outDir ++ "/monad_data") $ unlines $ serializeMonadDataList (snd <$> monads)
-
-  writeFile' (outDir ++ "/monad_group.txt") $ monadGenGroup applicatives
+targetNamed :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
+  => String -> Proxy f -> (String, Option -> IO ())
+targetNamed displayName name = (displayName, generateAll displayName name)
 
 target :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
-  => Proxy f -> (String, IO ())
-target name = (nameStr, generateAllToDir name False ("output/" ++ nameStr))
-  where
-    nameStr = show (someTypeRep name)
+  => Proxy f -> (String, Option -> IO ())
+target name = targetNamed (show (someTypeRep name)) name
 
-target2 :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
-  => Proxy f -> (String, IO ())
-target2 name = (nameStr ++ "(2)", generateAllToDir name True ("output/" ++ nameStr))
-  where
-    nameStr = show (someTypeRep name)
-
-targetG :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
-  => Proxy f -> (String, IO ())
-targetG name = (nameStr ++ "-groups", generateAllAndGroupsToDir name ("output/" ++ nameStr))
-  where
-    nameStr = show (someTypeRep name)
-
-targets :: Map.Map String (IO ())
+targets :: Map.Map String (Option -> IO ())
 targets = Map.fromList
   [
-    target @Maybe Proxy,
-    target @((,) Two) Proxy,
-    target @((,) N3) Proxy,
+    targetNamed @Maybe "wellknown/Maybe" Proxy,
+    targetNamed @((,) Two) "wellknown/Writer2" Proxy,
+    targetNamed @((,) N3) "wellknown/Writer3" Proxy,
 
     target @F Proxy,
     target @G Proxy,
     target @H Proxy,
     target @I Proxy,
     target @I' Proxy,
-
-    target2 @((,) Two) Proxy,
-    target2 @((,) N3) Proxy,
-    target2 @F Proxy,
-    target2 @G Proxy,
-    target2 @H Proxy,
-    target2 @I Proxy,
-    target2 @I' Proxy,
-
     target @J Proxy,
     target @K Proxy,
     target @L Proxy,
-
     target @T Proxy,
-    targetG @T Proxy,
-    target2 @T Proxy,
-
     target @U Proxy,
     target @V Proxy,
     target @X Proxy,
@@ -316,41 +294,64 @@ targets = Map.fromList
     target @Y Proxy
   ]
 
+data Option = Option {
+    optOutputDirectoryRoot :: FilePath,
+    optMonadGen :: MonadGenType,
+    optMonadGroups :: Bool,
+    optTargets :: Set.Set String
+  }
+
+data MonadGenType = MonadGenV1 | MonadGenV2
+  deriving (Show, Read, Eq)
+
+data TargetSpec = TargetAll | IncludeOne String | ExcludeOne String
+
+optParser :: Set.Set String -> ParserInfo Option
+optParser targetNames =
+  info
+    (parserBody <**> helper)
+    (fullDesc
+       <> progDesc "Enumerates all possible Monad instances"
+       <> footer descTargets)
+  where
+    parserBody = Option <$> oOutDir <*> oMonadGen <*> oMonadGroups <*> oTargets
+    oOutDir = strOption $
+      value "output" <> showDefault
+        <> long "outdir" <> short 'o'
+        <> metavar "PATH_TO_DIR" <> help "Output directory"
+    
+    oMonadGen =
+          flag' MonadGenV2 (long "v2" <> help "Use new solver")
+      <|> flag' MonadGenV1 (long "v1" <> help "Use old solver")
+      <|> pure MonadGenV1
+    oMonadGroups = switch (long "groups" <> help "During Monad generation, output isomorphism classes too")
+    
+    oTargets = parserOptionGroup "Target specifications" $
+      aggregateTargets <$> some (oAll <|> oSingleTarget <|> oExcludeSingleTarget)
+
+    oAll = flag' TargetAll (long "all" <> short 'a' <> help "Include all targets")
+    readTargetName = maybeReader (\s -> s <$ guard (Set.member s targetNames))
+    oSingleTarget = IncludeOne <$>
+      argument readTargetName (metavar "TARGET" <> help "Include a target")
+    oExcludeSingleTarget = ExcludeOne <$>
+      option readTargetName
+        (short 'x' <> metavar "TARGET" <> help "Exclude a target")
+
+    aggregateTargets = foldl' step Set.empty
+      where
+        step s opt = case opt of
+          TargetAll -> targetNames
+          IncludeOne t -> Set.insert t s
+          ExcludeOne t -> Set.delete t s
+    
+    descTargets = unlines
+      [ "\tTARGET:",
+        "\t    " ++ intercalate "," (show <$> Set.toList targetNames) ]
+
 main :: IO ()
-main = getArgs >>= \args -> case args of
-  [] -> printUsage
-  _ -> argsToTargetSet args >>= mapM_ runTarget
-  where
-    runTarget :: String -> IO ()
-    runTarget name = Map.findWithDefault (fail "!?") name targets
-
-printUsage :: IO a
-printUsage = do
-  putStrLn "Usage: monad-gen [ARGS]... [--] [TARGET]..."
-  putStrLn ""
-  putStrLn "\tTARGET = all | [-]<FunctorName>"
-  putStrLn $ "\tFunctorName = " ++ show (Map.keys targets)
-  exitFailure
-
-argsToTargetSet :: [String] -> IO [String]
-argsToTargetSet args = case partitionEithers (concatMap parseArg args) of
-  (err, targetList)
-    | null err -> case subtractList (partitionEithers targetList) of
-        [] -> hPutStrLn stderr "No targets" >> exitFailure
-        targetList' -> pure targetList'
-    | otherwise -> mapM_ (\s -> hPutStrLn stderr $ "Unknown target:" ++ show s ) err >> exitFailure
-  where
-    parseArg arg = case arg of
-      "all" -> Right . Left <$> Map.keys targets
-      ('-' : negArg)
-        | Map.member negArg targets -> [ Right . Right $ negArg ]
-      _ | Map.member arg targets -> [ Right . Left $ arg ]
-        | otherwise -> [ Left arg ]
-
-subtractList :: Ord a => ([a], [a]) -> [a]
-subtractList (xs, ys) = go (Set.fromList ys) xs
-  where
-    go _ [] = []
-    go used (z:zs)
-      | Set.member z used = go used zs
-      | otherwise = z : go (Set.insert z used) zs
+main = do
+  opt <- execParser $ optParser (Map.keysSet targets)
+  let runTarget name = Map.findWithDefault (const (fail "!?")) name targets opt
+  if null (optTargets opt)
+    then hPutStrLn stderr "All targets are excluded" >> exitFailure
+    else mapM_ runTarget (optTargets opt)

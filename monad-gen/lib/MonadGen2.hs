@@ -33,26 +33,22 @@ import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.Traversable.Extra (indices, imap)
 import Data.FunctorShape
-import qualified Data.NatMap as NM
 
 import ApplicativeGen
 
 import qualified Data.Vector as V
 import qualified Data.PreNatMap as PNM
 import Data.Bifunctor (Bifunctor(..))
-import Data.List (sortOn)
-import Debug.Trace (traceM, trace)
+import Debug.Trace (traceM)
 
 import MonadData
 import ModelFinder.Model.PreNatMapModel
 import ModelFinder.Model
 import ModelFinder.Term
-import Data.Traversable (mapAccumL)
 import ModelFinder.Solver (solveEqs)
 
 import GHC.Generics ((:.:) (..))
 import Data.Finitary.Enum (enum)
-import Data.PreNatMap (PreNatMap)
 
 -- Generation
 
@@ -66,7 +62,7 @@ genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable 
 genFromApplicative apDict = do
   apDefs <- F.toList $ applicativeDefs apDict
   let def0 = Map.fromList $ map (first (Join . unComp1)) $ PNM.toEntries apDefs
-  traceM $ "def0.size = " ++ show (Map.size def0)
+  -- traceM $ "def0.size = " ++ show (Map.size def0)
   model <- solveEqs associativityEqs def0 newJoinModel
   pure $ postprocess model
   where
@@ -74,12 +70,6 @@ genFromApplicative apDict = do
 
     postprocess :: JoinModel f -> MonadData f
     postprocess (JoinModel (PreNatMapModel _ pnm)) = MonadData pureShape (PNM.toNatMap pnm)
-
-debugShowModel :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => PreNatMap (f :.: f) f -> String
-debugShowModel pnm =
-  "PNM.size = " ++ show pnmSize ++ ";"
-  where
-    pnmSize = length (PNM.toEntries pnm)
 
 moduloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [MonadData f]
 moduloIso apDict = uniqueByIso isoGenerators
@@ -89,7 +79,7 @@ moduloIso apDict = uniqueByIso isoGenerators
 genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicativeModuloIso apDict = moduloIso apDict $ genFromApplicative apDict
 
-genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [[MonadData f]]
+genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
 genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict
   where
     isoGenerators = stabilizingIsomorphisms apDict
@@ -139,17 +129,17 @@ rightAssocTerm :: Functor f => f (f (f Int)) -> JTerm f
 rightAssocTerm = fun . Join . fmap (fun . Join . fmap con)
 
 leftAssocTerm :: (Traversable f, Ord (f Int)) => f (f (f Int)) -> JTerm f
-leftAssocTerm fffi = case separateFunctor' (Comp1 fffi) of
+leftAssocTerm fffi = case separateFunctor (Comp1 fffi) of
   (vec, Comp1 ffj) -> fun $ Bind vec (fun . Join . fmap con $ ffj)
 
 makeAssociativity :: (Traversable f, Ord (f Int)) => f (f (f Int)) -> (JTerm f, JTerm f)
 makeAssociativity f3 = (leftAssocTerm f3, rightAssocTerm f3)
 
-associativityEqs :: (PTraversable f) => [(JTerm f, JTerm f)]
-associativityEqs = makeAssociativity <$> V.toList skolem3
+-- associativityEqs :: (PTraversable f) => [(JTerm f, JTerm f)]
+-- associativityEqs = makeAssociativity <$> V.toList skolem3
 
-associativityEqs' :: (PTraversable f) => [(JTerm f, JTerm f)]
-associativityEqs' = (makeAssociativity .) <$> [outerIx, innerIx, allIx] <*> enum1 (enum1 shapes)
+associativityEqs :: (PTraversable f) => [(JTerm f, JTerm f)]
+associativityEqs = (makeAssociativity .) <$> [outerIx, innerIx, allIx] <*> enum1 (enum1 shapes)
 
 outerIx, innerIx, allIx :: Traversable f => f (f (f any)) -> f (f (f Int))
 outerIx = imap (\i -> fmap (i <$))
@@ -166,22 +156,5 @@ applicativeDefs apDict = PNM.fromEntries $ do
   where
     f1 = V.toList skolem
 
-reindex :: (Traversable g, Ord a) => g a -> (Map.Map a Int, g Int)
-reindex = mapAccumL step Map.empty
-  where
-    step !subst a = case Map.lookup a subst of
-      Nothing ->
-        let n = Map.size subst
-            subst' = Map.insert a n subst
-        in (subst', n)
-      Just k -> (subst, k)
-
--- >>> separateFunctor "banana"
--- ("ban",[0,1,2,1,2,1])
 separateFunctor :: (Traversable g, Ord a) => g a -> (V.Vector a, g Int)
-separateFunctor = first mapToV . reindex
-  where
-    mapToV = V.fromList . map fst . sortOn snd . Map.toList
-
-separateFunctor' :: (Traversable g, Ord a) => g a -> (V.Vector a, g Int)
-separateFunctor' ga = (V.fromList (F.toList ga), indices ga)
+separateFunctor ga = (V.fromList (F.toList ga), indices ga)

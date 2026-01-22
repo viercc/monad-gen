@@ -74,7 +74,7 @@ genMonadsModuloIso = do
   apDict <- makeApplicativeDict <$> genApplicativeData
   genFromApplicativeModuloIso apDict
 
-genMonadsIsoGroups :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [[MonadData f]]
+genMonadsIsoGroups :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [Set.Set (MonadData f)]
 genMonadsIsoGroups = 
   do apDict <- makeApplicativeDict <$> genApplicativeData
      genFromApplicativeIsoGroups apDict
@@ -373,7 +373,7 @@ moduloIso apDict = uniqueByIso isoGenerators
 genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicativeModuloIso apDict = moduloIso apDict $ genFromApplicative apDict
 
-genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [[MonadData f]]
+genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
 genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict
   where
     isoGenerators = stabilizingIsomorphisms apDict
