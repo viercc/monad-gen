@@ -5,6 +5,8 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Main (main) where
 
@@ -28,7 +30,7 @@ import MonoidGen
 import MonadGen
 import qualified MonadGen2
 
-import Data.Two
+import Data.Fin
 import Targets
 import Util ( writeFile' )
 import Data.FunctorShape
@@ -40,6 +42,7 @@ import ApplicativeGen (
 
 import Options.Applicative
 import Data.List (intercalate)
+import GHC.Generics ((:.:))
 
 ------------------------
 -- Tests
@@ -275,23 +278,26 @@ targets :: Map.Map String (Option -> IO ())
 targets = Map.fromList
   [
     targetNamed @Maybe "wellknown/Maybe" Proxy,
-    targetNamed @((,) Two) "wellknown/Writer2" Proxy,
-    targetNamed @((,) N3) "wellknown/Writer3" Proxy,
+    targetNamed @V2 "wellknown/V2" Proxy,
+    targetNamed @V3 "wellknown/V3" Proxy,
+    targetNamed @((,) (Fin 2)) "wellknown/Writer2" Proxy,
+    targetNamed @((,) (Fin 3)) "wellknown/Writer3" Proxy,
 
     target @F Proxy,
     target @G Proxy,
     target @H Proxy,
     target @I Proxy,
-    target @I' Proxy,
-    target @J Proxy,
-    target @K Proxy,
-    target @L Proxy,
-    target @T Proxy,
-    target @U Proxy,
-    target @V Proxy,
-    target @X Proxy,
-    target @W Proxy,
-    target @Y Proxy
+    target @T_013 Proxy,
+    target @T_112 Proxy,
+
+    targetNamed @(EW (Fin 1) (Fin 2)) "E1W2" Proxy,
+    targetNamed @(EW (Fin 2) (Fin 2)) "E2W2" Proxy,
+
+    targetNamed @(St (Fin 2) V2) "St22" Proxy,
+    targetNamed @(St (Fin 3) V2) "St32" Proxy,
+    targetNamed @(St (Fin 4) V2) "St42" Proxy,
+
+    targetNamed @(V2 :.: Maybe) "complex/V2Maybe" Proxy
   ]
 
 data Option = Option {

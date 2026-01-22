@@ -7,6 +7,8 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE DefaultSignatures #-}
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Data.Finitary.Enum(
   Enum(..),
   describeEnum,
@@ -90,6 +92,8 @@ describeEnum = withEnum $ \to from -> dimap to from describeFinite
 
 ptraverseFunction :: forall x p a b. (Enum x, Cartesian p) => p a b -> p (x -> a) (x -> b)
 ptraverseFunction p = withEnum @x $ \to from -> dimap (. from) (. to) (proPower p)
+
+instance KnownNat n => Enum (Finite n)
 
 instance Enum Void
 instance Enum ()
