@@ -47,11 +47,22 @@ instance Monoid Bitmap where
   mempty = empty
 
 -- | Singleton set. Negative arguments are silently ignored.
+--
+-- >>> singleton 0
+-- Bitmap 1
+-- >>> singleton 1
+-- Bitmap 2
+-- >>> singleton 2
+-- Bitmap 4
 singleton :: Int -> Bitmap
 singleton i
   | i < 0 = empty
   | otherwise = Bitmap (bit i)
 
+-- >>> fromList [0,1,2,1,3,1,5]
+-- Bitmap 47
+-- >>> foldMap singleton [0,1,2,1,3,1,5]
+-- Bitmap 47
 fromList :: [Int] -> Bitmap
 fromList = Bitmap . foldl' (.|.) 0 . map bit . filter (>= 0)
 
@@ -66,6 +77,11 @@ member i s = i >= 0 && testBit s i
 isInfiniteSet :: Bitmap -> Bool
 isInfiniteSet (Bitmap x) = x < 0
 
+-- >>> [(x, y) | x <- [0 .. 20], Just y <- [getSingleton (Bitmap x)] ]
+-- [(1,0),(2,1),(4,2),(8,3),(16,4)]
+--
+-- >>> getSingleton (Bitmap (2^235))
+-- Just 235
 getSingleton :: Bitmap -> Maybe Int
 getSingleton (Bitmap x)
   -- x <= 0 means either infinite set or empty set
@@ -75,8 +91,17 @@ getSingleton (Bitmap x)
       Just (i,0) -> Just i
       _ -> Nothing
 
+-- >>> toList (fromList [3,1,4,2,6,10,3])
+-- [1,2,3,4,6,10]
 toList :: Bitmap -> [Int]
-toList (Bitmap x) = unfoldr countTrailingZerosI x
+toList (Bitmap x) = concat $ unfoldr step (0,x)
+  where
+    step (!_, 0) = Nothing
+    step (!offset, !n) = case splitInteger n of
+      (n', n0) -> Just (bitSetPositions offset n0, (offset + 64, n'))
+
+bitSetPositions :: Int -> Word64 -> [Int]
+bitSetPositions offset w = [ offset + i | i <- [0 .. 63], testBit w i ]
 
 splitInteger :: Integer -> (Integer, Word64)
 splitInteger x = (x `shiftR` 64, fromIntegral x)

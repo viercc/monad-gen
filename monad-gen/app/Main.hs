@@ -293,6 +293,8 @@ targets = Map.fromList
     target @I Proxy,
     target @I' Proxy,
 
+    target2 @((,) Two) Proxy,
+    target2 @((,) N3) Proxy,
     target2 @F Proxy,
     target2 @G Proxy,
     target2 @H Proxy,
@@ -305,6 +307,7 @@ targets = Map.fromList
 
     target @T Proxy,
     targetG @T Proxy,
+    target2 @T Proxy,
 
     target @U Proxy,
     target @V Proxy,
@@ -323,7 +326,7 @@ main = getArgs >>= \args -> case args of
 
 printUsage :: IO a
 printUsage = do
-  putStrLn "Usage: monad-gen [TARGET]..."
+  putStrLn "Usage: monad-gen [ARGS]... [--] [TARGET]..."
   putStrLn ""
   putStrLn "\tTARGET = all | [-]<FunctorName>"
   putStrLn $ "\tFunctorName = " ++ show (Map.keys targets)

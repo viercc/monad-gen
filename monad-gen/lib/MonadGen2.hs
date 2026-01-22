@@ -52,6 +52,7 @@ import ModelFinder.Solver (solveEqs)
 
 import GHC.Generics ((:.:) (..))
 import Data.Finitary.Enum (enum)
+import Data.PreNatMap (PreNatMap)
 
 -- Generation
 
@@ -64,9 +65,9 @@ import Data.Finitary.Enum (enum)
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicative apDict = do
   apDefs <- F.toList $ applicativeDefs apDict
-  traceM "genFromApplicative (apDefs OK)"
   let def0 = Map.fromList $ map (first (Join . unComp1)) $ PNM.toEntries apDefs
-  model <- solveEqs associativityEqs' def0 newJoinModel
+  traceM $ "def0.size = " ++ show (Map.size def0)
+  model <- solveEqs associativityEqs def0 newJoinModel
   pure $ postprocess model
   where
     pureShape = Shape (_applicativePure apDict ())
@@ -74,14 +75,11 @@ genFromApplicative apDict = do
     postprocess :: JoinModel f -> MonadData f
     postprocess (JoinModel (PreNatMapModel _ pnm)) = MonadData pureShape (PNM.toNatMap pnm)
 
-debugShowModel :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => JoinModel f -> String
-debugShowModel (JoinModel (PreNatMapModel _ pnm)) =
-  "PNM.size = " ++ show pnmSize ++ "; "
-   ++ "NM.size = " ++ show (NM.size nm) ++ ";"
-   ++ "NM.isTotal = " ++ show (NM.isTotal nm) ++ ";"
+debugShowModel :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => PreNatMap (f :.: f) f -> String
+debugShowModel pnm =
+  "PNM.size = " ++ show pnmSize ++ ";"
   where
     pnmSize = length (PNM.toEntries pnm)
-    nm = PNM.toNatMap pnm
 
 moduloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [MonadData f]
 moduloIso apDict = uniqueByIso isoGenerators
@@ -115,7 +113,7 @@ isBind Bind{} = True
 
 newJoinModel :: PTraversable f => JoinModel f
 newJoinModel = JoinModel $ PreNatMapModel {
-    allShapes = Set.fromList (Shape <$> shapes),
+    allShapes = Set.fromList enum,
     pnmGuesses = PNM.empty
   }
 
@@ -141,7 +139,7 @@ rightAssocTerm :: Functor f => f (f (f Int)) -> JTerm f
 rightAssocTerm = fun . Join . fmap (fun . Join . fmap con)
 
 leftAssocTerm :: (Traversable f, Ord (f Int)) => f (f (f Int)) -> JTerm f
-leftAssocTerm fffi = case separateFunctor (Comp1 fffi) of
+leftAssocTerm fffi = case separateFunctor' (Comp1 fffi) of
   (vec, Comp1 ffj) -> fun $ Bind vec (fun . Join . fmap con $ ffj)
 
 makeAssociativity :: (Traversable f, Ord (f Int)) => f (f (f Int)) -> (JTerm f, JTerm f)
@@ -151,15 +149,12 @@ associativityEqs :: (PTraversable f) => [(JTerm f, JTerm f)]
 associativityEqs = makeAssociativity <$> V.toList skolem3
 
 associativityEqs' :: (PTraversable f) => [(JTerm f, JTerm f)]
-associativityEqs' = (makeAssociativity .) <$> [outerIx, midIx, innerIx] <*> enum1 (enum1 shapes)
+associativityEqs' = (makeAssociativity .) <$> [outerIx, innerIx, allIx] <*> enum1 (enum1 shapes)
 
-associativityEqs'' :: (PTraversable f) => [(JTerm f, JTerm f)]
-associativityEqs'' = makeAssociativity <$> enum1 (enum1 (enum1 [0]))
-
-outerIx, midIx, innerIx :: Traversable f => f (f (f any)) -> f (f (f Int))
+outerIx, innerIx, allIx :: Traversable f => f (f (f any)) -> f (f (f Int))
 outerIx = imap (\i -> fmap (i <$))
-midIx = fmap (imap (<$))
-innerIx = fmap (fmap indices)
+innerIx = fmap (unComp1 . indices . Comp1)
+allIx = unComp1 . unComp1 . indices . Comp1 . Comp1
 
 applicativeDefs :: (PTraversable f) => ApplicativeDict f -> Maybe (PNM.PreNatMap (f :.: f) f)
 applicativeDefs apDict = PNM.fromEntries $ do
@@ -187,3 +182,6 @@ separateFunctor :: (Traversable g, Ord a) => g a -> (V.Vector a, g Int)
 separateFunctor = first mapToV . reindex
   where
     mapToV = V.fromList . map fst . sortOn snd . Map.toList
+
+separateFunctor' :: (Traversable g, Ord a) => g a -> (V.Vector a, g Int)
+separateFunctor' ga = (V.fromList (F.toList ga), indices ga)
