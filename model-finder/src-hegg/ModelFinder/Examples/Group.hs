@@ -38,6 +38,8 @@ import ModelFinder.Solver
 data GroupSig a = Ident | Inv a | Mul a a
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
+instance ReductionRule GroupSig a
+
 ----
 
 type GroupExpr a = Term GroupSig a

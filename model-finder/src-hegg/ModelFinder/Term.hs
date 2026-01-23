@@ -2,6 +2,9 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE DeriveTraversable #-}
 module ModelFinder.Term(
+  -- * Reexport
+  Fix(..),
+  
   -- * Term
   Term, L(..),
   con, mapCon, fun, liftFun,
@@ -9,7 +12,8 @@ module ModelFinder.Term(
   -- * Property
   Property(..),
   Property'(..),
-  runProperty
+  runProperty,
+
 ) where
 
 import Data.Equality.Utils

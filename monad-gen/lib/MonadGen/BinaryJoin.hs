@@ -32,7 +32,7 @@ import Data.PreNatMap (PreNatMap)
 import Data.FunctorShape
 import ModelFinder.Model ( Model(..) )
 import ModelFinder.Term
-import ModelFinder.Solver ( solveEqs )
+import ModelFinder.Solver
 
 import Data.Traversable.Extra (indices)
 import Data.PTraversable.Extra (shapes, skolem)
@@ -48,6 +48,8 @@ import Data.Bifunctor (Bifunctor(..))
 -- * Signature of join
 data J x = J x x x
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
+
+instance ReductionRule J x
 
 j :: Term J x -> Term J x -> Term J x -> Term J x
 j x y0 y1 = fun (J x y0 y1)
@@ -175,7 +177,7 @@ makeBinaryJoinDefs (bj, rhs) =
 -- >>> genFromPure (Shape (Just ()))
 -- [make [PreEntry (BJ Nothing Nothing Nothing) Nothing,PreEntry (BJ Nothing Nothing (Just 0)) Nothing,PreEntry (BJ Nothing (Just 0) Nothing) Nothing,PreEntry (BJ Nothing (Just 0) (Just 1)) Nothing,PreEntry (BJ (Just False) Nothing Nothing) Nothing,PreEntry (BJ (Just False) Nothing (Just 0)) Nothing,PreEntry (BJ (Just False) (Just 0) Nothing) (Just 0),PreEntry (BJ (Just False) (Just 0) (Just 1)) (Just 0),PreEntry (BJ (Just True) Nothing Nothing) Nothing,PreEntry (BJ (Just True) Nothing (Just 0)) (Just 0),PreEntry (BJ (Just True) (Just 0) Nothing) Nothing,PreEntry (BJ (Just True) (Just 0) (Just 1)) (Just 1)]]
 
-genFromPure :: forall f. PTraversable f => Shape f -> [PreNatMap (BinaryJoin f) f]
+genFromPure :: forall f. (PTraversable f, Show (f Bool)) => Shape f -> [PreNatMap (BinaryJoin f) f]
 genFromPure pureShape = pnmGuesses . joinPreNatMapModel <$> solveEqs allEqs allDefs model0
   where
     fShapes = Shape <$> shapes
@@ -183,10 +185,10 @@ genFromPure pureShape = pnmGuesses . joinPreNatMapModel <$> solveEqs allEqs allD
     allEqs = constEqs ++ notEqs ++ assocEqs
     allDefs = Map.unions [unitLeftDefs pureShape, unitRightDefs pureShape, zeroDefs]
 
-gen :: forall f. (PTraversable f) => [PreNatMap (BinaryJoin f) f]
+gen :: forall f. (PTraversable f, Show (f Bool)) => [PreNatMap (BinaryJoin f) f]
 gen = shapes >>= genFromPure . Shape
 
-genFromApplicative :: forall f. (PTraversable f) => ApplicativeDict f -> [PreNatMap (BinaryJoin f) f]
+genFromApplicative :: forall f. (PTraversable f, Show (f Bool)) => ApplicativeDict f -> [PreNatMap (BinaryJoin f) f]
 genFromApplicative apDict = pnmGuesses . joinPreNatMapModel <$> solveEqs allEqs allDefs model0
   where
     fShapes = Shape <$> shapes

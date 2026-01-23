@@ -7,9 +7,15 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 module ModelFinder.Solver(
   -- * Model finding entry point
   solve, solveEqs,
+
+  -- * Reduction hook
+  ReductionRule(..),
 
   -- * Languages
   L(..), Term,
@@ -44,6 +50,9 @@ import Data.Equality.Utils.SizedList (sizeSL)
 
 import ModelFinder.Model
 import ModelFinder.Term
+import Debug.Trace (traceM, trace)
+
+type DebugConstraint f a = (Show a, Show (f a), Show (f (Term f a)))
 
 -- * Analysis data and monadic environment for it
 
@@ -69,6 +78,11 @@ data SearchState f a model = SearchState {
     currentModel :: model,
     waitingDefs :: [(f a , a)]
   }
+
+class ReductionRule f a where
+  -- No reduction by default!
+  tryReduce :: Term f a -> Maybe (Term f a)
+  tryReduce _ = Nothing
 
 newtype SearchM f a model x = SearchM{ unSearchM :: StateT (SearchState f a model) [] x }
   deriving newtype (Functor, Applicative, Monad, Alternative, MonadPlus)
@@ -114,9 +128,9 @@ takeAllWaitingDefs = SearchM $ State.state $ \ss ->
 instance (Ord a, Ord (f a), Traversable f, Model (f a) a model) => AnalysisM (SearchM f a model) (ModelInfo f a) (L f a) where
   makeA :: L f a (ModelInfo f a) -> SearchM f a model (ModelInfo f a)
   makeA (Con a) = pure $ ModelInfo (Just a) Set.empty
-  makeA (Fun fm) = pure $ ModelInfo Nothing fnSet
+  makeA (Fun fd) = pure $ ModelInfo Nothing fSet
     where
-      fnSet = maybe Set.empty Set.singleton $ traverse constValue fm
+      fSet = maybe Set.empty Set.singleton (traverse constValue fd)
 
   joinA :: ModelInfo f a -> ModelInfo f a -> SearchM f a model (ModelInfo f a)
   joinA d1 d2 = case (con1, con2) of
@@ -151,7 +165,8 @@ instance (Ord a, Ord (f a), Traversable f, Model (f a) a model) => AnalysisM (Se
 
 -- * Model search algorithm
 
-solve :: (Ord a, Language f, Model (f a) a model)
+solve :: (Ord a, Language f, Model (f a) a model, ReductionRule f a)
+  => DebugConstraint f a
   => [a]
   -> [Property f]
   -> Map (f a) a
@@ -161,7 +176,8 @@ solve univ props = solveEqs eqs
   where
     eqs = props >>= runProperty univ
 
-solveEqs :: (Ord a, Language f, Model (f a) a model)
+solveEqs :: (Ord a, Language f, Model (f a) a model, ReductionRule f a)
+  => DebugConstraint f a
   => [(Term f a, Term f a)]
   -> Map (f a) a
   -> model
@@ -171,7 +187,9 @@ solveEqs eqs knownDefs model0 = snd <$> runSearchM model0 (solveBody eqs knownDe
 -- Shorthand
 type EG f a = EGraph (ModelInfo f a) (L f a)
 
-solveBody :: forall a f model. (Ord a, Language f, Model (f a) a model)
+solveBody :: forall a f model.
+     (Ord a, Language f, Model (f a) a model, ReductionRule f a)
+  => DebugConstraint f a
   => [(Term f a, Term f a)]
   -> Map (f a) a
   -> SearchM f a model ()
@@ -185,10 +203,12 @@ solveBody eqs knownDefs = do
       (fa : _) -> do
         m <- getsModel
         a <- choose $ guess fa m
+        traceM $ "guessed " ++ show fa ++ " => " ++ show a
         eg' <- syncLoop eg [defToEq (fa, a)] 
         loop eg'
 
-initialize :: (Ord a, Language f, Model (f a) a model)
+initialize :: (Ord a, Language f, Model (f a) a model, ReductionRule f a)
+  => DebugConstraint f a
   => [(Term f a, Term f a)]
   -> Map (f a) a
   -> SearchM f a model (EG f a)
@@ -222,7 +242,8 @@ updateModelDefs m0 entries = loopKnown m0 [] entries
       (m', newDefs) <- enterDef [fa] a m
       loop m' ((fa, a) : acc) (newDefs ++ rest)
 
-syncLoop :: (Ord a, Language f, Model (f a) a model)
+syncLoop :: (Ord a, Language f, Model (f a) a model, ReductionRule f a)
+  => DebugConstraint f a
   => EG f a -> [(Term f a, Term f a)] -> SearchM f a model (EG f a)
 syncLoop eg [] = pure eg
 syncLoop eg eqs = do
@@ -246,18 +267,31 @@ whatToGuess = concatMap getConstFunList . sortOn (Down . getParentCount) . filte
 defToEq :: Functor f => (f a, a) -> (Term f a, Term f a)
 defToEq = bimap liftFun con
 
-equateDefs :: (Ord a, Language f, Model (f a) a model)
+equateDefs :: forall f a model. (Ord a, Language f, Model (f a) a model, ReductionRule f a)
   => [(f a, a)] -> EG f a -> SearchM f a model (EG f a)
 equateDefs defs = equateTerms (defToEq <$> defs)
 
-equateTerms :: (Ord a, Language f, Model (f a) a model)
+representRed :: (Ord a, Language f, Model (f a) a model, ReductionRule f a)
+  => Term f a -> EG f a -> SearchM f a model (ClassId, EG f a)
+representRed t eg = case tryReduce t of
+  Nothing -> representM t eg
+  Just t' -> do
+    (c1, eg1) <- representM t eg
+    (c2, eg2) <- representM t' eg1
+    mergeM c1 c2 eg2
+
+equate :: (Ord a, Language f, Model (f a) a model, ReductionRule f a)
+  => Term f a -> Term f a -> EG f a -> SearchM f a model (EG f a)
+equate lhs rhs eg = do
+  (cLhs, eg1) <- representRed lhs eg
+  (cRhs, eg2) <- representRed rhs eg1
+  (_, eg3) <- mergeM cLhs cRhs eg2
+  pure eg3
+
+equateTerms :: (Ord a, Language f, Model (f a) a model, ReductionRule f a)
   => [(Term f a, Term f a)] -> EG f a -> SearchM f a model (EG f a)
 equateTerms [] eg = pure eg
-equateTerms ((lhs, rhs) : rest) eg = do
-  (cLHS, eg1) <- representM lhs eg
-  (cRHS, eg2) <- representM rhs eg1
-  (_, eg3) <- mergeM cLHS cRHS eg2
-  equateTerms rest eg3
+equateTerms ((lhs, rhs) : rest) eg = equate lhs rhs eg >>= equateTerms rest
 
 ----
 

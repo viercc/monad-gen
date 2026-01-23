@@ -5,6 +5,8 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module ApplicativeGen(
   -- * Dict
@@ -351,6 +353,8 @@ genRawApplicativeDataFrom sig mon = do
 
 data Fn a = LeftFactor Int Int a | RightFactor Int Int a
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
+
+instance ReductionRule Fn a
 
 type E = Term Fn Int
 type Defn = (Fn Int, Int)

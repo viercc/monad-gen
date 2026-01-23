@@ -45,7 +45,7 @@ import MonadData
 import ModelFinder.Model.PreNatMapModel
 import ModelFinder.Model
 import ModelFinder.Term
-import ModelFinder.Solver (solveEqs)
+import ModelFinder.Solver (solveEqs, ReductionRule (..))
 
 import GHC.Generics ((:.:) (..))
 import Data.Finitary.Enum (enum)
@@ -91,15 +91,18 @@ data LHS f k r =
   | Bind (V.Vector k) r
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
+instance Functor f => ReductionRule (LHS f (f Int)) (f Int) where
+  tryReduce lhs = case lhs of
+    Fix (Fun (Bind vec r)) -> case r of
+      Fix (Con fi) -> Just . fun . Join $ con . (vec V.!) <$> fi
+      _ -> Nothing
+    _ -> Nothing
+
 newtype JoinModel f = JoinModel (PreNatMapModel (f :.: f) f)
 
 toComp :: Functor f => LHS f (f Int) (f Int) -> (f :.: f) Int
 toComp (Join ffr) = Comp1 ffr
 toComp (Bind fxs fi) = Comp1 $ (fxs V.!) <$> fi
-
-isBind :: LHS f k r -> Bool
-isBind Join{} = False
-isBind Bind{} = True
 
 newJoinModel :: PTraversable f => JoinModel f
 newJoinModel = JoinModel $ PreNatMapModel {
@@ -113,8 +116,7 @@ instance (Traversable f, forall a. Ord a => Ord (f a)) => Model (LHS f (f Int) (
   enterDef lhss rhs (JoinModel impl) = bimap JoinModel modifyDefs <$> enterDef lhss' rhs impl
     where
       lhss' = toComp <$> lhss
-      newLhss = map toComp $ filter isBind lhss
-      modifyDefs defs = map (first (Join . unComp1)) $ ((, rhs) <$> newLhss) ++ defs
+      modifyDefs = map (first (Join . unComp1))
 
   enterEqs lhss (JoinModel impl) = bimap JoinModel modifyDefs <$> enterEqs lhss' impl
     where
