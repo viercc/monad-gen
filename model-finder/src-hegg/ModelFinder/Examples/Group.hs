@@ -33,6 +33,8 @@ import Control.Monad (guard)
 
 import ModelFinder.Model
 import ModelFinder.Solver
+import qualified Data.List.NonEmpty as NE
+import Data.Foldable1 (foldl1')
 
 -- | Signature of functions which defines group structure on @a@.
 data GroupSig a = Ident | Inv a | Mul a a
@@ -184,6 +186,11 @@ instance Ord a => Model (GroupSig a) a (GroupModel a) where
   guess :: GroupSig a -> GroupModel a -> [a]
   guess sig m = Set.toList $ guessGroup sig m
   
+  guessMany :: NE.NonEmpty (GroupSig a) -> GroupModel a -> [a]
+  guessMany sigs m = Set.toList commonGuess
+    where
+      commonGuess = foldl1' Set.intersection $ (`guessGroup` m) <$> sigs
+
   enterDef :: [GroupSig a] -> a -> GroupModel a -> Maybe (GroupModel a, [(GroupSig a, a)])
   enterDef sigs a m0 = loop m0 [] sigs
     where
@@ -210,14 +217,6 @@ instance Ord a => Model (GroupSig a) a (GroupModel a) where
                 mulGuess' = Map.insert x bij'' (groupMulGuess m)
                 m' = m{ groupMulGuess = mulGuess' }
             loop m' (newDefs ++ acc) rest
-  
-  enterEqs :: [GroupSig a] -> GroupModel a -> Maybe (GroupModel a, [(GroupSig a, a)])
-  enterEqs [] m = pure (m, [])
-  enterEqs sigs@(sig : rest) m = case Set.toList commonGuess of
-    [a] -> Just (m, [ (s,a) | s <- sigs ])
-    _   -> Just (m, [])
-    where
-      commonGuess = foldl' Set.intersection (guessGroup sig m) [ guessGroup s m | s <- rest ] 
 
 unifyMaybe :: Eq a => Maybe a -> Maybe a -> Maybe (Maybe a)
 unifyMaybe Nothing y = Just y

@@ -113,6 +113,8 @@ newJoinModel = JoinModel $ PreNatMapModel {
 instance (Traversable f, forall a. Ord a => Ord (f a)) => Model (LHS f (f Int) (f Int)) (f Int) (JoinModel f) where
   guess lhs (JoinModel impl) = guess (toComp lhs) impl
 
+  guessMany lhss (JoinModel impl) = guessMany (toComp <$> lhss) impl
+
   enterDef lhss rhs (JoinModel impl) = bimap JoinModel modifyDefs <$> enterDef lhss' rhs impl
     where
       lhss' = toComp <$> lhss

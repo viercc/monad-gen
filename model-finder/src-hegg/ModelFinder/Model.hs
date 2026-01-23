@@ -17,6 +17,8 @@ import qualified Data.Map.Strict as Map
 import Control.Monad (guard)
 import Data.Either (partitionEithers)
 import qualified Data.List as List
+import Data.List.NonEmpty (NonEmpty (..))
+import Data.Maybe (mapMaybe)
 
 -- | @model@ represents possible assignments @φ :: k -> a@.
 -- 
@@ -29,6 +31,9 @@ class Model k a model | model -> k a where
   -- It can be empty if the model has gotten inconsistent.
   guess :: k -> model -> [a]
 
+  -- | Get the intersection of guesses for the given multiple queries.
+  guessMany :: NonEmpty k -> model -> [a]
+
   -- | Update the model accoring to newly added definitive equality @φ(k1) = φ(k2) = ... = y :: a@.
   -- Returns the updated model and newly discovered definitive equalities.
   -- Returns Nothing if the given equality is incompatible with model.
@@ -38,6 +43,11 @@ class Model k a model | model -> k a where
   -- Returns the updated model and newly discovered definitive equalities.
   -- Returns Nothing if the given equality is incompatible with model.
   enterEqs :: [k] -> model -> Maybe (model, [ (k, a) ])
+  enterEqs [] m = Just (m, [])
+  enterEqs (k:ks) m = case guessMany (k :| ks) m of
+    [] -> Nothing
+    [a] -> enterDef ks a m >>= \(m', defs) -> Just (m', ((,a) <$> (k:ks)) ++ defs)
+    _ -> Just (m, [])
 
 -- | @DumbModel@ remember nothing and just returns
 --   anything possible as @guess@.
@@ -49,6 +59,7 @@ newDumbModel = DumbModel
 
 instance Model k a (DumbModel k a) where
   guess _ = dumbUniverse 
+  guessMany _ = dumbUniverse
   enterDef _ _ m = Just (m, [])
   enterEqs _ m = Just (m, [])
 
@@ -67,6 +78,14 @@ newSimpleModel univ = SimpleModel univ Map.empty
 instance (Ord k, Ord a) => Model k a (SimpleModel k a) where
   guess k SimpleModel{ .. }
     = maybe simpleUniverse List.singleton $ Map.lookup k simpleGuesses
+
+  guessMany :: NonEmpty k -> SimpleModel k a -> [a]
+  guessMany (k :| ks) m = case rhsList of
+      -- No definitions to propagate
+      [] -> simpleUniverse m
+      (a:as) -> guard (all (== a) as) *> [a]
+    where
+      rhsList = mapMaybe (`Map.lookup` simpleGuesses m) (k : ks)
 
   enterDef :: [k] -> a -> SimpleModel k a -> Maybe (SimpleModel k a, [(k, a)])
   enterDef ks a m = do

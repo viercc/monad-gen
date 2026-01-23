@@ -155,6 +155,8 @@ deriving instance (forall x. Show x => Show (f x), Traversable f) => Show (Binar
 instance (Traversable f, (forall a. Ord a => Ord (f a))) => Model (J (f Bool)) (f Bool) (BinaryJoinModel f) where
   guess query (BinaryJoinModel m) = fmap i2b <$> guess (fromJ query) m
 
+  guessMany queries (BinaryJoinModel m) = fmap i2b <$> guessMany (fromJ <$> queries) m
+
   enterDef js rhs (BinaryJoinModel m) = postproc <$> enterDef js' rhs' m
     where
       js' = fromJ <$> js

@@ -28,7 +28,7 @@ import Data.Function (on)
 import Data.Bifunctor (Bifunctor(..))
 import Control.Applicative (Alternative())
 import Control.Monad ( guard, MonadPlus (..) )
-import Data.Maybe (isNothing)
+import Data.Maybe (isNothing, mapMaybe)
 import Data.List (sortOn)
 import Data.Ord (Down(..))
 import Data.Functor.Const (Const(..))
@@ -51,6 +51,8 @@ import Data.Equality.Utils.SizedList (sizeSL)
 import ModelFinder.Model
 import ModelFinder.Term
 import Debug.Trace (traceM, trace)
+import Data.List.NonEmpty (NonEmpty(..))
+import qualified Data.List.NonEmpty as NE
 
 type DebugConstraint f a = (Show a, Show (f a), Show (f (Term f a)))
 
@@ -200,12 +202,20 @@ solveBody eqs knownDefs = do
     loop :: EG f a -> SearchM f a model ()
     loop eg = case whatToGuess eg of
       [] -> pure ()
-      (fa : _) -> do
+      (fas@(fa :| _) : _) -> do
         m <- getsModel
-        a <- choose $ guess fa m
-        traceM $ "guessed " ++ show fa ++ " => " ++ show a
-        eg' <- syncLoop eg [defToEq (fa, a)] 
-        loop eg'
+        let as = guessMany fas m
+        case as of
+          [a] -> do
+            traceM $ "  found " ++ show fas ++ " => " ++ show as
+            eg' <- syncLoop eg [defToEq (fa, a)]
+            loop eg'
+          _ -> do
+            traceM $ "guessing: " ++ show fas
+            a <- choose as
+            traceM $ "  guessed " ++ show fas ++ " => " ++ show a
+            eg' <- syncLoop eg [defToEq (fa, a)]
+            loop eg'
 
 initialize :: (Ord a, Language f, Model (f a) a model, ReductionRule f a)
   => DebugConstraint f a
@@ -257,12 +267,12 @@ syncLoop eg eqs = do
   putModel m'
   syncLoop eg2 (defToEq <$> Map.toList newDefs)
 
-whatToGuess :: (Ord a, Language f) => EG f a -> [f a]
-whatToGuess = concatMap getConstFunList . sortOn (Down . getParentCount) . filter isUnknownValue . toListOf _classes
+whatToGuess :: (Ord a, Language f) => EG f a -> [NonEmpty (f a)]
+whatToGuess = mapMaybe getFunGroup . sortOn (Down . getParentCount) . filter isUnknownValue . toListOf _classes
   where
     isUnknownValue cls = isNothing $ constValue (cls ^. _data)
     getParentCount cls = sizeSL (cls ^. _parents)
-    getConstFunList = Set.toList . constFunctions . view _data
+    getFunGroup = NE.nonEmpty . Set.toList . constFunctions . view _data
 
 defToEq :: Functor f => (f a, a) -> (Term f a, Term f a)
 defToEq = bimap liftFun con
