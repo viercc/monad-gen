@@ -135,12 +135,11 @@ makeAssociativity f3 = (leftAssocTerm f3, rightAssocTerm f3)
 -- associativityEqs = makeAssociativity <$> V.toList skolem3
 
 associativityEqs :: (PTraversable f) => [(JTerm f, JTerm f)]
-associativityEqs = (makeAssociativity .) <$> [outerIx, innerIx, allIx] <*> enum1 (enum1 shapes)
+associativityEqs = (makeAssociativity .) <$> [outerIx, innerIx] <*> enum1 (enum1 shapes)
 
-outerIx, innerIx, allIx :: Traversable f => f (f (f any)) -> f (f (f Int))
+outerIx, innerIx :: Traversable f => f (f (f any)) -> f (f (f Int))
 outerIx = imap (\i -> fmap (i <$))
 innerIx = fmap (unComp1 . indices . Comp1)
-allIx = unComp1 . unComp1 . indices . Comp1 . Comp1
 
 applicativeDefs :: (PTraversable f) => ApplicativeDict f -> Maybe (PNM.PreNatMap (J f) f)
 applicativeDefs apDict = PNM.fromEntries $ do
