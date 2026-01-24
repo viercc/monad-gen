@@ -173,15 +173,17 @@ instance (Ord a, Ord k, Language f, NormalForm (f a) k, Model k a model)
     
   modifyA classId eg = do
     let classData = eg ^. _class classId . _data
-        addedNFs = Set.difference (constFunctions classData) (constFunctionsDone classData)
-    loop eg classId (Set.toList addedNFs)
+        cons = F.toList (constValue classData)
+        funs = Set.toList (constFunctions classData)
+        terms = (con <$> cons) ++ (liftFun . reify <$> funs)
+    loop eg classId terms
     where
-      loop :: EG f a k -> ClassId -> [k] -> SearchM k a model (EG f a k)
+      loop :: EG f a k -> ClassId -> [Term f a] -> SearchM k a model (EG f a k)
       loop eg0 _ [] = pure eg0
-      loop eg0 c0 (k : rest) = do
-        (c1, eg1) <- representM (liftFun (reify k)) eg0
-        (c2, eg2) <- mergeM c0 c1 eg1
-        loop eg2 c2 rest
+      loop eg0 c0 (t : rest) = do
+        (c1, eg1) <- representM t eg0
+        (_, eg2) <- mergeM c0 c1 eg1
+        loop eg2 c0 rest
 
 -- * Model search algorithm
 
@@ -312,23 +314,21 @@ dumpEGraph :: (Ord a, Language f, Ord k, NormalForm (f a) k, Monad m)
 dumpEGraph eg = do
   traceM "-- EGraph Debug dump --"
   F.for_ (toListOf _iclasses eg) $ \(i, clsData) -> do
-    traceM $ "class " ++ show i ++ " {"
+    traceM $ "class " ++ show i
     dumpClassData (clsData ^. _data)
+    traceM $ "  nodes:"
     F.for_ (clsData ^. _nodes) $ \node -> do
-      traceM $ "  | " ++ show (unNode node)
-    traceM $ "} end " ++ show i
-    pure ()
+      traceM $ "    " ++ show (unNode node)
 
 dumpClassData :: (Ord a, Language f, Ord k, NormalForm (f a) k, Monad m)
   => DebugConstraint f a
   => ModelInfo k a
   -> m ()
 dumpClassData (ModelInfo cons funs df) = do
-  traceM "  ModelInfo {"
-  traceM $ "  cons = " ++ show cons
-  traceM $ "  funs = " ++ showSetKey funs
-  traceM $ "  df   = " ++ showSetKey df
-  traceM "  }"
+  traceM   "  data: ModelInfo"
+  traceM $ "    cons = " ++ show cons
+  traceM $ "    funs = " ++ showSetKey funs
+  traceM $ "    df   = " ++ showSetKey df
   where showSetKey ks = show (reify <$> Set.toList ks) ++ " (size=" ++ show (Set.size ks) ++ ")"
 
 saturateModel :: (Ord a, Ord k, Model k a model)
