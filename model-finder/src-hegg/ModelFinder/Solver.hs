@@ -173,9 +173,8 @@ instance (Ord a, Ord k, Language f, NormalForm (f a) k, Model k a model)
     
   modifyA classId eg = do
     let classData = eg ^. _class classId . _data
-        cons = F.toList (constValue classData)
-        funs = Set.toList (constFunctions classData)
-        terms = (con <$> cons) ++ (liftFun . reify <$> funs)
+        funs = Set.toList $ constFunctions classData Set.\\ constFunctionsDone classData
+        terms = liftFun . reify <$> funs
     loop eg classId terms
     where
       loop :: EG f a k -> ClassId -> [Term f a] -> SearchM k a model (EG f a k)

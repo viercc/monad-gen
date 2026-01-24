@@ -6,7 +6,7 @@ program-options
 source-repository-package
     type: git
     location: https://github.com/viercc/hegg.git
-    tag: 4b2388d8498e985fbfc28ae3c8e2c9e27a958592
+    tag: 8596d87708e91cfb35d87a6c2085c9c64d0ccd27
 
 package *
     haddock-hyperlink-source: True
