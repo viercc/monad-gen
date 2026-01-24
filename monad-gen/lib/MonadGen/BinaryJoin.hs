@@ -49,8 +49,6 @@ import Data.Bifunctor (Bifunctor(..))
 data J x = J x x x
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
-instance ReductionRule J x
-
 j :: Term J x -> Term J x -> Term J x -> Term J x
 j x y0 y1 = fun (J x y0 y1)
 

@@ -274,8 +274,6 @@ multMapToArray n multMap = Array.genArrayM ((0,0), (n - 1, n - 1)) (\(i,j) -> Ma
 data M a = M !a !a
     deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
-instance ReductionRule M a
-
 type MultTable = Map (M Int) Int
 
 (|*|) :: Term M a -> Term M a -> Term M a

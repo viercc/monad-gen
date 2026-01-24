@@ -16,6 +16,7 @@ module Data.NatMap (
     makeEntry,
     makeIdEntry,
     unsafeMakeEntry,
+    bimapEntry,
 
     -- * Construction
     empty, singleton,
@@ -114,6 +115,9 @@ deriving instance (WeakOrd f, Ord (g Var)) => Ord (Entry f g)
 
 getKeyValue :: Entry f g -> (Shape f, g Var)
 getKeyValue (Entry fx gx) = (fx, gx)
+
+bimapEntry :: (Shape f -> Shape f') -> (forall x. g x -> g' x) -> Entry f g -> Entry f' g'
+bimapEntry ff gg (Entry f gi) = Entry (ff f) (gg gi)
 
 makeEntry :: (Traversable f, Traversable g, Ord k) => f k -> g k -> Maybe (Entry f g)
 makeEntry fk gk =

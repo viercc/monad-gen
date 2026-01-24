@@ -5,11 +5,13 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
 
 module ModelFinder.Model(
   Model(..),
   DumbModel(..), newDumbModel,
   SimpleModel(..), newSimpleModel,
+  WrapperModel(..),
 ) where
 
 import Data.Map.Strict (Map)
@@ -19,6 +21,7 @@ import Data.Either (partitionEithers)
 import qualified Data.List as List
 import Data.List.NonEmpty (NonEmpty (..))
 import Data.Maybe (mapMaybe)
+import Data.Coerce
 
 -- | @model@ represents possible assignments @φ :: k -> a@.
 -- 
@@ -119,3 +122,11 @@ instance (Ord k, Ord a) => Model k a (SimpleModel k a) where
           -- Map.union is /left-biased/
           newGuesses = Map.union (Map.fromList newKnowns) guesses0
 
+newtype WrapperModel k' k a model = WrapperModel {unwrapModel :: model}
+  deriving (Show, Eq)
+
+instance (Coercible k k', Model k a model) => Model k' a (WrapperModel k' k a model) where
+  guess = coerce @(k -> model -> [a]) @_ guess
+  guessMany = coerce @(NonEmpty k -> model -> [a]) @_ guessMany
+  enterDef = coerce @([k] -> a -> model -> Maybe _) @_ enterDef
+  enterEqs = coerce @([k] -> model -> Maybe _) @_ enterEqs

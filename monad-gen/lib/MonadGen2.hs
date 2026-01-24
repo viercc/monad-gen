@@ -13,6 +13,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module MonadGen2
   (
@@ -38,17 +39,16 @@ import ApplicativeGen
 
 import qualified Data.Vector as V
 import qualified Data.PreNatMap as PNM
-import Data.Bifunctor (Bifunctor(..))
-import Debug.Trace (traceM)
 
 import MonadData
 import ModelFinder.Model.PreNatMapModel
-import ModelFinder.Model
 import ModelFinder.Term
-import ModelFinder.Solver (solveEqs, ReductionRule (..))
+import ModelFinder.Solver (solveEqs', NormalForm(..))
 
 import GHC.Generics ((:.:) (..))
 import Data.Finitary.Enum (enum)
+import Data.Coerce (coerce, Coercible)
+import qualified Data.NatMap as NM
 
 -- Generation
 
@@ -61,15 +61,18 @@ import Data.Finitary.Enum (enum)
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicative apDict = do
   apDefs <- F.toList $ applicativeDefs apDict
-  let def0 = Map.fromList $ map (first (Join . unComp1)) $ PNM.toEntries apDefs
+  let def0 = Map.fromList $ PNM.toEntries apDefs
   -- traceM $ "def0.size = " ++ show (Map.size def0)
-  model <- solveEqs associativityEqs def0 newJoinModel
+  model <- solveEqs' associativityEqs def0 newJoinModel
   pure $ postprocess model
   where
     pureShape = Shape (_applicativePure apDict ())
 
     postprocess :: JoinModel f -> MonadData f
-    postprocess (JoinModel (PreNatMapModel _ pnm)) = MonadData pureShape (PNM.toNatMap pnm)
+    postprocess (PreNatMapModel _ pnm) = MonadData pureShape (coerceNatMapKeys (PNM.toNatMap pnm))
+
+coerceNatMapKeys :: (forall a. Coercible (f a) (f' a), WeakOrd f') => NM.NatMap f g -> NM.NatMap f' g
+coerceNatMapKeys nm = NM.fromEntries (NM.bimapEntry (mapShape coerce) id <$> NM.toEntries nm)
 
 moduloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [MonadData f]
 moduloIso apDict = uniqueByIso isoGenerators
@@ -91,39 +94,28 @@ data LHS f k r =
   | Bind (V.Vector k) r
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
-instance Functor f => ReductionRule (LHS f (f Int)) (f Int) where
-  tryReduce lhs = case lhs of
-    Fix (Fun (Bind vec r)) -> case r of
-      Fix (Con fi) -> Just . fun . Join $ con . (vec V.!) <$> fi
-      _ -> Nothing
-    _ -> Nothing
+newtype J f x = J (f (f x))
+  deriving (Functor, Foldable, Traversable)
 
-newtype JoinModel f = JoinModel (PreNatMapModel (f :.: f) f)
+deriving instance Show (f (f x)) => Show (J f x)
+deriving instance Eq (f (f x)) => Eq (J f x)
+deriving instance Ord (f (f x)) => Ord (J f x)
 
-toComp :: Functor f => LHS f (f Int) (f Int) -> (f :.: f) Int
-toComp (Join ffr) = Comp1 ffr
-toComp (Bind fxs fi) = Comp1 $ (fxs V.!) <$> fi
+instance Functor f => NormalForm (LHS f (f Int) (f Int)) (J f Int) where
+  normalize = toComp
+  reify = Join . coerce
+
+type JoinModel f = PreNatMapModel (J f) f
+
+toComp :: Functor f => LHS f (f Int) (f Int) -> J f Int
+toComp (Join ffr) = J ffr
+toComp (Bind fxs fi) = J $ (fxs V.!) <$> fi
 
 newJoinModel :: PTraversable f => JoinModel f
-newJoinModel = JoinModel $ PreNatMapModel {
+newJoinModel = PreNatMapModel {
     allShapes = Set.fromList enum,
     pnmGuesses = PNM.empty
   }
-
-instance (Traversable f, forall a. Ord a => Ord (f a)) => Model (LHS f (f Int) (f Int)) (f Int) (JoinModel f) where
-  guess lhs (JoinModel impl) = guess (toComp lhs) impl
-
-  guessMany lhss (JoinModel impl) = guessMany (toComp <$> lhss) impl
-
-  enterDef lhss rhs (JoinModel impl) = bimap JoinModel modifyDefs <$> enterDef lhss' rhs impl
-    where
-      lhss' = toComp <$> lhss
-      modifyDefs = map (first (Join . unComp1))
-
-  enterEqs lhss (JoinModel impl) = bimap JoinModel modifyDefs <$> enterEqs lhss' impl
-    where
-      lhss' = toComp <$> lhss
-      modifyDefs = map (first (Join . unComp1))
 
 -- * Equations
 
@@ -150,11 +142,11 @@ outerIx = imap (\i -> fmap (i <$))
 innerIx = fmap (unComp1 . indices . Comp1)
 allIx = unComp1 . unComp1 . indices . Comp1 . Comp1
 
-applicativeDefs :: (PTraversable f) => ApplicativeDict f -> Maybe (PNM.PreNatMap (f :.: f) f)
+applicativeDefs :: (PTraversable f) => ApplicativeDict f -> Maybe (PNM.PreNatMap (J f) f)
 applicativeDefs apDict = PNM.fromEntries $ do
   fi <- f1
   fj <- f1
-  let lhs = Comp1 $ fmap (\i -> (i,) <$> fj) fi
+  let lhs = J $ fmap (\i -> (i,) <$> fj) fi
       rhs = _applicativeLiftA2 apDict (,) fi fj
   pure (lhs, rhs)
   where

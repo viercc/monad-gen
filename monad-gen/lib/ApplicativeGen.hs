@@ -354,8 +354,6 @@ genRawApplicativeDataFrom sig mon = do
 data Fn a = LeftFactor Int Int a | RightFactor Int Int a
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)
 
-instance ReductionRule Fn a
-
 type E = Term Fn Int
 type Defn = (Fn Int, Int)
 type Eqn = (E,E)
