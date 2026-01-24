@@ -3,6 +3,11 @@ packages: */*.cabal
 program-options
     haddock-options: --no-print-missing-docs
 
+source-repository-package
+    type: git
+    location: https://github.com/viercc/hegg.git
+    tag: 4b2388d8498e985fbfc28ae3c8e2c9e27a958592
+
 package *
     haddock-hyperlink-source: True
     documentation: True
