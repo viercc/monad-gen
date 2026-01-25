@@ -149,7 +149,8 @@ monadGen applicatives genType println = do
       
       gen = case genType of
         MonadGenV1 -> genFromApplicativeModuloIso
-        MonadGenV2 -> case MonadGen2.prepareGenFromApplicative of
+        MonadGenV2 -> \apDict -> MonadGen2.moduloIso apDict $ MonadGen2.genFromApplicative apDict
+        MonadGenV2Cached -> case MonadGen2.prepareGenFromApplicative of
           Nothing -> const []
           Just genPrepared -> \apDict -> MonadGen2.moduloIso apDict (genPrepared apDict)
       
@@ -175,7 +176,8 @@ monadGenGroup applicatives genType println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
       gen = case genType of
         MonadGenV1 -> genFromApplicativeIsoGroups
-        MonadGenV2 -> case MonadGen2.prepareGenFromApplicative of
+        MonadGenV2 -> \apDict -> MonadGen2.groupsIso apDict $ MonadGen2.genFromApplicative apDict
+        MonadGenV2Cached -> case MonadGen2.prepareGenFromApplicative of
           Nothing -> const []
           Just genPrepared -> \apDict -> MonadGen2.groupsIso apDict (genPrepared apDict)
       monads :: [ (String, Set.Set (MonadData f)) ]
@@ -311,7 +313,7 @@ data Option = Option {
     optTargets :: Set.Set String
   }
 
-data MonadGenType = MonadGenV1 | MonadGenV2
+data MonadGenType = MonadGenV1 | MonadGenV2 | MonadGenV2Cached
   deriving (Show, Read, Eq)
 
 data TargetSpec = TargetAll | IncludeOne String | ExcludeOne String
@@ -331,8 +333,9 @@ optParser targetNames =
         <> metavar "PATH_TO_DIR" <> help "Output directory"
     
     oMonadGen =
-          flag' MonadGenV2 (long "v2" <> help "Use new solver")
-      <|> flag' MonadGenV1 (long "v1" <> help "Use old solver")
+          flag' MonadGenV1 (long "v1" <> help "Use old solver")
+      <|> flag' MonadGenV2 (long "v2" <> help "Use new solver")
+      <|> flag' MonadGenV2Cached (long "v2-cached" <> help "Use new solver (cached)")
       <|> pure MonadGenV1
     oMonadGroups = switch (long "groups" <> help "During Monad generation, output isomorphism classes too")
     
