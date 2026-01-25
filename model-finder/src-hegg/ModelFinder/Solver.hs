@@ -123,6 +123,13 @@ enterDefsM fas a = do
   putModel m'
   pushWaitingDefs newDefs
 
+enterEqsM :: Model k a model => [k] -> SearchM k a model ()
+enterEqsM fas = do
+  m <- getsModel
+  (m', newDefs) <- maybeToSearch $ enterEqs fas m
+  putModel m'
+  pushWaitingDefs newDefs
+
 getsModel :: SearchM k a model model
 getsModel = SearchM $ State.gets currentModel
 
@@ -154,6 +161,9 @@ instance (Ord a, Ord k, Language f, NormalForm (f a) k, Model k a model)
   joinA :: ModelInfo k a -> ModelInfo k a -> SearchM k a model (ModelInfo k a)
   joinA d1 d2 = case (con1, con2) of
     (Nothing, Nothing) -> do
+      let eqs = take 1 (Set.toList cf1 <> Set.toList df1)
+                ++ take 1 (Set.toList cf2 <> Set.toList df2)
+      enterEqsM eqs
       pure $ ModelInfo Nothing cf' df'
     (Nothing, Just a2) -> do
       enterDefsM (Set.toList (cf1 <> df1)) a2
