@@ -55,6 +55,7 @@ import ModelFinder.Term
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 import Data.Coerce (coerce)
+import Data.Traversable (for)
 
 type DebugConstraint f a = (Show a, Show (f a), Show (f (Term f a)), Show (f Int))
 
@@ -67,12 +68,13 @@ data ModelInfo k a = ModelInfo {
     -- ^ The class contains (Fun fx) where each children
     --   classes of fx contain constant value a.
     --   This field is a set of all such nodes in normalized form.
-    constFunctionsDone :: !(Set k)
+    constFunctionsDirty :: !(Set k)
     -- ^ The class contains (Fun fx) where each children
     --   classes of fx contain constant value a.
-    --   This field is a set of all such nodes _which has already been normalized form_.
+    --   This field is a set of all such nodes which was differrent to the normal form
+    --   (@reify (normalize fx) /= fx@).
     --
-    --   Members of @constFunctions@ which is not included in @constFunctionsDone@
+    --   Members of @constFunctionsDirty@
     --   must be added to the class by 'modifyA' hook.
   }
   deriving (Show)
@@ -80,8 +82,8 @@ data ModelInfo k a = ModelInfo {
 instance (Eq k, Eq a) => Eq (ModelInfo k a) where
   d1 == d2 =
     (constValue d1 == constValue d2) &&
-    (constFunctions d1 == constFunctions d2)
-    -- no need to compare constFunctionsDone
+    (constFunctionsDirty d1 == constFunctionsDirty d2)
+    -- no need to compare constFunctions
 
 data SearchState k a model = SearchState {
     currentModel :: model,
@@ -151,10 +153,10 @@ instance (Ord a, Ord k, Language f, NormalForm (f a) k, Model k a model)
     Nothing -> pure $ ModelInfo Nothing Set.empty Set.empty
     Just fa -> do
       let k = normalize fa
-          doneSet
-            | fa == reify k = Set.singleton k
-            | otherwise = Set.empty
-      pure $ ModelInfo Nothing (Set.singleton k) doneSet
+          dirtySet
+            | fa == reify k = Set.empty
+            | otherwise = Set.singleton k
+      pure $ ModelInfo Nothing (Set.singleton k) dirtySet
 
   joinA :: ModelInfo k a -> ModelInfo k a -> SearchM k a model (ModelInfo k a)
   joinA d1 d2 = case (con1, con2) of
@@ -175,11 +177,11 @@ instance (Ord a, Ord k, Language f, NormalForm (f a) k, Model k a model)
       ModelInfo con1 fun1 df1 = d1
       ModelInfo con2 fun2 df2 = d2
       fun' = Set.union fun1 fun2
-      df' = Set.union df1 df2
+      df' = Set.intersection df1 df2
     
   modifyA classId eg = do
     let classData = eg ^. _class classId . _data
-        funs = Set.toList $ constFunctions classData Set.\\ constFunctionsDone classData
+        funs = Set.toList $ constFunctionsDirty classData
         terms = liftFun . reify <$> funs
     loop eg classId terms
     where
@@ -268,14 +270,24 @@ initialize eqs defs = do
   (defs', model1) <- maybeToSearch $ saturateModel model0 (Map.toList defs)
   putModel model1
   eg0 <- syncLoop emptyEGraph ((defToEq <$> Map.toList defs') ++ eqs)
-  model2 <- getsModel
-  let discoveries = do
-        fas <- whatToGuess eg0
-        -- extract only "uniquely determined" result
-        case guessMany fas model2 of
-          [a] -> [(NE.head fas, a)]
-          _ -> []
+  discoveries <- discoverDefs eg0
   syncLoop eg0 (defToEq <$> discoveries)
+
+discoverDefs :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
+  => DebugConstraint f a
+  => EG f a k
+  -> SearchM k a model [(k, a)]
+discoverDefs eg = do
+  m <- getsModel
+  defs <- for (whatToGuess eg) $ \ks ->
+    case guessMany ks m of
+      -- Empty result ==> early failure
+      [] -> mzero
+      -- Unique guess ==> discovered
+      [a] -> pure [(NE.head ks, a)]
+      -- Other ==> No discovery
+      _ -> pure []
+  pure $ concat defs
 
 saturateModel :: (Ord a, Ord k, Model k a model)
   => model -> [(k, a)] -> Maybe (Map k a, model)
