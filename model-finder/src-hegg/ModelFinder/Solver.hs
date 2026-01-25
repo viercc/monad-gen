@@ -66,26 +66,23 @@ type DebugConstraint f a = (Show a, Show (f a), Show (f (Term f a)), Show (f Int
 data ModelInfo k a = ModelInfo {
     constValue :: !(Maybe a),
     -- ^ The class contains (Con a)
-    constFunctions :: !(Set k),
+    constFunctionsClean :: !(Set k),
     -- ^ The class contains (Fun fx) where each children
     --   classes of fx contain constant value a.
-    --   This field is a set of all such nodes in normalized form.
     constFunctionsDirty :: !(Set k)
     -- ^ The class contains (Fun fx) where each children
     --   classes of fx contain constant value a.
-    --   This field is a set of all such nodes which was differrent to the normal form
-    --   (@reify (normalize fx) /= fx@).
-    --
-    --   Members of @constFunctionsDirty@
-    --   must be added to the class by 'modifyA' hook.
   }
   deriving (Show)
+
+constFunctions :: Ord k => ModelInfo k a -> Set k
+constFunctions d = Set.union (constFunctionsClean d) (constFunctionsDirty d)
 
 instance (Eq k, Eq a) => Eq (ModelInfo k a) where
   d1 == d2 =
     (constValue d1 == constValue d2) &&
-    (constFunctionsDirty d1 == constFunctionsDirty d2)
-    -- no need to compare constFunctions
+      (constFunctionsDirty d1 == constFunctionsDirty d2)
+    -- no need to compare constFunctionsClean
 
 data SearchState k a model = SearchState {
     currentModel :: model,
@@ -125,13 +122,6 @@ enterDefsM fas a = do
   putModel m'
   pushWaitingDefs newDefs
 
-enterEqsM :: Model k a model => [k] -> SearchM k a model ()
-enterEqsM fas = do
-  m <- getsModel
-  (m', newDefs) <- maybeToSearch $ enterEqs fas m
-  putModel m'
-  pushWaitingDefs newDefs
-
 getsModel :: SearchM k a model model
 getsModel = SearchM $ State.gets currentModel
 
@@ -153,35 +143,31 @@ instance (Ord a, Ord k, Language f, NormalForm (f a) k, Model k a model)
   makeA (Con a) = pure $ ModelInfo (Just a) Set.empty Set.empty
   makeA (Fun fd) = case traverse constValue fd of
     Nothing -> pure $ ModelInfo Nothing Set.empty Set.empty
-    Just fa -> do
+    Just fa ->
       let k = normalize fa
-          dirtySet
-            | fa == reify k = Set.empty
-            | otherwise = Set.singleton k
-      pure $ ModelInfo Nothing (Set.singleton k) dirtySet
-
+          (clean, dirty)
+            | fa == reify k = (Set.singleton k, Set.empty)
+            | otherwise     = (Set.empty, Set.singleton k)
+      in pure $ ModelInfo Nothing clean dirty
+  
   joinA :: ModelInfo k a -> ModelInfo k a -> SearchM k a model (ModelInfo k a)
   joinA d1 d2 = case (con1, con2) of
     (Nothing, Nothing) -> do
-      let eqn = take 1 (Set.toList fun1) ++ take 1 (Set.toList fun2)
-      enterEqsM eqn
-      pure $ ModelInfo Nothing fun' df'
+      pure $ ModelInfo Nothing cf' df'
     (Nothing, Just a2) -> do
-      enterDefsM (Set.toList fun1) a2
-      pure $ ModelInfo (Just a2) fun' df'
+      enterDefsM (Set.toList (cf1 <> df1)) a2
+      pure $ ModelInfo (Just a2) cf' df'
     (Just a1, Nothing) -> do
-      enterDefsM (Set.toList fun2) a1
-      pure $ ModelInfo (Just a1) fun' df'
+      enterDefsM (Set.toList (cf2 <> df2)) a1
+      pure $ ModelInfo (Just a1) cf' df'
     (Just a1, Just a2) -> do
       guard (a1 == a2)
-      pure $ ModelInfo (Just a1) fun' df'
+      pure $ ModelInfo (Just a1) cf' df'
     where
-      ModelInfo con1 fun1 df1 = d1
-      ModelInfo con2 fun2 df2 = d2
-      fun' = Set.union fun1 fun2
-      clean1 = fun1 Set.\\ df1
-      clean2 = fun2 Set.\\ df2
-      df' = Set.union (df1 Set.\\ clean2) (df2 Set.\\ clean1)
+      ModelInfo con1 cf1 df1 = d1
+      ModelInfo con2 cf2 df2 = d2
+      cf' = Set.union cf1 cf2
+      df' = Set.union (df1 Set.\\ cf2) (df2 Set.\\ cf1)
     
   modifyA classId eg = do
     let classData = eg ^. _class classId . _data
@@ -338,7 +324,7 @@ syncLoop eg eqs = do
 
   syncLoop eg2 updateEqs
 
-whatToGuess :: (Ord a, Language f) => EG f a k -> [NonEmpty k]
+whatToGuess :: (Ord a, Language f, Ord k) => EG f a k -> [NonEmpty k]
 whatToGuess = mapMaybe getFunGroup . sortOn (Down . getParentCount) . filter isUnknownValue . toListOf _classes
   where
     isUnknownValue cls = isNothing $ constValue (cls ^. _data)
