@@ -7,7 +7,7 @@ import qualified Data.Vector as V
 import qualified Data.Vector.Unboxed as UV
 import Data.PTraversable
 
-import Targets (I')
+import Targets (I)
 import MonadGen
 import System.IO (hPutStrLn, stderr)
 import qualified Data.Map.Strict as Map
@@ -50,8 +50,8 @@ findCollisions monadDictList =
 
 main :: IO ()
 main = do
-  monadDataFileText <- readFile "output/I'/monad_data"
-  case deserializeMonadDataList @I' (lines monadDataFileText) of
+  monadDataFileText <- readFile "output/I/monad_data"
+  case deserializeMonadDataList @I (lines monadDataFileText) of
     Left err -> hPutStrLn stderr err
     Right monadDataList ->
       let dicts = makeMonadDict <$> monadDataList

@@ -1,11 +1,18 @@
-"monad-gen F",0.00,0.10,11520k
-"monad-gen G",0.01,0.06,12672k
-"monad-gen H",0.12,0.15,15360k
-"monad-gen I",4.43,4.47,27584k
-"monad-gen J",0.41,0.47,15360k
-Command exited with non-zero status 1
-"monad-gen K",0.44,0.49,18304k
-"monad-gen T",0.08,0.09,13440k
-"monad-gen U",20.14,20.48,32700k
-"monad-gen V",4.99,5.07,26272k
-"monad-gen I'",783.99,788.18,712696k
+"monad-gen -o ./tmp --v1 F",0.01,0.10,12672k
+"monad-gen -o ./tmp --v1 G",0.01,0.02,13824k
+"monad-gen -o ./tmp --v1 H",0.10,0.11,14720k
+"monad-gen -o ./tmp --v1 I",4.28,4.32,26136k
+"monad-gen -o ./tmp --v1 St22",0.07,0.09,14336k
+"monad-gen -o ./tmp --v1 St32",29.49,29.90,39436k
+"monad-gen -o ./tmp --v2 F",0.00,0.01,12416k
+"monad-gen -o ./tmp --v2 G",0.03,0.05,15104k
+"monad-gen -o ./tmp --v2 H",0.28,0.32,27944k
+"monad-gen -o ./tmp --v2 I",17.22,17.80,163364k
+"monad-gen -o ./tmp --v2 St22",0.22,0.25,28032k
+"monad-gen -o ./tmp --v2 St32",87.24,91.44,291312k
+"monad-gen -o ./tmp --v2-cached F",0.01,0.01,12416k
+"monad-gen -o ./tmp --v2-cached G",0.04,0.06,15616k
+"monad-gen -o ./tmp --v2-cached H",0.27,0.30,25308k
+"monad-gen -o ./tmp --v2-cached I",29.39,29.64,165128k
+"monad-gen -o ./tmp --v2-cached St22",0.23,0.25,21208k
+"monad-gen -o ./tmp --v2-cached St32",46.79,48.31,185652k
