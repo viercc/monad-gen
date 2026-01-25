@@ -57,7 +57,8 @@ import ModelFinder.Term
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 import Data.Coerce (coerce)
-import Data.Traversable (for)
+import Data.Traversable (for, mapAccumM)
+import Data.Tuple (swap)
 
 type DebugConstraint f a = (Show a, Show (f a), Show (f (Term f a)), Show (f Int))
 
@@ -261,7 +262,7 @@ guessFor eg fas = do
   (m', newDefs) <- maybeToSearch $ enterDef (F.toList fas) a m
   putModel m'
   let updateDefs = (NE.head fas, a) : newDefs
-  syncLoop eg (defToEq <$> updateDefs)
+  syncLoop eg updateDefs []
 
 initialize :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   => DebugConstraint f a
@@ -280,9 +281,9 @@ initializeFrom eg0 eqs defs = do
   model0 <- getsModel
   (defs', model1) <- maybeToSearch $ saturateModel model0 (Map.toList defs)
   putModel model1
-  eg1 <- syncLoop eg0 ((defToEq <$> Map.toList defs') ++ eqs)
+  eg1 <- syncLoop eg0 (Map.toList defs') eqs
   discoveries <- discoverDefs eg1
-  syncLoop eg1 (defToEq <$> discoveries)
+  syncLoop eg1 discoveries []
 
 discoverDefs :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   => DebugConstraint f a
@@ -290,7 +291,7 @@ discoverDefs :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   -> SearchM k a model [(k, a)]
 discoverDefs eg = do
   m <- getsModel
-  defs <- for (whatToGuess eg) $ \ks ->
+  defs <- for (getUnknownFunctionGroups eg) $ \ks ->
     case guessMany ks m of
       -- Empty result ==> early failure
       [] -> mzero
@@ -312,17 +313,20 @@ saturateModel m0 = loop m0 Map.empty
 syncLoop :: forall f a k model.
     (Ord a, Language f, Ord k, Model k a model, NormalForm (f a) k)
   => DebugConstraint f a
-  => EG f a k -> [(Term f a, Term f a)] -> SearchM k a model (EG f a k)
-syncLoop eg [] = pure eg
-syncLoop eg eqs = do
-  eg1 <- equateTerms eqs eg
-  eg2 <- rebuildM eg1
-
-  -- updates from model
+  => EG f a k -> [(k,a)] -> [(Term f a, Term f a)] -> SearchM k a model (EG f a k)
+syncLoop eg [] [] = pure eg
+syncLoop eg defs eqs = do
+  eg1 <- equateDefs defs eg
+  eg2 <- equateTerms eqs eg1
+  eg3 <- rebuildM eg2
   updates <- takeAllWaitingDefs
-  let updateEqs = defToEq <$> updates
+  syncLoop eg3 updates []
 
-  syncLoop eg2 updateEqs
+getUnknownFunctionGroups :: (Ord a, Language f, Ord k) => EG f a k -> [NonEmpty k]
+getUnknownFunctionGroups = mapMaybe getFunGroup . filter isUnknownValue . toListOf _classes
+  where
+    isUnknownValue cls = isNothing $ constValue (cls ^. _data)
+    getFunGroup = NE.nonEmpty . Set.toList . constFunctions . view _data
 
 whatToGuess :: (Ord a, Language f, Ord k) => EG f a k -> [NonEmpty k]
 whatToGuess = mapMaybe getFunGroup . sortOn (Down . getParentCount) . filter isUnknownValue . toListOf _classes
@@ -331,21 +335,41 @@ whatToGuess = mapMaybe getFunGroup . sortOn (Down . getParentCount) . filter isU
     getParentCount cls = sizeSL (cls ^. _parents)
     getFunGroup = NE.nonEmpty . Set.toList . constFunctions . view _data
 
-defToEq :: (Functor f, NormalForm (f a) k) => (k, a) -> (Term f a, Term f a)
-defToEq = bimap (liftFun . reify) con
+representCon :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
+  => a -> EG f a k -> SearchM k a model (ClassId, EG f a k)
+representCon a = addM (Node (Con a))
+
+representFun :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
+  => f a -> EG f a k -> SearchM k a model (ClassId, EG f a k)
+representFun fa eg0 = do
+  (eg1, fx) <- mapAccumM (\eg a -> swap <$> representCon a eg) eg0 fa
+  addM (Node (Fun fx)) eg1
 
 equate :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
-  => Term f a -> Term f a -> EG f a k -> SearchM k a model (EG f a k)
-equate lhs rhs eg = do
+  => (Term f a, Term f a) -> EG f a k -> SearchM k a model (EG f a k)
+equate (lhs, rhs) eg = do
   (cLhs, eg1) <- representM lhs eg
   (cRhs, eg2) <- representM rhs eg1
+  (_, eg3) <- mergeM cLhs cRhs eg2
+  pure eg3
+
+equateDef :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
+  => (k, a) -> EG f a k -> SearchM k a model (EG f a k)
+equateDef (k, a) eg = do
+  (cLhs, eg1) <- representFun (reify k) eg
+  (cRhs, eg2) <- representCon a eg1
   (_, eg3) <- mergeM cLhs cRhs eg2
   pure eg3
 
 equateTerms :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   => [(Term f a, Term f a)] -> EG f a k -> SearchM k a model (EG f a k)
 equateTerms [] eg = pure eg
-equateTerms ((lhs, rhs) : rest) eg = equate lhs rhs eg >>= equateTerms rest
+equateTerms (eq : rest) eg = equate eq eg >>= equateTerms rest
+
+equateDefs :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
+  => [(k, a)] -> EG f a k -> SearchM k a model (EG f a k)
+equateDefs [] eg = pure eg
+equateDefs (eq : rest) eg = equateDef eq eg >>= equateDefs rest
 
 ----
 
