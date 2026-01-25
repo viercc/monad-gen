@@ -19,10 +19,10 @@ module MonadGen2
   (
     module MonadData,
 
+    prepareGenFromApplicative,
     genFromApplicative,
     moduloIso,
-    genFromApplicativeModuloIso,
-    genFromApplicativeIsoGroups,
+    groupsIso
   )
 where
 
@@ -43,33 +43,39 @@ import qualified Data.PreNatMap as PNM
 import MonadData
 import ModelFinder.Model.PreNatMapModel
 import ModelFinder.Term
-import ModelFinder.Solver (solveEqs', NormalForm(..))
+import ModelFinder.Solver
 
 import GHC.Generics ((:.:) (..))
 import Data.Finitary.Enum (enum)
 import Data.Coerce (coerce, Coercible)
 import qualified Data.NatMap as NM
+import Control.Monad (guard)
 
 -- Generation
 
--- |
---
--- >>> apDict = ApplicativeDict Just liftA2
--- >>> length $ genFromApplicative apDict
--- 1
+prepareGenFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => Maybe (ApplicativeDict f -> [MonadData f])
+prepareGenFromApplicative = do
+  snapshot <- preInitialize associativityEqs Map.empty newJoinModel
+  pure $ \apDict -> do
+    apDefs <- F.toList $ applicativeDefs apDict
+    let def0 = Map.fromList $ PNM.toEntries apDefs
+    model <- solveFromSnapshot [] def0 snapshot
+    pure $ postprocess apDict model
 
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicative apDict = do
   apDefs <- F.toList $ applicativeDefs apDict
   let def0 = Map.fromList $ PNM.toEntries apDefs
   -- traceM $ "def0.size = " ++ show (Map.size def0)
-  model <- solveEqs' associativityEqs def0 newJoinModel
-  pure $ postprocess model
+  eqs <- F.toList $ associativityEqsReduced apDefs
+  model <- solveEqs' eqs def0 newJoinModel
+  pure $ postprocess apDict model
+
+postprocess :: (PTraversable f) => ApplicativeDict f -> JoinModel f -> MonadData f
+postprocess apDict (PreNatMapModel _ pnm) = MonadData pureShape joinMap
   where
     pureShape = Shape (_applicativePure apDict ())
-
-    postprocess :: JoinModel f -> MonadData f
-    postprocess (PreNatMapModel _ pnm) = MonadData pureShape (coerceNatMapKeys (PNM.toNatMap pnm))
+    joinMap = coerceNatMapKeys (PNM.toNatMap pnm)
 
 coerceNatMapKeys :: (forall a. Coercible (f a) (f' a), WeakOrd f') => NM.NatMap f g -> NM.NatMap f' g
 coerceNatMapKeys nm = NM.fromEntries (NM.bimapEntry (mapShape coerce) id <$> NM.toEntries nm)
@@ -79,11 +85,8 @@ moduloIso apDict = uniqueByIso isoGenerators
   where
     isoGenerators = stabilizingIsomorphisms apDict
 
-genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicativeModuloIso apDict = moduloIso apDict $ genFromApplicative apDict
-
-genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
-genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict
+groupsIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [Set.Set (MonadData f)]
+groupsIso apDict = groupByIso isoGenerators
   where
     isoGenerators = stabilizingIsomorphisms apDict
 
@@ -137,6 +140,14 @@ makeAssociativity f3 = (leftAssocTerm f3, rightAssocTerm f3)
 associativityEqs :: (PTraversable f) => [(JTerm f, JTerm f)]
 associativityEqs = (makeAssociativity .) <$> [outerIx, innerIx] <*> enum1 (enum1 shapes)
 
+associativityEqsReduced :: (PTraversable f) => PNM.PreNatMap (J f) f -> Maybe [(JTerm f, JTerm f)]
+associativityEqsReduced pnm = concat <$> traverse checkAndRemove associativityEqs
+  where
+    red = reduceJTerm pnm
+    checkAndRemove (lhs, rhs) = case (red lhs, red rhs) of
+      (Fix (Con lhsCon), Fix (Con rhsCon)) -> [] <$ guard (lhsCon == rhsCon)
+      (lhs', rhs') -> Just [(lhs', rhs')]
+
 outerIx, innerIx :: Traversable f => f (f (f any)) -> f (f (f Int))
 outerIx = imap (\i -> fmap (i <$))
 innerIx = fmap (unComp1 . indices . Comp1)
@@ -150,6 +161,27 @@ applicativeDefs apDict = PNM.fromEntries $ do
   pure (lhs, rhs)
   where
     f1 = V.toList skolem
+
+reduceJTerm :: forall f. (PTraversable f) => PNM.PreNatMap (J f) f -> JTerm f -> JTerm f
+reduceJTerm pnm = go
+  where
+    tryReduceJ (J ffx) = case PNM.match (J ffx) pnm of
+      Nothing -> fun (Join (con <$> ffx))
+      Just fx -> con fx
+    
+    getCon :: JTerm f -> Maybe (f Int)
+    getCon (Fix (Con fi)) = Just fi
+    getCon _ = Nothing
+
+    go :: JTerm f -> JTerm f
+    go (Fix lt) = case go <$> lt of
+      Con fi -> con fi
+      Fun (Bind vec r) -> case getCon r of
+        Just fi -> tryReduceJ $ J ((vec V.!) <$> fi)
+        Nothing -> fun (Bind vec r)
+      Fun (Join fr) -> case traverse getCon fr of
+        Just ffi -> tryReduceJ $ J ffi
+        Nothing -> fun (Join fr)
 
 separateFunctor :: (Traversable g, Ord a) => g a -> (V.Vector a, g Int)
 separateFunctor ga = (V.fromList (F.toList ga), indices ga)

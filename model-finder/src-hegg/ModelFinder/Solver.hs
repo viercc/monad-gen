@@ -20,6 +20,8 @@ module ModelFinder.Solver(
   solveEqs',
   NormalForm(..),
 
+  preInitialize, solveFromSnapshot,
+
   -- * Languages
   L(..), Term,
   con, fun, liftFun,
@@ -177,7 +179,9 @@ instance (Ord a, Ord k, Language f, NormalForm (f a) k, Model k a model)
       ModelInfo con1 fun1 df1 = d1
       ModelInfo con2 fun2 df2 = d2
       fun' = Set.union fun1 fun2
-      df' = Set.intersection df1 df2
+      clean1 = fun1 Set.\\ df1
+      clean2 = fun2 Set.\\ df2
+      df' = Set.union (df1 Set.\\ clean2) (df2 Set.\\ clean1)
     
   modifyA classId eg = do
     let classData = eg ^. _class classId . _data
@@ -220,7 +224,32 @@ solveEqs' :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   -> Map k a
   -> model
   -> [model]
-solveEqs' eqs knownDefs model0 = snd <$> runSearchM model0 (solveBody eqs knownDefs)
+solveEqs' eqs knownDefs model0 = snd <$> runSearchM model0 body
+  where
+    body = initialize eqs knownDefs >>= solveBody
+
+type Snapshot f a k m = (EG f a k, m)
+
+preInitialize :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
+  => DebugConstraint f a
+  => [(Term f a, Term f a)]
+  -> Map k a
+  -> model
+  -> Maybe (Snapshot f a k model)
+preInitialize eqs knownDefs model0 = case runSearchM model0 (initialize eqs knownDefs) of
+  [] -> Nothing
+  [(eg, model)] -> Just (eg, model)
+  (_:_:_) -> errorWithoutStackTrace "initialize doesn't branch out"
+
+solveFromSnapshot :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
+  => DebugConstraint f a
+  => [(Term f a, Term f a)]
+  -> Map k a
+  -> Snapshot f a k model
+  -> [model]
+solveFromSnapshot eqs knownDefs (eg0, model0) = snd <$> runSearchM model0 body
+  where
+    body = initializeFrom eg0 eqs knownDefs >>= solveBody
 
 -- Shorthand
 type EG f a k = EGraph (ModelInfo k a) (L f a)
@@ -228,17 +257,11 @@ type EG f a k = EGraph (ModelInfo k a) (L f a)
 solveBody :: forall a f k model.
      (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   => DebugConstraint f a
-  => [(Term f a, Term f a)]
-  -> Map k a
+  => EG f a k
   -> SearchM k a model ()
-solveBody eqs knownDefs = do
-  eg1 <- initialize eqs knownDefs
-  loop eg1
-  where
-    loop :: EG f a k -> SearchM k a model ()
-    loop eg = case whatToGuess eg of
-      [] -> pure ()
-      (fas : _) -> guessFor eg fas >>= loop
+solveBody eg = case whatToGuess eg of
+  [] -> pure ()
+  (fas : _) -> guessFor eg fas >>= solveBody
 
 guessFor :: forall a f k model.
      (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
@@ -248,13 +271,7 @@ guessFor :: forall a f k model.
   -> SearchM k a model (EG f a k)
 guessFor eg fas = do
   m <- getsModel
-  let as = guessMany fas m
-  a <- case as of
-    [a] -> do
-      pure a
-    _ -> do
-      -- traceM $ "guessing: " ++ show (reify (NE.head fas))
-      choose as
+  a <- choose (guessMany fas m)
   (m', newDefs) <- maybeToSearch $ enterDef (F.toList fas) a m
   putModel m'
   let updateDefs = (NE.head fas, a) : newDefs
@@ -265,13 +282,21 @@ initialize :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   => [(Term f a, Term f a)]
   -> Map k a
   -> SearchM k a model (EG f a k)
-initialize eqs defs = do
+initialize = initializeFrom emptyEGraph
+
+initializeFrom :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
+  => DebugConstraint f a
+  => EG f a k
+  -> [(Term f a, Term f a)]
+  -> Map k a
+  -> SearchM k a model (EG f a k)
+initializeFrom eg0 eqs defs = do
   model0 <- getsModel
   (defs', model1) <- maybeToSearch $ saturateModel model0 (Map.toList defs)
   putModel model1
-  eg0 <- syncLoop emptyEGraph ((defToEq <$> Map.toList defs') ++ eqs)
-  discoveries <- discoverDefs eg0
-  syncLoop eg0 (defToEq <$> discoveries)
+  eg1 <- syncLoop eg0 ((defToEq <$> Map.toList defs') ++ eqs)
+  discoveries <- discoverDefs eg1
+  syncLoop eg1 (defToEq <$> discoveries)
 
 discoverDefs :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   => DebugConstraint f a

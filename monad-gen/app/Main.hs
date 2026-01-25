@@ -149,7 +149,9 @@ monadGen applicatives genType println = do
       
       gen = case genType of
         MonadGenV1 -> genFromApplicativeModuloIso
-        MonadGenV2 -> MonadGen2.genFromApplicativeModuloIso
+        MonadGenV2 -> case MonadGen2.prepareGenFromApplicative of
+          Nothing -> const []
+          Just genPrepared -> \apDict -> MonadGen2.moduloIso apDict (genPrepared apDict)
       
       monads :: [ (String, MonadData f) ]
       monads = do
@@ -173,7 +175,9 @@ monadGenGroup applicatives genType println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
       gen = case genType of
         MonadGenV1 -> genFromApplicativeIsoGroups
-        MonadGenV2 -> MonadGen2.genFromApplicativeIsoGroups
+        MonadGenV2 -> case MonadGen2.prepareGenFromApplicative of
+          Nothing -> const []
+          Just genPrepared -> \apDict -> MonadGen2.groupsIso apDict (genPrepared apDict)
       monads :: [ (String, Set.Set (MonadData f)) ]
       monads = do
         (apName, apData) <- applicatives
