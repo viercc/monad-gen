@@ -27,10 +27,9 @@ module ModelFinder.Solver(
   runProperty
 ) where
 
-import Data.Function (on, (&))
 import Data.Bifunctor (Bifunctor(..))
 import Control.Applicative (Alternative())
-import Control.Monad ( guard, MonadPlus (..), when )
+import Control.Monad ( guard, MonadPlus (..) )
 import Data.Maybe (isNothing, mapMaybe)
 import Data.List (sortOn)
 import Data.Ord (Down(..))
@@ -53,7 +52,6 @@ import Data.Equality.Utils.SizedList (sizeSL)
 
 import ModelFinder.Model
 import ModelFinder.Term
-import Debug.Trace (traceM, trace)
 import Data.List.NonEmpty (NonEmpty(..))
 import qualified Data.List.NonEmpty as NE
 import Data.Coerce (coerce)
@@ -67,15 +65,23 @@ data ModelInfo k a = ModelInfo {
     -- ^ The class contains (Con a)
     constFunctions :: !(Set k),
     -- ^ The class contains (Fun fx) where each children
-    --   classes of fx contain constant value a,
-    --   and k = normalize fx.
+    --   classes of fx contain constant value a.
+    --   This field is a set of all such nodes in normalized form.
     constFunctionsDone :: !(Set k)
-    -- ^ If @normalize@ changes a @Fun fx@ term,
-    --   i.e. @reify k /= fx@, the class
-    --   may not contain @reify k@.
-    --   Such a state must be temporary and corrected by @modifyA@.
+    -- ^ The class contains (Fun fx) where each children
+    --   classes of fx contain constant value a.
+    --   This field is a set of all such nodes _which has already been normalized form_.
+    --
+    --   Members of @constFunctions@ which is not included in @constFunctionsDone@
+    --   must be added to the class by 'modifyA' hook.
   }
-  deriving (Show, Eq)
+  deriving (Show)
+
+instance (Eq k, Eq a) => Eq (ModelInfo k a) where
+  d1 == d2 =
+    (constValue d1 == constValue d2) &&
+    (constFunctions d1 == constFunctions d2)
+    -- no need to compare constFunctionsDone
 
 data SearchState k a model = SearchState {
     currentModel :: model,
@@ -224,51 +230,13 @@ solveBody :: forall a f k model.
   -> Map k a
   -> SearchM k a model ()
 solveBody eqs knownDefs = do
-  traceM "=== begin solveBody ==="
-  F.for_ (Map.toList knownDefs) $ \(k,a) ->
-    traceM $ "  |" ++ show (reify k) ++ " => " ++ show a
-  traceM "= initialize ="
   eg1 <- initialize eqs knownDefs
-  traceM "= loop ="
   loop eg1
   where
     loop :: EG f a k -> SearchM k a model ()
-    loop eg = check >> case whatToGuess eg of
+    loop eg = case whatToGuess eg of
       [] -> pure ()
       (fas : _) -> guessFor eg fas >>= loop
-      where
-        check = checkEGraphValidity eg
-
-checkEGraphValidity :: forall a f k model.
-     (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
-  => DebugConstraint f a
-  => EG f a k -> SearchM k a model ()
-checkEGraphValidity eg = mapM_ checkClass allClasses
-  where
-    allClasses = toListOf _iclasses eg
-    checkClass (cid, cls) = do
-      sameClassToNormalForm cid (cls ^. _nodes)
-      matchWithModel (cls ^. _data)
-    sameClassToNormalForm cid = mapM_ (validNode cid)
-    validNode cls node = case node of
-      Node (Con _) -> pure ()
-      Node (Fun fx) -> case traverse getCon fx of
-        Nothing -> pure ()
-        Just fa -> do
-          let nf = reify (normalize fa :: k)
-          (nfId, eg') <- representM (liftFun nf) eg
-          if nfId == cls
-            then pure ()
-            else do () <- dumpEGraph eg'
-                    error $ "validNode: " ++ show (cls, fa, nfId, nf)
-    getCon cid = constValue $ eg ^. _class cid . _data
-    matchWithModel (ModelInfo cons funs _df) = case cons of
-      Nothing -> pure ()
-      Just a -> do
-        m <- getsModel
-        F.for_ funs $ \k -> case guess k m of
-          [a'] | a == a' -> pure ()
-          as -> error $ "matchWithModel: " ++ show (reify k, a, as)
 
 guessFor :: forall a f k model.
      (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
@@ -281,13 +249,10 @@ guessFor eg fas = do
   let as = guessMany fas m
   a <- case as of
     [a] -> do
-      traceM $ "  found " ++ show (reify <$> fas) ++ " => " ++ show a
       pure a
     _ -> do
-      traceM $ "guessing: " ++ show (reify <$> fas)
-      a <- choose as
-      traceM $ "  guessed " ++ show (reify <$> fas) ++ " => " ++ show a
-      pure a
+      -- traceM $ "guessing: " ++ show (reify (NE.head fas))
+      choose as
   (m', newDefs) <- maybeToSearch $ enterDef (F.toList fas) a m
   putModel m'
   let updateDefs = (NE.head fas, a) : newDefs
@@ -302,33 +267,15 @@ initialize eqs defs = do
   model0 <- getsModel
   (defs', model1) <- maybeToSearch $ saturateModel model0 (Map.toList defs)
   putModel model1
-  eg <- syncLoop emptyEGraph ((defToEq <$> Map.toList defs') ++ eqs)
-  dumpEGraph eg
-  pure eg
-
-dumpEGraph :: (Ord a, Language f, Ord k, NormalForm (f a) k, Monad m)
-  => DebugConstraint f a
-  => EG f a k
-  -> m ()
-dumpEGraph eg = do
-  traceM "-- EGraph Debug dump --"
-  F.for_ (toListOf _iclasses eg) $ \(i, clsData) -> do
-    traceM $ "class " ++ show i
-    dumpClassData (clsData ^. _data)
-    traceM $ "  nodes:"
-    F.for_ (clsData ^. _nodes) $ \node -> do
-      traceM $ "    " ++ show (unNode node)
-
-dumpClassData :: (Ord a, Language f, Ord k, NormalForm (f a) k, Monad m)
-  => DebugConstraint f a
-  => ModelInfo k a
-  -> m ()
-dumpClassData (ModelInfo cons funs df) = do
-  traceM   "  data: ModelInfo"
-  traceM $ "    cons = " ++ show cons
-  traceM $ "    funs = " ++ showSetKey funs
-  traceM $ "    df   = " ++ showSetKey df
-  where showSetKey ks = show (reify <$> Set.toList ks) ++ " (size=" ++ show (Set.size ks) ++ ")"
+  eg0 <- syncLoop emptyEGraph ((defToEq <$> Map.toList defs') ++ eqs)
+  model2 <- getsModel
+  let discoveries = do
+        fas <- whatToGuess eg0
+        -- extract only "uniquely determined" result
+        case guessMany fas model2 of
+          [a] -> [(NE.head fas, a)]
+          _ -> []
+  syncLoop eg0 (defToEq <$> discoveries)
 
 saturateModel :: (Ord a, Ord k, Model k a model)
   => model -> [(k, a)] -> Maybe (Map k a, model)
@@ -364,10 +311,6 @@ whatToGuess = mapMaybe getFunGroup . sortOn (Down . getParentCount) . filter isU
 defToEq :: (Functor f, NormalForm (f a) k) => (k, a) -> (Term f a, Term f a)
 defToEq = bimap (liftFun . reify) con
 
-equateDefs :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
-  => [(k, a)] -> EG f a k -> SearchM k a model (EG f a k)
-equateDefs defs = equateTerms (defToEq <$> defs)
-
 equate :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   => Term f a -> Term f a -> EG f a k -> SearchM k a model (EG f a k)
 equate lhs rhs eg = do
@@ -380,21 +323,6 @@ equateTerms :: (Ord a, Language f, Ord k, NormalForm (f a) k, Model k a model)
   => [(Term f a, Term f a)] -> EG f a k -> SearchM k a model (EG f a k)
 equateTerms [] eg = pure eg
 equateTerms ((lhs, rhs) : rest) eg = equate lhs rhs eg >>= equateTerms rest
-
-----
-
-transposeMap :: (Ord a, Ord b) => Map a b -> Map b (Set a)
-transposeMap m = Map.fromListWith Set.union
-  [ (b, Set.singleton a) | (a, b) <- Map.toList m ]
-
--- Map.fromList but the values for the repeated keys must be unique
-mapFromListUnique :: (Ord k, Eq v) => [(k,v)] -> Maybe (Map k v)
-mapFromListUnique = F.foldlM step Map.empty
-  where
-    step m (k,v) = Map.alterF (checkedInsert v) k m
-    checkedInsert newV old = case old of
-      Nothing -> Just (Just newV)
-      Just oldV -> old <$ guard (newV == oldV)
 
 ----
 
