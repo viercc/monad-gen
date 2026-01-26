@@ -1,0 +1,9 @@
+"./tmp-bin/monad-gen -o ./tmp F --v2-cached",0.01,0.31,11904k
+"./tmp-bin/monad-gen -o ./tmp G --v2-cached",0.05,0.12,15488k
+"./tmp-bin/monad-gen -o ./tmp H --v2-cached",0.31,0.37,24996k
+"./tmp-bin/monad-gen -o ./tmp I --v2-cached",29.78,30.15,162352k
+"./tmp-bin/monad-gen -o ./tmp T_112 --v2-cached",1.66,1.77,36236k
+"./tmp-bin/monad-gen -o ./tmp T_013 --v2-cached",6708.34,7322.81,4282316k
+"./tmp-bin/monad-gen -o ./tmp complex/V2Maybe --v2-cached",14.73,15.35,74492k
+"./tmp-bin/monad-gen -o ./tmp St22 --v2-cached",0.23,0.35,21028k
+"./tmp-bin/monad-gen -o ./tmp St32 --v2-cached",51.51,53.31,184792k

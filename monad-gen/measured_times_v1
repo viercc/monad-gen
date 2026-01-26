@@ -1,0 +1,10 @@
+"./tmp-bin/monad-gen -o ./output F --v1",0.00,0.02,12800k
+"./tmp-bin/monad-gen -o ./output G --v1",0.01,0.02,13824k
+"./tmp-bin/monad-gen -o ./output H --v1",0.09,0.14,14848k
+"./tmp-bin/monad-gen -o ./output I --v1",2.68,2.83,19712k
+"./tmp-bin/monad-gen -o ./output T_112 --v1",0.32,0.37,17152k
+"./tmp-bin/monad-gen -o ./output T_013 --v1",282.83,283.59,185916k
+"./tmp-bin/monad-gen -o ./output complex/V2Maybe --v1",7.09,7.17,19152k
+"./tmp-bin/monad-gen -o ./output St22 --v1",0.05,0.17,13696k
+"./tmp-bin/monad-gen -o ./output St32 --v1",13.57,13.69,26280k
+"./tmp-bin/monad-gen -o ./output St42 --v1",10558.46,10571.63,193964k
