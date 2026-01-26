@@ -37,6 +37,7 @@ import qualified Data.NatMap as NM
 import qualified Data.PreNatMap as PNM
 import qualified Data.Bitmap as Bitmap
 import qualified Data.List.NonEmpty as NE
+import qualified Data.IntMap.Strict as IntMap
 
 import Data.Bifunctor (Bifunctor(..))
 import Data.Either.Validation ( Validation(..), eitherToValidation )
@@ -59,7 +60,7 @@ import Debug.Trace (traceM)
 import MonadData
 import MonadLaws
 import qualified MonadGen.BinaryJoin as BJ
-import Data.Traversable.Extra (indices)
+import Data.Traversable.Extra (indices, zipMatchWith)
 
 -- * Entry points
 
@@ -172,8 +173,34 @@ associativity m fffa =
       (Right fa1, Right fa2) -> if fa1 == fa2 then Just ([], []) else Nothing
       (Right fa, Left ffa) -> Just ([], [(Comp1 ffa, fa)])
       (Left  ffa, Right fa) -> Just ([], [(Comp1 ffa, fa)])
-      (Left  ffa1, Left ffa2) -> Just ([Shape (Comp1 ffa1), Shape (Comp1 ffa2)], [])
+      (Left  ffa1, Left ffa2) -> do
+        defs <- constraintsFromEq m ffa1 ffa2
+        pure ([Shape (Comp1 ffa1), Shape (Comp1 ffa2)], defs)
     Failure blockades -> Just (NE.toList blockades, [])
+
+constraintsFromEq :: (PTraversable f) => Join f -> f (f Int) -> f (f Int) -> Maybe [Def f Int]
+constraintsFromEq m ffa ffb = case (lup (Comp1 ffa), lup (Comp1 ffb)) of
+  (Nothing, Nothing) -> pure []
+  (Just fA, Nothing) -> oneSidedCase fA ffb
+  (Nothing, Just fB) -> oneSidedCase fB ffa
+  (Just fA, Just fB) -> do
+    fC <- zipMatchWith (\aa bb -> NE.nonEmpty (Bitmap.toList (Bitmap.intersection aa bb))) fA fB
+    let sigma = substFromPartitions (F.toList fC)
+        fc = NE.head <$> fC
+        ffa' = applySubst sigma <$> Comp1 ffa
+        ffb' = applySubst sigma <$> Comp1 ffb
+    pure [(ffa',fc), (ffb',fc)]
+
+  where
+    lup x = PNM.lookupWith Bitmap.singleton x m
+
+    oneSidedCase fX ffy = do
+      fX' <- traverse (NE.nonEmpty . Bitmap.toList) fX
+      let sigma = substFromPartitions (F.toList fX')
+          fx = NE.head <$> fX'
+          ffy' = applySubst sigma <$> Comp1 ffy
+      pure [(ffy', fx)]
+
 
 choose :: (Foldable t) => t a -> Gen f a
 choose = lift . lift . F.toList
@@ -318,3 +345,24 @@ mostRelated m
   | otherwise = Just kTop
   where
     (kTop, _) = F.maximumBy (comparing (Set.size . snd)) $ Map.toList m
+
+-- Substitions
+
+type Subst = IntMap.IntMap Int
+
+applySubst :: Subst -> Int -> Int
+applySubst sigma i = IntMap.findWithDefault i i sigma
+
+-- | Makes a Subst mapping each Int to the least element of
+--   the class it belongs.
+--
+-- Assumption:
+-- - NonEmpty lists represent a equivalence class.
+--   Elements must be sorted in ascending order.
+-- - NonEmpty lists may have duplicates, but should not
+--   intersect with distinct lists.
+--   in other words, either equal or disjoint each other.
+substFromPartitions :: [NE.NonEmpty Int] -> Subst
+substFromPartitions = IntMap.fromList . concatMap toEntry
+  where
+    toEntry (x NE.:| xs) = [ (y,x) | y <- xs ]
