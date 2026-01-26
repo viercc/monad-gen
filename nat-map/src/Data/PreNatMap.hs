@@ -20,6 +20,7 @@ module Data.PreNatMap(
 
   -- * update
   refine, refineShape,
+  refine', refineShape',
 
   -- * conversion
   toEntries, fromEntries, make,
@@ -211,6 +212,7 @@ match fa (PreNatMap pnm) = do
       funLhs <- functionalRelI (zip (UV.toList lhs) (toList fa))
       let ga = (funLhs IntMap.!) <$> rhs
       pure ga
+{-# INLINABLE match #-}
 
 -- | Query the output of natural transformation for given input @fa :: f a@.
 --   Succeeds only when the @PreNatMap@ had full knowledge for the inputs
@@ -225,9 +227,11 @@ fullMatch fa (PreNatMap pnm) = do
   if isCompleteLHS pd
     then pure $ makeRHS (toList fa) pd
     else Nothing
+{-# INLINABLE fullMatch #-}
 
 isFull :: (Ord (f Ignored), Foldable f, Functor g) => Shape f -> PreNatMap f g -> Bool
 isFull f (PreNatMap pnm) = maybe False isCompleteLHS $ Map.lookup f pnm
+{-# INLINABLE isFull #-}
 
 -- | Query the output of natural transformation for given input @fa :: f a@.
 --   Succeeds if the shape of the output corresponding to the input
@@ -238,6 +242,7 @@ isFull f (PreNatMap pnm) = maybe False isCompleteLHS $ Map.lookup f pnm
 --   'lookup' merges all of the candidate contents using 'Semigroup' operation.
 lookup :: (Semigroup a, Ord (f Ignored), Foldable f, Functor g) => f a -> PreNatMap f g -> Maybe (g a)
 lookup = lookupWith id
+{-# INLINABLE lookup #-}
 
 -- | Query the output of natural transformation for given input @fa :: f a@,
 --   while mapping its contents to another type @b@ with a @Semigroup@ instance.
@@ -251,6 +256,7 @@ lookupWith h fa (PreNatMap pnm) = do
       gb | isCompleteLHS pd = makeRHS bs pd
          | otherwise = (funLhs IntMap.!) <$> rhs
   pure gb
+{-# INLINABLE lookupWith #-}
 
 -- | Looks up only the shape.
 --
@@ -261,6 +267,7 @@ lookupShape :: Ord (f Ignored) => Shape f -> PreNatMap f g -> Maybe (Shape g)
 lookupShape f (PreNatMap pnm) = case Map.lookup f pnm of
   Nothing -> Nothing
   Just (PosData _ rhs) -> Just (Shape rhs)
+{-# INLINABLE lookupShape #-}
 
 -- | Refines knowledge a 'PreNatMap' contains by a pair of example
 --   input-output pair.
@@ -268,26 +275,39 @@ lookupShape f (PreNatMap pnm) = case Map.lookup f pnm of
 -- Returns @Nothing@ if the given example is not consistent with the already given
 -- examples.
 refine :: (Ord a, Ord (f Ignored), Eq (g Ignored), Foldable f, Traversable g) => f a -> g a -> PreNatMap f g -> Maybe (PreNatMap f g)
-refine fa ga (PreNatMap pnm) = case Map.lookup (Shape fa) pnm of
+refine fa ga = fmap snd <$> refine' fa ga
+{-# INLINABLE refine #-}
+
+-- | Same to 'refine' but also returns if any change has been made.
+refine' :: (Ord a, Ord (f Ignored), Eq (g Ignored), Foldable f, Traversable g) => f a -> g a -> PreNatMap f g -> Maybe (Bool, PreNatMap f g)
+refine' fa ga (PreNatMap pnm) = case Map.lookup (Shape fa) pnm of
   -- Create new entry
   Nothing -> do
     pd <- makePosData (toList fa) ga
-    pure $ PreNatMap $ Map.insert (Shape fa) pd pnm
+    pure (True, PreNatMap $ Map.insert (Shape fa) pd pnm)
   -- Update exising entry
   Just pd -> do
-    pd' <- refinePosData pd (toList fa) ga
-    pure $ PreNatMap $ Map.insert (Shape fa) pd' pnm
+    (changed, pd') <- refinePosData pd (toList fa) ga
+    pure (changed, PreNatMap $ Map.insert (Shape fa) pd' pnm)
+{-# INLINABLE refine' #-}
 
 -- | 'refine' but only the shapes of the input and output is given.
 refineShape :: (Ord (f Ignored), Eq (g Ignored), Foldable f, Traversable g)
   => Shape f -> Shape g -> PreNatMap f g -> Maybe (PreNatMap f g)
-refineShape f g (PreNatMap pnm) = case Map.lookup f pnm of
+refineShape f g = fmap snd <$> refineShape' f g
+{-# INLINABLE refineShape #-}
+
+-- | Same to 'refineShape' but also returns if any change has been made.
+refineShape' :: (Ord (f Ignored), Eq (g Ignored), Foldable f, Traversable g)
+  => Shape f -> Shape g -> PreNatMap f g -> Maybe (Bool, PreNatMap f g)
+refineShape' f g (PreNatMap pnm) = case Map.lookup f pnm of
   -- Create new entry
   Nothing -> do
     pd <- makeShapePosData f g
-    pure $ PreNatMap $ Map.insert f pd pnm
+    pure (True, PreNatMap $ Map.insert f pd pnm)
   -- Check existing entry has the matcing shape 
-  Just (PosData _ gx) -> PreNatMap pnm <$ guard (g == Shape gx)
+  Just (PosData _ gx) -> (False, PreNatMap pnm) <$ guard (g == Shape gx)
+{-# INLINABLE refineShape' #-}
 
 ---- Utilities ----
 
@@ -342,12 +362,12 @@ makePosData as ga = PosData lhs <$> rhs
     lhs = UV.fromList lhsList
     rhs = traverse (`Map.lookup` revmap) ga
 
-refinePosData :: (Ord a, Eq (g Ignored), Traversable g) => PosData g -> [a] -> g a -> Maybe (PosData g)
+refinePosData :: (Ord a, Eq (g Ignored), Traversable g) => PosData g -> [a] -> g a -> Maybe (Bool, PosData g)
 refinePosData (PosData lhs rhs) as ga = do
   ga' <- zipMatch rhs ga
   pd@(PosData lhs' _) <- makePosData (zip (UV.toList lhs) as) ga'
   guard $ UV.length lhs == UV.length lhs'
-  pure pd
+  pure (lhs /= lhs', pd)
 
 reindex :: (Ord a) => (a -> Bool) -> [a] -> ([Int], Map a Int)
 reindex mask = loop 0 Map.empty

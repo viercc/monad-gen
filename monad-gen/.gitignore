@@ -1,9 +1,8 @@
 *.prof
+measured_times__*
 output/**/monoid.txt
 output/**/applicative.txt
 output/**/monad.txt
 output/**/monad_group.txt
-output/L
-output/W
-output/X
-output/Y
+tmp
+tmp-bin

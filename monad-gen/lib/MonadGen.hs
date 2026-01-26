@@ -6,15 +6,12 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE TupleSections #-}
+{- HLINT ignore "Use camelCase" -}
 
 module MonadGen
   (
     module MonadData,
 
-    genMonads,
-    genMonadsModuloIso,
-    genMonadsIsoGroups,
-  
     genFromApplicative,
     genFromApplicativeViaBinaryJoin,
 
@@ -32,25 +29,27 @@ module MonadGen
   )
 where
 
-import Data.Either.Validation ( Validation(..) )
 import qualified Data.Foldable as F
-import qualified Data.Map.Lazy as Map
 import qualified Data.Set as Set
 import qualified Data.Vector as V
+import qualified Data.Map.Lazy as Map
+import qualified Data.NatMap as NM
 import qualified Data.PreNatMap as PNM
+import qualified Data.Bitmap as Bitmap
+import qualified Data.List.NonEmpty as NE
+
 import Data.Bifunctor (Bifunctor(..))
+import Data.Either.Validation ( Validation(..), eitherToValidation )
 import Data.Ord (comparing)
 import GHC.Generics ((:.:) (..))
 
 import Control.Monad
-
 import Control.Monad.Reader
 import Control.Monad.State
 
 import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.FunctorShape
-import qualified Data.NatMap as NM
 
 -- import MonoidGen (MonoidDict(..), genMonoidsForMonad, makeMonoidDict)
 import ApplicativeGen
@@ -62,43 +61,67 @@ import MonadLaws
 import qualified MonadGen.BinaryJoin as BJ
 import Data.Traversable.Extra (indices)
 
--- Monad dictionary
+-- * Entry points
 
-genMonads :: (PTraversable f, forall a. (Show a) => Show (f a)) => [MonadData f]
-genMonads =
-  do apDict <- makeApplicativeDict <$> genApplicativeData
-     genFromApplicative apDict
 
-genMonadsModuloIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [MonadData f]
-genMonadsModuloIso = do
-  apDict <- makeApplicativeDict <$> genApplicativeData
-  genFromApplicativeModuloIso apDict
+genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
+genFromApplicative apDict = do
+  apJoin <- F.toList $ applicativeToJoin apDict
+  postproc . snd <$> runGen buildInitialEnv (initialize (PNM.fromNatMap apJoin) >> loop)
+  where
+    pureShape = Shape (_applicativePure apDict ())
+    loop = do
+      blockade <- gets _blockade
+      case mostRelated blockade of
+        Nothing -> pure ()
+        Just lhsKey -> guess lhsKey >> loop
+    postproc finalState = MonadData pureShape (PNM.toNatMap (_join finalState))
 
-genMonadsIsoGroups :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a)) => [Set.Set (MonadData f)]
-genMonadsIsoGroups = 
-  do apDict <- makeApplicativeDict <$> genApplicativeData
-     genFromApplicativeIsoGroups apDict
+genFromApplicativeViaBinaryJoin :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
+genFromApplicativeViaBinaryJoin apDict = do
+  let allBinaryJoins = BJ.genFromApplicative apDict
+  traceM $ "#binaryJoin = " ++ show (length allBinaryJoins)
+  binaryJoin <- allBinaryJoins
+  postproc . snd <$> runGen buildInitialEnv (initialize (BJ.binaryJoinToJoin binaryJoin) >> loop)
+  where
+    pureShape = Shape (_applicativePure apDict ())
+    loop = do
+      blockade <- gets _blockade
+      case mostRelated blockade of
+        Nothing -> pure ()
+        Just lhsKey -> guess lhsKey >> loop
+    postproc finalState = MonadData pureShape (PNM.toNatMap (_join finalState))
 
--- Generation
+moduloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [MonadData f]
+moduloIso apDict = uniqueByIso isoGenerators
+  where
+    isoGenerators = stabilizingIsomorphisms apDict
+
+genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
+genFromApplicativeModuloIso apDict = moduloIso apDict $ genFromApplicative apDict
+
+genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
+genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict
+  where
+    isoGenerators = stabilizingIsomorphisms apDict
+
+-- Generation internals
 
 type Gen f = ReaderT (Env f) (StateT (GenState f) [])
 
 data Env f = Env
   { _f1 :: V.Vector (f Int),
-    _f2 :: V.Vector (f (f Int)),
-    _f3 :: V.Vector (f (f (f Int)))
+--    _shapeEqs :: V.Vector (f (f (f Int))),
+    _fullEqs :: V.Vector (f (f (f Int)))
   }
 
 type Join f = PNM.PreNatMap (f :.: f) f
 
-data BlockReason = UnknownShape | UnknownPos
-  deriving (Eq, Ord, Show)
-type BlockerKey f = (BlockReason, Shape (f :.: f))
+type BlockerKey f = (Shape (f :.: f))
 type Blockade f = Rel (BlockerKey f) Int
 
 data GenState f = GenState
-  { _pureShape :: Shape f,
-    _join :: Join f,
+  { _join :: Join f,
     _blockade :: Blockade f
   }
 
@@ -119,88 +142,38 @@ debugPrint st = do
        in unless assoc (fail "!?!?")
     Nothing -> putStrLn "incomplete"
 
-applyFull :: (PTraversable f) => Join f -> f (f a) -> Validation [BlockerKey f] (f a)
-applyFull m ffa = maybe (Failure [(reason,k)]) Success $ PNM.fullMatch (Comp1 ffa) m
-  where
-    k = Shape (Comp1 ffa)
-    reason = case PNM.lookupShape k m of
-      Nothing -> UnknownShape
-      Just _  -> UnknownPos
+type BlockableEval f = Validation (NE.NonEmpty (BlockerKey f))
 
-apply :: (PTraversable f, Eq a) => Join f -> f (f a) -> Validation [BlockerKey f] (f a)
-apply m ffa = maybe (Failure [(reason,k)]) Success $ PNM.match (Comp1 ffa) m
-  where
-    k = Shape (Comp1 ffa)
-    reason = case PNM.lookupShape k m of
-      Nothing -> UnknownShape
-      Just _  -> UnknownPos
+apply :: (PTraversable f, Eq a) => Join f -> f (f a) -> Either (f (f a)) (f a)
+apply m ffa = case PNM.match (Comp1 ffa) m of
+    Nothing -> Left ffa
+    Just fa -> Right fa
 
-applyShape :: (PTraversable f) => Join f -> f (f a) -> Validation [BlockerKey f] (Shape f)
-applyShape m ffa = maybe (Failure [(UnknownShape,k)]) Success $ PNM.lookupShape k m
-  where
-    k = Shape (Comp1 ffa)
+applyB :: (PTraversable f, Eq a) => Join f -> f (f a) -> BlockableEval f (f a)
+applyB m = eitherToValidation . first (NE.singleton . Shape . Comp1) . apply m
 
-leftAssocShapeB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [BlockerKey f] (Either (Shape (f :.: f)) (Shape f))
-leftAssocShapeB m fffa = secondStep <$> firstStep
+leftAssocB :: (PTraversable f, Eq a) => Join f -> f (f (f a)) -> BlockableEval f (Either (f (f a)) (f a))
+leftAssocB m fffa = apply m <$> firstStep
   where
-    firstStep = apply m (fmap (fmap Shape) fffa)
-    secondStep ff = case applyShape m key of
-      Failure _ -> Left (Shape (Comp1 key))
-      Success f -> Right f
-      where key = fmap (\(Shape f) -> void f) ff
+    firstStep = applyB m fffa
 
-rightAssocShapeB :: (PTraversable f) => Join f -> f (f (f a)) -> Validation [BlockerKey f] (Either (Shape (f :.: f)) (Shape f))
-rightAssocShapeB m fffa = secondStep <$> firstStep
+rightAssocB :: (PTraversable f, Eq a) => Join f -> f (f (f a)) -> BlockableEval f (Either (f (f a)) (f a))
+rightAssocB m fffa = apply m <$> firstStep
   where
-    firstStep = traverse (applyShape m) fffa
-    secondStep ff = case applyShape m key of
-      Failure _ -> Left (Shape (Comp1 key))
-      Success f -> Right f
-      where key = fmap (\(Shape f) -> void f) ff
-
-leftAssocB :: (PTraversable f, Eq a) => Join f -> f (f (f a)) -> Validation [BlockerKey f] (Either (BlockReason, (f :.: f) a) (f a))
-leftAssocB m fffa = secondStep <$> firstStep
-  where
-    firstStep = applyFull m fffa
-    secondStep ffa = case apply m ffa of
-      Failure [] -> error "impossible (the error should be nonempty)"
-      Failure ((reason,_) : _) -> Left (reason, Comp1 ffa)
-      Success f -> Right f
-
-rightAssocB :: (PTraversable f, Eq a) => Join f -> f (f (f a)) -> Validation [BlockerKey f] (Either (BlockReason, (f :.: f) a) (f a))
-rightAssocB m fffa = secondStep <$> firstStep
-  where
-    firstStep = traverse (applyFull m) fffa
-    secondStep ffa = case apply m ffa of
-      Failure [] -> error "impossible (the error should be nonempty)"
-      Failure ((reason,_) : _) -> Left (reason, Comp1 ffa)
-      Success f -> Right f
+    firstStep = traverse (applyB m) fffa
 
 type Def f a = ((f :.: f) a, f a)
 type TestResult f a = ([BlockerKey f], [Def f a])
 
-shapeToDummy :: Functor g => Shape g -> g Int
-shapeToDummy (Shape g) = 0 <$ g
-
-associativityShape :: (PTraversable f) => Join f -> f (f (f any)) -> Maybe (TestResult f Int)
-associativityShape m fff_ =
-  case (,) <$> leftAssocShapeB m fff_ <*> rightAssocShapeB m fff_ of
-    Success (leftResult, rightResult) -> case (leftResult, rightResult) of
-      (Right f1, Right f2) -> if f1 == f2 then Just ([], []) else Nothing
-      (Right f, Left ff) -> Just ([], [(shapeToDummy ff, shapeToDummy f)])
-      (Left  ff, Right f) -> Just ([], [(shapeToDummy ff, shapeToDummy f)])
-      (Left  ff1, Left ff2) -> Just ([(UnknownShape, ff1), (UnknownShape, ff2)], [])
-    Failure blockades -> Just (blockades, [])
-
 associativity :: (PTraversable f) => Join f -> f (f (f Int)) -> Maybe (TestResult f Int)
 associativity m fffa =
   case (,) <$> leftAssocB m fffa <*> rightAssocB m fffa of
-    Success (leftResult, rightResult) -> case (leftResult, rightResult) of
+    Success bothSides -> case bothSides of
       (Right fa1, Right fa2) -> if fa1 == fa2 then Just ([], []) else Nothing
-      (Right fa, Left (_, ffa)) -> Just ([], [(ffa, fa)])
-      (Left  (_,ffa), Right fa) -> Just ([], [(ffa, fa)])
-      (Left  (reason1, ffa1), Left (reason2, ffa2)) -> Just ([(reason1, Shape ffa1), (reason2, Shape ffa2)], [])
-    Failure blockades -> Just (blockades, [])
+      (Right fa, Left ffa) -> Just ([], [(Comp1 ffa, fa)])
+      (Left  ffa, Right fa) -> Just ([], [(Comp1 ffa, fa)])
+      (Left  ffa1, Left ffa2) -> Just ([Shape (Comp1 ffa1), Shape (Comp1 ffa2)], [])
+    Failure blockades -> Just (NE.toList blockades, [])
 
 choose :: (Foldable t) => t a -> Gen f a
 choose = lift . lift . F.toList
@@ -208,8 +181,7 @@ choose = lift . lift . F.toList
 buildInitialEnv :: forall f. PTraversable f => Env f
 buildInitialEnv = Env {
     _f1 = skolem,
-    _f2 = skolem2,
-    _f3 = skolem3
+    _fullEqs = skolem3
   }
 
 applicativeToJoin :: (PTraversable f) => ApplicativeDict f -> Maybe (NM.NatMap (f :.: f) f)
@@ -238,11 +210,6 @@ mapFromListUnique = F.foldlM step Map.empty
       Nothing -> Just (Just newV)
       Just oldV -> old <$ guard (newV == oldV)
 
-testAssociativityShape :: PTraversable f => Join f -> k -> f (f (f Int)) -> Maybe (Rel (BlockerKey f) k, [Def f Int])
-testAssociativityShape join0 k fa = first toRel <$> associativityShape join0 fa
-  where
-    toRel = foldMap (\blockKey -> singletonRel blockKey k)
-
 testAssociativity :: PTraversable f => Join f -> k -> f (f (f Int)) -> Maybe (Rel (BlockerKey f) k, [Def f Int])
 testAssociativity join0 k fa = first toRel <$> associativity join0 fa
   where
@@ -250,46 +217,38 @@ testAssociativity join0 k fa = first toRel <$> associativity join0 fa
 
 firstScan :: (PTraversable f) => Env f -> Join f -> Maybe ([Def f Int], Blockade f)
 firstScan env join0 = do
-  initialResults1 <- traverse t1 (V.indexed f3)
-  initialResults2 <- traverse t2 (V.indexed f3)
-  let initialResults = V.toList initialResults1 ++ V.toList initialResults2
-      blockade = foldl' unionRel Map.empty (fst <$> initialResults)
+  initialResults <- V.toList <$> traverse t (V.indexed eqs)
+  let blockade = foldl' unionRel Map.empty (fst <$> initialResults)
       defs = initialResults >>= snd
   Just (defs, blockade)
   where
-    f3 = _f3 env
-    t1 = uncurry (testAssociativityShape join0)
-    t2 = uncurry (testAssociativity join0)
+    eqs = _fullEqs env
+    t = uncurry (testAssociativity join0)
 
-runGen :: forall f r. (PTraversable f) => Shape f -> Join f -> Gen f r -> [(r, GenState f)]
-runGen pureShape join0 mr = do
-  (defs, blockade) <- F.toList $ firstScan env join0
-  let state0 =
-        GenState
-          { _pureShape = pureShape,
-            _join = join0,
-            _blockade = blockade
-          }
-  runStateT (runReaderT (entryLoop defs >> mr) env) state0
+initialize :: (PTraversable f) => Join f -> Gen f ()
+initialize join0 = do
+  env <- ask
+  (defs, blockade) <- choose $ firstScan env join0
+  put GenState { _join = join0, _blockade = blockade }
+  entryLoop defs
+
+runGen :: forall f r. (PTraversable f) => Env f -> Gen f r -> [(r, GenState f)]
+runGen env mr = runStateT (runReaderT mr env) emptyState
   where
-    env :: Env f
-    env = buildInitialEnv
+    emptyState = GenState PNM.empty Map.empty
 
-repair :: PTraversable f => BlockerKey f -> Gen f [Def f Int]
-repair (reason, key) = do
+repair :: PTraversable f => Shape (f :.: f) -> Gen f [Def f Int]
+repair key = do
   join1 <- gets _join
   blockade <- gets _blockade
-  f3 <- asks _f3
+  eqs1 <- asks _fullEqs
 
-  let (blockedEqs, blockade') = popRel (reason, key) blockade
+  let (blockedEqs, blockade') = popRel key blockade
       toResult k (newBlockers, newDefs) = (foldMap (\blocker -> singletonRel blocker k) newBlockers, newDefs)
-      test k = toResult k <$> associativity join1 (f3 V.! k)
-  (blockade'', newDefs) <- case traverse test (Set.toList blockedEqs) of
-    Nothing -> mzero
-    Just results ->
-      let blockade'' = foldl' unionRel blockade' (fst <$> results)
-          newDefs = concatMap snd results
-      in pure (blockade'', newDefs)
+      test k = toResult k <$> associativity join1 (eqs1 V.! k)
+  testResults <- choose $ traverse test (Set.toList blockedEqs)
+  let blockade'' = foldl' unionRel blockade' (fst <$> testResults)
+      newDefs = concatMap snd testResults
   
   modify $ \s -> s{ _blockade = blockade'' }
   pure newDefs
@@ -302,15 +261,13 @@ entry (lhs, rhs) =
   do
     join1 <- gets _join
     -- fail on Nothing case
-    join2 <- choose $ PNM.refine lhs rhs join1
-
-    modify $ \s -> s { _join = join2 }
+    (changed, join2) <- choose $ PNM.refine' lhs rhs join1
     
-    -- update assoc
-    newShapeDefs <- repair (UnknownShape, Shape lhs)
-    newDefs <- repair (UnknownPos, Shape lhs)
-    
-    pure (newShapeDefs ++ newDefs)
+    if changed
+      then do
+        modify $ \s -> s { _join = join2 }
+        repair (Shape lhs)
+      else pure []
 
 entryLoop :: 
   forall f. (PTraversable f) =>
@@ -321,62 +278,19 @@ entryLoop (def : defs) = do
   entryLoop (newDefs ++ defs)
 
 guess :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => BlockerKey f -> Gen f ()
-guess (UnknownShape, lhsKey) = do
-  -- Make a shape-only guess
-  let lhs = shapeToDummy lhsKey
-  rhs <- choose (enum1 [0])
-  entryLoop [(lhs, rhs)]
-guess (UnknownPos, lhsKey) = do
-  -- Make a shape-only guess
+guess lhsKey = do
   join1 <- gets _join
+  f1 <- asks _f1
   let lhs = keyIndices lhsKey
-  rhs <- case PNM.lookup (Set.singleton <$> lhs) join1 of
-    -- expect this not to happen, as (UnknownPos, key) should not be generated
-    -- if (UnknonShape, key) is already resolved
-    Nothing -> error "impossible?"
-    Just rhsSet -> choose (traverse Set.toList rhsSet)
-  entryLoop [(lhs, rhs)]
-
-genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicative apDict = do
-  apJoin <- F.toList $ applicativeToJoin apDict
-  postproc . snd <$> runGen pureShape (PNM.fromNatMap apJoin) loop
-  where
-    pureShape = Shape (_applicativePure apDict ())
-    loop = do
-      blockade <- gets _blockade
-      case mostRelated blockade of
-        Nothing -> pure ()
-        Just lhsKey -> guess lhsKey >> loop
-    postproc finalState = MonadData (_pureShape finalState) (PNM.toNatMap (_join finalState))
-
-genFromApplicativeViaBinaryJoin :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicativeViaBinaryJoin apDict = do
-  let allBinaryJoins = BJ.genFromApplicative apDict
-  traceM $ "#binaryJoin = " ++ show (length allBinaryJoins)
-  binaryJoin <- allBinaryJoins
-  postproc . snd <$> runGen pureShape (BJ.binaryJoinToJoin binaryJoin) loop
-  where
-    pureShape = Shape (_applicativePure apDict ())
-    loop = do
-      blockade <- gets _blockade
-      case mostRelated blockade of
-        Nothing -> pure ()
-        Just lhsKey -> guess lhsKey >> loop
-    postproc finalState = MonadData (_pureShape finalState) (PNM.toNatMap (_join finalState))
-
-moduloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [MonadData f]
-moduloIso apDict = uniqueByIso isoGenerators
-  where
-    isoGenerators = stabilizingIsomorphisms apDict
-
-genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicativeModuloIso apDict = moduloIso apDict $ genFromApplicative apDict
-
-genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
-genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict
-  where
-    isoGenerators = stabilizingIsomorphisms apDict
+  case PNM.lookup (Bitmap.singleton <$> lhs) join1 of
+    Nothing -> do
+      -- Make a shape-only guess
+      rhs <- choose f1
+      entryLoop [(0 <$ lhs, 0 <$ rhs)]
+    Just rhsSet -> do
+      -- Make a position guess
+      rhs <- choose (traverse Bitmap.toList rhsSet)
+      entryLoop [(lhs, rhs)]
 
 -- * Utilities
 
