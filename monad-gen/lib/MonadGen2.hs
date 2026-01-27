@@ -43,7 +43,7 @@ import qualified Data.PreNatMap as PNM
 import MonadData
 import ModelFinder.Model.PreNatMapModel
 import ModelFinder.Term
-import ModelFinder.Solver
+import ModelFinder.Solver.NFSolver
 
 import GHC.Generics ((:.:) (..))
 import Data.Finitary.Enum (enum)
@@ -68,7 +68,7 @@ genFromApplicative apDict = do
   let def0 = Map.fromList $ PNM.toEntries apDefs
   -- traceM $ "def0.size = " ++ show (Map.size def0)
   eqs <- F.toList $ associativityEqsReduced apDefs
-  model <- solveEqs' eqs def0 newJoinModel
+  model <- solveEqs eqs def0 newJoinModel
   pure $ postprocess apDict model
 
 postprocess :: (PTraversable f) => ApplicativeDict f -> JoinModel f -> MonadData f
