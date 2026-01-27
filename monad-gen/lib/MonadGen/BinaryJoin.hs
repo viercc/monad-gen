@@ -38,7 +38,7 @@ import Data.Traversable.Extra (indices)
 import Data.PTraversable.Extra (shapes, skolem)
 
 import GHC.Generics ((:.:) (..))
-import ApplicativeGen (ApplicativeDict(..))
+import ApplicativeData (ApplicativeDict(..))
 import Data.PTraversable (PTraversable, enum1)
 import ModelFinder.Model.PreNatMapModel
 import Data.Bifunctor (Bifunctor(..))

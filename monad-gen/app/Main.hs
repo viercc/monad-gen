@@ -27,6 +27,10 @@ import Type.Reflection
 import qualified ApplicativeLaws as Ap
 import MonadLaws
 import MonoidGen
+
+import ApplicativeData
+import ApplicativeGen (genApplicativeDataFrom)
+import MonadData
 import MonadGen
 import qualified MonadGen2
 
@@ -34,11 +38,7 @@ import Data.Fin
 import Targets
 import Util ( writeFile' )
 import Data.FunctorShape
-import ApplicativeGen (
-  ApplicativeDict(..),
-  makeApplicativeDict,
-  ApplicativeData,
-  genApplicativeDataFrom, serializeApplicativeDataList)
+
 
 import Options.Applicative
 import Data.List (intercalate)
@@ -146,18 +146,19 @@ monadGen
   -> IO [(String, MonadData f)]
 monadGen applicatives genType println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
-      
+      uniq apDict = uniqueByIso @f (ApplicativeData.automorphisms apDict)
       gen = case genType of
-        MonadGenV1 -> genFromApplicativeModuloIso
-        MonadGenV2 -> \apDict -> MonadGen2.moduloIso apDict $ MonadGen2.genFromApplicative apDict
-        MonadGenV2Cached -> case MonadGen2.prepareGenFromApplicative of
-          Nothing -> const []
-          Just genPrepared -> \apDict -> MonadGen2.moduloIso apDict (genPrepared apDict)
+          MonadGenV1 -> MonadGen.genFromApplicative
+          MonadGenV2 -> MonadGen2.genFromApplicative
+          MonadGenV2Cached -> case MonadGen2.prepareGenFromApplicative of
+            Nothing -> const []
+            Just genPrepared -> genPrepared
       
       monads :: [ (String, MonadData f) ]
       monads = do
         (apName, apData) <- applicatives
-        monadData <- gen (makeApplicativeDict apData)
+        let apDict = makeApplicativeDict apData
+        monadData <- uniq apDict $ gen apDict
         pure (apName, monadData)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadData)) -> do
     let dict = makeMonadDict monadData
@@ -174,16 +175,18 @@ monadGenGroup
   -> IO [(String, Set.Set (MonadData f))]
 monadGenGroup applicatives genType println = do
   let monadNames = [ "Monad_" ++ show i | i <- [ 1 :: Int ..] ]
+      uniq apDict = groupByIso @f (ApplicativeData.automorphisms apDict)
       gen = case genType of
-        MonadGenV1 -> genFromApplicativeIsoGroups
-        MonadGenV2 -> \apDict -> MonadGen2.groupsIso apDict $ MonadGen2.genFromApplicative apDict
-        MonadGenV2Cached -> case MonadGen2.prepareGenFromApplicative of
-          Nothing -> const []
-          Just genPrepared -> \apDict -> MonadGen2.groupsIso apDict (genPrepared apDict)
+          MonadGenV1 -> MonadGen.genFromApplicative
+          MonadGenV2 -> MonadGen2.genFromApplicative
+          MonadGenV2Cached -> case MonadGen2.prepareGenFromApplicative of
+            Nothing -> const []
+            Just genPrepared -> genPrepared
       monads :: [ (String, Set.Set (MonadData f)) ]
       monads = do
         (apName, apData) <- applicatives
-        monadDataGroup <- gen (makeApplicativeDict apData)
+        let apDict = makeApplicativeDict apData
+        monadDataGroup <- uniq apDict $ gen apDict
         pure (apName, monadDataGroup)
   for_ (zip monadNames monads) $ \(monadName, (apName, monadDataGroup)) -> do
     let dicts = makeMonadDict <$> Set.toList monadDataGroup

@@ -12,12 +12,10 @@ module MonadGen
   (
     module MonadData,
 
+    genFromMonoid,
+
     genFromApplicative,
     genFromApplicativeViaBinaryJoin,
-
-    moduloIso,
-    genFromApplicativeModuloIso,
-    genFromApplicativeIsoGroups,
 
     -- * Debug
     GenState (..),
@@ -52,8 +50,8 @@ import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.FunctorShape
 
--- import MonoidGen (MonoidDict(..), genMonoidsForMonad, makeMonoidDict)
-import ApplicativeGen
+import MonoidGen (MonoidDict(..))
+import ApplicativeData ( ApplicativeDict(..) )
 
 import Debug.Trace (traceM)
 
@@ -64,6 +62,18 @@ import Data.Traversable.Extra (indices, zipMatchWith)
 
 -- * Entry points
 
+genFromMonoid :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => MonoidDict (Shape f) -> [MonadData f]
+genFromMonoid monDict = do
+  monDefs <- F.toList $ monoidToJoin monDict
+  postproc . snd <$> runGen buildInitialEnv (initialize monDefs >> loop)
+  where
+    pureShape = monoidUnit monDict
+    loop = do
+      blockade <- gets _blockade
+      case mostRelated blockade of
+        Nothing -> pure ()
+        Just lhsKey -> guess lhsKey >> loop
+    postproc finalState = MonadData pureShape (PNM.toNatMap (_join finalState))
 
 genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
 genFromApplicative apDict = do
@@ -92,19 +102,6 @@ genFromApplicativeViaBinaryJoin apDict = do
         Nothing -> pure ()
         Just lhsKey -> guess lhsKey >> loop
     postproc finalState = MonadData pureShape (PNM.toNatMap (_join finalState))
-
-moduloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [MonadData f]
-moduloIso apDict = uniqueByIso isoGenerators
-  where
-    isoGenerators = stabilizingIsomorphisms apDict
-
-genFromApplicativeModuloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicativeModuloIso apDict = moduloIso apDict $ genFromApplicative apDict
-
-genFromApplicativeIsoGroups :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [Set.Set (MonadData f)]
-genFromApplicativeIsoGroups apDict = groupByIso isoGenerators $ genFromApplicative apDict
-  where
-    isoGenerators = stabilizingIsomorphisms apDict
 
 -- Generation internals
 
@@ -227,6 +224,22 @@ applicativeToJoin apDict = guard isFeasible *> joinMap
       let lhs = Comp1 $ fmap (\i -> (i,) <$> fj) fi
           rhs = _applicativeLiftA2 apDict (,) fi fj
       [(lhs, rhs)]
+
+monoidToJoin :: (PTraversable f) => MonoidDict (Shape f) -> Maybe (PNM.PreNatMap (f :.: f) f)
+monoidToJoin monDict = PNM.fromEntries (monDefs ++ unitLaws)
+  where
+    fs = V.toList skolem
+    monDefs = monDef <$> fs <*> fs
+    monDef f1 f2 =
+      case monoidMult monDict (Shape f1) (Shape f2) of
+        Shape f' -> (Comp1 ((0 <$ f2) <$ f1), 0 <$ f')
+    
+    _pure a = case monoidUnit monDict of
+      Shape u -> a <$ u
+      
+    unitLaws = [leftUnit, rightUnit] <*> fs
+    leftUnit f = (Comp1 (_pure f), f)
+    rightUnit f = (Comp1 (_pure <$> f), f)
 
 -- Map.fromList but the values for the repeated keys must be unique
 mapFromListUnique :: (Ord k, Eq v) => [(k,v)] -> Maybe (Map.Map k v)

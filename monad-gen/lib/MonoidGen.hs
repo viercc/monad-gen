@@ -34,7 +34,7 @@ module MonoidGen(
 
   -- * Permutations
   Permutation(..),
-  stabilizingPermutations,
+  automorphisms,
 
   -- * Internals
   makeEnv, fakeEnv,
@@ -42,10 +42,8 @@ module MonoidGen(
 
 import Prelude hiding (Enum(..))
 
-import Data.Equivalence.Monad
-import Data.List (sortOn, sort, groupBy, permutations)
+import Data.List (sortOn, sort)
 import Data.Maybe (mapMaybe)
-import Data.Foldable (for_)
 
 import Data.Map (Map)
 import qualified Data.Map.Lazy as Map
@@ -59,14 +57,14 @@ import qualified Data.Array.Extra as Array
 import Data.FunctorShape
 import Data.Finitary.Enum
 
---import EquationSolver
-import Data.Function (on)
-
 import ModelFinder.Term
 import ModelFinder.Model
 import ModelFinder.Model.GuessMaskModel
 import ModelFinder.Solver
 import Text.Read (readMaybe)
+
+import Data.Permutation
+import EquivalenceUtil (uniqueUpTo)
 
 -- * MonoidDict
 
@@ -330,65 +328,39 @@ genForMonad n numZeroes e = genDefTables n guessFilter (Map.fromList knownDefs)
 
     guessFilter (M _ y) z = y >= numZeroes || (z < numZeroes)
 
+-- * Quotienting out by isomorphisms
+
+distinctLabel :: Signature -> Int -> Signature
+distinctLabel sig e = sig V.// [(e, distinctVal)]
+  where
+    distinctVal = minimum sig - 1
+
 upToIso :: Signature -> Int -> [Array (Int,Int) Int] -> [Array (Int,Int) Int]
-upToIso env e tabs = runEquivM id min $ do
-  for_ tabs $ \mm -> do
-    equate mm mm
-  for_ (isoGenerators env e) $ \tr ->
-    for_ tabs $ \mm -> equate mm (applyTranspose n tr mm)
-  classes >>= traverse desc
+upToIso env e = uniqueUpTo isos
   where
     n = V.length env
-
-data Transposition = Transpose Int Int
-  deriving (Show)
-
-isoGenerators :: Signature -> Int -> [Transposition]
-isoGenerators sig e =
-  [Transpose i j | ((i, n), (j, m)) <- zip lengths' (drop 1 lengths'), n == m]
-  where
-    lengths = V.toList $ V.indexed sig
-    lengths' = filter ((/= e) . fst) lengths
+    env' = distinctLabel env e
+    isos = applyTranspose n <$> fixingGeneratorsSorted env'
 
 applyTranspose :: Int -> Transposition -> Array (Int,Int) Int -> Array (Int,Int) Int
-applyTranspose n (Transpose a b) table =
+applyTranspose n p table =
   Array.array ((0,0), (n - 1, n - 1))
-    [ ((tr x, tr y), tr z) | ((x,y),z) <- Array.assocs table ]
+    [ ((tr p x, tr p y), tr p z) | ((x,y),z) <- Array.assocs table ]
+
+-- * Automorphisms
+
+automorphisms :: Signature -> RawMonoidData -> [Permutation]
+automorphisms sig rawData = filter (isFixing tab) $ fixingPermutationsSorted sig'
   where
-    tr i
-      | i == a = b
-      | i == b = a
-      | otherwise = i
-
-
-newtype Permutation = MkPermutation (V.Vector Int)
-   deriving (Eq, Ord, Show)
-
-stabilizingPermutations :: Signature -> RawMonoidData -> [[Permutation]]
-stabilizingPermutations sig rawData = filter nonTrivial $ filter (isFixing tab) . subPermutations n <$> permGroups sig e
-  where
-    n = _monoidSize rawData
     e = _unitElem rawData
     tab = _multTable rawData
-    nonTrivial = (> 1) . length
-
-permGroups :: Eq a => V.Vector a -> Int -> [[Int]]
-permGroups sig e = groups
-  where
-    lengths = V.toList $ V.indexed sig
-    lengths' = filter ((/= e) . fst) lengths
-    groups = fmap fst <$> groupBy ((==) `on` snd) lengths'
-
-subPermutations :: Int -> [Int] -> [Permutation]
-subPermutations n xs = MkPermutation <$> [ iota V.// zip xs ys | ys <- permutations xs ]
-  where
-    iota = V.generate n id
+    sig' = distinctLabel sig e
 
 isFixing :: Array (Int, Int) Int -> Permutation -> Bool
-isFixing tab perm = tab == applyPermutation perm tab
+isFixing tab perm = tab == permuteTable perm tab
 
-applyPermutation :: Permutation -> Array (Int, Int) Int -> Array (Int, Int) Int
-applyPermutation (MkPermutation permVector) tab = tab'
+permuteTable :: Permutation -> Array (Int, Int) Int -> Array (Int, Int) Int
+permuteTable perm tab = tab'
   where
-    p = (permVector V.!)
+    p = applyPermutation perm
     tab' = Array.array (Array.bounds tab) [ ((p i, p j), p k) | ((i, j), k) <- Array.assocs tab ]

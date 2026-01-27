@@ -11,6 +11,7 @@ library monad-gen-internal
     Data.Array.Extra,
     Data.BoolSet,
     Data.Bitmap,
+    Data.Permutation,
     EquivalenceUtil,
     
     ModelFinder.Model.GuessMaskModel,
@@ -22,6 +23,7 @@ library monad-gen-internal
     MonadGen.BinaryJoin,
     Isomorphism,
     MonoidGen,
+    ApplicativeData,
     ApplicativeGen,
     ApplicativeLaws,
 

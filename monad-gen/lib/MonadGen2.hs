@@ -20,9 +20,7 @@ module MonadGen2
     module MonadData,
 
     prepareGenFromApplicative,
-    genFromApplicative,
-    moduloIso,
-    groupsIso
+    genFromApplicative
   )
 where
 
@@ -35,7 +33,7 @@ import Data.PTraversable.Extra
 import Data.Traversable.Extra (indices, imap)
 import Data.FunctorShape
 
-import ApplicativeGen
+import ApplicativeData ( ApplicativeDict(..) )
 
 import qualified Data.Vector as V
 import qualified Data.PreNatMap as PNM
@@ -79,16 +77,6 @@ postprocess apDict (PreNatMapModel _ pnm) = MonadData pureShape joinMap
 
 coerceNatMapKeys :: (forall a. Coercible (f a) (f' a), WeakOrd f') => NM.NatMap f g -> NM.NatMap f' g
 coerceNatMapKeys nm = NM.fromEntries (NM.bimapEntry (mapShape coerce) id <$> NM.toEntries nm)
-
-moduloIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [MonadData f]
-moduloIso apDict = uniqueByIso isoGenerators
-  where
-    isoGenerators = stabilizingIsomorphisms apDict
-
-groupsIso :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f] -> [Set.Set (MonadData f)]
-groupsIso apDict = groupByIso isoGenerators
-  where
-    isoGenerators = stabilizingIsomorphisms apDict
 
 -- Model
 
