@@ -32,6 +32,7 @@ import Data.Bifunctor (Bifunctor(..))
 import Control.Monad (guard)
 
 import ModelFinder.Model
+import ModelFinder.Term
 import ModelFinder.Solver
 import qualified Data.List.NonEmpty as NE
 import Data.Foldable1 (foldl1')

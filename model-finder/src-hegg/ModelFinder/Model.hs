@@ -6,12 +6,19 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE BangPatterns #-}
 
 module ModelFinder.Model(
+  -- * Model type class
   Model(..),
+
+  -- * Model instances
   DumbModel(..), newDumbModel,
   SimpleModel(..), newSimpleModel,
   WrapperModel(..),
+
+  -- * Utilities
+  saturateModel
 ) where
 
 import Data.Map.Strict (Map)
@@ -130,3 +137,14 @@ instance (Coercible k k', Model k a model) => Model k' a (WrapperModel k' k a mo
   guessMany = coerce @(NonEmpty k -> model -> [a]) @_ guessMany
   enterDef = coerce @([k] -> a -> model -> Maybe _) @_ enterDef
   enterEqs = coerce @([k] -> model -> Maybe _) @_ enterEqs
+
+-- * Utilities manipulating Model
+
+saturateModel :: (Ord a, Ord k, Model k a model)
+  => model -> [(k, a)] -> Maybe (Map k a, model)
+saturateModel m0 = loop m0 Map.empty
+  where
+    loop m !acc [] = pure (acc, m)
+    loop m !acc ((k, a) : rest) = do
+      (m', newDefs) <- enterDef [k] a m
+      loop m' (Map.insert k a acc) (newDefs ++ rest)

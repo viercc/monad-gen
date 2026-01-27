@@ -40,9 +40,15 @@ library
     import:           warnings
     exposed-modules:
       ModelFinder.Term,
+      ModelFinder.Term.EGraph,
       ModelFinder.Model,
       ModelFinder.Solver,
+      ModelFinder.Solver.NFSolver,
       ModelFinder.Examples.Group,
+    
+    other-modules:
+      LensUtil,
+      ModelFinder.Solver.Internal
 
     build-depends:
       base >=4.19,
