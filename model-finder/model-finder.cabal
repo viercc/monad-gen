@@ -29,7 +29,6 @@ library model-finder-dependent
       some,
       dependent-sum,
       dependent-map,
-      finitary,
       constraints,
       constraints-extras
 
