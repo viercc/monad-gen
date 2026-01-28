@@ -50,7 +50,7 @@ import Data.PTraversable
 import Data.PTraversable.Extra
 import Data.FunctorShape
 
-import MonoidGen (MonoidDict(..))
+import MonoidData (MonoidDict(..))
 import ApplicativeData ( ApplicativeDict(..) )
 
 import Debug.Trace (traceM)

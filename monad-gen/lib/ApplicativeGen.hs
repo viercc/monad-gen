@@ -10,11 +10,9 @@
 
 module ApplicativeGen(
   -- * Data
-  genApplicativeData,
   genApplicativeDataFrom,
 
   -- * Raw
-  genRawApplicativeData,
   genRawApplicativeDataFrom,
 ) where
 
@@ -22,12 +20,10 @@ import Data.Array ((!))
 import Data.Array.Extra qualified as Array
 import Data.FunctorShape
 import Data.Map.Strict qualified as Map
-import Data.PTraversable
 import Data.Vector qualified as V
-import MonoidGen (RawMonoidData (..), Signature, genRawMonoidsForApplicative, makeEnv, MonoidData (..), )
-import MonoidGen qualified as Monoid
 
-import Control.Exception (assert)
+import MonoidData qualified as Monoid
+import MonoidData (RawMonoidData (..), Signature, MonoidData (..))
 
 import ModelFinder.Model
 import ModelFinder.Term
@@ -38,11 +34,7 @@ import Data.Permutation (Permutation, applyPermutation)
 import EquivalenceUtil (uniqueUpTo)
 
 import ApplicativeData
-
-genApplicativeData :: PTraversable f => [ApplicativeData f]
-genApplicativeData = ApplicativeData env <$> genRawApplicativeData sig
-  where
-    (env, sig) = makeEnv lengthShape
+import Control.Monad (guard)
 
 genApplicativeDataFrom :: (Foldable f) => MonoidData (Shape f) -> [ApplicativeData f]
 genApplicativeDataFrom monData = ApplicativeData env <$> genRawApplicativeDataFrom sig mon
@@ -51,13 +43,9 @@ genApplicativeDataFrom monData = ApplicativeData env <$> genRawApplicativeDataFr
     sig = lengthShape <$> env
     mon = _rawMonoidData monData
 
-genRawApplicativeData :: Signature -> [RawApplicativeData]
-genRawApplicativeData sig = do
-  mon <- genRawMonoidsForApplicative sig
-  genRawApplicativeDataFrom sig mon
-
 genRawApplicativeDataFrom :: Signature -> RawMonoidData -> [RawApplicativeData]
 genRawApplicativeDataFrom sig mon = do
+  guard $ isFeasibleMonoid sig mon
   let tables = completeTable sig mon <$> gen sig mon
   (leftFactorTable, rightFactorTable) <- upToIso sig mon tables
   let result =
@@ -67,11 +55,26 @@ genRawApplicativeDataFrom sig mon = do
             _leftFactorTable = leftFactorTable,
             _rightFactorTable = rightFactorTable
           }
-  -- sanity check
-  let checkAll = prop_LeftUnit result && prop_RightUnit result &&
-        prop_LeftLeft result && prop_LeftRight result && prop_RightRight result
-  assert checkAll (pure ())
   pure result
+
+isFeasibleMonoid :: Signature -> RawMonoidData -> Bool
+isFeasibleMonoid sig mon = sizeEq && noImpossibleNat
+  where
+    n = V.length sig
+    sizeEq = V.length sig == _monoidSize mon
+    op i j = _multTable mon Array.! (i,j)
+    noImpossibleNat = and $ do
+      i <- [0 .. n - 1]
+      j <- [0 .. n - 1]
+      let -- For a definition of Applicative multiplication:
+          --   (fx <*> fy = fz)
+          -- lhsNull means either fx or fy contains no element
+          lhsIsNull = (sig V.! i == 0) || (sig V.! j == 0)
+          -- rhsNull means either fz contain no element
+          rhsIsNull = (sig V.! op i j) == 0
+      -- It is not possible to define (fx <*> fy = fz)
+      -- if lhs is null but rhs is non-null.
+      pure $ not lhsIsNull || rhsIsNull
 
 data Fn a = LeftFactor Int Int a | RightFactor Int Int a
   deriving (Show, Eq, Ord, Functor, Foldable, Traversable)

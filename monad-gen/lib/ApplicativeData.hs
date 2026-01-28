@@ -49,7 +49,7 @@ import Data.PTraversable
 import Data.Traversable.Extra (indices)
 import Data.PTraversable.Extra (skolem)
 
-import MonoidGen (RawMonoidData (..), makeEnv, prettyRawMonoidData, encodeRawMonoidData, decodeRawMonoidData)
+import MonoidData (RawMonoidData (..), makeEnv, prettyRawMonoidData, encodeRawMonoidData, decodeRawMonoidData)
 
 import Isomorphism
 
@@ -108,7 +108,7 @@ signatureOf _ = lengthShape <$> (enum :: [Shape f])
 
 serializeApplicativeDataList :: forall f. PTraversable f => [ApplicativeData f] -> [String]
 serializeApplicativeDataList apData =
-  show (signatureOf @f Proxy) : map (show . encodeApplicativeData) (sort apData)
+  show (signatureOf @f Proxy) : map (show . encodeApplicativeData) apData
 
 deserializeApplicativeDataList :: forall f. PTraversable f => [String] -> Either String [ApplicativeData f]
 deserializeApplicativeDataList [] = Left "No signature"
