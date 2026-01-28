@@ -8,6 +8,7 @@ import Data.Coerce
 import System.Exit (exitFailure)
 import qualified Data.Time as Time
 import qualified Data.Time.Format.ISO8601 as Time
+import System.Console.ANSI.Types
 
 dieWithErrors :: [String] -> IO a
 dieWithErrors errs = mapM_ (IO.hPutStrLn IO.stderr) errs >> exitFailure
@@ -35,12 +36,15 @@ loggedTo filePath logger body =
         log' line
         IO.hPutStrLn h line
 
-statusLine :: String -> Logger -> Logger
-statusLine label logger body =
-  logger $ \log' ->
-    body $ \line -> do
+statusLine :: Logger -> Logger
+statusLine logger body =
+  logger $ \log' -> do
+    a <- body $ \line -> do
       log' line
-      IO.putStrLn label
+      Console.clearLine
+      Console.setSGR [SetColor Foreground Vivid Green]
       IO.putStrLn line
-      Console.cursorUpLine 2
-      Console.clearFromCursorToScreenEnd
+      Console.setSGR [Reset]
+      Console.cursorUpLine 1
+    Console.cursorDownLine 1
+    pure a

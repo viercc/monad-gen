@@ -1,10 +1,11 @@
 #!/bin/bash
+set -e
 
 bin_dir="./tmp-bin"
 monad_gen_cmd="${bin_dir}/monad-gen"
 
-targets="F G H I T_112 T_013 complex/V2Maybe St22 St32"
-methods="--v2-cached"
+targets="F G H I T_112 complex/V2Maybe St22 St32"
+methods="--v1 --v2 --v2-cached"
 
 out_dir="./tmp"
 log_file="./measured_times__$(date -Iseconds)"

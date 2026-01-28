@@ -189,13 +189,13 @@ generateAll
 generateAll displayName name opt = do
   createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
   
-  monoids <- progress "monoidGen" $ monoidGenToFile name monoidFileName useExisting
+  monoids <- progress $ monoidGenToFile name monoidFileName useExisting
   let namedMonoids = [ ("M_" ++ show i, mon) | (i,mon) <- zip [1 :: Int ..] monoids ]
   
-  applicatives <- progress "applicativeGen" $ applicativeGenToFile namedMonoids applicativeFileName useExisting
+  applicatives <- progress $ applicativeGenToFile namedMonoids applicativeFileName useExisting
   let namedApplicatives = [ ("A_" ++ show i, apData) | (i,apData) <- zip [1 :: Int ..] applicatives ]
   
-  _ <- progress "monadGen" $ monadGenFromApplicativeToFile namedApplicatives monadFileName monadGenMethod
+  _ <- progress $ monadGenFromApplicativeToFile namedApplicatives monadFileName monadGenMethod
   pure ()
 
   where
@@ -208,8 +208,8 @@ generateAll displayName name opt = do
     applicativeFileName = outDir ++ "/applicative_data"
     monadFileName = outDir ++ "/monad_data"
     
-    progress :: String -> Logger
-    progress label = statusLine label $ timed $ loggedTo logFileName discard
+    progress :: Logger
+    progress = statusLine $ timed $ loggedTo logFileName discard
 
 -- * Monoid
 
