@@ -162,7 +162,7 @@ decodeApplicativeData (unitElem, multTable, leftFactor, rightFactor) = do
       _rawApplicative = rawApplicative
     }
   where
-    (env, sig) = makeEnv lengthShape
+    (env, sig) = makeEnv
     n = length sig
     tableRange = ((0,0),(n-1,n-1))
 

@@ -4,6 +4,7 @@ module Isomorphism(
     Iso(..),
     makePositionIso,
     makePositionIsoFactors,
+    shapeIsoFromFunction,
     makeShapeIso,
     makeShapeIsoFactors
 ) where
@@ -22,6 +23,8 @@ import Data.Traversable.Extra
 
 import Data.NatMap (NatMap)
 import qualified Data.NatMap as NatMap
+import Data.FunctorShape
+import Control.Monad (guard)
 
 data Iso f = Iso
   { iso1 :: forall a. f a -> f a,
@@ -77,6 +80,18 @@ shuffleNatAt fk fa =
              in (as V.!) <$> fk
         else fa
 
+shapeIsoFromFunction :: (PTraversable f) => (Shape f -> Shape f) -> Maybe (Iso f)
+shapeIsoFromFunction f = loop NatMap.empty NatMap.empty shapes
+  where
+    loop to from [] = build <$> NatMap.toTotal to <*> NatMap.toTotal from
+    loop to from (fx : rest) = case f (Shape fx) of
+      Shape fy -> do
+        guard $ not $ NatMap.member fy from
+        let to' = insertSym fx fy to
+            from' = insertSym fy fx from
+        loop to' from' rest
+    
+    build to from = Iso (to NatMap.$$) (from NatMap.$$)
 makeShapeIso :: (PTraversable f) => [[Iso f]]
 makeShapeIso = result
   where
@@ -106,7 +121,5 @@ groupByLength fs = Map.elems groupsMap
 adjacents :: [b] -> [(b,b)]
 adjacents bs = zip bs (drop 1 bs)
 
-insertSym :: (PTraversable f) => f () -> f () -> NatMap f f -> NatMap f f
-insertSym fKey fVal = case NatMap.makeEntry (indices fKey) (indices fVal) of
-    Nothing -> id
-    Just e -> NatMap.insert e
+insertSym :: (PTraversable f) => f a -> f b -> NatMap f f -> NatMap f f
+insertSym fKey fVal = maybe id NatMap.insert $ NatMap.makeEntry (indices fKey) (indices fVal)

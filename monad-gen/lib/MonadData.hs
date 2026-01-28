@@ -40,7 +40,6 @@ import qualified Data.Vector as V
 import Data.Maybe (fromMaybe)
 import Data.Proxy (Proxy(..))
 import Text.Read (readMaybe)
-import Data.List (sort)
 import EquivalenceUtil (uniqueUpTo, groupUpTo)
 import Data.Traversable.Extra (indices)
 
@@ -56,7 +55,7 @@ signatureOf _ = length <$> (shapes :: [f ()])
 
 serializeMonadDataList :: forall f. PTraversable f => [MonadData f] -> [String]
 serializeMonadDataList monadData =
-  show (signatureOf @f Proxy) : map (show . encodeMonadData) (sort monadData)
+  show (signatureOf @f Proxy) : map (show . encodeMonadData) monadData
 
 deserializeMonadDataList :: forall f. PTraversable f => [String] -> Either String [MonadData f]
 deserializeMonadDataList [] = Left "No signature"

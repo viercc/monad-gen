@@ -6,6 +6,8 @@ module MonoidData(
   MonoidData(..),
   prettyMonoidData,
 
+  Sig(..),
+
   -- ** Serialization
   serializeMonoidDataList,
   deserializeMonoidDataList,
@@ -25,6 +27,7 @@ module MonoidData(
 
   -- * Permutations
   automorphisms,
+  rawAutomorphisms
 
 ) where
 
@@ -40,6 +43,14 @@ import qualified Data.Array.Extra as Array
 import Data.Finitary.Enum
 import Text.Read (readMaybe)
 import Data.Permutation
+import Data.FunctorShape (Shape, lengthShape)
+
+-- * Type with associated integer value (\"signature function\").
+class Sig a where
+  signature :: a -> Int
+
+instance (Foldable f) => Sig (Shape f) where
+  signature = lengthShape
 
 -- * MonoidDict
 
@@ -65,36 +76,41 @@ makeMonoidDict
 
 -- * MonoidData
 
+-- | Monoid on @a@.
 data MonoidData a = MonoidData
   {
+    -- If @a@ is an instance of @Sig@, @_elemTable@
+    -- is assumed to be sorted in ascending order on @signature@.
     _elemTable :: V.Vector a,
     _rawMonoidData :: RawMonoidData
   }
   deriving (Eq, Ord)
 
-serializeMonoidDataList :: (a -> Int) -> [MonoidData a] -> [String]
-serializeMonoidDataList _ [] = []
-serializeMonoidDataList sig mds@(d : _) =
-  show (V.toList (V.map sig (_elemTable d)))
+serializeMonoidDataList :: Sig a => [MonoidData a] -> [String]
+serializeMonoidDataList [] = []
+serializeMonoidDataList mds@(d : _) =
+  show (V.toList (V.map signature (_elemTable d)))
     : map (show . encodeRawMonoidData . _rawMonoidData) mds
 
-deserializeMonoidDataList :: V.Vector a -> [String] -> Either String (V.Vector (a, Int), [MonoidData a])
+deserializeMonoidDataList :: Sig a => V.Vector a -> [String] -> Either String [MonoidData a]
 deserializeMonoidDataList _ [] = Left "No signature"
 deserializeMonoidDataList elemTable (sigStr : records) =
-  do sig <- readSig
-     let sigtab = V.zip elemTable sig
+  do checkSig
      rawMonoids <- traverse parseRawMonoidData (zip [2..] records)
-     pure (sigtab, map (MonoidData elemTable) rawMonoids)
+     pure (map (MonoidData elemTable) rawMonoids)
   where
     n :: Int
     n = V.length elemTable
 
-    readSig :: Either String (V.Vector Int)
-    readSig = case readMaybe sigStr of
+    sig :: Signature
+    sig = V.map signature elemTable
+
+    checkSig :: Either String ()
+    checkSig = case readMaybe sigStr of
       Nothing -> Left "parse error at signature"
-      Just sig
-        | n `lengthEq` sig -> Right $ V.fromListN n sig
-        | otherwise -> Left "wrong length for the signarue"
+      Just sig'
+        | sig == sig' -> Right ()
+        | otherwise -> Left $ "wrong signarue: expected = " ++ show sig ++ ", actual = " ++ show sig'
 
     parseRawMonoidData :: (Int, String) -> Either String RawMonoidData
     parseRawMonoidData (lineNo, str) = case readMaybe str of
@@ -177,10 +193,10 @@ prettyRawMonoidData monName raw =
 
 type Signature = V.Vector Int
 
-makeEnv :: (Enum a) => (a -> Int) -> (V.Vector a, Signature)
-makeEnv f = (keys, sigs)
+makeEnv :: (Enum a, Sig a) => (V.Vector a, Signature)
+makeEnv = (keys, sigs)
   where
-    (keys, sigs) = V.unzip $ V.fromList $ sortOn snd [(a, f a) | a <- enum]
+    (keys, sigs) = V.unzip $ V.fromList $ sortOn snd [(a, signature a) | a <- enum]
 
 fakeEnv :: [Int] -> Signature
 fakeEnv ns = V.fromList (sort ns)
@@ -189,8 +205,16 @@ fakeEnv ns = V.fromList (sort ns)
 
 -- * Automorphisms
 
-automorphisms :: Signature -> RawMonoidData -> [Permutation]
-automorphisms sig rawData = filter (isFixing tab) $ fixingPermutationsSorted sig'
+automorphisms :: (Ord a, Sig a) => MonoidData a -> [a -> a]
+automorphisms (MonoidData tab raw) = permToFun <$> rawAutomorphisms sig raw
+  where
+    sig = signature <$> tab
+    invMap = Map.fromList
+      [ (a,i) | (i,a) <- V.toList (V.indexed tab) ]
+    permToFun p = (tab V.!) . applyPermutation p . (invMap Map.!)
+
+rawAutomorphisms :: Signature -> RawMonoidData -> [Permutation]
+rawAutomorphisms sig rawData = filter (isFixing tab) $ fixingPermutationsSorted sig'
   where
     e = _unitElem rawData
     tab = _multTable rawData

@@ -174,7 +174,7 @@ upToIso :: Signature -> RawMonoidData -> [(FactorTable, FactorTable)] -> [(Facto
 upToIso sig mon = uniqueUpTo (shapeIsos ++ posIsos)
   where
     op i j = _multTable mon ! (i,j)
-    shapeIsos = applyShapePermutation <$> Monoid.automorphisms sig mon
+    shapeIsos = applyShapePermutation <$> Monoid.rawAutomorphisms sig mon
     posIsos = applyTransposition op <$> isoGenerators sig
 
 applyShapePermutation :: Permutation -> (FactorTable, FactorTable) -> (FactorTable, FactorTable)

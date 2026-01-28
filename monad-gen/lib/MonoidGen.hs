@@ -4,7 +4,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module MonoidGen(
   -- * Generate Monoids
-  genMonoids,
   genMonoidsWithSig,
   genMonoidsForApplicative,
   genMonoidsForMonad,
@@ -39,23 +38,20 @@ import MonoidData
 
 -- * Generation
 
-genMonoids :: (Enum a) => [MonoidData a]
-genMonoids = genMonoidsWithSig (const 1)
-
-genMonoidsWithSig :: (Enum a) => (a -> Int) -> [MonoidData a]
-genMonoidsWithSig f = MonoidData env <$> genRawMonoids sig
+genMonoidsWithSig :: (Enum a, Sig a) => [MonoidData a]
+genMonoidsWithSig = MonoidData env <$> genRawMonoids sig
   where
-    (env, sig) = makeEnv f
+    (env, sig) = makeEnv
 
 genMonoidsForApplicative :: (PTraversable f) => [MonoidData (Shape f)]
 genMonoidsForApplicative = MonoidData env <$> genRawMonoidsForApplicative sig
   where
-    (env, sig) = makeEnv (\(Shape f1) -> length f1)
+    (env, sig) = makeEnv
 
 genMonoidsForMonad :: (PTraversable f) => [MonoidData (Shape f)]
 genMonoidsForMonad = MonoidData env <$> genRawMonoidsForMonad sig
   where
-    (env, sig) = makeEnv (\(Shape f1) -> length f1)
+    (env, sig) = makeEnv
 
 -- generation
 
