@@ -5,6 +5,11 @@ program-options
 
 source-repository-package
     type: git
+    location: https://github.com/viercc/cartesian-profunctors.git
+    tag: 6666a8fe57bb25c651d4a35196b3b4ae6954d244
+
+source-repository-package
+    type: git
     location: https://github.com/viercc/hegg.git
     tag: 085c5095610932c7882708e53359cbc30e6923a7
 
