@@ -575,30 +575,3 @@ validateMonadDict apName dict@MonadDict{ _monadPure = pure', _monadJoin = join' 
       [ "assoc " ++ show fffx | fffx <- skolem3Cache, not (checkAssoc join' fffx) ]
 
     allFails = leftUnitFails ++ rightUnitFails ++ assocFails
-
-prettyMonadDict :: forall f.
-     (PTraversable f, forall a. Show a => Show (f a))
-  => String -> String -> MonadDict f -> [String]
-prettyMonadDict = docResult
-  where
-    skolem2Cache :: [f (f Int)]
-    skolem2Cache = toList skolem2
-    
-    joinArgsCache :: [String]
-    joinArgsCache = pad <$> strs
-      where
-        showLen x = let s = show x in (length s, s)
-        strs = showLen <$> skolem2Cache
-        maxLen = maximum (0 : fmap fst strs)
-        pad (n, s) = "join $ " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
-    
-    indent = "  "
-    
-    docResult monadName apName dict =
-        [ monadName <> " = Monad{" ] ++
-        map (indent <>) (
-          [ "baseApplicative = " ++ apName,
-            "pure 0 = " <> show (_monadPure dict (0 :: Int)) ] ++
-          zipWith (<>) joinArgsCache (show . _monadJoin dict <$> skolem2Cache)
-        ) ++
-        ["}"]
