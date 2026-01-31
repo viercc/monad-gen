@@ -5,7 +5,14 @@ module CSP(
   -- * Problem definition
   VarName, VarRange(..),
   Variables,
-  Constraint(..),
+  Constraint,
+  ConstraintM(..),
+  ConstraintAtom(..),
+
+  never,
+  (%<.), (%==.), (%/=.), satisfy,
+  (%==%), (%/=%), (%<=%), functionEq,
+  conjunct, depend,
 
   -- * Solver entry point
   solveCSP,
@@ -35,7 +42,7 @@ import Data.IORef
 import Control.Monad.IO.Class (liftIO)
 import Data.Set (Set)
 import Data.Functor.Compose (Compose(..))
-import Control.Monad (guard)
+import Control.Monad (guard, (>=>), ap)
 
 -- * Type definitions
 
@@ -46,12 +53,11 @@ data VarRange = VarRange
 
 type Variables = Map VarName VarRange
 
-data Constraint =
+data ConstraintAtom =
     Never
     -- ^ always false
-  | Conjunct [Constraint]
-    -- ^ conjunction (AND) of multiple constraints
-    --   (Conjunct [] is "always satisfied")
+  | VarImmLt VarName Int
+    -- ^ x < k
   | VarImmEq VarName Int
     -- ^ x == k
   | VarImmNe VarName Int
@@ -66,8 +72,68 @@ data Constraint =
     -- ^ x <= y
   | FunVarEq (Int -> Int) VarName VarName
     -- ^ f x == y
-  | Dependent VarName (Int -> Constraint)
+
+data ConstraintM a =
+    Pure a
+  | Conjunct [ConstraintM a]
+    -- ^ conjunction (AND) of multiple constraints
+    --   (Conjunct [] is "always satisfied")
+  | Dependent VarName (Int -> ConstraintM a)
     -- ^ Constraints depending on a value of a variable
+  deriving Functor
+
+instance Applicative ConstraintM where
+  pure = Pure
+  (<*>) = ap
+
+instance Monad ConstraintM where
+  Pure a >>= f = f a
+  Conjunct mas >>= f = Conjunct (fmap (>>= f) mas)
+  Dependent x cont >>= f = Dependent x (cont >=> f)
+
+type Constraint = ConstraintM ConstraintAtom
+
+never :: Constraint
+never = Pure Never
+
+infix 3 %<.
+infix 3 %==.
+infix 3 %/=.
+infix 3 %==%
+infix 3 %/=%
+infix 3 %<=%
+
+(%<.) :: VarName -> Int -> Constraint
+x %<. k = Pure $ VarImmLt x k
+
+(%==.) :: VarName -> Int -> Constraint
+x %==. k = Pure $ VarImmEq x k
+
+(%/=.) :: VarName -> Int -> Constraint
+x %/=. k = Pure $ VarImmNe x k
+
+satisfy :: VarName -> (Int -> Bool) -> Constraint
+satisfy x cond = Pure $ VarPred x cond
+
+(%==%) :: VarName -> VarName -> Constraint
+x %==% y = Pure $ VarVarEq x y
+
+(%/=%) :: VarName -> VarName -> Constraint
+x %/=% y = Pure $ VarVarNe x y
+
+(%<=%) :: VarName -> VarName -> Constraint
+x %<=% y = Pure $ VarVarLe x y
+
+functionEq :: (Int -> Int) -> VarName -> VarName -> Constraint
+functionEq f x y = Pure $ FunVarEq f x y
+
+conjunct :: [Constraint] -> Constraint
+conjunct = Conjunct
+
+depend :: VarName -> ConstraintM Int
+depend x = Dependent x Pure
+
+-- * Running solvr
 
 solveCSP :: Variables -> [Constraint] -> Set VarName -> IO [Map VarName Int]
 solveCSP vars constraints visibleVars = runIterative $ do
@@ -83,8 +149,16 @@ solveCSPBruteForce vars cons visibleVars = do
 
 isValidAssignment :: Map VarName Int -> Constraint -> Bool
 isValidAssignment env con = case con of
-  Never -> False
+  Pure atom -> isValidAssignmentAtom env atom
   Conjunct cons -> all (isValidAssignment env) cons
+  Dependent varX cont -> justTrue $ isValidAssignment env . cont <$> Map.lookup varX env
+  where
+    justTrue = (== Just True)
+
+isValidAssignmentAtom :: Map VarName Int -> ConstraintAtom -> Bool
+isValidAssignmentAtom env con = case con of
+  Never -> False
+  VarImmLt var k -> justTrue $ (< k) <$> lup var
   VarImmEq var k -> justTrue $ (k ==) <$> lup var
   VarImmNe var k -> justTrue $ (k /=) <$> lup var
   VarPred var cond -> justTrue $ cond <$> lup var
@@ -92,7 +166,6 @@ isValidAssignment env con = case con of
   VarVarNe varX varY -> justTrue $ (/=) <$> lup varX <*> lup varY
   VarVarLe varX varY -> justTrue $ (<=) <$> lup varX <*> lup varY
   FunVarEq f varX varY -> justTrue $ (\x y -> f x == y) <$> lup varX <*> lup varY
-  Dependent varX cont -> justTrue $ isValidAssignment env . cont <$> Map.lookup varX env
   where
     lup = flip Map.lookup env
     justTrue = (== Just True)
@@ -179,10 +252,10 @@ instantiateVar (VarRange lo hi)
 ------------------
 
 -- | Translate 'Constraint' to 'Prop'.
-compileConstraint :: HasCallStack => Env s -> Constraint -> Prop s
-compileConstraint env con  = case con of
+compileConstraintAtom :: HasCallStack => Env s -> ConstraintAtom -> Prop s
+compileConstraintAtom env con  = case con of
   Never -> false
-  Conjunct cons -> andProp (compileConstraint env <$> cons)
+  VarImmLt varName k -> lessThan (getBundle env varName) k
   VarImmEq varName k -> varEq (getBundle env varName) k
   VarImmNe varName k -> varNe (getBundle env varName) k
   VarPred varName cond -> varPred (getBundle env varName) cond
@@ -190,6 +263,11 @@ compileConstraint env con  = case con of
   VarVarNe varX varY -> dependent (getBundle env varX) (varNe (getBundle env varY))
   VarVarLe varX varY -> varvarLe (getBundle env varX) (getBundle env varY)
   FunVarEq f varX varY -> funVarEq f (getBundle env varX) (getBundle env varY)
+
+compileConstraint :: HasCallStack => Env s -> Constraint -> Prop s
+compileConstraint env con  = case con of
+  Pure c -> compileConstraintAtom env c
+  Conjunct cons -> andProp (compileConstraint env <$> cons)
   Dependent varName subCon -> dependent (getBundle env varName) (compileConstraint env . subCon)
 
 varEq :: LitBundle s -> Int -> Prop s
