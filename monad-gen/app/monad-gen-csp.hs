@@ -48,9 +48,7 @@ genFor' f = do
 
 main :: IO ()
 main = do
-  genFor Maybe
-  genFor (type ((,) Bool))
   genFor F
   genFor G
-  genFor H
-  genFor (type (St (Fin 2) V2))
+  genFor' H
+  genFor' (type (St (Fin 2) V2))
