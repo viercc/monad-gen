@@ -76,6 +76,19 @@ executable monad-gen
     , monad-gen-internal
   ghc-options:        -Wall -Wcompat -rtsopts=all -with-rtsopts=-M8G
 
+executable monad-gen-csp
+  hs-source-dirs:      app
+  main-is:             monad-gen-csp.hs
+  default-language:    Haskell2010
+  build-depends:
+      base >= 4.18 && < 5
+    , time
+    , containers
+    , cartesian-profunctors
+    , nat-map
+    , monad-gen-internal
+  ghc-options:        -Wall -Wcompat -rtsopts=all -with-rtsopts=-M8G
+
 executable binary_join
   hs-source-dirs:      app
   main-is:             binary_join.hs

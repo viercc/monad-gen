@@ -9,10 +9,10 @@ module CSP(
   ConstraintM(..),
   ConstraintAtom(..),
 
-  never,
+  never, always,
   (%<.), (%==.), (%/=.), satisfy,
   (%==%), (%/=%), (%<=%), functionEq,
-  conjunct, depend,
+  conjunct, depend, forAll,
 
   -- * Solver entry point
   solveCSP,
@@ -50,13 +50,12 @@ type VarName = String
 data VarRange = VarRange
   !Int -- ^ lower bound (inclusive)
   !Int -- ^ upper bound (exclusive)
+  deriving (Show)
 
 type Variables = Map VarName VarRange
 
 data ConstraintAtom =
-    Never
-    -- ^ always false
-  | VarImmLt VarName Int
+    VarImmLt VarName Int
     -- ^ x < k
   | VarImmEq VarName Int
     -- ^ x == k
@@ -75,6 +74,8 @@ data ConstraintAtom =
 
 data ConstraintM a =
     Pure a
+  | Never
+    -- ^ always false
   | Conjunct [ConstraintM a]
     -- ^ conjunction (AND) of multiple constraints
     --   (Conjunct [] is "always satisfied")
@@ -88,13 +89,17 @@ instance Applicative ConstraintM where
 
 instance Monad ConstraintM where
   Pure a >>= f = f a
+  Never >>= _ = Never
   Conjunct mas >>= f = Conjunct (fmap (>>= f) mas)
   Dependent x cont >>= f = Dependent x (cont >=> f)
 
 type Constraint = ConstraintM ConstraintAtom
 
-never :: Constraint
-never = Pure Never
+never :: ConstraintM a
+never = Never
+
+always :: Constraint
+always = Conjunct []
 
 infix 3 %<.
 infix 3 %==.
@@ -133,22 +138,35 @@ conjunct = Conjunct
 depend :: VarName -> ConstraintM Int
 depend x = Dependent x Pure
 
+forAll :: [a] -> ConstraintM a
+forAll = Conjunct . fmap Pure
+
 -- * Running solvr
 
-solveCSP :: Variables -> [Constraint] -> Set VarName -> IO [Map VarName Int]
-solveCSP vars constraints visibleVars = runIterative $ do
+printStat :: SAT s ()
+printStat = do
+  statNumberOfVars <- numberOfVariables
+  statNumberOfClauses <- numberOfClauses
+  liftIO $ putStrLn $ "INFO: SAT stats (vars, clauses) = "
+    ++ show (statNumberOfVars, statNumberOfClauses) 
+
+solveCSP :: Variables -> Constraint -> Set VarName -> IO [Map VarName Int]
+solveCSP vars constraint visibleVars = runIterative $ do
   env <- instantiateVars vars
-  for_ constraints (addProp . compileConstraint env)
+  addProp $ compileConstraint env constraint
+  simplify
+  printStat
   pure (findOneSolution env visibleVars, excludeSolution env)
 
-solveCSPBruteForce :: Variables -> [Constraint] -> Set VarName -> [Map VarName Int]
-solveCSPBruteForce vars cons visibleVars = do
+solveCSPBruteForce :: Variables -> Constraint -> Set VarName -> [Map VarName Int]
+solveCSPBruteForce vars con visibleVars = do
   assignment <- traverse (\(VarRange lo hi) -> [lo .. hi - 1]) vars
-  guard $ all (isValidAssignment assignment) cons
+  guard $ isValidAssignment assignment con
   pure $ Map.restrictKeys assignment visibleVars
 
 isValidAssignment :: Map VarName Int -> Constraint -> Bool
 isValidAssignment env con = case con of
+  Never -> False
   Pure atom -> isValidAssignmentAtom env atom
   Conjunct cons -> all (isValidAssignment env) cons
   Dependent varX cont -> justTrue $ isValidAssignment env . cont <$> Map.lookup varX env
@@ -157,7 +175,6 @@ isValidAssignment env con = case con of
 
 isValidAssignmentAtom :: Map VarName Int -> ConstraintAtom -> Bool
 isValidAssignmentAtom env con = case con of
-  Never -> False
   VarImmLt var k -> justTrue $ (< k) <$> lup var
   VarImmEq var k -> justTrue $ (k ==) <$> lup var
   VarImmNe var k -> justTrue $ (k /=) <$> lup var
@@ -254,7 +271,6 @@ instantiateVar (VarRange lo hi)
 -- | Translate 'Constraint' to 'Prop'.
 compileConstraintAtom :: HasCallStack => Env s -> ConstraintAtom -> Prop s
 compileConstraintAtom env con  = case con of
-  Never -> false
   VarImmLt varName k -> lessThan (getBundle env varName) k
   VarImmEq varName k -> varEq (getBundle env varName) k
   VarImmNe varName k -> varNe (getBundle env varName) k
@@ -266,6 +282,7 @@ compileConstraintAtom env con  = case con of
 
 compileConstraint :: HasCallStack => Env s -> Constraint -> Prop s
 compileConstraint env con  = case con of
+  Never -> false
   Pure c -> compileConstraintAtom env c
   Conjunct cons -> andProp (compileConstraint env <$> cons)
   Dependent varName subCon -> dependent (getBundle env varName) (compileConstraint env . subCon)

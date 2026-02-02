@@ -54,7 +54,7 @@ module Data.NatMap (
     (:~>)(..), wrapNT, unwrapNT,
 
     -- * Utility
-    Var(), makeVars, indices,
+    Var(), unVar, makeVars, indices,
 ) where
 
 import Prelude hiding (lookup)

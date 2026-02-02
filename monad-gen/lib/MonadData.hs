@@ -13,6 +13,7 @@ module MonadData
   (
     MonadDict(..),
     makeMonadDict,
+    prettyMonadDict,
 
     MonadData(..),
     actIso,
@@ -43,8 +44,47 @@ import Text.Read (readMaybe)
 import EquivalenceUtil (uniqueUpTo, groupUpTo)
 import Data.Traversable.Extra (indices)
 
--- Monad dictionary
+-- * Monad dictionary
+data MonadDict f =
+  MonadDict {
+    _monadPure :: forall a. a -> f a,
+    _monadJoin :: forall a. f (f a) -> f a
+  }
 
+makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f
+makeMonadDict (MonadData (Shape u) joinMap) = 
+    case NM.toTotal joinMap of
+      Nothing -> error "well..."
+      Just theJoin -> MonadDict (<$ u) (NM.unwrapNT theJoin . Comp1)
+
+prettyMonadDict :: forall f.
+     (PTraversable f, forall a. Show a => Show (f a))
+  => String -> String -> MonadDict f -> [String]
+prettyMonadDict = docResult
+  where
+    skolem2Cache :: [f (f Int)]
+    skolem2Cache = toList skolem2
+    
+    joinArgsCache :: [String]
+    joinArgsCache = pad <$> strs
+      where
+        showLen x = let s = show x in (length s, s)
+        strs = showLen <$> skolem2Cache
+        maxLen = maximum (0 : fmap fst strs)
+        pad (n, s) = "join $ " ++ s ++ replicate (maxLen - n) ' ' ++ " = "
+    
+    indent = "  "
+    
+    docResult monadName apName dict =
+        [ monadName <> " = Monad{" ] ++
+        map (indent <>) (
+          [ "base = " ++ apName,
+            "pure 0 = " <> show (_monadPure dict (0 :: Int)) ] ++
+          zipWith (<>) joinArgsCache (show . _monadJoin dict <$> skolem2Cache)
+        ) ++
+        ["}"]
+
+-- * Monad data
 data MonadData f = MonadData (Shape f) (NM.NatMap (f :.: f) f)
 
 deriving instance (WeakEq f, Eq (f (f Ignored)), Eq (f NM.Var)) => Eq (MonadData f)
@@ -112,12 +152,6 @@ decodeMonadData (pureIdx, joinData) = MonadData <$> mpureShape <*> mjoinNM
       guard (NM.size joinNM == V.length f2)
       pure joinNM
 
-data MonadDict f =
-  MonadDict {
-    _monadPure :: forall a. a -> f a,
-    _monadJoin :: forall a. f (f a) -> f a
-  }
-
 actIso :: PTraversable f => Iso f -> MonadData f -> MonadData f
 actIso (Iso g _) (MonadData u joinNM) = MonadData (mapShape g u) joinNM' 
   where
@@ -135,9 +169,3 @@ uniqueByIso isoGenerators = uniqueUpTo (actIso <$> isoGenerators)
 groupByIso :: forall f. (PTraversable f, forall a. (Show a) => Show (f a), forall a. Ord a => Ord (f a))
   => [Iso f] -> [MonadData f] -> [Set.Set (MonadData f)]
 groupByIso isoGenerators = groupUpTo (actIso <$> isoGenerators)
-
-makeMonadDict :: (PTraversable f) => MonadData f -> MonadDict f
-makeMonadDict (MonadData (Shape u) joinMap) = 
-    case NM.toTotal joinMap of
-      Nothing -> error "well..."
-      Just theJoin -> MonadDict (<$ u) (NM.unwrapNT theJoin . Comp1)
