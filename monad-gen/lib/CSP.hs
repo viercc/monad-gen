@@ -216,7 +216,7 @@ getBundle env name = Map.findWithDefault err name env
 
 lessThan' :: LitBundle s -> Int -> Lit' s
 lessThan' (Bundle lo hi vec) k
-  | k <= lo || hi <= lo = LitFalse
+  | k <= lo = LitFalse
   | k >= hi = LitTrue
   | otherwise = LitHit $ vec SV.! (k - lo - 1)
 

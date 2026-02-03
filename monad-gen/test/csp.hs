@@ -9,6 +9,10 @@ import CSP
 import qualified Data.Foldable as F
 import Control.Monad (unless)
 
+type VarName = String
+type Variables' = Variables VarName
+type Constraint' = Constraint VarName
+
 shouldBe :: (Show a, Eq a) => a -> a -> IO ()
 shouldBe actual expected
   | actual == expected = pure ()
@@ -18,7 +22,7 @@ shouldBe actual expected
       exitFailure
 
 -- | Check solutions against expected solutions set
-expect :: Variables -> Constraint -> [[(VarName,Int)]] -> IO ()
+expect :: Variables' -> Constraint' -> [[(VarName,Int)]] -> IO ()
 expect vars cons expected = do
   let allVars = Map.keysSet vars
   solutions <- solveCSP vars cons allVars
@@ -27,14 +31,14 @@ expect vars cons expected = do
   solutionsSorted `shouldBe` expectedSorted
 
 -- | Check number of solutions against expected number
-expectNum :: Variables -> Constraint -> Int -> IO ()
+expectNum :: Variables' -> Constraint' -> Int -> IO ()
 expectNum vars cons expected = do
   let allVars = Map.keysSet vars
   solutions <- solveCSP vars cons allVars
   length solutions `shouldBe` expected
 
 -- | Check solutions against brute-force solver
-test :: Variables -> Constraint -> IO ()
+test :: Variables' -> Constraint' -> IO ()
 test vars cons = do
   let allVars = Map.keysSet vars
       expected = sort $ solveCSPBruteForce vars cons allVars
@@ -150,7 +154,7 @@ testGraphColoring n k edges = graphValidity >> test vars (conjunct cons)
     vars = Map.fromList [ (var i, VarRange 0 k) | i <- [0 .. n - 1] ]
     cons = [ var i %/=% var j | (i,j) <- edges ]
 
-defineNQueens :: Int -> (Variables, Constraint)
+defineNQueens :: Int -> (Variables', Constraint')
 defineNQueens n = (vars, conjunct cons)
   where
     -- q_i ∈ [0, n] "i-th queen is on rank i and at file q_i"
