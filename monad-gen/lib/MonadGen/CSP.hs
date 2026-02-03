@@ -109,33 +109,35 @@ makeMonadProblem = (monadOpVars, allVarDefs, allConstraints)
     mkVarDef (s,v) = bullVarDef ++ leftIxVarDefs ++ rightIxVarDefs
       where
         bullVarDef = [(bullVarName s v, VarRange 0 n)]
-        leftLen = sig V.! s
-        maxRightLen = maximum (0 : map (sig V.!) v)
+        -- An "invalid" call return 0, thus
+        -- the range must be at least [0,1).
+        leftLen = max 1 (sig V.! s)
+        maxRightLen = maximum (1 : map (sig V.!) v)
+
         leftIxVarDefs =
-          [(leftIxVarName s v i, VarRange (-1) leftLen) | i <- [0 .. maxLen - 1]]
+          [(leftIxVarName s v i, VarRange 0 leftLen) | i <- [0 .. maxLen - 1]]
         rightIxVarDefs =
-          [(rightIxVarName s v i, VarRange (-1) maxRightLen) | i <- [0 .. maxLen - 1]]
+          [(rightIxVarName s v i, VarRange 0 maxRightLen) | i <- [0 .. maxLen - 1]]
 
     allConstraints = conjunct [
         conjunct (makeTypeConstraint <$> Map.elems shapeMap)
       , conjunct monadLaws
       ]
 
-    isDefined v = v %/=. (-1)
-    isUndefined v = v %==. (-1)
-
     makeTypeConstraint (s,v) = do
       s' <- depend bullSV
       let lenS' = sig V.! s'
+          lenS = sig V.! s
+          lenVmax = maximum (0 : fmap (sig V.!) v)
       conjunct $ do
         i <- [0 .. maxLen - 1]
         let il = leftIxVarName s v i
             ir = rightIxVarName s v i
-            rightRange = dependIn il 0 lenS' >>= \j ->
+            correctRange = dependIn il 0 lenS >>= \j ->
               ir %<. sig V.! (v !! j)
         if i < lenS'
-                then [isDefined il, isDefined ir, rightRange]
-                else [isUndefined il, isUndefined ir]
+          then [correctRange]
+          else [il %==. 0 | lenS > 0] ++ [ir %==. 0 | lenVmax > 0] 
       where
         bullSV = bullVarName s v
 
@@ -176,6 +178,14 @@ makeMonadProblem = (monadOpVars, allVarDefs, allConstraints)
           bullVarName e sBar %==. s,
           forAll [0 .. sn - 1] >>= posId ]
 
+    dependPos s v i = do
+      let lenS = sig V.! s
+          varL = leftIxVarName s v i
+          varR = rightIxVarName s v i
+      l <- dependIn varL 0 lenS 
+      r <- dependIn varR 0 (sig V.! (v !! l))
+      pure (l,r)
+
     -- assoc laws (3,6,7,8)
     --
     -- Shape assoc law:
@@ -196,13 +206,8 @@ makeMonadProblem = (monadOpVars, allVarDefs, allConstraints)
     assocLaws = do
       (s,v,w,_) <- forAll makeSVW
       sv <- depend $ bullVarName s v
-      let s_len = sig V.! s
-          sv_len = sig V.! sv
-          get_lr_s_v i = do
-            i1 <- dependIn (leftIxVarName s v i) 0 s_len
-            i2 <- dependIn (rightIxVarName s v i) 0 (sig V.! (v !! i1))
-            pure (i1, i2)
-      lr_s_v <- traverse get_lr_s_v [0 .. sv_len - 1]
+      let sv_len = sig V.! sv
+      lr_s_v <- traverse (dependPos s v) [0 .. sv_len - 1]
       let l_s_v j = maybe (-1) fst $ lr_s_v !? j
           r_s_v j = maybe (-1) snd $ lr_s_v !? j
       let delta_w = lr_s_v <&> \(j1,j2) -> w !! j1 !! j2
@@ -212,12 +217,9 @@ makeMonadProblem = (monadOpVars, allVarDefs, allConstraints)
       s_vw <- depend s_vw_var
       let svw_len = sig V.! s_vw
           ix_laws i = do
-            let l_s_vw_var = leftIxVarName s vw i
-                r_s_vw_var = rightIxVarName s vw i
-                l_sv_w_var = leftIxVarName sv delta_w i
+            let l_sv_w_var = leftIxVarName sv delta_w i
                 r_sv_w_var = rightIxVarName sv delta_w i
-            l_s_vw <- dependIn l_s_vw_var 0 s_len
-            r_s_vw <- dependIn r_s_vw_var 0 (sig V.! (vw !! l_s_vw))
+            (l_s_vw, r_s_vw) <- dependPos s vw i
             let lr_var = leftIxVarName (v !! l_s_vw) (w !! l_s_vw) r_s_vw
                 rr_var = rightIxVarName (v !! l_s_vw) (w !! l_s_vw) r_s_vw
             conjunct

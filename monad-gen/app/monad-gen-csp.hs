@@ -39,6 +39,7 @@ genFor f = do
 genFor' :: forall f ->
   (Typeable f, PTraversable f, forall a. Show a => Show (f a)) => IO ()
 genFor' f = do
+  putStrLn $ "==== Monad (" ++ show (typeRep @f) ++ ") ===="
   monads <- genMonad @f
   let isos = concat $ makeShapeIsoFactors ++ makePositionIsoFactors
       monadsModIso = uniqueByIso isos monads
@@ -48,7 +49,7 @@ genFor' f = do
 
 main :: IO ()
 main = do
-  genFor F
-  genFor G
+  genFor' F
+  genFor' G
   genFor' H
   genFor' (type (St (Fin 2) V2))
