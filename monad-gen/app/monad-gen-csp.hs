@@ -14,7 +14,7 @@ import qualified Data.Foldable as F
 import MonadData
 import MonadGen.CSP
 
-import Targets (type F, type G, type H, type St, type V2)
+import Targets (type F, type G, type H, type I, type St, type V2)
 import Data.Fin ( Fin )
 import Isomorphism
 import System.IO
@@ -71,4 +71,6 @@ main = do
   genFor F
   genFor G
   genFor H
+  -- genFor I
   genFor (type (St (Fin 2) V2))
+  genFor (type (St (Fin 3) V2))

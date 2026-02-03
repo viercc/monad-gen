@@ -39,9 +39,6 @@ import Control.Monad (guard)
 import Data.Functor (void)
 import qualified Data.Set as Set
 
-import Debug.Trace
-import Control.Exception (assert)
-
 type Shape2 f = Shape (f :.: f)
 type Shape3 f = Shape ((f :.: f) :.: f)
 
@@ -166,15 +163,29 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
     unitLaws = do
       (fId,f) <- forAll (V.toList (V.indexed f1))
       e <- (f1 V.!) <$> depend Unit
+      let ne = length e
+          nf = length f
+      {-
+
+      pure x = (x <$ e)
+      fe = Comp1 (fmap pure f)
+         = Comp1 $ F (E 0 0 ...(ne times)) (E 1 1 ...) (E 2 2 ...)
+      ef = Comp1 (pure f)
+         = Comp1 $ E (F 0 1 2 ... (nf-1)) (F 0 1 2 ... (nf-1)) ...(ne times)...
+
+      feVec = toList fe
+      efVec = toList ef
+
+      ∀　i. (0 <= i < nf) --> Pos (Shape fe) i %==. feVec !! i
+      ∀　i. (0 <= i < nf) --> Pos (Shape ef) i %==. efVec !! i
+
+      -}
       let fe = Shape (Comp1 (e <$ f))
           ef = Shape (Comp1 (f <$ e))
 
-          ne = length e
-          nf = length f
-
           posProps i =
             [ Pos fe i `satisfy` \j -> ne == 0 || j `div` ne == i,
-              Pos ef i `satisfy` \j -> ne == 0 || j `mod` ne == i ]
+              Pos ef i `satisfy` \j -> nf == 0 || j `mod` nf == i ]
       conjunct $
         [ Bull fe %==. fId,
           Bull ef %==. fId ] ++
@@ -194,13 +205,13 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
     -- assoc laws
     assocShapeLaw = do
       fffx <- forAll $ V.toList skolem3
-      let tmpBull = Bull3 (Shape (Comp1 (Comp1 fffx)))
+      let bull3 = Bull3 (Shape (Comp1 (Comp1 fffx)))
           outerDef = do
             outerJoin <- dependJoin fffx
-            Bull (Shape (Comp1 outerJoin)) %==% tmpBull
+            Bull (Shape (Comp1 outerJoin)) %==% bull3
           innerDef = do
             innerJoinShape <- traverse dependShape fffx
-            Bull (Shape (Comp1 innerJoinShape)) %==% tmpBull
+            Bull (Shape (Comp1 innerJoinShape)) %==% bull3
       conjunct [outerDef, innerDef]
     
     vecFromFF :: forall b. f (f b) -> V.Vector b
@@ -217,11 +228,11 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
     assocPosLawOuter fffx = do
       outerJoin <- dependJoin fffx
       let posMap = vecFromFF outerJoin
-      tmpShape <- (f1 V.!) <$> depend (Bull3 fff)
-      if not (null tmpShape) && null posMap
+      rhsShape <- (f1 V.!) <$> depend (Bull (Shape (Comp1 outerJoin)))
+      if not (null rhsShape) && null posMap
         then never
         else do
-          i <- forAll [0 .. length tmpShape - 1]
+          i <- forAll [0 .. length rhsShape - 1]
           functionEq (posMap V.!) (Pos (Shape (Comp1 outerJoin)) i) (Pos3 fff i)
       where
         fff = Shape (Comp1 (Comp1 fffx))
@@ -230,13 +241,14 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
     assocPosLawInner fffx = do
       innerJoinShape <- traverse dependShape fffx
       let divider = vecFromFF $ path2 innerJoinShape
-      tmpShape <- (f1 V.!) <$> depend (Bull3 fff)
-      if not (null tmpShape) && null divider
+      rhsShape <- (f1 V.!) <$> depend (Bull (Shape (Comp1 innerJoinShape)))
+      if not (null rhsShape) && null divider
         then never
         else do
-          i <- forAll [0 .. length tmpShape - 1]
+          i <- forAll [0 .. length rhsShape - 1]
           (j1,j2) <- (divider V.!) <$> depend (Pos (Shape (Comp1 innerJoinShape)) i)
-          functionEq (shiftAmount j1 +) (Pos (subJoinShapes V.! j1) j2) (Pos3 fff i)
+          let subTree = subJoinShapes V.! j1
+          functionEq (shiftAmount j1 +) (Pos subTree j2) (Pos3 fff i)
       where
         fff = Shape (Comp1 (Comp1 fffx))
         subJoinShapes = fmap (Shape . Comp1) . V.fromList . F.toList $ fffx

@@ -151,10 +151,18 @@ printStat = do
 
 solveCSP :: (Ord v, Show v) => Variables v -> Constraint v -> Set v -> IO [Map v Int]
 solveCSP vars constraint visibleVars = runIterative $ do
+  liftIO $ do
+    let litCount (VarRange lo hi) = max 0 (hi - lo - 1)
+    putStrLn   "INFO: instanting input problem"
+    putStrLn $ "INFO: #vars = " ++ show (Map.size vars)
+    putStrLn $ "INFO: #model_lits = " ++ show (sum $ litCount <$> Map.elems vars)
   env <- instantiateVars vars
+  liftIO $ putStrLn "INFO: adding constraints"
   addProp $ compileConstraint env constraint
-  simplify
+  -- liftIO $ putStrLn "INFO: simplifying"
+  -- simplify
   printStat
+  liftIO $ putStrLn "INFO: initialization done"
   pure (findOneSolution env visibleVars, excludeSolution env)
 
 solveCSPBruteForce :: (Ord v, Show v) => Variables v -> Constraint v -> Set v -> [Map v Int]
@@ -267,7 +275,14 @@ instantiateVar (VarRange lo hi)
 
 ------------------
 
--- | Translate 'Constraint v' to 'Prop'.
+-- | Translate 'Constraint' to 'Prop'.
+compileConstraint :: (Ord v, Show v, HasCallStack) => Env v s -> Constraint v -> Prop s
+compileConstraint env con  = case con of
+  Never -> false
+  Pure c -> compileConstraintAtom env c
+  Conjunct cons -> andProp (compileConstraint env <$> cons)
+  Dependent varName subCon -> dependent (getBundle env varName) (compileConstraint env . subCon)
+
 compileConstraintAtom :: (Ord v, Show v, HasCallStack) => Env v s -> ConstraintAtom v -> Prop s
 compileConstraintAtom env con  = case con of
   VarImmLt varName k -> lessThan (getBundle env varName) k
@@ -278,13 +293,6 @@ compileConstraintAtom env con  = case con of
   VarVarNe varX varY -> dependent (getBundle env varX) (varNe (getBundle env varY))
   VarVarLe varX varY -> varvarLe (getBundle env varX) (getBundle env varY)
   FunVarEq f varX varY -> funVarEq f (getBundle env varX) (getBundle env varY)
-
-compileConstraint :: (Ord v, Show v, HasCallStack) => Env v s -> Constraint v -> Prop s
-compileConstraint env con  = case con of
-  Never -> false
-  Pure c -> compileConstraintAtom env c
-  Conjunct cons -> andProp (compileConstraint env <$> cons)
-  Dependent varName subCon -> dependent (getBundle env varName) (compileConstraint env . subCon)
 
 varEq :: LitBundle s -> Int -> Prop s
 varEq x k = neg (lessThan x k) /\ lessThan x (k + 1)
@@ -313,7 +321,6 @@ varvarLe x y
     Bundle yLo yHi _ = y
     lo = max xLo yLo
     hi = min xHi yHi
-
     level k = lessThan y k --> lessThan x k
 
 

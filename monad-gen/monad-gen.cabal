@@ -87,7 +87,7 @@ executable monad-gen-csp
     , cartesian-profunctors
     , nat-map
     , monad-gen-internal
-  ghc-options:        -Wall -Wcompat -rtsopts=all -with-rtsopts=-M8G
+  ghc-options:        -Wall -Wcompat -rtsopts=all -with-rtsopts=-M2G
 
 executable binary_join
   hs-source-dirs:      app
