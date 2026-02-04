@@ -71,6 +71,6 @@ main = do
   genFor F
   genFor G
   genFor H
-  -- genFor I
+  genFor I
   genFor (type (St (Fin 2) V2))
   genFor (type (St (Fin 3) V2))
