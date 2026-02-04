@@ -1,7 +1,19 @@
 ==== Monad (F) ====
+INFO: instanting input problem
+INFO: #vars = 94
+INFO: #model_lits = 160
+INFO: adding constraints
+INFO: SAT stats (vars, clauses) = (161,532)
+INFO: initialization done
 #monads = 0
 #monadsModIso = 0
 ==== Monad (G) ====
+INFO: instanting input problem
+INFO: #vars = 145
+INFO: #model_lits = 373
+INFO: adding constraints
+INFO: SAT stats (vars, clauses) = (374,16549)
+INFO: initialization done
 #monads = 15
 #monadsModIso = 8
 Monad_1 = Monad{
@@ -85,6 +97,12 @@ Monad_8 = Monad{
   join $ Gb (Gb 0 1) (Gb 2 3) = Gb 0 3
 }
 ==== Monad (H) ====
+INFO: instanting input problem
+INFO: #vars = 589
+INFO: #model_lits = 1210
+INFO: adding constraints
+INFO: SAT stats (vars, clauses) = (1211,57891)
+INFO: initialization done
 #monads = 16
 #monadsModIso = 9
 Monad_1 = Monad{
@@ -241,6 +259,12 @@ Monad_9 = Monad{
   join $ Hb (Hb 0 1) (Hb 2 3) = Hb 0 0
 }
 ==== Monad (I) ====
+INFO: instanting input problem
+INFO: #vars = 4081
+INFO: #model_lits = 45073
+INFO: adding constraints
+INFO: SAT stats (vars, clauses) = (45074,62612473)
+INFO: initialization done
 #monads = 691
 #monadsModIso = 123
 Monad_1 = Monad{
@@ -1966,6 +1990,12 @@ Monad_123 = Monad{
   join $ Ib (Ib 0 1 2) (Ib 3 4 5) (Ib 6 7 8) = Ib 0 0 0
 }
 ==== Monad (St (Fin 2) V2) ====
+INFO: instanting input problem
+INFO: #vars = 409
+INFO: #model_lits = 1977
+INFO: adding constraints
+INFO: SAT stats (vars, clauses) = (1978,255588)
+INFO: initialization done
 #monads = 24
 #monadsModIso = 3
 Monad_1 = Monad{
@@ -2005,6 +2035,12 @@ Monad_3 = Monad{
   join $ St 1 (V2 (St 1 (V2 0 1)) (St 1 (V2 2 3))) = St 0 (V2 3 0)
 }
 ==== Monad (St (Fin 3) V2) ====
+INFO: instanting input problem
+INFO: #vars = 6643
+INFO: #model_lits = 35210
+INFO: adding constraints
+INFO: SAT stats (vars, clauses) = (35211,12258127)
+INFO: initialization done
 #monads = 384
 #monadsModIso = 10
 Monad_1 = Monad{
@@ -2318,6 +2354,6 @@ Monad_10 = Monad{
   join $ St 2 (V2 (St 2 (V2 0 1)) (St 2 (V2 2 3))) = St 2 (V2 0 3)
 }
 
-real    7m49.673s
-user    7m4.784s
-sys     0m18.876s
+real    7m27.177s
+user    7m2.698s
+sys     0m15.124s

@@ -18,6 +18,9 @@ library monad-gen-internal
     Data.IntervalSet,
 
     CSP,
+    CSP.Constraint,
+    CSP.SATUtil,
+    CSP.Compile,
     
     ModelFinder.Model.GuessMaskModel,
     ModelFinder.Model.PreNatMapModel,

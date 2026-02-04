@@ -38,6 +38,7 @@ import ApplicativeData (ApplicativeDict(..), ApplicativeData, makeApplicativeDic
 import Control.Monad (guard)
 import Data.Functor (void)
 import qualified Data.Set as Set
+import GHC.Stack.Types (HasCallStack)
 
 type Shape2 f = Shape (f :.: f)
 type Shape3 f = Shape ((f :.: f) :.: f)
@@ -75,8 +76,18 @@ data MonadOps f =
   -}
 
   -- Temporary variables to state associativity law
+    -- Shape part of the one side of associativity law (join :: (f :.: f :.: f) ~> (f :.: f) 
+  | BullOuter (Shape3 f)
+    -- Shape part of the one side of associativity law (fmap join :: (f :.: f :.: f) ~> (f :.: f) 
+  | BullInner (Shape3 f)
     -- Shape part of the associativity law :: (f :.: f :.: f) ~> f
   | Bull3 (Shape3 f)
+    -- Length cache of Bull3
+  | Bull3Len (Shape3 f)
+    -- Position part of the one side of associativity law (join :: (f :.: f :.: f) ~> (f :.: f) 
+  | PosOuter (Shape3 f) Int
+    -- Position part of the one side of associativity law (fmap join :: (f :.: f :.: f) ~> (f :.: f) 
+  | PosInner (Shape3 f) Int
     -- Position part of the associativity law :: (f :.: f :.: f) ~> f
   | Pos3  (Shape3 f) Int
 
@@ -93,6 +104,11 @@ dependIn v lo hi = do
     then pure k
     else never
 
+(!) :: (HasCallStack, Show a) => V.Vector a -> Int -> a
+vec ! i = case vec V.!? i of
+  Nothing -> error $ "index out of bounds " ++ show (vec, i)
+  Just a -> a
+
 makeMonadProblem :: forall f. (PTraversable f, forall a. Show a => Show (f a)) => MonadProblem f
 makeMonadProblem = (f1, allVarDefs, allConstraints)
   where
@@ -105,8 +121,16 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
 
     -- n = total number of shapes
     n = V.length f1
+    -- n2 = total number of twice-nested shapes
+    n2 = V.length f2
     -- maxRhsLen = max possible index for Pos and Pos3 variables.
     maxRhsLen = maximum (0 : map length (V.toList f1))
+    minRhsLen = minimum (maxRhsLen : map length (V.toList f1))
+
+    revmap2 :: forall b. f (f b) -> Int
+    revmap2 = (m Map.!) . Shape . Comp1
+      where
+        m = Map.fromList [ (Shape (Comp1 ff), i) | (i,ff) <- V.toList (V.indexed f2) ]
 
     allVarDefs = Map.unions
       [ Map.singleton Unit (VarRange 0 n)
@@ -120,22 +144,30 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
         bullVarDef = [(Bull ff, VarRange 0 n)]
         lhsLen = lengthShape ff
         posVarDefs = [(Pos ff i, VarRange 0 (max 1 lhsLen)) | i <- [0 .. maxRhsLen - 1]]
-    
+
     tmpVarDefs = Map.fromList $ V.toList f3 >>= mkVarDefTmp
     mkVarDefTmp fffx = bullVarDef ++ posVarDefs
       where
         fff = Shape (Comp1 (Comp1 fffx))
         lhsLen = lengthShape fff
-        bullVarDef = [ (Bull3 fff, VarRange 0 n) ]
-        posVarDefs = [ (Pos3 fff i, VarRange 0 (max 1 lhsLen)) | i <- [0 .. maxRhsLen - 1]]
+        bullVarDef = [
+            (Bull3 fff, VarRange 0 n),
+            (Bull3Len fff, VarRange minRhsLen (maxRhsLen+1)),
+            (BullOuter fff, VarRange 0 n2),
+            (BullInner fff, VarRange 0 n2)
+          ]
+        posVarDefs =
+          [ (Pos3 fff i, VarRange 0 (max 1 lhsLen)) | i <- [0 .. maxRhsLen - 1]] ++
+          [ (PosOuter fff i, VarRange 0 (max 1 lhsLen)) | i <- [0 .. maxRhsLen * maxRhsLen - 1]] ++
+          [ (PosInner fff i, VarRange 0 (max 1 lhsLen)) | i <- [0 .. maxRhsLen * maxRhsLen - 1]]
 
     allConstraints = conjunct [
         conjunct (invalidPositions <$> F.toList f2)
       , conjunct (invalidPositions3 <$> F.toList f3)
+      , bull3LenCache
 
       , unitLaws
-      , assocShapeLaw
-      , assocPosLaw
+      , assocLaw
       ]
 
     -- define arbitrary value for "invalid" @Pos ff i@
@@ -148,17 +180,39 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
       if i < rhsLen
         then Pos ff i %<. lhsLen
         else Pos ff i %==. 0
-    
-    invalidPositions3 fffx = do
-      let fff = Shape (Comp1 (Comp1 fffx))
-      f <- (f1 V.!) <$> depend (Bull3 fff)
-      let rhsLen = length f
-          lhsLen = lengthShape fff
-      i <- forAll [0 .. maxRhsLen - 1]
-      if i < rhsLen
-        then Pos3 fff i %<. lhsLen
-        else Pos3 fff i %==. 0
-    
+
+    invalidPositions3 fffx = conjunct [outerPosRange, innerPosRange, pos3Range]
+      where
+        fff = Shape (Comp1 (Comp1 fffx))
+        lhsLen = lengthShape fff
+        outerPosRange = do
+          ff <- (f2 V.!) <$> depend (BullOuter fff)
+          let rhsLen = length (Comp1 ff)
+          i <- forAll [0 .. maxRhsLen * maxRhsLen - 1]
+          if i < rhsLen
+            then PosOuter fff i %<. lhsLen
+            else PosOuter fff i %==. 0
+        
+        innerPosRange = do
+          ff <- (f2 V.!) <$> depend (BullInner fff)
+          let rhsLen = length (Comp1 ff)
+          i <- forAll [0 .. maxRhsLen * maxRhsLen - 1]
+          if i < rhsLen
+            then PosInner fff i %<. lhsLen
+            else PosInner fff i %==. 0
+        
+        pos3Range = do
+          rhsLen <- depend (Bull3Len fff)
+          i <- forAll [0 .. maxRhsLen - 1]
+          if i < rhsLen
+            then Pos3 fff i %<. lhsLen
+            else Pos3 fff i %==. 0
+
+    bull3LenCache = do
+      fffx <- forAll (V.toList f3)
+      let fff = Shape . Comp1 . Comp1 $ fffx 
+      functionEq (\fId -> length (f1 V.! fId)) (Bull3 fff) (Bull3Len fff)
+
     -- unit laws
     unitLaws = do
       (fId,f) <- forAll (V.toList (V.indexed f1))
@@ -194,7 +248,7 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
     dependShape :: forall b. f (f b) -> ConstraintM (MonadOps f) (f ())
     dependShape ffb = void . (f1 V.!) <$> depend (Bull (Shape (Comp1 ffb)))
 
-    dependJoin :: forall b. f (f b) -> ConstraintM (MonadOps f) (f b)
+    dependJoin :: forall b. Show b => f (f b) -> ConstraintM (MonadOps f) (f b)
     dependJoin ffb = do
       let ffb' = Comp1 ffb
           bTable = V.fromList (F.toList ffb')
@@ -203,56 +257,60 @@ makeMonadProblem = (f1, allVarDefs, allConstraints)
       traverse (\i -> (bTable V.!) <$> dependIn (Pos (Shape ffb') i) 0 lhsLen) fi
 
     -- assoc laws
-    assocShapeLaw = do
+    assocLaw = do
       fffx <- forAll $ V.toList skolem3
-      let bull3 = Bull3 (Shape (Comp1 (Comp1 fffx)))
-          outerDef = do
-            outerJoin <- dependJoin fffx
-            Bull (Shape (Comp1 outerJoin)) %==% bull3
-          innerDef = do
-            innerJoinShape <- traverse dependShape fffx
-            Bull (Shape (Comp1 innerJoinShape)) %==% bull3
-      conjunct [outerDef, innerDef]
+      conjunct [assocLawOuter fffx, assocLawInner fffx]
     
+    assocLawOuter fffx = conjunct [outer1, outer2Bull, outer2Pos]
+      where
+        fff = Shape . Comp1 . Comp1 $ fffx
+        outer1 = do
+          outerJoin <- dependJoin fffx
+          let shapeId = revmap2 outerJoin
+              rhsLen = length (Comp1 outerJoin)
+              posmap = vecFromFF outerJoin
+              posDef i = PosOuter fff i %==. (posmap ! i)
+          conjunct $
+            (BullOuter fff %==. shapeId) : fmap posDef [0 .. rhsLen - 1]
+        outer2Bull = do
+          ff <- Shape . Comp1 . (f2 V.!) <$> depend (BullOuter fff)
+          Bull ff %==% Bull3 fff
+        outer2Pos = do
+          ff <- Shape . Comp1 . (f2 V.!) <$> depend (BullOuter fff)
+          rhsLen <- depend (Bull3Len fff)
+          i <- forAll [0 .. rhsLen - 1]
+          j <- depend (Pos ff i)
+          PosOuter fff j %==% Pos3 fff i
+    
+    assocLawInner fffx = conjunct [inner1, inner2Bull, inner2Pos]
+      where
+        fff = Shape . Comp1 . Comp1 $ fffx
+        subJoinShapes = fmap (Shape . Comp1) . V.fromList . F.toList $ fffx
+        shiftAmount = V.scanl' (\acc s -> acc + lengthShape s) 0 subJoinShapes
+        inner1 = do
+          innerJoinShape <- traverse dependShape fffx
+          let shapeId = revmap2 innerJoinShape
+              rhsLen = length (Comp1 innerJoinShape)
+              divider = vecFromFF $ path2 innerJoinShape
+              posDef j =
+                let (j1,j2) = divider ! j
+                in functionEq ((shiftAmount ! j1) +) (Pos (subJoinShapes ! j1) j2) (PosInner fff j)
+          conjunct $ (BullInner fff %==. shapeId) : fmap posDef [0 .. rhsLen - 1]
+        inner2Bull = do
+          ff <- Shape . Comp1 . (f2 V.!) <$> depend (BullInner fff)
+          Bull ff %==% Bull3 fff
+        inner2Pos = do
+          ff <- Shape . Comp1 . (f2 V.!) <$> depend (BullInner fff)
+          rhsLen <- depend (Bull3Len fff)
+          i <- forAll [0 .. rhsLen - 1]
+          j <- depend (Pos ff i)
+          PosInner fff j %==% Pos3 fff i
+
     vecFromFF :: forall b. f (f b) -> V.Vector b
     vecFromFF = V.fromList . F.toList . Comp1
 
     path2 :: forall b. f (f b) -> f (f (Int,Int))
     path2 = imap (\k1 fb -> imap (\k2 _ -> (k1,k2)) fb)
-
-    assocPosLaw = do
-      fffx <- forAll $ V.toList skolem3
-      conjunct [assocPosLawOuter fffx, assocPosLawInner fffx]
-
-    assocPosLawOuter :: f (f (f Int)) -> Constraint (MonadOps f)
-    assocPosLawOuter fffx = do
-      outerJoin <- dependJoin fffx
-      let posMap = vecFromFF outerJoin
-      rhsShape <- (f1 V.!) <$> depend (Bull (Shape (Comp1 outerJoin)))
-      if not (null rhsShape) && null posMap
-        then never
-        else do
-          i <- forAll [0 .. length rhsShape - 1]
-          functionEq (posMap V.!) (Pos (Shape (Comp1 outerJoin)) i) (Pos3 fff i)
-      where
-        fff = Shape (Comp1 (Comp1 fffx))
-    
-    assocPosLawInner :: f (f (f Int)) -> Constraint (MonadOps f)
-    assocPosLawInner fffx = do
-      innerJoinShape <- traverse dependShape fffx
-      let divider = vecFromFF $ path2 innerJoinShape
-      rhsShape <- (f1 V.!) <$> depend (Bull (Shape (Comp1 innerJoinShape)))
-      if not (null rhsShape) && null divider
-        then never
-        else do
-          i <- forAll [0 .. length rhsShape - 1]
-          (j1,j2) <- (divider V.!) <$> depend (Pos (Shape (Comp1 innerJoinShape)) i)
-          let subTree = subJoinShapes V.! j1
-          functionEq (shiftAmount j1 +) (Pos subTree j2) (Pos3 fff i)
-      where
-        fff = Shape (Comp1 (Comp1 fffx))
-        subJoinShapes = fmap (Shape . Comp1) . V.fromList . F.toList $ fffx
-        shiftAmount j1 = sum . map (length . Comp1) . take j1 . F.toList $ fffx
 
 solutionToMonad :: PTraversable f => V.Vector (f Int) -> Map (MonadOps f) Int -> Maybe (MonadData f)
 solutionToMonad tab solution = MonadData <$> pureShape <*> join_
@@ -296,7 +354,7 @@ uniqBy cmp = map NE.head . NE.groupBy eq . List.sortBy cmp
 
 genMonadPureFirst :: (PTraversable f, forall a. Show a => Show (f a)) => IO [MonadData f]
 genMonadPureFirst = do
-  let uniqueLenShapes = uniqBy (comparing length) shapes 
+  let uniqueLenShapes = uniqBy (comparing length) shapes
   -- mapM_ print $ Map.toList defs
   monadss <-
     for uniqueLenShapes $ \pureShape ->
@@ -313,14 +371,14 @@ addPureDef pureShape (tab, defs, con) = (tab, defs, con')
   where
     revmap = Map.fromList [ (Shape s,i) | (i,s) <- V.toList (V.indexed tab) ]
     pureShapeId = revmap Map.! pureShape
-    con' = conjunct [Unit %==. pureShapeId, con] 
+    con' = conjunct [Unit %==. pureShapeId, con]
 
 addPartialJoinDef :: PTraversable f => NM.NatMap (f :.: f) f -> MonadProblem f -> MonadProblem f
 addPartialJoinDef nm (tab, defs, con) = (tab, defs, con')
   where
     revmap = Map.fromList [ (Shape s,i) | (i,s) <- V.toList (V.indexed tab) ]
     rev = (revmap Map.!)
-    
+
     con' = conjunct [knownDefs, con]
     knownDefs = forAll (NM.getKeyValue <$> NM.toEntries nm) >>= knownDef
     knownDef (lhs, rhsVar) = conjunct (shapeDef : posDefs)
