@@ -9,7 +9,7 @@ module CSP(
   ConstraintM(..),
   ConstraintAtom(..),
 
-  never, always,
+  never, always, ensure,
   (%<.), (%==.), (%/=.), satisfy,
   (%==%), (%/=%), (%<=%), functionEq,
   conjunct, depend, forAll,
@@ -95,11 +95,17 @@ instance Monad (ConstraintM v) where
 
 type Constraint v = ConstraintM v (ConstraintAtom v)
 
+-- | Evaluates false regardless of subsequent expression
 never :: ConstraintM v a
 never = Never
 
+-- | Evaluates true regardless of subsequent expression
 always :: ConstraintM v a
 always = Conjunct []
+
+ensure :: Bool -> ConstraintM v ()
+ensure False = never
+ensure True  = pure ()
 
 infix 3 %<.
 infix 3 %==.
@@ -144,14 +150,14 @@ forAll = Conjunct . fmap Pure
 -- * Running solvr
 
 debug :: String -> SAT s ()
--- debug = liftIO . putStrLn
-debug = const (pure ())
+debug = liftIO . putStrLn
+-- debug = const (pure ())
 
 printStat :: SAT s ()
 printStat = do
   statNumberOfVars <- SAT.numberOfVariables
   statNumberOfClauses <- SAT.numberOfClauses
-  debug $ "INFO: SAT stats (vars, clauses) = "
+  liftIO . putStrLn $ "INFO: SAT stats (vars, clauses) = "
     ++ show (statNumberOfVars, statNumberOfClauses)
 
 solveCSP :: (Ord v, Show v) => Variables v -> Constraint v -> Set v -> IO [Map v Int]
