@@ -34,7 +34,8 @@ import GHC.Stack.Types (HasCallStack)
 import Data.Map.Strict (Map)
 import qualified Data.IntervalSet as IS
 
-import Control.Monad.SAT
+import Control.Monad.SAT (SAT, Neg (..), Lit)
+import qualified Control.Monad.SAT as SAT
 import qualified Data.Map.Strict as Map
 import qualified Data.Vector.Strict as SV
 
@@ -97,7 +98,7 @@ type Constraint v = ConstraintM v (ConstraintAtom v)
 never :: ConstraintM v a
 never = Never
 
-always :: Constraint v
+always :: ConstraintM v a
 always = Conjunct []
 
 infix 3 %<.
@@ -142,27 +143,30 @@ forAll = Conjunct . fmap Pure
 
 -- * Running solvr
 
+debug :: String -> SAT s ()
+-- debug = liftIO . putStrLn
+debug = const (pure ())
+
 printStat :: SAT s ()
 printStat = do
-  statNumberOfVars <- numberOfVariables
-  statNumberOfClauses <- numberOfClauses
-  liftIO $ putStrLn $ "INFO: SAT stats (vars, clauses) = "
-    ++ show (statNumberOfVars, statNumberOfClauses) 
+  statNumberOfVars <- SAT.numberOfVariables
+  statNumberOfClauses <- SAT.numberOfClauses
+  debug $ "INFO: SAT stats (vars, clauses) = "
+    ++ show (statNumberOfVars, statNumberOfClauses)
 
 solveCSP :: (Ord v, Show v) => Variables v -> Constraint v -> Set v -> IO [Map v Int]
 solveCSP vars constraint visibleVars = runIterative $ do
-  liftIO $ do
-    let litCount (VarRange lo hi) = max 0 (hi - lo - 1)
-    putStrLn   "INFO: instanting input problem"
-    putStrLn $ "INFO: #vars = " ++ show (Map.size vars)
-    putStrLn $ "INFO: #model_lits = " ++ show (sum $ litCount <$> Map.elems vars)
+  let litCount (VarRange lo hi) = max 0 (hi - lo - 1)
+  debug   "INFO: instanting input problem"
+  debug $ "INFO: #vars = " ++ show (Map.size vars)
+  debug $ "INFO: #model_lits = " ++ show (sum $ litCount <$> Map.elems vars)
   env <- instantiateVars vars
-  liftIO $ putStrLn "INFO: adding constraints"
+  debug "INFO: adding constraints"
   addProp $ compileConstraint env constraint
   -- liftIO $ putStrLn "INFO: simplifying"
   -- simplify
   printStat
-  liftIO $ putStrLn "INFO: initialization done"
+  debug "INFO: initialization done"
   pure (findOneSolution env visibleVars, excludeSolution env)
 
 solveCSPBruteForce :: (Ord v, Show v) => Variables v -> Constraint v -> Set v -> [Map v Int]
@@ -207,13 +211,6 @@ type LitBundle s = Bundle (Lit s)
 
 type Env v s = Map v (LitBundle s)
 
-type Clause' s = [Lit' s]
-
-addClause' :: Clause' s -> SAT s ()
-addClause' clause' = do
-  conv <- noconstant
-  addClause (conv <$> clause')
-
 bundleToInt :: Bundle Bool -> Int
 bundleToInt (Bundle lo _ vec) = lo + length (filter not $ SV.toList vec)
 
@@ -230,6 +227,9 @@ lessThan' (Bundle lo hi vec) k
 
 lessThan :: LitBundle s -> Int -> Prop s
 lessThan x k = lit' (lessThan' x k)
+
+geqThan :: LitBundle s -> Int -> Prop s
+geqThan x k = lit' (neg (lessThan' x k))
 
 instantiateVars :: Variables v -> SAT s (Env v s)
 instantiateVars = traverse instantiateVar
@@ -259,16 +259,16 @@ n-1, 0,   0,   ..., 0,       0
 -}
 instantiateVar :: VarRange -> SAT s (LitBundle s)
 instantiateVar (VarRange lo hi)
-  | n <= 0 = addClause [] >> pure (Bundle lo lo SV.empty)
+  | n <= 0 = SAT.addClause [] >> pure (Bundle lo lo SV.empty)
              -- ^ Unsatisfiable
   | n == 1 = pure (Bundle lo hi SV.empty)
              -- ^ The variable is actually constant (x == lo): no literals needed
   | otherwise = assert (n > 1) $ do
       -- instantiate x_i for all (1 <= i < n)
-      lits <- SV.replicateM (n - 1) newLit
+      lits <- SV.replicateM (n - 1) SAT.newLit
       -- (x_i → x_{i+1}) for all i defined
       for_ (SV.zip lits (SV.drop 1 lits)) $ \(xi, xi') ->
-        addClause [neg xi, xi']
+        SAT.addClause [neg xi, xi']
       pure (Bundle lo hi lits)
   where
     n = hi - lo
@@ -295,10 +295,16 @@ compileConstraintAtom env con  = case con of
   FunVarEq f varX varY -> funVarEq f (getBundle env varX) (getBundle env varY)
 
 varEq :: LitBundle s -> Int -> Prop s
-varEq x k = neg (lessThan x k) /\ lessThan x (k + 1)
+varEq x k = geqThan x k /\ lessThan x (k + 1)
 
 varNe :: LitBundle s -> Int -> Prop s
-varNe x k = lessThan x k \/ neg (lessThan x (k + 1))
+varNe x k = lessThan x k \/ geqThan x (k + 1)
+
+litImp' :: Lit' s -> Lit' s -> Prop s
+litImp' p q = lit' (neg p) \/ lit' q
+
+litIff' :: Lit' s -> Lit' s -> Prop s
+litIff' p q = litImp' p q /\ litImp' q p
 
 varPred :: LitBundle s -> (Int -> Bool) -> Prop s
 varPred x cond = andProp $ notInRangeClause <$> excludedRanges
@@ -306,7 +312,7 @@ varPred x cond = andProp $ notInRangeClause <$> excludedRanges
     allLo = _bundleLo x
     allHi = _bundleHi x
     excludedRanges = IS.toIntervals . IS.fromList $ [ i | i <- [allLo .. allHi - 1], not (cond i) ]
-    notInRangeClause (lo, hi) = lessThan x lo \/ neg (lessThan x hi)
+    notInRangeClause (lo, hi) = litImp' (lessThan' x hi) (lessThan' x lo)
 
 -- (x <= y)
 --  :<-> ∀(k. lo <= k <= hi). (y < k) --> (x < k)
@@ -321,8 +327,7 @@ varvarLe x y
     Bundle yLo yHi _ = y
     lo = max xLo yLo
     hi = min xHi yHi
-    level k = lessThan y k --> lessThan x k
-
+    level k = litImp' (lessThan' y k) (lessThan' x k)
 
 -- (x == y)
 --  :<-> (lo <= x < hi)
@@ -337,9 +342,9 @@ varvarEq x y = xInRange /\ yInRange /\ andProp (level <$> [lo + 1 .. hi - 1])
     lo = max xLo yLo
     hi = min xHi yHi
 
-    xInRange = neg (lessThan x lo) /\ lessThan x hi
-    yInRange = neg (lessThan y lo) /\ lessThan y hi
-    level k = lessThan x k <-> lessThan y k
+    xInRange = geqThan x lo /\ lessThan x hi
+    yInRange = geqThan y lo /\ lessThan y hi
+    level k = litIff' (lessThan' x k) (lessThan' y k)
 
 funVarEq :: (Int -> Int) -> LitBundle s -> LitBundle s -> Prop s
 funVarEq f x y = andProp levelProps
@@ -347,13 +352,17 @@ funVarEq f x y = andProp levelProps
     Bundle yLo yHi _ = y
     levelProps = levelProp <$> [yLo .. yHi]
 
-    levelProp k = varPred x (\xVal -> f xVal < k) <-> lessThan y k
+    -- levelProp k = lessThan y k <-> varPred x (\xVal -> f xVal < k)
+    levelProp k =
+         (lessThan y k \/ varPred x (\xVal -> f xVal >= k))
+      /\ (geqThan y k  \/ varPred x (\xVal -> f xVal <  k))
 
 dependent :: LitBundle s -> (Int -> Prop s) -> Prop s
 dependent x cont = andProp (branches <$> [lo .. hi - 1])
   where
     Bundle lo hi _ = x
-    branches k = varEq x k --> cont k
+    -- branches k = varEq x k --> cont k
+    branches k = varNe x k \/ cont k
 
 -- * SAT utility
 
@@ -365,29 +374,49 @@ instance Neg (Lit' s) where
   neg (LitHit l) = LitHit (neg l)
   neg LitTrue = LitFalse
 
+newtype Clause s = Clause [Lit s]
+newtype Prop s = Prop [Clause s]
+
+false, true :: Prop s
+false = Prop [Clause []]
+true = Prop []
+
+lit :: Lit s -> Prop s
+lit l = Prop [Clause [l]]
+
 lit' :: Lit' s -> Prop s
 lit' l' = case l' of
   LitFalse -> false
   LitHit l -> lit l
   LitTrue -> true
 
-noconstant :: SAT s (Lit' s -> Lit s)
-noconstant = do
-  t <- trueLit
-  pure $ \l' -> case l' of
-    LitFalse -> neg t
-    LitHit l -> l
-    LitTrue -> t
+clause' :: [Lit' s] -> Prop s
+clause' = foldr ((\/) . lit') false
+
+(/\) :: Prop s -> Prop s -> Prop s
+Prop cs1 /\ Prop cs2 = Prop (cs1 ++ cs2)
+
+(\/) :: Prop s -> Prop s -> Prop s
+Prop cs \/ Prop ds = Prop [ Clause (c ++ d) | Clause c <- cs, Clause d <- ds]
 
 andProp :: [Prop s] -> Prop s
 andProp = foldr (/\) true
+
+addProp :: Prop s -> SAT s ()
+addProp (Prop ps) = for_ ps addClause
+
+addClause :: Clause s -> SAT s ()
+addClause (Clause c) = SAT.addClause c
+
+addClause' :: [Lit' s] -> SAT s ()
+addClause' = addProp . clause'
 
 ----
 
 findOneSolution :: (Ord v, Show v, HasCallStack) => Env v s -> Set v -> SAT s (Map v Int)
 findOneSolution env visibleVars = do
   let model = Compose $ Map.fromSet (getBundle env) visibleVars
-  assignments <- solve model
+  assignments <- SAT.solve model
   return (bundleToInt <$> getCompose assignments)
 
 excludeSolution :: (Ord v, Show v) => Env v s -> Map v Int -> SAT s ()
@@ -410,5 +439,5 @@ runIterative generator =
                 exclude a
                 loop
            loop
-     _ <- runSATMaybe body
+     _ <- SAT.runSATMaybe body
      readIORef results
