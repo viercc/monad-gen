@@ -2353,3 +2353,7 @@ Monad_10 = Monad{
   join $ St 2 (V2 (St 2 (V2 0 1)) (St 1 (V2 2 3))) = St 1 (V2 0 3)
   join $ St 2 (V2 (St 2 (V2 0 1)) (St 2 (V2 2 3))) = St 2 (V2 0 3)
 }
+
+real    7m27.177s
+user    7m2.698s
+sys     0m15.124s
