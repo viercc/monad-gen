@@ -34,7 +34,7 @@ import Data.PTraversable.Extra (skolem, skolem2, shapes, skolem3)
 import MonadData
 import CSP
 import qualified Data.NatMap as NM
-import ApplicativeData (ApplicativeDict(..), ApplicativeData, makeApplicativeDict)
+import ApplicativeData (ApplicativeDict(..))
 import Control.Monad (guard)
 import Data.Functor (void)
 import qualified Data.Set as Set
@@ -367,27 +367,27 @@ genMonadFromApplicative = \apDict -> solveMonadProblem (addApplicativeConstraint
     mp0 = makeMonadProblem @f
 
 addPureDef :: (PTraversable f, forall a. Show a => Show (f a)) => Shape f -> MonadProblem f -> MonadProblem f
-addPureDef pureShape (tab, defs, con) = (tab, defs, con')
+addPureDef pureShape (tab, defs, con) = (tab, defs', con')
   where
     revmap = Map.fromList [ (Shape s,i) | (i,s) <- V.toList (V.indexed tab) ]
     pureShapeId = revmap Map.! pureShape
-    con' = conjunct [Unit %==. pureShapeId, con]
+    (defs', con') = assume (Map.singleton Unit pureShapeId) (defs, con)
 
 addPartialJoinDef :: PTraversable f => NM.NatMap (f :.: f) f -> MonadProblem f -> MonadProblem f
-addPartialJoinDef nm (tab, defs, con) = (tab, defs, con')
+addPartialJoinDef nm (tab, defs, con) = (tab, defs', con')
   where
     revmap = Map.fromList [ (Shape s,i) | (i,s) <- V.toList (V.indexed tab) ]
     rev = (revmap Map.!)
 
-    con' = conjunct [knownDefs, con]
-    knownDefs = forAll (NM.getKeyValue <$> NM.toEntries nm) >>= knownDef
-    knownDef (lhs, rhsVar) = conjunct (shapeDef : posDefs)
+    (defs', con') = assume (Map.fromList knownDefs) (defs, con)
+    knownDefs = NM.toEntries nm >>= knownDef . NM.getKeyValue
+    knownDef (lhs, rhsVar) = shapeDef : posDefs
       where
         rhs = NM.unVar <$> rhsVar
-        shapeDef = Bull lhs %==. rev (Shape rhs)
+        shapeDef = (Bull lhs, rev (Shape rhs))
 
         posDefs = posDef <$> zip [0..] (F.toList rhs)
-        posDef (i,k) = Pos lhs i %==. k
+        posDef (i,k) = (Pos lhs i, k)
 
 impossibleProblem :: MonadProblem f -> MonadProblem f
 impossibleProblem (varNames, _, _) = (varNames, Map.empty, never)

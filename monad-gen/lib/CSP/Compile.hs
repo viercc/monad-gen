@@ -5,8 +5,6 @@ module CSP.Compile(
 
   -- * Test and Debug
   solveCSPBruteForce,
-  isValidAssignment,
-  isValidAssignmentAtom,
 
   -- * Finer control of solving process
   findOneSolution,
@@ -51,29 +49,6 @@ solveCSPBruteForce vars con visibleVars = do
   assignment <- traverse (\(VarRange lo hi) -> [lo .. hi - 1]) vars
   guard $ isValidAssignment assignment con
   pure $ Map.restrictKeys assignment visibleVars
-
-isValidAssignment :: (Ord v, Show v) => Map v Int -> Constraint v -> Bool
-isValidAssignment env con = case con of
-  Never -> False
-  Pure atom -> isValidAssignmentAtom env atom
-  Conjunct cons -> all (isValidAssignment env) cons
-  Dependent varX cont -> justTrue $ isValidAssignment env . cont <$> Map.lookup varX env
-  where
-    justTrue = (== Just True)
-
-isValidAssignmentAtom :: (Ord v, Show v) => Map v Int -> ConstraintAtom v -> Bool
-isValidAssignmentAtom env con = case con of
-  VarImmLt var k -> justTrue $ (< k) <$> lup var
-  VarImmEq var k -> justTrue $ (k ==) <$> lup var
-  VarImmNe var k -> justTrue $ (k /=) <$> lup var
-  VarPred var cond -> justTrue $ cond <$> lup var
-  VarVarEq varX varY -> justTrue $ (==) <$> lup varX <*> lup varY
-  VarVarNe varX varY -> justTrue $ (/=) <$> lup varX <*> lup varY
-  VarVarLe varX varY -> justTrue $ (<=) <$> lup varX <*> lup varY
-  FunVarEq f varX varY -> justTrue $ (\x y -> f x == y) <$> lup varX <*> lup varY
-  where
-    lup = flip Map.lookup env
-    justTrue = (== Just True)
 
 -- * Compilation to SAT
 

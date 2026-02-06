@@ -21,8 +21,8 @@ import Data.IORef
 import Control.Monad.IO.Class (liftIO)
 
 debug :: String -> SAT s ()
-debug = liftIO . putStrLn
--- debug = const (pure ())
+-- debug = liftIO . putStrLn
+debug = const (pure ())
 
 printStat :: SAT s ()
 printStat = do
