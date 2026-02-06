@@ -1,0 +1,40 @@
+"./tmp-bin/monad-gen -o ./tmp F --v1",0.00,0.00,11648k
+"./tmp-bin/monad-gen -o ./tmp F --v2",0.00,0.01,13696k
+"./tmp-bin/monad-gen -o ./tmp F --v2-cached",0.00,0.01,15360k
+"./tmp-bin/monad-gen -o ./tmp F --v3 --monad-only",0.01,0.02,17024k
+"./tmp-bin/monad-gen -o ./tmp F --v3",0.01,0.05,17280k
+"./tmp-bin/monad-gen -o ./tmp G --v1",0.01,0.16,17024k
+"./tmp-bin/monad-gen -o ./tmp G --v2",0.03,0.04,19840k
+"./tmp-bin/monad-gen -o ./tmp G --v2-cached",0.03,0.04,19968k
+"./tmp-bin/monad-gen -o ./tmp G --v3 --monad-only",0.04,0.15,19712k
+"./tmp-bin/monad-gen -o ./tmp G --v3",0.17,0.18,19456k
+"./tmp-bin/monad-gen -o ./tmp H --v1",0.02,0.04,17408k
+"./tmp-bin/monad-gen -o ./tmp H --v2",0.24,0.26,31744k
+"./tmp-bin/monad-gen -o ./tmp H --v2-cached",0.21,0.23,33280k
+"./tmp-bin/monad-gen -o ./tmp H --v3 --monad-only",0.29,0.34,30464k
+"./tmp-bin/monad-gen -o ./tmp H --v3",1.44,1.46,27392k
+"./tmp-bin/monad-gen -o ./tmp I --v1",2.64,2.68,23928k
+"./tmp-bin/monad-gen -o ./tmp I --v2",17.10,17.41,170152k
+"./tmp-bin/monad-gen -o ./tmp I --v2-cached",28.55,28.84,199100k
+"./tmp-bin/monad-gen -o ./tmp I --v3 --monad-only",206.69,210.00,2557696k
+"./tmp-bin/monad-gen -o ./tmp I --v3",617.39,622.57,910128k
+"./tmp-bin/monad-gen -o ./tmp St22 --v1",0.04,0.06,17408k
+"./tmp-bin/monad-gen -o ./tmp St22 --v2",0.21,0.24,26672k
+"./tmp-bin/monad-gen -o ./tmp St22 --v2-cached",0.23,0.25,29016k
+"./tmp-bin/monad-gen -o ./tmp St22 --v3 --monad-only",0.56,0.67,37376k
+"./tmp-bin/monad-gen -o ./tmp St22 --v3",3.03,3.06,31616k
+"./tmp-bin/monad-gen -o ./tmp St32 --v1",12.24,12.26,30556k
+"./tmp-bin/monad-gen -o ./tmp St32 --v2",83.22,87.22,270676k
+"./tmp-bin/monad-gen -o ./tmp St32 --v2-cached",50.08,52.03,269584k
+"./tmp-bin/monad-gen -o ./tmp St32 --v3 --monad-only",155.65,156.71,1085568k
+"./tmp-bin/monad-gen -o ./tmp St32 --v3",3711.27,3767.11,623536k
+"./tmp-bin/monad-gen -o ./tmp T_112 --v1",0.21,0.34,18304k
+"./tmp-bin/monad-gen -o ./tmp T_112 --v2",1.97,2.05,40524k
+"./tmp-bin/monad-gen -o ./tmp T_112 --v2-cached",1.97,2.08,49156k
+"./tmp-bin/monad-gen -o ./tmp T_112 --v3 --monad-only",2.85,2.99,48640k
+"./tmp-bin/monad-gen -o ./tmp T_112 --v3",15.15,15.20,38016k
+"./tmp-bin/monad-gen -o ./tmp complex/V2Maybe --v1",5.16,5.24,21120k
+"./tmp-bin/monad-gen -o ./tmp complex/V2Maybe --v2",14.16,14.62,79336k
+"./tmp-bin/monad-gen -o ./tmp complex/V2Maybe --v2-cached",11.52,11.98,83260k
+"./tmp-bin/monad-gen -o ./tmp complex/V2Maybe --v3 --monad-only",16.52,16.67,108160k
+"./tmp-bin/monad-gen -o ./tmp complex/V2Maybe --v3",184.30,184.73,82484k
