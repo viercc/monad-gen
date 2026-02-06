@@ -15,7 +15,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module MonadGen2
+module MonadGen.Hegg
   (
     module MonadData,
 

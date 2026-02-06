@@ -8,7 +8,7 @@ import qualified Data.Vector.Unboxed as UV
 import Data.PTraversable
 
 import Targets (I)
-import MonadGen
+import MonadGen.ManualDFS
 import System.IO (hPutStrLn, stderr)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)

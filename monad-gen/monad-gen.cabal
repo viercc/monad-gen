@@ -34,9 +34,8 @@ library monad-gen-internal
 
     MonadLaws,
     MonadData,
-    MonadGen,
-    MonadGen2,
-    MonadGen.BinaryJoin,
+    MonadGen.ManualDFS,
+    MonadGen.Hegg,
     MonadGen.CSP,
 
     Targets

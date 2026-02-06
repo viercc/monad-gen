@@ -361,8 +361,8 @@ genMonadPureFirst = do
       genMonadForPure (Shape pureShape)
   pure $ concat monadss
 
-genMonadFromApplicative :: forall f. (PTraversable f, forall a. Show a => Show (f a)) => ApplicativeData f -> IO [MonadData f]
-genMonadFromApplicative = \apData -> solveMonadProblem (addApplicativeConstraint (makeApplicativeDict apData) mp0)
+genMonadFromApplicative :: forall f. (PTraversable f, forall a. Show a => Show (f a)) => ApplicativeDict f -> IO [MonadData f]
+genMonadFromApplicative = \apDict -> solveMonadProblem (addApplicativeConstraint apDict mp0)
   where
     mp0 = makeMonadProblem @f
 

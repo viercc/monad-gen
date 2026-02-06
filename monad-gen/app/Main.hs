@@ -7,6 +7,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE TupleSections #-}
 
 module Main (main) where
 
@@ -37,8 +38,9 @@ import MonoidGen
 import ApplicativeData
 import ApplicativeGen (genApplicativeDataFrom)
 import MonadData
-import MonadGen
-import qualified MonadGen2
+import qualified MonadGen.ManualDFS as V1
+import qualified MonadGen.Hegg as V2
+import qualified MonadGen.CSP as V3
 
 import Data.Fin
 import Targets
@@ -48,8 +50,9 @@ import Data.FunctorShape
 import Options.Applicative
 import Data.List (intercalate, sort)
 import GHC.Generics ((:.:))
-import Isomorphism (shapeIsoFromFunction, makePositionIso)
+import Isomorphism (shapeIsoFromFunction, makePositionIso, makeShapeIsoFactors, makePositionIsoFactors)
 import Data.Maybe (fromMaybe)
+import Data.Traversable (for)
 
 -- * Targets
 
@@ -103,9 +106,10 @@ data GenerationScheme =
   | SchemeMonApp      -- Monoid --> Applicative
   | SchemeMonAppMonad -- Monoid --> Applicative --> Monad
   | SchemeMonMonad    -- Monoid --> Monad
+  | SchemeMonad       -- Directly Monad only 
   deriving (Show, Eq)
 
-data MonadGenType = MonadGenV1 | MonadGenV2 | MonadGenV2Cached
+data MonadGenType = MonadGenV1 | MonadGenV2 | MonadGenV2Cached | MonadGenV3
   deriving (Show, Read, Eq)
 
 data TargetSpec = TargetAll | IncludeOne String | ExcludeOne String
@@ -140,16 +144,18 @@ optParser targetNames =
           flag' SchemeMon (long "monoid-only" <> help "Monoid only (no Applicative or Monad)")
       <|> flag' SchemeMonApp (long "monoid-app" <> help "Monoid -> Applicative (no Monad)")
       <|> flag' SchemeMonAppMonad (long "monoid-app-monad" <> help "(default) Monoid -> Applicative -> Monad")
-      <|> flag' SchemeMonMonad (long "monoid-monad" <> help "Monoid -> Monad")
+      <|> flag' SchemeMonMonad (long "monoid-monad" <> help "Monoid -> Monad (does not depend on Applicative)")
+      <|> flag' SchemeMonad (long "monad-only" <> help "Monad only (does not depend on Monoid or Applicative)")
       <|> pure SchemeMonAppMonad
 
     oUseExisting =
       switchRich "use-datafile" True (help "Use existing datafile and skips generation if able (default: on)")
 
     oMonadGen = parserOptionGroup "Monad generation engine" $
-          flag' MonadGenV1 (long "v1" <> help "(default) Use v1 solver")
-      <|> flag' MonadGenV2 (long "v2" <> help "Use v2 solver")
+          flag' MonadGenV1 (long "v1" <> long "dfs" <> help "Use v1 solver: manual DFS")
+      <|> flag' MonadGenV2 (long "v2" <> long "hegg" <> help "Use v2 solver: use hegg (persistent e-graph)")
       <|> flag' MonadGenV2Cached (long "v2-cached" <> help "Use v2 solver with cached E-Graph")
+      <|> flag' MonadGenV3 (long "v3" <> long "csp" <> help "Use v3 solver: reduce to SAT model enumeration")
       <|> pure MonadGenV1
     
     oTargets = parserOptionGroup "Target specifications" $
@@ -186,7 +192,7 @@ main = do
 -- * Main logic for each target
 
 generateAll
-  :: (Typeable f, PTraversable f, forall a. Show a => Show (f a))
+  :: forall f. (Typeable f, PTraversable f, forall a. Show a => Show (f a))
   => String -> Proxy f -> Option -> IO ()
 generateAll displayName name opt = case optScheme opt of
   SchemeMon -> do
@@ -222,6 +228,12 @@ generateAll displayName name opt = case optScheme opt of
     let namedMonoids = [ ("M_" ++ show i, mon) | (i,mon) <- zip [1 :: Int ..] monoids ]
     
     _ <- progress $ monadGenFromMonoidToFile namedMonoids monadFileName monadGenMethod
+    pure ()
+  
+  SchemeMonad -> do
+    createDirectoryIfMissing True outDir -- `mkdir -p $outDir`
+    
+    _ <- progress $ monadGenToFile @f monadFileName monadGenMethod
     pure ()
 
   where
@@ -455,6 +467,16 @@ prettyApplicativeDict = docResult
 
 -- * Monad
 
+monadGenToFile :: forall f.
+  ( Typeable f, forall a. (Show a) => Show (f a), PTraversable f)
+  => FilePath
+  -> MonadGenType
+  -> (String -> IO ())
+  -> IO [MonadData f]
+monadGenToFile outFile genType logger = do
+  monads <- monadGen genType logger
+  writeFile outFile $ unlines $ serializeMonadDataList monads
+  pure monads
 
 monadGenFromApplicativeToFile :: forall f.
   ( Typeable f, forall a. (Show a) => Show (f a), PTraversable f)
@@ -464,7 +486,7 @@ monadGenFromApplicativeToFile :: forall f.
   -> (String -> IO ())
   -> IO [MonadData f]
 monadGenFromApplicativeToFile applicatives outFile genType logger = do
-  monads <- monadGen applicatives genType logger
+  monads <- monadGenFromAp applicatives genType logger
   writeFile outFile $ unlines $ serializeMonadDataList monads
   pure monads
 
@@ -480,26 +502,48 @@ monadGenFromMonoidToFile monoids outFile genType logger = do
   writeFile outFile $ unlines $ serializeMonadDataList monads
   pure monads
 
-
 monadGen
+  :: forall f.
+    ( Typeable f, forall a. (Show a) => Show (f a), PTraversable f)
+  => MonadGenType
+  -> (String -> IO ())
+  -> IO [MonadData f]
+monadGen genType progress = do
+  let typename = show (someTypeRep (Proxy :: Proxy f))
+      counter = [ 1 :: Int ..]
+      isos = concat $ makeShapeIsoFactors @f ++ makePositionIsoFactors
+      uniq = uniqueByIso @f isos
+      gen = monadGenByType genType
+      
+      genAll :: IO [ (String, MonadData f) ]
+      genAll = map ("_", ) . uniq <$> gen
+  monads <- genAll
+  for_ (zip counter monads) $ \(i, (apName, monadData)) -> do
+    progress $ apName ++ " => Monad(" ++ typename ++ "):" ++ show i
+    validateMonadDict apName (makeMonadDict monadData)
+  pure (sort (snd <$> monads))
+
+monadGenFromAp
   :: forall f.
     ( Typeable f, forall a. (Show a) => Show (f a), PTraversable f)
   => [ (String, ApplicativeData f) ]
   -> MonadGenType
   -> (String -> IO ())
   -> IO [MonadData f]
-monadGen applicatives genType progress = do
+monadGenFromAp applicatives genType progress = do
   let typename = show (someTypeRep (Proxy :: Proxy f))
       counter = [ 1 :: Int ..]
       uniq apDict = uniqueByIso @f (ApplicativeData.automorphisms apDict)
       gen = monadGenFromApplicativeByType genType
       
-      monads :: [ (String, MonadData f) ]
-      monads = do
-        (apName, apData) <- applicatives
-        let apDict = makeApplicativeDict apData
-        monadData <- uniq apDict $ gen apDict
-        pure (apName, monadData)
+      genAll :: IO [ (String, MonadData f) ]
+      genAll = do
+        results <- for applicatives $ \(apName, apData) -> do
+          let apDict = makeApplicativeDict apData
+          monadDataList <- uniq apDict <$> gen apDict
+          pure $ (apName, ) <$> monadDataList
+        pure $ concat results
+  monads <- genAll
   for_ (zip counter monads) $ \(i, (apName, monadData)) -> do
     progress $ apName ++ " => Monad(" ++ typename ++ "):" ++ show i
     validateMonadDict apName (makeMonadDict monadData)
@@ -520,32 +564,44 @@ monadGenFromMonoid monoids genType progress = do
       uniq monData = uniqueByIso @f $ shapeIsos monData ++ concat makePositionIso
       gen = monadGenFromMonoidByType genType
       
-      monads :: [ (String, MonadData f) ]
-      monads = do
-        (monName, monData) <- monoids
-        let monDict = makeMonoidDict monData
-        monadData <- uniq monData $ gen monDict
-        pure (monName, monadData)
+      genAll :: IO [ (String, MonadData f) ]
+      genAll = do
+        results <- for monoids $ \(monName, monData) -> do
+          let monDict = makeMonoidDict monData
+          monadDataList <- uniq monData <$> gen monDict
+          pure $ (monName, ) <$> monadDataList
+        pure $ concat results
+  monads <- genAll
   for_ (zip counter monads) $ \(i, (apName, monadData)) -> do
     progress $ apName ++ " => Monad(" ++ typename ++ "):" ++ show i
     validateMonadDict apName (makeMonadDict monadData)
   pure (sort (snd <$> monads))
 
-monadGenFromApplicativeByType
-  :: (forall a. Show a => Show (f a), PTraversable f) => MonadGenType -> ApplicativeDict f -> [ MonadData f ]
-monadGenFromApplicativeByType genType = case genType of
-  MonadGenV1 -> MonadGen.genFromApplicative
-  MonadGenV2 -> MonadGen2.genFromApplicative
-  MonadGenV2Cached -> case MonadGen2.prepareGenFromApplicative of
-    Nothing -> const []
-    Just genPrepared -> genPrepared
-
-monadGenFromMonoidByType
-  :: (forall a. Show a => Show (f a), PTraversable f) => MonadGenType -> MonoidDict (Shape f) -> [ MonadData f ]
-monadGenFromMonoidByType genType = case genType of
-  MonadGenV1 -> MonadGen.genFromMonoid
+monadGenByType
+  :: (forall a. Show a => Show (f a), PTraversable f) => MonadGenType -> IO [ MonadData f ]
+monadGenByType genType = case genType of
+  MonadGenV1 -> error "not implemented"
   MonadGenV2 -> error "not implemented"
   MonadGenV2Cached -> error "not implemented"
+  MonadGenV3 -> V3.genMonad
+
+monadGenFromApplicativeByType
+  :: (forall a. Show a => Show (f a), PTraversable f) => MonadGenType -> ApplicativeDict f -> IO [ MonadData f ]
+monadGenFromApplicativeByType genType = case genType of
+  MonadGenV1 -> pure . V1.genFromApplicative
+  MonadGenV2 -> pure . V2.genFromApplicative
+  MonadGenV2Cached -> case V2.prepareGenFromApplicative of
+    Nothing -> pure . const []
+    Just genPrepared -> pure . genPrepared
+  MonadGenV3 -> V3.genMonadFromApplicative
+
+monadGenFromMonoidByType
+  :: (forall a. Show a => Show (f a), PTraversable f) => MonadGenType -> MonoidDict (Shape f) -> IO [ MonadData f ]
+monadGenFromMonoidByType genType = case genType of
+  MonadGenV1 -> pure . V1.genFromMonoid
+  MonadGenV2 -> error "not implemented"
+  MonadGenV2Cached -> error "not implemented"
+  MonadGenV3 -> error "not implemented"
 
 validateMonadDict :: forall f.
      (PTraversable f, forall a. Show a => Show (f a))

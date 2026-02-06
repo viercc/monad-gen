@@ -8,14 +8,13 @@
 {-# LANGUAGE TupleSections #-}
 {- HLINT ignore "Use camelCase" -}
 
-module MonadGen
+module MonadGen.ManualDFS
   (
     module MonadData,
 
     genFromMonoid,
 
     genFromApplicative,
-    genFromApplicativeViaBinaryJoin,
 
     -- * Debug
     GenState (..),
@@ -53,11 +52,8 @@ import Data.FunctorShape
 import MonoidData (MonoidDict(..))
 import ApplicativeData ( ApplicativeDict(..) )
 
-import Debug.Trace (traceM)
-
 import MonadData
 import MonadLaws
-import qualified MonadGen.BinaryJoin as BJ
 import Data.Traversable.Extra (indices, zipMatchWith)
 
 -- * Entry points
@@ -79,21 +75,6 @@ genFromApplicative :: forall f. (forall a. (Show a) => Show (f a), PTraversable 
 genFromApplicative apDict = do
   apJoin <- F.toList $ applicativeToJoin apDict
   postproc . snd <$> runGen buildInitialEnv (initialize (PNM.fromNatMap apJoin) >> loop)
-  where
-    pureShape = Shape (_applicativePure apDict ())
-    loop = do
-      blockade <- gets _blockade
-      case mostRelated blockade of
-        Nothing -> pure ()
-        Just lhsKey -> guess lhsKey >> loop
-    postproc finalState = MonadData pureShape (PNM.toNatMap (_join finalState))
-
-genFromApplicativeViaBinaryJoin :: forall f. (forall a. (Show a) => Show (f a), PTraversable f) => ApplicativeDict f -> [MonadData f]
-genFromApplicativeViaBinaryJoin apDict = do
-  let allBinaryJoins = BJ.genFromApplicative apDict
-  traceM $ "#binaryJoin = " ++ show (length allBinaryJoins)
-  binaryJoin <- allBinaryJoins
-  postproc . snd <$> runGen buildInitialEnv (initialize (BJ.binaryJoinToJoin binaryJoin) >> loop)
   where
     pureShape = Shape (_applicativePure apDict ())
     loop = do
