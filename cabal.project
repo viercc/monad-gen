@@ -10,6 +10,11 @@ source-repository-package
 
 source-repository-package
     type: git
+    location: https://github.com/viercc/nat-map.git
+    tag: 388ac3c8239b5efe5ac75cea9ec91486d7691328
+
+source-repository-package
+    type: git
     location: https://github.com/viercc/hegg.git
     tag: 085c5095610932c7882708e53359cbc30e6923a7
 
